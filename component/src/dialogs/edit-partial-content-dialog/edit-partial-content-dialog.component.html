@@ -1,0 +1,24 @@
+<h1 mat-dialog-title>Edit Partial Content</h1>
+
+<div mat-dialog-content>
+
+    <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 16px;padding-top: 10px;">
+        <mat-label>Section Name</mat-label>
+        <input matInput [(ngModel)]="data.name">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" style="width: 100%;;padding-top: 10px;">
+        <mat-label>Token Source</mat-label>
+        <mat-select [(ngModel)]="data.selectedToken">
+            <mat-option value="root">root</mat-option>
+            <mat-option *ngFor="let token of data.tokenOptions" [value]="token">
+                {{ token }}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+</div>
+
+<div mat-dialog-actions align="end">
+    <button mat-button (click)="onCancel()">Cancel</button>
+    <button mat-raised-button color="primary" (click)="onSave()">Save</button>
+</div>

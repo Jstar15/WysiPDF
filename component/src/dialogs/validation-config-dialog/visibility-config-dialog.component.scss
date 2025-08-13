@@ -1,0 +1,33 @@
+.conditions-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.condition-header {
+  display: grid;
+  grid-template-columns: minmax(120px, 1fr) minmax(120px, 1fr) minmax(120px, 1fr) auto;
+  gap: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 0 4px;
+  margin-bottom: 4px;
+  color: #555;
+  align-items: center;
+}
+
+.condition-header .hdr {
+  text-transform: uppercase;
+}
+
+.condition-row {
+  display: grid;
+  grid-template-columns: minmax(120px, 1fr) minmax(120px, 1fr) minmax(120px, 1fr) auto;
+  gap: 12px;
+  align-items: flex-end;
+}
+
+.condition-row .action {
+  display: flex;
+  align-items: flex-start;
+}

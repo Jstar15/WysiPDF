@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",               // ✅ Required for top-level await
+    "module": "ESNext",               // ✅ Enables top-level await in Rollup
+    "moduleResolution": "bundler",
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "noEmit": true,
+    "skipLibCheck": true
+  },
+  "include": ["src/**/*"]
+}

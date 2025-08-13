@@ -1,0 +1,17 @@
+<h1 mat-dialog-title>Select Partial Template</h1>
+
+<div mat-dialog-content>
+    <mat-form-field appearance="outline" style="width: 100%; margin-top: 10px;">
+        <mat-label>Partial Template</mat-label>
+        <mat-select [(ngModel)]="selectedPartialId">
+            <mat-option *ngFor="let p of data.partials" [value]="p.id">
+                {{ p.name }} <span *ngIf="p.tokenSource"> — {{ p.tokenSource }}</span>
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+</div>
+
+<div mat-dialog-actions align="end">
+    <button mat-button (click)="onCancel()">Cancel</button>
+    <button mat-raised-button color="primary" [disabled]="!selectedPartialId" (click)="onSave()">Add</button>
+</div>

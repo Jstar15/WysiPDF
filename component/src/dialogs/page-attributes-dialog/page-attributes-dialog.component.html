@@ -1,0 +1,49 @@
+<h1 mat-dialog-title>Page Attributes</h1>
+
+<div mat-dialog-content>
+    <h3>Background Color</h3>
+    <div class="color-grid">
+        <div class="color-picker">
+            <label class="color-label">Background</label>
+            <div class="color-preview" [style.background]="data.backgroundColor" (click)="showBgPicker = !showBgPicker"></div>
+            <app-color-picker-overlay
+                    *ngIf="showBgPicker"
+                    [color]="data.backgroundColor"
+                    (colorChange)="data.backgroundColor = $event">
+            </app-color-picker-overlay>
+        </div>
+    </div>
+
+    <h3>Margin</h3>
+    <div class="input-grid">
+        <mat-form-field appearance="outline">
+            <mat-label>Top</mat-label>
+            <input matInput type="number" [(ngModel)]="data.marginTop">
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+            <mat-label>Right</mat-label>
+            <input matInput type="number" [(ngModel)]="data.marginRight">
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+            <mat-label>Bottom</mat-label>
+            <input matInput type="number" [(ngModel)]="data.marginBottom">
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+            <mat-label>Left</mat-label>
+            <input matInput type="number" [(ngModel)]="data.marginLeft">
+        </mat-form-field>
+    </div>
+
+  <h3>Default Font</h3>
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Font</mat-label>
+    <mat-select [(ngModel)]="data.defaultFont">
+      <mat-option *ngFor="let font of availableFonts" [value]="font">{{ font }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>
+
+<div mat-dialog-actions align="end">
+    <button mat-button (click)="onCancel()">Cancel</button>
+    <button mat-raised-button color="primary" (click)="onSave()">Save</button>
+</div>

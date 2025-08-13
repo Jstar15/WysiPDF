@@ -1,0 +1,26 @@
+<div class="json-viewer-wrapper" *ngIf="currentJson">
+  <div class="json-header">
+    <div class="nav-buttons">
+      <button mat-icon-button (click)="prev()" [disabled]="!canGoPrev" matTooltip="Previous">
+        <mat-icon svgIcon="chevron_left"></mat-icon>
+      </button>
+      <button mat-icon-button (click)="next()" [disabled]="!canGoNext" matTooltip="Next">
+        <mat-icon svgIcon="chevron_right"></mat-icon>
+      </button>
+    </div>
+    <div class="json-meta">
+      <div class="json-name">{{ currentJson.name }}</div>
+      <div class="json-description" *ngIf="currentJson.description">{{ currentJson.description }}</div>
+    </div>
+    <button class="copy-btn" (click)="copy()" mat-icon-button matTooltip="Copy JSON">
+      <mat-icon style="color:red"  svgIcon="content_copy"></mat-icon>
+    </button>
+  </div>
+
+  <div class="json-content">
+    <div class="line" *ngFor="let line of lines; let i = index">
+      <div class="line-number">{{ i + 1 }}</div>
+      <div class="line-code" [innerHTML]="line"></div>
+    </div>
+  </div>
+</div>

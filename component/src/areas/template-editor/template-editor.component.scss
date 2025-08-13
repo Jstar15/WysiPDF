@@ -1,0 +1,210 @@
+/* =========================
+   Tokens
+========================= */
+$bp-md: 768px;
+$space-xxs: .25rem;
+$space-xs:  .5rem;
+$space-sm:  .75rem;
+$space:     1rem;
+$space-lg:  1.5rem;
+
+$radius-lg: 12px;
+$shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
+
+$border-muted: #eee;
+$text-muted:   #666;
+$gutter-bg:    hotpink;
+
+/* Quick mixin */
+@mixin md-down {
+  @media (max-width: $bp-md) { @content; }
+}
+
+/* =========================
+   App Layout
+========================= */
+.mainContainer {
+  height: 97vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.split-container {
+  flex: 1;
+  display: flex;
+  height: 100%;
+
+  @include md-down { flex-direction: column; }
+}
+
+as-split,
+as-split-area {
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
+
+.left-pane,
+.right-pane {
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+}
+
+/* Splitter */
+as-split-gutter {
+  background-color: $gutter-bg;
+  width: 6px;
+  cursor: col-resize;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+
+  &::before {
+    content: '⋮';
+    color: #fff;
+    font-size: 14px;
+    transform: rotate(90deg);
+  }
+}
+
+/* =========================
+   Editor Card
+========================= */
+.editor-card {
+  width: 100%;
+  padding: $space-lg;
+  background: #fff;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-sm;
+  display: flex;
+  flex-direction: column;
+  gap: $space-lg;
+
+  mat-card-title {
+    font-size: 1.4rem;
+    font-weight: 600;
+  }
+
+  mat-card-subtitle {
+    font-size: .95rem;
+    color: $text-muted;
+  }
+}
+
+/* =========================
+   Button Rows / Attributes
+========================= */
+.button-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $space;
+  align-items: center;
+
+  @include md-down {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+.attribute-buttons {
+  display: flex;
+  gap: $space;
+
+  @include md-down { justify-content: center; }
+}
+
+/* =========================
+   Viewers
+========================= */
+.pdf-viewer,
+.json-viewer {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+/* =========================
+   Partial Header
+========================= */
+.partial-header-grid {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  width: 100%;
+}
+
+.partial-title {
+  font-weight: 500;
+  font-size: 16px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.partial-header-actions {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  margin-right: 20px;
+
+  button {
+    height: 32px;
+    width: 32px;
+  }
+}
+
+/* =========================
+   Generic Toolbar bits
+========================= */
+mat-toolbar { padding: 0 $space; }
+.panel-icon { margin-right: 5px; }
+
+/* =========================
+   Editor Toolbar (top bar)
+========================= */
+.editor-toolbar {
+  padding: $space-xs $space-sm;
+  border-bottom: 1px solid $border-muted;
+
+  .toolbar-row {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: $space-sm;
+    width:100%;
+
+    @include md-down {
+      grid-template-columns: 1fr;
+      row-gap: $space-xs;
+      justify-items: stretch;
+
+      .features-panel { justify-content: center; }
+      .history-panel { justify-content:end; }
+      .change-view-panel { justify-content:center; }
+    }
+  }
+
+  /* Button groups within the toolbar */
+  .btn-group {
+    display: inline-flex;
+    align-items: center;
+    gap: $space-xs;
+  }
+
+  .features-panel { justify-self: end; }
+  .change-view-panel { justify-self: end; }
+
+  /* Mini-fabs: consistent sizing + subtle hover */
+  .icon-btn {
+    width: 36px;
+    height: 36px;
+    transition: transform .05s ease, box-shadow .15s ease;
+
+    mat-icon { font-size: 20px; line-height: 20px; }
+    &:not([disabled]):hover { transform: translateY(-1px); }
+  }
+
+  button[disabled] { opacity: .6; }
+}

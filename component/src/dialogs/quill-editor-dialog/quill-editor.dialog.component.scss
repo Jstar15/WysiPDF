@@ -1,0 +1,45 @@
+.preview-container {
+  margin: 1rem 0;
+  text-align: center;
+}
+
+.input-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 1rem;
+
+  label {
+    display: flex;
+    flex-direction: column;
+    font-weight: 500;
+  }
+
+  input {
+    margin-top: 0.25rem;
+    padding: 0.5rem;
+    font-size: 14px;
+  }
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1.5rem;
+  gap: 1rem;
+}
+:host {
+  display: block;
+  padding: 1rem;
+  width: 100%;
+  max-width: 700px;
+}
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+button {
+  padding: 6px 12px;
+}

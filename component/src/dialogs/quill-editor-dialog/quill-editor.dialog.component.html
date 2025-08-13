@@ -1,0 +1,10 @@
+<h2>Edit Content</h2>
+<app-quill-wrapper
+        [(html)]="html"
+        [attributeArray]="attributeArray"
+></app-quill-wrapper>
+
+<div class="dialog-actions">
+    <button (click)="cancel()">Cancel</button>
+    <button (click)="save()">Save</button>
+</div>

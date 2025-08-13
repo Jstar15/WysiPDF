@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>WysiPDF Demo</title>
+  <script src="./wysipdf.bundle.js"></script>
+  <style>
+    #downloadBtn {
+      position: fixed;
+      bottom: 30px;
+      right: 25px;
+      padding: 8px 14px;
+      background-color: #1976d2;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 14px;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+      z-index: 9999;
+    }
+
+    #downloadBtn:hover {
+      background-color: #125aa1;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Floating download button -->
+<button id="downloadBtn">Download PDF</button>
+
+<!-- Editor component -->
+<app-template-editor></app-template-editor>
+
+<script>
+  let currentPage = null;
+
+  window.addEventListener('DOMContentLoaded', async () => {
+    const page = {
+      header: { rows: [] },
+      content: { rows: [] },
+      footer: { rows: [] },
+      pageAttrs: {
+        backgroundColor: 'white',
+        marginTop: 10,
+        marginRight: 0,
+        marginLeft: 0,
+        marginBottom: 10,
+        footerMargin: 50,
+        headerMargin: 30,
+        defaultFont: 'Roboto'
+      },
+      tokenAttrs: [
+        { name: 'customerName', value: 'John Doe', type: 'TEXT' }
+      ],
+      partialContent: []
+    };
+
+    // Save locally for later download
+    currentPage = page;
+
+    await window.loadPage(page);
+
+    await window.onPageChange(updatedPage => {
+      currentPage = updatedPage;
+      console.log('Page was updated:', updatedPage);
+    });
+
+    document.getElementById('downloadBtn').addEventListener('click', async () => {
+      if (!currentPage) return;
+
+      const tokens = currentPage.tokenAttrs || [];
+
+      const base64 = await window.generatePdfBase64(currentPage, tokens);
+      const link = document.createElement('a');
+      link.href = 'data:application/pdf;base64,' + base64;
+      link.download = 'wysipdf-document.pdf';
+      link.click();
+    });
+  });
+</script>
+
+</body>
+</html>

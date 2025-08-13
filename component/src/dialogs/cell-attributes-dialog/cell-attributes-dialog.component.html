@@ -1,0 +1,73 @@
+<h1 mat-dialog-title>Cell Style Attributes</h1>
+
+<div mat-dialog-content>
+    <h3>Colors</h3>
+    <div class="color-grid">
+        <div class="color-picker">
+            <label class="color-label">Border Color</label>
+            <div class="color-preview" [style.background]="data.borderColor" (click)="showBorderPicker = !showBorderPicker"></div>
+            <app-color-picker-overlay
+                    *ngIf="showBorderPicker"
+                    [color]="data.borderColor"
+                    (colorChange)="data.borderColor = $event">
+            </app-color-picker-overlay>
+        </div>
+
+        <div class="color-picker">
+            <label class="color-label">Background</label>
+            <div class="color-preview" [style.background]="data.backgroundColor" (click)="showBgPicker = !showBgPicker"></div>
+            <app-color-picker-overlay
+                    *ngIf="showBgPicker"
+                    [color]="data.backgroundColor"
+                    (colorChange)="data.backgroundColor = $event">
+            </app-color-picker-overlay>
+        </div>
+    </div>
+
+    <h3>Padding</h3>
+    <div class="input-grid">
+        <mat-form-field appearance="outline">
+            <mat-label>Top</mat-label>
+            <input matInput type="number" [(ngModel)]="data.paddingTop">
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+            <mat-label>Right</mat-label>
+            <input matInput type="number" [(ngModel)]="data.paddingRight">
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+            <mat-label>Bottom</mat-label>
+            <input matInput type="number" [(ngModel)]="data.paddingBottom">
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+            <mat-label>Left</mat-label>
+            <input matInput type="number" [(ngModel)]="data.paddingLeft">
+        </mat-form-field>
+    </div>
+
+    <h3>Border</h3>
+    <div class="input-grid">
+        <mat-form-field appearance="outline">
+            <mat-label>Top</mat-label>
+            <input matInput type="number" [(ngModel)]="data.borderTop">
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+            <mat-label>Right</mat-label>
+            <input matInput type="number" [(ngModel)]="data.borderRight">
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+            <mat-label>Bottom</mat-label>
+            <input matInput type="number" [(ngModel)]="data.borderBottom">
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+            <mat-label>Left</mat-label>
+            <input matInput type="number" [(ngModel)]="data.borderLeft">
+        </mat-form-field>
+    </div>
+
+
+</div>
+
+<div mat-dialog-actions align="end">
+    <button mat-button (click)="onCancel()">Cancel</button>
+    <button mat-raised-button color="primary" (click)="onSave()">Save</button>
+</div>

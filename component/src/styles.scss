@@ -1,0 +1,101 @@
+@use '@angular/material' as mat;
+@import url('https://fonts.googleapis.com/css2?family=Roboto&family=Raleway&family=Lato&family=Nunito&family=Playfair+Display&family=IBM+Plex+Mono&family=Cormorant+Garamond&family=Open+Sans&display=swap');
+
+
+.cdk-overlay-pane {
+  background-color: white !important;
+}
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+
+
+/* You can add global styles to this file, and also import other style files */
+
+
+//Change these to arguments
+
+
+#editor-container{
+  height: 500px !important;
+}
+
+
+.ql-editor .ql-size[value="8px"]  { font-size: 8px; }
+.ql-editor .ql-size[value="10px"] { font-size: 10px; }
+.ql-editor .ql-size[value="12px"] { font-size: 12px; }
+.ql-editor .ql-size[value="14px"] { font-size: 14px; }
+.ql-editor .ql-size[value="16px"] { font-size: 16px; }
+.ql-editor .ql-size[value="18px"] { font-size: 18px; }
+.ql-editor .ql-size[value="24px"] { font-size: 24px; }
+.ql-editor .ql-size[value="32px"] { font-size: 32px; }
+.ql-editor .ql-size[value="48px"] { font-size: 48px; }
+
+
+
+span.ql-mathjax {
+  border: 1px solid #777;
+  padding: 1px 5px;
+  border-radius: 10px;
+  background: #eee;
+  /* font-size: 15px; */
+  /* font-weight: bold; */
+}
+p{
+  font-size: 14px;
+}
+
+
+/* Set content font-families */
+.ql-font-opensans {
+  font-family: "Open Sans Condensed";
+}
+.ql-font-roboto {
+  font-family: 'Roboto', sans-serif;
+}
+.ql-font-raleway {
+  font-family: 'Raleway', sans-serif;
+}
+.ql-font-nunito {
+  font-family: 'Nunito', sans-serif;
+}
+.ql-font-cormorant {
+  font-family: 'Cormorant Garamond', serif;
+}
+
+/* For each font in the Quill font picker */
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value="raleway"]::before,
+.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="raleway"]::before {
+  font-family: 'Raleway', sans-serif;
+}
+
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value="nunito"]::before,
+.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="nunito"]::before {
+  font-family: 'Nunito', sans-serif;
+}
+
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value="cormorant"]::before,
+.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="cormorant"]::before {
+  font-family: 'Cormorant Garamond', serif;
+}
+
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value="opensans"]::before,
+.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="opensans"]::before {
+  font-family: 'Open Sans Condensed', sans-serif;
+}
+
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value="roboto"]::before,
+.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="roboto"]::before {
+  font-family: 'Roboto', sans-serif;
+}
+
+
+
+
+
+
+/* quick work around override color. should inject properly really*/
+.nav-buttons svg{
+  fill: white !important;
+}

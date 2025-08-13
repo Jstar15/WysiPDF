@@ -1,0 +1,34 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+  //  "outDir": "dist/like-button/browser", // ✅ Rollup/esbuild output path
+    "strict": false,
+
+    // Safety and clean code
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true, // ✅ Helps with dynamic ES-style imports
+    "moduleResolution": "bundler", // ✅ Required for Rollup/esbuild bundling
+    "module": "ESNext",             // ✅ Supports top-level await and dynamic import
+    "target": "ES2022",             // ✅ Optional: ES2022+ for optional chaining, etc.
+    "lib": [
+      "ES2022",
+      "dom"
+    ],
+    "sourceMap": true,
+    "declaration": false,
+    "experimentalDecorators": true,
+    "importHelpers": true
+  },
+  "angularCompilerOptions": {
+    "enableI18nLegacyMessageIdFormat": false,
+    "strictInjectionParameters": true,
+    "strictInputAccessModifiers": true,
+    "strictTemplates": true
+  }
+}

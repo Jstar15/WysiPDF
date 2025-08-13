@@ -1,0 +1,131 @@
+<mat-toolbar class="grid-toolbar" color="transparent">
+    <!-- Row controls -->
+    <button mat-icon-button matTooltip="Add Row" (click)="addRow();emitChange();">
+        <mat-icon svgIcon="table_rows"></mat-icon>
+    </button>
+
+    <button mat-icon-button matTooltip="Remove Row"  (click)="removeRow();emitChange();">
+        <mat-icon svgIcon="horizontal_rule"></mat-icon>
+    </button>
+  <button mat-icon-button color="accent" matTooltip="Duplicate Row" aria-label="Duplicate Row" (click)="duplicateCurrentRow()">
+    <mat-icon svgIcon="control_point_duplicate"></mat-icon>
+  </button>
+    <!-- Column controls -->
+    <button mat-icon-button matTooltip="Add Column" (click)="addColumn();emitChange();">
+        <mat-icon svgIcon="view_column"></mat-icon>
+    </button>
+
+    <button mat-icon-button matTooltip="Remove Column" (click)="removeColumn();emitChange();">
+        <mat-icon svgIcon="vertical_align_center"></mat-icon>
+    </button>
+
+    <!-- Spacer to push the last item to the right -->
+    <span class="spacer"></span>
+
+    <!-- Add Page Break -->
+    <button *ngIf="!hidePageBreak" mat-icon-button matTooltip="Add Page Break" (click)="addPageBreakRow()">
+        <mat-icon svgIcon="line_weight"></mat-icon>
+    </button>
+    <button *ngIf="!hidePartialContent"  mat-icon-button matTooltip="Add Partial Content" (click)="addPartialRow()">
+        <mat-icon svgIcon="call_split"></mat-icon>
+    </button>
+
+    <button mat-icon-button matTooltip="Insert Image" (click)="openAddImageDialog()">
+        <mat-icon svgIcon="add_photo_alternate"></mat-icon>
+    </button>
+
+    <!-- Edit cell control (right aligned) -->
+  <button mat-icon-button color="accent" matTooltip="Display Rules" aria-label="Display Rules" (click)="displayRulesDialog()">
+    <mat-icon svgIcon="view_list"></mat-icon>
+  </button>
+
+    <button mat-icon-button color="accent" matTooltip="Edit Cell Style"  (click)="openCellEditorDialog()">
+        <mat-icon svgIcon="border_color"></mat-icon>
+    </button>
+</mat-toolbar>
+
+
+
+<div #gridContainer class="grid-container">
+  <div cdkDropList (cdkDropListDropped)="dropRow($event)" [cdkDropListDisabled]="isResizing">
+    <div *ngFor="let row of grid.rows; let r = index" cdkDrag>
+        <!-- 🧾 Page Break -->
+        <div *ngIf="row.type === 'page-break'" class="row"
+             [ngClass]="{ 'selected-partial': r === currentRow && currentCol === -1 }"
+             (click)="onPartialRowClick(r)">
+            <div class="cell-container" style="flex: 1;">
+                <div class="cell ql-editor"
+                     style="text-align: center; color: gray; font-style: italic; padding: 8px;">
+                    [Page Break]
+                </div>
+            </div>
+        </div>
+
+        <!-- Render partial content row -->
+        <div *ngIf="row.type === 'partial-content'; else normalRow" class="row"
+             [style.background-color]="pageAttrs.backgroundColor"
+             [ngClass]="{ 'selected-partial': r === currentRow && currentCol === -1 }"
+             (click)="onPartialRowClick(r)">
+            <div class="cell-container" style="flex: 1;">
+                <div class="cell ql-editor" style="text-align: center; color: gray; font-style: italic; padding: 8px;">
+                   <p>[Partial Content] - {{getPartialTemplateName(r)}}</p>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Normal row rendering -->
+        <ng-template #normalRow>
+            <div class="row" [style.background-color]="pageAttrs.backgroundColor">
+                <ng-container *ngFor="let cell of row.cells; let c = index">
+                    <div class="cell-container" [style.flex-basis.%]="row.widths[c]">
+                        <div
+                                class="cell ql-editor"
+                                [ngClass]="{ 'selected': r === currentRow && c === currentCol }"
+                                (click)="onCellClick(r, c)"
+                                (dblclick)="onCellDoubleClick(r, c)"
+                                [style.padding-left.px]="cell.attrs?.paddingLeft || 0"
+                                [style.padding-right.px]="cell.attrs?.paddingRight || 0"
+                                [style.padding-top.px]="cell.attrs?.paddingTop || 0"
+                                [style.padding-bottom.px]="cell.attrs?.paddingBottom || 0"
+                                [style.border-top-style]="'solid'"
+                                [style.border-right-style]="'solid'"
+                                [style.border-bottom-style]="'solid'"
+                                [style.border-left-style]="'solid'"
+                                [style.border-top-width.px]="cell.attrs?.borderTop || 0"
+                                [style.border-right-width.px]="cell.attrs?.borderRight || 0"
+                                [style.border-bottom-width.px]="cell.attrs?.borderBottom || 0"
+                                [style.border-left-width.px]="cell.attrs?.borderLeft || 0"
+                                [style.border-color]="cell.attrs?.borderColor || '#000'"
+                                [style.background-color]="cell.attrs?.backgroundColor || 'transparent'"
+                        >
+                            <ng-container *ngIf="cell.imageBlock; else textBlock">
+                                <div [style.text-align]="cell.imageBlock.alignment">
+                                    <img
+                                            [src]="cell.imageBlock.imageBase64"
+                                            [style.width.%]="cell.imageBlock.width || 100"
+                                            style="max-height: 250px; display: inline-block;"
+                                            alt="{{ cell.imageBlock.filename }}"
+                                    />
+                                </div>
+                            </ng-container>
+
+                            <ng-template #textBlock>
+                                <div class="cell-content" [innerHTML]="sanitizeHtml(cell.value)"></div>
+                            </ng-template>
+                        </div>
+
+                        <div
+                                *ngIf="c < row.cells.length - 1"
+                                class="col-resize-handle"
+                                (mousedown)="onColResizeMouseDown($event, r, c)"
+                        ></div>
+                    </div>
+                </ng-container>
+            </div>
+        </ng-template>
+    </div> <!-- cdkDrag end -->
+  </div> <!-- cdkDropList end -->
+</div>
+
+

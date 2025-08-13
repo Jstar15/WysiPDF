@@ -1,0 +1,212 @@
+<div class="mainContainer">
+    <as-split
+            [direction]="'horizontal'"
+            [gutterSize]="6"
+            [unit]="'percent'"
+            [disabled]="!showRightPane"
+            class="split-container"
+    >
+        <!-- LEFT PANE -->
+        <as-split-area [size]="50" class="left-pane">
+            <mat-card class="editor-card mat-elevation-z4">
+              <mat-card-header class="editor-toolbar">
+                <div class="toolbar-row">
+
+                  <!-- Left: history -->
+                  <div class="history-panel btn-group">
+                    <button
+                      mat-mini-fab
+                      (click)="undo()"
+                      [disabled]="!canUndo()"
+                      class="icon-btn"
+                      aria-label="Undo"
+                      matTooltip="Undo">
+                      <mat-icon [ngStyle]="{ color: canUndo() ? 'inherit' : '#bdbdbd' }" svgIcon="undo"></mat-icon>
+                    </button>
+                    <button
+                      mat-mini-fab
+                      (click)="redo()"
+                      [disabled]="!canRedo()"
+                      class="icon-btn"
+                      aria-label="Redo"
+                      matTooltip="Redo">
+                      <mat-icon [ngStyle]="{ color: canRedo() ? 'inherit' : '#bdbdbd' }" svgIcon="redo"></mat-icon>
+                    </button>
+                  </div>
+
+                  <!-- Center: features -->
+                  <div class="features-panel btn-group">
+                    <button
+                      mat-mini-fab
+                      color="primary"
+                      (click)="openPageEditorDialog()"
+                      class="icon-btn"
+                      aria-label="Edit page"
+                      matTooltip="Edit page layout">
+                      <mat-icon svgIcon="edit"></mat-icon>
+                    </button>
+                    <button
+                      mat-mini-fab
+                      color="primary"
+                      (click)="openTokenEditorDialog()"
+                      class="icon-btn"
+                      aria-label="Manage tokens"
+                      matTooltip="Manage tokens">
+                      <mat-icon svgIcon="download"></mat-icon>
+                    </button>
+                  </div>
+
+                  <!-- Right: view toggles -->
+                  <div class="change-view-panel btn-group">
+                    <button
+                      mat-mini-fab
+                      color="primary"
+                      class="icon-btn"
+                      (click)="togglePdfPane()"
+                      [matTooltip]="showPdfViewPane ? 'Show JSON View' : 'Show PDF View'">
+                      <mat-icon [svgIcon]="showPdfViewPane ? 'code' : 'picture_as_pdf'"></mat-icon>
+                    </button>
+                    <button
+                      mat-mini-fab
+                      color="primary"
+                      class="icon-btn"
+                      (click)="toggleRightPane()"
+                      [matTooltip]="showRightPane ? 'Hide Preview' : 'Show Preview'">
+                      <mat-icon [svgIcon]="showRightPane ? 'visibility_off' : 'visibility'"></mat-icon>
+                    </button>
+                  </div>
+
+                </div>
+              </mat-card-header>
+
+
+                <mat-card-content>
+                    <h3 style="margin: 16px 0 8px; display: flex; align-items: center;">
+                        <mat-icon style="margin-right: 4px;" svgIcon="layers"></mat-icon> Main Content
+                    </h3>
+                    <mat-accordion multi>
+                        <!-- HEADER -->
+                        <mat-expansion-panel>
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                    <mat-icon class="panel-icon" svgIcon="view_headline"></mat-icon>
+                                    Header
+                                </mat-panel-title>
+                            </mat-expansion-panel-header>
+                            <app-grid-editor
+                                    (gridChange)="emitGridChange()"
+                                    [(grid)]="page.header"
+                                    [tokenAttrs]="page.tokenAttrs"
+                                    [pageAttrs]="page.pageAttrs"
+                                    [partialContentAvailableList]="page.partialContent"
+                                    [hidePageBreak]="true"
+                                    [hidePartialContent]="true"
+                            ></app-grid-editor>
+                        </mat-expansion-panel>
+
+                        <!-- CONTENT -->
+                        <mat-expansion-panel>
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                    <mat-icon class="panel-icon" svgIcon="subject"></mat-icon>
+                                    Content
+                                </mat-panel-title>
+                            </mat-expansion-panel-header>
+                            <app-grid-editor
+                                    (gridChange)="emitGridChange()"
+                                    [(grid)]="page.content"
+                                    [tokenAttrs]="page.tokenAttrs"
+                                    [pageAttrs]="page.pageAttrs"
+                                    [partialContentAvailableList]="page.partialContent"
+                            ></app-grid-editor>
+                        </mat-expansion-panel>
+
+                        <!-- FOOTER -->
+                        <mat-expansion-panel>
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                    <mat-icon class="panel-icon" svgIcon="text_snippet"></mat-icon>
+                                    Footer
+                                </mat-panel-title>
+                            </mat-expansion-panel-header>
+                            <app-grid-editor
+                                    (gridChange)="emitGridChange()"
+                                    [(grid)]="page.footer"
+                                    [tokenAttrs]="page.tokenAttrs"
+                                    [pageAttrs]="page.pageAttrs"
+                                    [partialContentAvailableList]="page.partialContent"
+                                    [hidePageBreak]="true"
+                                    [hidePartialContent]="true"
+                            ></app-grid-editor>
+                        </mat-expansion-panel>
+
+                        <!-- PARTIAL CONTENT -->
+                        <div class="partial-section">
+                            <h3 style="margin: 16px 0 8px; display: flex; align-items: center;">
+                                <mat-icon style="margin-right: 4px;" svgIcon="layers"></mat-icon> Partial Content
+                                <button mat-mini-fab color="primary" style="margin-left: auto;" (click)="addPartialContent()">
+                                    <mat-icon svgIcon="add"></mat-icon>
+                                </button>
+                            </h3>
+
+                            <ng-container *ngFor="let partial of page.partialContent; let i = index">
+                                <mat-expansion-panel>
+                                    <mat-expansion-panel-header>
+                                        <div class="partial-header-grid">
+                                            <mat-panel-title class="partial-title">
+                                                {{ partial.name }} - {{partial.tokenSource}}
+                                            </mat-panel-title>
+                                            <div class="partial-header-actions">
+                                                <button
+                                                        mat-icon-button
+                                                        color="primary"
+                                                        (click)="editPartialContent(i); $event.stopPropagation();"
+                                                        [matTooltip]="'Edit Partial Content'"
+                                                >
+                                                    <mat-icon svgIcon="edit"></mat-icon>
+                                                </button>
+                                                <button
+                                                        mat-icon-button
+                                                        color="warn"
+                                                        (click)="removePartialContent(i); $event.stopPropagation();"
+                                                        [matTooltip]="'Remove Partial'"
+                                                >
+                                                    <mat-icon svgIcon="delete"></mat-icon>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </mat-expansion-panel-header>
+
+                                    <app-grid-editor
+                                            (gridChange)="emitGridChange()"
+                                            [(grid)]="page.partialContent[i]"
+                                            [tokenAttrs]="partial.tokenAttributeList"
+                                            [pageAttrs]="page.pageAttrs"
+                                            [hidePartialContent]="true"
+                                    ></app-grid-editor>
+                                </mat-expansion-panel>
+
+                            </ng-container>
+                        </div>
+                    </mat-accordion>
+                </mat-card-content>
+                <mat-card-actions class="history-toolbar-wrapper">
+
+                </mat-card-actions>
+            </mat-card>
+        </as-split-area>
+
+        <!-- RIGHT PANE -->
+      <as-split-area [size]="50" *ngIf="showRightPane" class="right-pane">
+
+        <app-pdf-viewer *ngIf="showPdfViewPane" class="pdf-viewer" [base64]="this.pdfGenerationResult.base64"></app-pdf-viewer>
+
+        <app-json-viewer *ngIf="!showPdfViewPane"  class="json-viewer" [jsonList]="jsonList"></app-json-viewer>
+
+      </as-split-area>
+    </as-split>
+
+
+</div>
+
+

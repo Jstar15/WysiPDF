@@ -1,0 +1,186 @@
+<ng-container *ngIf="form">
+  <h1 mat-dialog-title style="text-align: center;">Configure Display Rules</h1>
+
+  <mat-dialog-content [formGroup]="form" class="config-container">
+    <mat-tab-group>
+      <mat-tab label="Logic">
+        <div class="row">
+          <div class="logic-editor" style="flex:1; min-width:300px; padding-top:12px;">
+            <mat-card class="mb-4">
+              <mat-card-title>Logic Configuration</mat-card-title>
+              <mat-card-content>
+                <div>
+                  <mat-form-field appearance="outline" style="width: 100%;">
+                    <mat-label>Chain Conditions With</mat-label>
+                    <mat-select formControlName="chainType">
+                      <mat-option value="AND">AND</mat-option>
+                      <mat-option value="OR">OR</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+
+                <div formArrayName="conditions" class="conditions-wrapper">
+                  <!-- header labels -->
+                  <div class="condition-header">
+                    <div class="hdr token">Token</div>
+                    <div class="hdr operator">Operator</div>
+                    <div class="hdr value">Value</div>
+                    <div class="hdr action"></div>
+                  </div>
+
+                  <div
+                    *ngFor="let group of conditions.controls; let i = index; trackBy: trackByIndex"
+                    [formGroupName]="i"
+                    class="condition-row"
+                  >
+                    <mat-form-field appearance="fill" class="flex-item token">
+                      <mat-label>Token</mat-label>
+                      <mat-select formControlName="tokenName">
+                        <mat-option *ngFor="let token of data.tokenAttrs" [value]="token.name">
+                          {{ token.name }}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="fill" class="flex-item operator">
+                      <mat-label>Operator</mat-label>
+                      <mat-select formControlName="operator">
+                        <mat-option value="EQUALS">EQUALS</mat-option>
+                        <mat-option value="NOT_EQUALS">NOT_EQUALS</mat-option>
+                        <mat-option value="GREATER">GREATER</mat-option>
+                        <mat-option value="LESS">LESS</mat-option>
+                        <mat-option value="CONTAINS">CONTAINS</mat-option>
+                        <mat-option value="NOT_NULL">NOT_NULL</mat-option>
+                        <mat-option value="IS_EMPTY">IS_EMPTY</mat-option>
+                      </mat-select>
+                    </mat-form-field>
+
+                    <mat-form-field
+                      appearance="fill"
+                      class="flex-item value"
+                      *ngIf="
+                      group.get('operator')?.value !== 'NOT_NULL' &&
+                      group.get('operator')?.value !== 'IS_EMPTY'
+                    "
+                    >
+                      <mat-label>Value</mat-label>
+                      <input matInput formControlName="value" />
+                    </mat-form-field>
+
+                    <div class="action">
+                      <button
+                        mat-icon-button
+                        color="warn"
+                        (click)="removeCondition(i)"
+                        aria-label="Remove condition"
+                      >
+                        <mat-icon>delete</mat-icon>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="mt-2">
+                  <button mat-stroked-button color="primary" (click)="addCondition()">
+                    <mat-icon>add</mat-icon> Add Condition
+                  </button>
+                </div>
+              </mat-card-content>
+            </mat-card>
+          </div>
+        </div>
+      </mat-tab>
+
+      <mat-tab label="Test">
+        <div class="test-panel" style="padding-top:12px;">
+          <mat-card class="mb-4">
+            <mat-card-title>Test Against Token Values</mat-card-title>
+            <mat-card-content>
+              <div class="token-values">
+                <div style="margin-bottom:8px;">
+                  <strong>Current Token Attributes (editable):</strong>
+                </div>
+                <div class="token-list">
+                  <div *ngFor="let t of displayTokenAttrs; let ti = index" class="token-edit-row">
+                    <mat-form-field appearance="fill" class="token-select">
+                      <mat-label>Token</mat-label>
+                      <mat-select [value]="t.name" (selectionChange)="updateTokenName(ti, $event.value)">
+                        <mat-option *ngFor="let opt of data.tokenAttrs" [value]="opt.name">
+                          {{ opt.name }}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="fill" class="token-input">
+                      <mat-label>Value</mat-label>
+                      <input
+                        matInput
+                        [value]="t.value"
+                        (input)="updateTokenValue(ti, $any($event.target).value)"
+                      />
+                    </mat-form-field>
+                  </div>
+                </div>
+              </div>
+
+              <div class="condition-results" *ngIf="conditions.controls.length">
+                <div class="results-header">
+                  <div><strong>Condition Results</strong></div>
+                  <button mat-flat-button size="small" (click)="runTest()">Run Test</button>
+                </div>
+
+                <div *ngFor="let group of conditions.controls; let i = index" class="single-result">
+                  <div class="result-row">
+                    <div class="cond-desc">
+                      <code>
+                        {{ group.value.tokenName || '‹token›' }}
+                        {{ group.value.operator }}
+                        <span *ngIf="group.value.value">"{{ group.value.value }}"</span>
+                      </code>
+                    </div>
+                    <mat-icon
+                      [ngClass]="{
+                      passed: conditionOutcomes[i],
+                      failed: !conditionOutcomes[i]
+                    }"
+                      class="result-icon"
+                    >
+                      {{ conditionOutcomes[i] ? 'check_circle' : 'cancel' }}
+                    </mat-icon>
+                  </div>
+                </div>
+              </div>
+
+              <mat-divider class="my-2"></mat-divider>
+
+              <div class="overall-result" style="display:flex; gap:12px; align-items:center;">
+                <div>
+                  <strong>Overall:</strong>
+                </div>
+                <div>
+                  <div class="badge" [class.pass]="overallPass" [class.fail]="!overallPass">
+                    {{ overallPass ? 'PASS' : 'FAIL' }}
+                  </div>
+                </div>
+                <div *ngIf="overallPass; else failText" style="color:green;">
+                  Logic evaluates to <strong>true</strong>
+                </div>
+                <ng-template #failText>
+                  <div style="color:#b71c1c;">
+                    Logic evaluates to <strong>false</strong>
+                  </div>
+                </ng-template>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+  </mat-dialog-content>
+
+
+  <mat-dialog-actions align="end" style="gap:12px;">
+    <button mat-button (click)="cancel()">Cancel</button>
+    <button mat-flat-button color="primary" (click)="save()">Save</button>
+  </mat-dialog-actions>
+</ng-container>
