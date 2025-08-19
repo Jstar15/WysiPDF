@@ -17,7 +17,6 @@ export const DEFAULT_PAGE: Page = {
     defaultFont: 'Roboto'
   },
   tokenAttrs: [
-    new TokenAttribute('testName', 'testValue', TokenAttributeTypeEnum.TEXT)
   ],
   partialContent: []
 };

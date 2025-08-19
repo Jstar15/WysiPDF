@@ -66,8 +66,8 @@ import {DEFAULT_PAGE} from "../../models/default-page";
   ]
 })
 export class TemplateEditorComponent implements OnInit,AfterViewInit {
-  showRightPane = true;
-  showPdfViewPane = true;
+  showRightPane: boolean = true;
+  showPdfViewPane: boolean = true;
   jsonList: JsonListItem[] = [];
 
   @Input('page') page: Page = DEFAULT_PAGE;    // ← default value
@@ -112,13 +112,18 @@ export class TemplateEditorComponent implements OnInit,AfterViewInit {
 
   openTokenEditorDialog(): void {
     const dialogRef = this.dialog.open(TokenEditorDialogComponent, {
-      width: '700px',
-      data: this.page.tokenAttrs
+      width: '1000px',
+      height: '100%',
+      panelClass: 'app-dialog',
+      data: {attributes: this.page.tokenAttrs}
     });
 
     dialogRef.afterClosed().subscribe((result: TokenAttribute[] | null) => {
       if (result) {
-        this.page.tokenAttrs = result;}
+        this.page.tokenAttrs = result;
+        this._emitGridChange();
+
+      }
     });
   }
 
@@ -131,7 +136,10 @@ export class TemplateEditorComponent implements OnInit,AfterViewInit {
 
   openPageEditorDialog(): void {
     const dialogRef = this.dialog.open(PageAttributesDialogComponent, {
-      width: '700px',
+      width: '1000px',
+      height: '100%',
+      panelClass: 'app-dialog',
+
       data: { ...this.page.pageAttrs }
     });
 

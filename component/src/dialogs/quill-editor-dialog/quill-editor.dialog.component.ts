@@ -1,5 +1,5 @@
 import { Component, Inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import {MatDialogRef, MAT_DIALOG_DATA, MatDialogActions, MatDialogTitle} from '@angular/material/dialog';
 import { CommonModule } from '@angular/common';
 import { QuillWrapperComponent } from '../../shared/quill-wrapper/quill-wrapper.component';
 import { TokenAttribute } from '../../models/TokenAttribute';
@@ -19,7 +19,7 @@ import {MatButton} from "@angular/material/button";
 
 @Component({
   standalone: true,
-  imports: [CommonModule, QuillWrapperComponent],
+  imports: [CommonModule, QuillWrapperComponent, MatButton, MatDialogActions, MatDialogTitle],
   templateUrl: './quill-editor.dialog.component.html',
   styleUrls: ['./quill-editor.dialog.component.scss']
 })

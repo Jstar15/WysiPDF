@@ -15,7 +15,7 @@ import {
 } from '@angular/material/table';
 import { TokenAttribute } from '../../models/TokenAttribute';
 import { JsonTokenParserService } from '../../services/json-token-parser.service';
-import { MatButton } from "@angular/material/button";
+import {MatButton, MatIconButton} from "@angular/material/button";
 import { NgForOf, NgIf } from "@angular/common";
 import { MatFormField, MatInput, MatLabel } from "@angular/material/input";
 import { MatOption, MatSelect } from "@angular/material/select";
@@ -23,6 +23,7 @@ import { FormsModule } from "@angular/forms";
 import { MatIcon } from "@angular/material/icon";
 import { MatTab, MatTabGroup } from "@angular/material/tabs";
 import { TokenAttributeTypeEnum } from "../../models/display-logic.models";
+import {MatDivider} from "@angular/material/divider";
 
 @Component({
   selector: 'app-token-editor-dialog',
@@ -53,7 +54,9 @@ import { TokenAttributeTypeEnum } from "../../models/display-logic.models";
     MatHeaderRow,
     MatRow,
     MatHeaderRowDef,
-    MatRowDef
+    MatRowDef,
+    MatDivider,
+    MatIconButton
   ],
 })
 export class TokenEditorDialogComponent {
@@ -61,7 +64,8 @@ export class TokenEditorDialogComponent {
 
   name = '';
   value = '';
-  selectedType = 'TEXT';
+  selectedType: TokenAttributeTypeEnum | 'TEXT' = 'TEXT';
+
   typeSelections = [
     { value: 'TEXT', viewValue: 'Text' },
     { value: 'BOOLEAN', viewValue: 'Boolean' },
@@ -72,7 +76,9 @@ export class TokenEditorDialogComponent {
 
   attributes: TokenAttribute[] = [];
   dataSource = new MatTableDataSource<TokenAttribute>(this.attributes);
-  displayedColumns: string[] = ['name', 'type', 'delete'];
+
+  // Added "value" column so values are always editable in the table
+  displayedColumns: string[] = ['name', 'type', 'value', 'delete'];
 
   jsonText = '';
   isJsonValid = true;
@@ -110,6 +116,11 @@ export class TokenEditorDialogComponent {
     this.dataSource.data = [...this.attributes];
   }
 
+  // Called when inline value edited; kept for parity/refresh if needed later
+  onValueEdit(): void {
+    // MatTable binds by reference, so nothing required; keep hook for future.
+  }
+
   onSave(): void {
     this.dialogRef.close(this.attributes);
   }
@@ -138,8 +149,9 @@ export class TokenEditorDialogComponent {
       this.attributes = parsedAttrs;
       this.dataSource.data = [...this.attributes];
       this.tabIndex = 0; // switch to Tokens tab
+      this.error = null;
     } catch (err: any) {
-      this.error = err.message || 'Failed to parse JSON.';
+      this.error = err?.message || 'Failed to parse JSON.';
     }
   }
 }

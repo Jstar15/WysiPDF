@@ -1,65 +1,62 @@
 <h1 mat-dialog-title>Insert Image</h1>
 
-<div mat-dialog-content>
-    <h3>Upload</h3>
-    <div class="input-grid full-width">
-        <label class="file-label">
-            <span class="file-button">Choose Image</span>
-            <input type="file" accept="image/*" (change)="onFileChange($event)" hidden />
-        </label>
-        <div class="file-info" *ngIf="filename">
-            {{ filename }}
-        </div>
-    </div>
+<div class="editor-dialog-content">
+  <p class="section-title">Upload</p>
+  <div class="row-grid-3-3-3-auto">
+    <label class="file-label w-100">
+      <span class="file-button">Choose Image</span>
+      <input type="file" accept="image/*" (change)="onFileChange($event)" hidden />
+    </label>
 
-    <div *ngIf="imageBase64" class="preview-container">
-        <p><strong>Preview:</strong></p>
-        <img
-                [src]="imageBase64"
-                alt="preview"
-                class="image-preview"
-                [style.width.%]="width"
-        />
+    <div class="file-info" *ngIf="filename">
+      {{ filename }}
     </div>
+  </div>
 
-    <h3>Image Width (%)</h3>
-    <div class="input-grid">
-        <mat-form-field appearance="outline">
-            <mat-label>Width (%)</mat-label>
-            <input
-                    matInput
-                    type="number"
-                    [(ngModel)]="width"
-                    min="1"
-                    max="100"
-                    placeholder="100"
-            />
-        </mat-form-field>
-    </div>
+  <div *ngIf="imageBase64" class="preview-container">
+    <p class="section-title">Preview</p>
+    <img
+      [src]="imageBase64"
+      alt="preview"
+      class="image-preview"
+      [style.width.%]="width"
+    />
+  </div>
 
-    <h3>Alignment</h3>
-    <div class="align-group">
-        <mat-button-toggle-group
-                [(ngModel)]="alignment"
-                appearance="legacy"
-                exclusive
-        >
-            <mat-button-toggle value="left">
-                <mat-icon svgIcon="format_align_left"></mat-icon>
-            </mat-button-toggle>
-            <mat-button-toggle value="center">
-              <mat-icon svgIcon="format_align_center"></mat-icon>
-            </mat-button-toggle>
-            <mat-button-toggle value="right">
-              <mat-icon svgIcon="format_align_right"></mat-icon>
-            </mat-button-toggle>
-        </mat-button-toggle-group>
-    </div>
+  <p class="section-title">Image Width (%)</p>
+  <div class="row-grid-3-3-3-auto">
+    <mat-form-field appearance="fill" class="w-100">
+      <mat-label>Width (%)</mat-label>
+      <input
+        matInput
+        type="number"
+        [(ngModel)]="width"
+        min="1"
+        max="100"
+        placeholder="100"
+      />
+    </mat-form-field>
+  </div>
+
+  <p class="section-title">Alignment</p>
+  <div class="align-group">
+    <mat-button-toggle-group [(ngModel)]="alignment" exclusive>
+      <mat-button-toggle value="left">
+        <mat-icon svgIcon="format_align_left"></mat-icon>
+      </mat-button-toggle>
+      <mat-button-toggle value="center">
+        <mat-icon svgIcon="format_align_center"></mat-icon>
+      </mat-button-toggle>
+      <mat-button-toggle value="right">
+        <mat-icon svgIcon="format_align_right"></mat-icon>
+      </mat-button-toggle>
+    </mat-button-toggle-group>
+  </div>
 </div>
 
-<div mat-dialog-actions align="end">
-    <button mat-button (click)="onCancel()">Cancel</button>
-    <button mat-raised-button color="primary" (click)="onSave()" [disabled]="!imageBase64">
-        Save
-    </button>
+<div mat-dialog-actions>
+  <button mat-button (click)="onCancel()">Cancel</button>
+  <button mat-raised-button color="primary" (click)="onSave()" [disabled]="!imageBase64">
+    Save
+  </button>
 </div>

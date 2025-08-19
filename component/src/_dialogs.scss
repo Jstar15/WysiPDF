@@ -1,0 +1,102 @@
+/* Global dialog layout + utilities
+   Use via: this.dialog.open(Cmp, { panelClass: 'app-dialog' })
+*/
+/* Make the surface a flex column so actions stick to the bottom */
+
+  /* Force the dialog component root to become a flex column too */
+
+
+/* Title (works with <h1 mat-dialog-title>) */
+h1[mat-dialog-title] {
+  text-align: center;
+  margin: 0;
+}
+
+/* Main body area in your templates (e.g., mat-tab-group) */
+.dialog-body {
+  flex: 1;
+  min-height: 0;       /* critical for nested scroll */
+  display: flex;
+  flex-direction: column;
+
+  /* Make Material tabs fill the dialog body properly */
+  .mat-mdc-tab-group {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 0;
+  }
+  .mat-mdc-tab-body-wrapper {
+    flex: 1;
+    min-height: 0;
+  }
+}
+
+/* Common padded, scrollable content wrapper inside the body */
+.editor-dialog-content {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: 16px 20px;
+}
+
+/* Sticky footer with a bold black separator line */
+[mat-dialog-actions],
+.mat-mdc-dialog-actions {
+  border-top: 4px solid #000;
+  padding: 10px 16px;
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  /* Don't shrink; stay pinned at the bottom of the flex column */
+  flex: 0 0 auto;
+}
+
+/* ---------- Reusable utilities ---------- */
+
+/* One-line grid (Name | Type | Value | Action) */
+.row-grid-3-3-3-auto {
+  display: grid;
+  grid-template-columns: 3fr 3fr 3fr auto;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+/* Rounded action button (matches filled form-field height) */
+.btn-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 56px;        /* aligns with mat-form-field (appearance="fill") */
+  white-space: nowrap;
+  border-radius: 9999px;
+}
+
+/* Bounded scroll area for lists (e.g., current rows) */
+.scroll-area-320 {
+  max-height: 320px;
+  overflow: auto;
+}
+
+.w-100 { width: 100%; }
+
+.code-textarea {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+  "Courier New", monospace;
+  font-size: 14px;
+  line-height: 1.35;
+}
+
+.section-title {
+  font-weight: 600;
+  margin: 16px 0 10px;
+  font-size: 15px;
+}
+
+.error {
+  color: #c62828;
+  margin-top: 6px;
+  font-size: 13px;
+}

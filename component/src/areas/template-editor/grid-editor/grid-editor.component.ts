@@ -196,7 +196,9 @@ export class GridEditorComponent implements OnInit {
 
     if(cell.type == 'html'){
       const dialogRef = this.dialog.open(QuillEditorDialogComponent, {
-        maxWidth: '1000px',
+        width: '1000px',
+        minHeight: '500px',
+        panelClass: 'app-dialog',
         data: {
           html: cell.value,
           attributes: this.tokenAttrs
@@ -231,7 +233,9 @@ export class GridEditorComponent implements OnInit {
     }
 
     const dialogRef = this.dialog.open(CellAttributesDialogComponent, {
-      width: '700px',
+      width: '1000px',
+      height: '600px',
+      panelClass: 'app-dialog',
       data: selectedCell.cell.attrs  // Pass current attributes to dialog
     });
 
@@ -255,7 +259,9 @@ export class GridEditorComponent implements OnInit {
 
 
     const dialogRef = this.dialog.open(AddImageDialogComponent, {
-      width: '700px',
+      width: '1000px',
+      height: '600px',
+      panelClass: 'app-dialog',
       data: selectedCell.cell.imageBlock
     });
 
@@ -329,7 +335,9 @@ export class GridEditorComponent implements OnInit {
     }
 
     const dialogRef = this.dialog.open(VisibilityConfigDialogComponent, {
-      width: '700px',
+      width: '1000px',
+      height: '600px',
+      panelClass: 'app-dialog',
       data: {
         tokenAttrs: this.tokenAttrs.map((t) => ({ name: t.name })),
         initialConfig: selectedCell.cell.displayLogic,

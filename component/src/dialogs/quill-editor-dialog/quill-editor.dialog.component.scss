@@ -22,24 +22,3 @@
   }
 }
 
-.dialog-actions {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 1.5rem;
-  gap: 1rem;
-}
-:host {
-  display: block;
-  padding: 1rem;
-  width: 100%;
-  max-width: 700px;
-}
-.dialog-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 1rem;
-  margin-top: 1rem;
-}
-button {
-  padding: 6px 12px;
-}
