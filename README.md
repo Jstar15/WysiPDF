@@ -1,223 +1,126 @@
 # WysiPDF
 
-WysiPDF is a powerful, visual WYSIWYG editor for designing dynamic PDF templates. It gives you complete control over layout, styling, reusable components, JSON-driven partials, conditional display logic, and live previewing — all in your browser.
+> ⚠ **Disclaimer:** This project is **a work in progress** and **not ready for production**.  
+> Features, APIs, and behavior may change without notice. Use at your own risk.
+
+WysiPDF is a powerful, visual WYSIWYG editor for designing dynamic PDF templates.  
+It gives you complete control over layout, styling, reusable components, JSON-driven partials, conditional display logic, and live previewing — all in your browser.
+
+---
+
+## 🚀 Live Demo
+Try the current in-browser demo here:  
+[**WysiPDF Demo**](https://jstar15.github.io/WysiPDF/)
+
+---
 
 ## ✨ Features
 
 ### 🧹 Layout & Structure
-
-* **Grid-Based Layout:** Design rows and columns visually, with resizable column widths, drag-and-drop reordering of rows, and flexible structure including explicit page breaks.
-* **Rich Cells:** Each cell can contain styled HTML, images, and dynamic tokens with support for:
+* **Grid-Based Layout:** Resizable columns, drag-and-drop rows, explicit page breaks.
+* **Rich Cells:** Styled HTML, images, and dynamic tokens supporting:
   * Padding & margin
   * Border size, radius & color
   * Background color
-  * Rich text formatting (bold, italic, font size, alignment, etc.)
+  * Rich text formatting
 
 ### 🧠 Conditional Display Logic
-
-Define visibility rules per cell using token-based conditions combined with logical `AND`/`OR` chains. Live test your rules against editable token values and see pass/fail feedback in real time.
+Define visibility rules per cell using token-based conditions with logical `AND` / `OR`.  
+Test rules live against token values with instant pass/fail feedback.
 
 ### ♻️ Reusable Partials & Looping
-
-* **Partials:** Create reusable snippet templates (e.g., headers, sections) and embed them anywhere.
-* **One-Level Loop Support:** Bind a JSON array to a partial to repeat it for each item, with index-aware token replacement and isolation via deep clone.
+* **Partials:** Reusable snippet templates.
+* **One-Level Loop:** Bind JSON arrays to repeat partials per item, with index-aware tokens.
 
 ### ♻️ Token System Enhancements
-
-* **Injection Token Payload View:** Inspect the actual token payload that will be merged.
-* **Custom Token Editing:** Edit token names/values in-place during testing to validate logic live.
-* **JSON-Array Tokens:** Arrays are emitted cleanly (e.g., `items` instead of `items[0]`), avoiding fragile indexed paths.
-* **Table Token Handling:** Robust token replacement within HTML table blocks without traversal errors.
+* Inspect token payloads
+* Edit tokens live during testing
+* Clean JSON array emission
+* Robust table token handling
 
 ### 🧪 Code & Payload Visibility
-
-* **Code View:** See the underlying custom payload, pdfMake document definition, and injection token payload side-by-side for full transparency/debugging.
-* **pdfMake Payload Preview:** Inspect the generated pdfMake structure before rendering.
+* Side-by-side views: payload, pdfMake definition, and injection data
+* Inspect generated pdfMake before rendering
 
 ### 👨‍💼 PDF Generation
-
-* **Live Preview:** Instant in-browser rendering of the current design into a PDF using pdfMake.
-* **Header/Footer Cleaning:** Automatic logic to sanitize fixed heights (e.g., removing hardcoded height attributes) so headers/footers size naturally.
-* **Multi-Font Support:** Built-in support for up to 5 fonts with fallback and styling controls.
+* Instant live preview using pdfMake
+* Automatic header/footer height cleanup
+* Multi-font support
 
 ### 🖼 Media & Styling
-
-* **Image Embedding:** Upload and position images in any cell with sizing and alignment controls.
-* **Theme & Branding:** Control page-level background colors, margins, and default fonts globally.
-* **Inline Styles:** Styles are applied inline to improve portability and reduce dependency on external CSS when exporting.
+* Upload & position images
+* Global page styling and branding controls
+* Inline styles for portability
 
 ---
 
-## 🚀 Installation & Usage
+## 📦 Installation & Usage
 
 ### 🧪 Development
-
 ```bash
 npm install
 ng serve
 ```
 
----
-
-### 🔌 Standalone Embedding (Browser / Serverless)
-
-You can use WysiPDF as a standalone JavaScript component in any HTML page. Just include the `wysipdf.bundle.js` file (produced by your build) and interact with it using a clean API:
-
-#### ✅ Example:
+### 🔌 Standalone Embedding
+Include the built `wysipdf.bundle.js` file in any HTML page and use the provided global API:
 
 ```html
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <title>WysiPDF Demo</title>
-  <script src="./wysipdf.bundle.js"></script>
-</head>
-<body>
-  <!-- The component will be used/inserted here -->
-  <app-template-editor></app-template-editor>
-
-  <script>
-    window.addEventListener('DOMContentLoaded', async () => {
-      // Initial template
-      const page = {
-        header: { rows: [] },
-        content: { rows: [] },
-        footer: { rows: [] },
-        pageAttrs: {
-          backgroundColor: 'white',
-          marginTop: 10,
-          marginRight: 0,
-          marginLeft: 0,
-          marginBottom: 10,
-          footerMargin: 50,
-          headerMargin: 30,
-          defaultFont: 'Roboto'
-        },
-        tokenAttrs: [
-          { name: 'customerName', value: 'John Doe', type: 'TEXT' }
-        ],
-        partialContent: []
-      };
-
-      // Load the page into the editor
-      await window.loadPage(page);
-
-      // Listen for changes
-      await window.onPageChange(updatedPage => {
-        console.log('Page was updated:', updatedPage);
-      });
-
-      // Example PDF generation from tokens
-      const base64 = await window.generatePdfBase64(page, page.tokenAttrs);
-      console.log("PDF base64:", base64);
-    });
-  </script>
-</body>
-</html>
+<script src="./wysipdf.bundle.js"></script>
+<app-template-editor></app-template-editor>
+<script>
+  window.addEventListener('DOMContentLoaded', async () => {
+    const page = { /* page model */ };
+    await window.loadPage(page);
+    await window.onPageChange(updated => console.log(updated));
+  });
+</script>
 ```
 
 ---
 
-### 🌐 Global API
+## 🌐 Global API
 
 | Function | Description |
 |----------|-------------|
-| `loadPage(page: Page)` | Loads a page model into the editor |
-| `onPageChange(callback)` | Registers a listener that receives updated page models on change |
-| `generatePdfBase64(page, tokens)` | Returns base64 string of PDF using given page and token array |
-| `generatePdfBase64FromJson(page, json)` | Returns base64 PDF using JSON string for tokens |
-
-> These functions are attached to `window` automatically when using the standalone bundle.
+| `loadPage(page)` | Loads a page model |
+| `onPageChange(callback)` | Listens for changes |
+| `generatePdfBase64(page, tokens)` | Returns PDF as base64 string |
+| `generatePdfBase64FromJson(page, json)` | PDF from JSON token payload |
 
 ---
 
 ## 💠 Tech Stack
-
-* **Angular (Standalone APIs)**
-* **Angular Material**
-* **QuillJS**
-* **pdfMake**
-* **Custom core services (token replacer, partial expander, etc.)**
+* Angular (Standalone APIs)
+* Angular Material
+* QuillJS
+* pdfMake
+* Custom core services
 
 ---
 
 ## 🛆 Output / Integration
-
-* Accepts a structured page model and token list
-* Outputs:
-  * pdfMake document definition
-  * base64-encoded PDF blob
-  * updated page structure for persistence
-* Easy to wire into backend PDF generation if needed
+Outputs:
+* pdfMake definition
+* Base64 PDF blob
+* Updated page model
 
 ---
 
-## 🧪 Developer Tools
-
-* Built-in JSON viewer for inspecting output
-* Token payload testing
-* Real-time display logic evaluation
-* Transparent debugging: payload, rules, and document definition shown side-by-side
-
----
-
-## 📈 Roadmap
-
-### UX Polish
-
-* [x] Split logic/test views into tabs
-* [x] Editable test tokens
-* [ ] Finalize bullet/numbered list rendering
-* [ ] Improved styling + dark mode
-
-### Features
-
-* [ ] Multi-level loop support
-* [ ] Advanced condition operators (regex, date math)
-* [ ] Global styling/theme import/export
-
-### API & Packaging
-
-* [x] Add global `loadPage()` / `onPageChange()` support
-* [x] Add `generatePdfBase64()` / `generatePdfBase64FromJson()` for headless PDF generation
-* [ ] Add `savePdf()` function to export PDF programmatically
-* [ ] Publish on npm with UMD/ESM support
-* [ ] API documentation for embedders
+## 📈 Planned Features
+* Multi-level loop support
+* Advanced condition operators (regex, date math)
+* Theme import/export
+* Playground mode with sample data
+* Debug mode (`?debug=true`)
+* Export/import templates
+* Example template library (Invoice, Certificate, Survey, Label)
+* HTML export
+* Chart.js bar/pie chart support
 
 ---
-
-## 🤝 Contributing
-
-Contributions welcome! Please:
-
-* Open issues for bugs or feature requests
-* Submit pull requests with clear descriptions
-* Include tests if possible for core logic (token parsing, payload generation)
-
----
-
-## 🗾 Examples
-
-(Coming soon — include sample page models, screenshots, or demo videos)
 
 ---
 
 ## 📄 License
-
 MIT License
-
-
-TODO
-- add conditional logic to cells
-  --combine token injection and token manager
-- try ensure all styles get inline maybe trreeshake and stuff for the final module
-- commit to gitub before refactoring to ensre not to break anythign without version control before the final refacoring
-- then do a nice readme file and publish an npm package
-
-- Add a “Playground Mode”: Hardcoded sample payload + template (to try without auth/backend).
-- Add ?debug=true mode: shows console info, emits events, logs rendering flow.
-- Add "Export Template" button that downloads the Page JSON and token set — makes it portable/sharable.
-- Generate an example template set: e.g., Invoice, Certificate, Survey, Label.
-- -Add dox suupoort an html export
-- add chartjs bar chart and pie chart
