@@ -4,17 +4,14 @@ import fs from 'fs';
 import path from 'path';
 
 const STYLE_ID = 'virtual:inlined-styles.css';
-// Prefer source CSS; fallback example could be added if needed
-const FS_STYLE_PATH = path.resolve('./dist/like-button/browser/styles.css'); // make sure this exists
+const FS_STYLE_PATH = path.resolve('./dist/like-button/browser/styles.css'); // ensure this exists
 
 function inlineCssPlugin() {
   return {
     name: 'inline-css',
-    resolveId(source, importer) {
+    resolveId(source) {
       if (source === STYLE_ID) return STYLE_ID;
-      if (source === './styles.css') {
-        return STYLE_ID;
-      }
+      if (source === './styles.css') return STYLE_ID;
       return null;
     },
     load(id) {
@@ -25,7 +22,6 @@ function inlineCssPlugin() {
         } catch (e) {
           this.error(`Failed to read CSS file at ${FS_STYLE_PATH}: ${e.message}`);
         }
-        // Export as a normal string literal via JSON.stringify to avoid legacy octal issues
         return `export default ${JSON.stringify(css)};`;
       }
       return null;
@@ -33,25 +29,47 @@ function inlineCssPlugin() {
   };
 }
 
+function docsCopy() {
+  return {
+    name: 'docs-copy',
+    async writeBundle(_, bundle) {
+      for (const [fileName, chunk] of Object.entries(bundle)) {
+        if (!fileName.endsWith('.js')) continue;
+        const destPath = path.join('..', 'docs', fileName.replace(/^.*\//, ''));
+        await fs.promises.mkdir(path.dirname(destPath), { recursive: true });
+        await fs.promises.writeFile(destPath, chunk.code);
+      }
+    },
+  };
+}
 
 export default {
-  input: 'rollup-entry.js', // your entry point
-  output: {
-    file: 'dist/components/wysipdf.bundle.js',
-    format: 'iife',
-    name: 'WysiPDF',
-    inlineDynamicImports: true,
-    sourcemap: false,
-  },
+  input: 'rollup-entry.js',
+  output: [
+    {
+      file: 'dist/components/wysipdf.bundle.js',
+      format: 'iife',
+      name: 'WysiPDF',
+      inlineDynamicImports: true,
+      sourcemap: false,
+    },
+    {
+      // one level up
+      file: '../docs/wysipdf.bundle.js',
+      format: 'iife',
+      name: 'WysiPDF',
+      inlineDynamicImports: true,
+      sourcemap: false,
+    },
+  ],
   plugins: [
     inlineCssPlugin(),
-    resolve({
-      browser: true,
-    }),
+    resolve({ browser: true }),
     commonjs(),
+    docsCopy(),
   ],
   onwarn(warning, warn) {
-    if (warning.code === 'EVAL') return; // suppress Angular eval warnings if any
+    if (warning.code === 'EVAL') return;
     warn(warning);
   },
 };

@@ -25,7 +25,6 @@ import {MatSelect} from "@angular/material/select";
     ColorPickerOverlayComponent,
     NgIf,
     MatDialogTitle,
-    MatDialogContent,
     FormsModule,
     MatInput,
     MatDialogActions,

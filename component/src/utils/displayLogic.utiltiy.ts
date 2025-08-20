@@ -5,11 +5,11 @@ import { DisplayLogicGroup } from '../models/display-logic.models';
 export type DisplayRuleLocation = 'header' | 'content' | 'footer' | 'partial';
 
 export interface DisplayRuleItem {
-  location: DisplayRuleLocation;   // which area the rule came from
-  gridName?: string;               // for partial grids (or header/footer if you set names)
+  location: DisplayRuleLocation;
+  gridName?: string;
   rowIndex: number;
   cellIndex: number;
-  displayLogic: DisplayLogicGroup; // the rule itself
+  displayLogic: DisplayLogicGroup;
 }
 
 /** Extract all non-empty display rules from a Page */
