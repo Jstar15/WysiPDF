@@ -5,25 +5,17 @@ import {
   MatDialogTitle,
   MatDialogActions
 } from '@angular/material/dialog';
-import {
-  MatCell, MatCellDef,
-  MatColumnDef,
-  MatHeaderCell, MatHeaderCellDef,
-  MatHeaderRow, MatHeaderRowDef, MatRow, MatRowDef,
-  MatTable,
-  MatTableDataSource
-} from '@angular/material/table';
-import { TokenAttribute } from '../../models/TokenAttribute';
+import { MatTableDataSource } from '@angular/material/table';
 import { JsonTokenParserService } from '../../services/json-token-parser.service';
-import {MatButton, MatIconButton} from "@angular/material/button";
-import { NgForOf, NgIf } from "@angular/common";
-import { MatFormField, MatInput, MatLabel } from "@angular/material/input";
-import { MatOption, MatSelect } from "@angular/material/select";
-import { FormsModule } from "@angular/forms";
-import { MatIcon } from "@angular/material/icon";
-import { MatTab, MatTabGroup } from "@angular/material/tabs";
-import { TokenAttributeTypeEnum } from "../../models/display-logic.models";
-import {MatDivider} from "@angular/material/divider";
+import { MatButton, MatIconButton } from '@angular/material/button';
+import { NgForOf, NgIf } from '@angular/common';
+import { MatFormField, MatInput, MatLabel } from '@angular/material/input';
+import { MatOption, MatSelect } from '@angular/material/select';
+import { FormsModule } from '@angular/forms';
+import { MatIcon } from '@angular/material/icon';
+import { MatTab, MatTabGroup } from '@angular/material/tabs';
+import { TokenAttribute } from '../../models/TokenAttribute';
+import { TokenAttributeTypeEnum } from '../../models/display-logic.models';
 
 @Component({
   selector: 'app-token-editor-dialog',
@@ -39,23 +31,12 @@ import {MatDivider} from "@angular/material/divider";
     FormsModule,
     NgForOf,
     MatInput,
-    MatTable,
     MatOption,
     MatTabGroup,
     MatTab,
     MatDialogActions,
     NgIf,
-    MatColumnDef,
-    MatHeaderCell,
-    MatCell,
     MatIcon,
-    MatHeaderCellDef,
-    MatCellDef,
-    MatHeaderRow,
-    MatRow,
-    MatHeaderRowDef,
-    MatRowDef,
-    MatDivider,
     MatIconButton
   ],
 })
@@ -64,20 +45,21 @@ export class TokenEditorDialogComponent {
 
   name = '';
   value = '';
-  selectedType: TokenAttributeTypeEnum | 'TEXT' = 'TEXT';
+  selectedType: TokenAttributeTypeEnum = TokenAttributeTypeEnum.TEXT;
 
-  typeSelections = [
-    { value: 'TEXT', viewValue: 'Text' },
-    { value: 'BOOLEAN', viewValue: 'Boolean' },
-    { value: 'NUMBER', viewValue: 'Number' },
-    { value: 'DATE', viewValue: 'Date' },
-    { value: 'IMAGE', viewValue: 'Image' }
+  // strictly map to your enum values
+  typeSelections: Array<{ value: TokenAttributeTypeEnum; viewValue: string }> = [
+    { value: TokenAttributeTypeEnum.TEXT,         viewValue: 'Text' },
+    { value: TokenAttributeTypeEnum.BOOLEAN,      viewValue: 'Boolean' },
+    { value: TokenAttributeTypeEnum.NUMBER,       viewValue: 'Number' },
+    { value: TokenAttributeTypeEnum.JSON_ARRAY,   viewValue: 'JSON Array' },
+    { value: TokenAttributeTypeEnum.STRING_ARRAY, viewValue: 'String Array' },
+    { value: TokenAttributeTypeEnum.OBJECT,       viewValue: 'Object' },
   ];
 
   attributes: TokenAttribute[] = [];
   dataSource = new MatTableDataSource<TokenAttribute>(this.attributes);
 
-  // Added "value" column so values are always editable in the table
   displayedColumns: string[] = ['name', 'type', 'value', 'delete'];
 
   jsonText = '';
@@ -89,36 +71,34 @@ export class TokenEditorDialogComponent {
     @Inject(MAT_DIALOG_DATA) public data: { attributes: TokenAttribute[] },
     private tokenParser: JsonTokenParserService
   ) {
-    if (data?.attributes) {
+    if (data?.attributes?.length) {
       this.attributes = [...data.attributes];
       this.dataSource.data = this.attributes;
     }
   }
 
   canAdd(): boolean {
-    return !(this.name.trim() && this.selectedType && this.value.trim());
+    return !(this.name.trim() && this.value.trim() && this.selectedType);
   }
 
   addAttribute(): void {
-    const newAttr: TokenAttribute = new TokenAttribute(
-      this.name.trim(),
-      this.value.trim(),
-      this.selectedType as TokenAttributeTypeEnum
-    );
-    this.attributes.push(newAttr);
-    this.dataSource.data = [...this.attributes];
+    const newAttr: TokenAttribute = {
+      name: this.name.trim(),
+      value: this.value.trim(),
+      type: this.selectedType,
+    };
+    this.attributes = [...this.attributes, newAttr];
+    this.dataSource.data = this.attributes;
+
+    // reset inputs
     this.name = '';
     this.value = '';
+    this.selectedType = TokenAttributeTypeEnum.TEXT;
   }
 
   removeAttribute(attr: TokenAttribute): void {
-    this.attributes = this.attributes.filter(a => a !== attr);
-    this.dataSource.data = [...this.attributes];
-  }
-
-  // Called when inline value edited; kept for parity/refresh if needed later
-  onValueEdit(): void {
-    // MatTable binds by reference, so nothing required; keep hook for future.
+    this.attributes = this.attributes.filter(a => !(a.name === attr.name && a.type === attr.type && a.value === attr.value));
+    this.dataSource.data = this.attributes;
   }
 
   onSave(): void {
@@ -133,6 +113,7 @@ export class TokenEditorDialogComponent {
     try {
       JSON.parse(this.jsonText);
       this.isJsonValid = true;
+      this.error = null;
     } catch {
       this.isJsonValid = false;
     }
@@ -141,14 +122,20 @@ export class TokenEditorDialogComponent {
   clearJson(): void {
     this.jsonText = '';
     this.isJsonValid = true;
+    this.error = null;
   }
 
   injectJson(): void {
     try {
       const parsedAttrs: TokenAttribute[] = this.tokenParser.parse(this.jsonText);
-      this.attributes = parsedAttrs;
-      this.dataSource.data = [...this.attributes];
-      this.tabIndex = 0; // switch to Tokens tab
+      // ensure parsed values align with your interface
+      this.attributes = parsedAttrs.map(a => ({
+        name: a.name?.trim() ?? '',
+        value: String(a.value ?? ''),
+        type: a.type as TokenAttributeTypeEnum,
+      }));
+      this.dataSource.data = this.attributes;
+      this.tabIndex = 0; // back to Tokens tab
       this.error = null;
     } catch (err: any) {
       this.error = err?.message || 'Failed to parse JSON.';

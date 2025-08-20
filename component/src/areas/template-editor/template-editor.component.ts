@@ -152,24 +152,34 @@ export class TemplateEditorComponent implements OnInit,AfterViewInit {
   }
 
   editPartialContent(index: number): void {
+    const allowedTypes = [
+      TokenAttributeTypeEnum.OBJECT,
+      TokenAttributeTypeEnum.STRING_ARRAY,
+      TokenAttributeTypeEnum.JSON_ARRAY,
+    ];
+
+    const tokenOptions: TokenAttribute[] = this.page.tokenAttrs
+      .filter(t => allowedTypes.includes(t.type));
+
     const dialogRef = this.dialog.open(EditPartialContentDialogComponent, {
       width: '700px',
       data: {
         name: this.page.partialContent[index].name,
-        tokenOptions: this.page.tokenAttrs.map(t => t.name),  // or however you filter json[] tokens
+        tokenOptions: tokenOptions,
         selectedToken: this.page.partialContent[index].tokenSource || 'root'
       }
     });
 
     dialogRef.afterClosed().subscribe((result: EditPartialContentData) => {
       if (result !== undefined) {
-        this.page.partialContent[index].tokenSource = result.selectedToken;
+        debugger;
+        this.page.partialContent[index].tokenSource = result.selectedToken.name;
         this.page.partialContent[index].name = result.name;
 
-        if(result.selectedToken == 'root'){
+        if(result.selectedToken.name == 'root'){
           this.page.partialContent[index].tokenAttributeList = this.page.tokenAttrs;
         }else{
-          const availableTokens = this.getAvailableTokensFromJsonList(result.selectedToken);
+          const availableTokens = this.getAvailableTokensFromJsonList(result.selectedToken.name);
           this.page.partialContent[index].tokenAttributeList = availableTokens;
           console.log('Available tokens from json[]:', availableTokens);
         }
