@@ -160,46 +160,6 @@ You can use WysiPDF as a standalone JavaScript component in any HTML page. Just 
 * Real-time display logic evaluation
 * Transparent debugging: payload, rules, and document definition shown side-by-side
 
----
-
-## 📈 Roadmap
-
-### UX Polish
-
-* [x] Split logic/test views into tabs
-* [x] Editable test tokens
-* [ ] Finalize bullet/numbered list rendering
-* [ ] Improved styling + dark mode
-
-### Features
-
-* [ ] Multi-level loop support
-* [ ] Advanced condition operators (regex, date math)
-* [ ] Global styling/theme import/export
-
-### API & Packaging
-
-* [x] Add global `loadPage()` / `onPageChange()` support
-* [x] Add `generatePdfBase64()` / `generatePdfBase64FromJson()` for headless PDF generation
-* [ ] Add `savePdf()` function to export PDF programmatically
-* [ ] Publish on npm with UMD/ESM support
-* [ ] API documentation for embedders
-
----
-
-## 🤝 Contributing
-
-Contributions welcome! Please:
-
-* Open issues for bugs or feature requests
-* Submit pull requests with clear descriptions
-* Include tests if possible for core logic (token parsing, payload generation)
-
----
-
-## 🗾 Examples
-
-(Coming soon — include sample page models, screenshots, or demo videos)
 
 ---
 
@@ -209,15 +169,6 @@ MIT License
 
 
 TODO
-- add conditional logic to cells
-  --combine token injection and token manager
-- try ensure all styles get inline maybe trreeshake and stuff for the final module
-- commit to gitub before refactoring to ensre not to break anythign without version control before the final refacoring
-- then do a nice readme file and publish an npm package
-
-- Add a “Playground Mode”: Hardcoded sample payload + template (to try without auth/backend).
-- Add ?debug=true mode: shows console info, emits events, logs rendering flow.
-- Add "Export Template" button that downloads the Page JSON and token set — makes it portable/sharable.
-- Generate an example template set: e.g., Invoice, Certificate, Survey, Label.
-- -Add dox suupoort an html export
-- add chartjs bar chart and pie chart
+- Add "Export/Import Template" button that downloads the Page JSON and token set — makes it portable/sharable.
+- Add validation, this can ensure the pdf will throw an error on generation if the incorrect token is injected
+- Clean up and refactor
