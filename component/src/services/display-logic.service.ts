@@ -1,4 +1,4 @@
-// display-logic-evaluator.service.ts
+// display-logic.service.ts
 import { Injectable } from '@angular/core';
 import { TokenAttribute } from '../models/TokenAttribute';
 import {
@@ -6,9 +6,10 @@ import {
   DisplayLogicGroup,
   Operator,
 } from '../models/display-logic.models';
+import { Row, Cell } from '../models/interfaces';
 
 @Injectable({ providedIn: 'root' })
-export class DisplayLogicEvaluatorService {
+export class DisplayLogicService {
   /**
    * Returns true if the logic group says the cell should be visible.
    */
@@ -24,12 +25,53 @@ export class DisplayLogicEvaluatorService {
       this.evaluateCondition(tokenAttributes, cond)
     );
 
-    if (logic.chainType === 'AND') {
-      return outcomes.every(Boolean);
-    } else {
-      // OR
-      return outcomes.some(Boolean);
-    }
+    return logic.chainType === 'AND'
+      ? outcomes.every(Boolean)
+      : outcomes.some(Boolean);
+  }
+
+  /**
+   * Evaluate all cells in given rows. If a cell's displayLogic is false,
+   * replace it with an empty cell (attrs preserved so layout stays intact).
+   */
+  evaulateCells(rows: Row[], tokenAttributes?: TokenAttribute[] | null): Row[] {
+    return this.evaluateCells(rows, tokenAttributes);
+  }
+
+  // Correctly spelled helper; evaulateCells delegates here
+  evaluateCells(rows: Row[], tokenAttributes?: TokenAttribute[] | null): Row[] {
+    if (!Array.isArray(rows) || rows.length === 0) return rows;
+
+    const attrs = tokenAttributes ?? [];
+
+    return rows.map((row) => {
+      const newCells: Cell[] = row.cells.map((cell) => {
+        const visible = this.evaluateCellVisibility(cell, attrs);
+        return visible ? cell : this.makeEmptyCell(cell);
+      });
+
+      return { ...row, cells: newCells };
+    });
+  }
+
+  // ---------- internals ----------
+
+  private evaluateCellVisibility(cell: Cell, attrs: TokenAttribute[]): boolean {
+    const logic = cell.displayLogic ?? null;
+    return this.evaluate(attrs, logic);
+  }
+
+  private makeEmptyCell(cell: Cell): Cell {
+    // Preserve attrs for sizing/background/etc; clear content & blocks
+    return {
+      ...cell,
+      type: 'html',
+      value: '',
+      block: undefined,
+      imageBlock: undefined,
+      // keep attrs & displayLogic (optional). If you'd prefer to strip logic from hidden cells:
+      // displayLogic: undefined,
+    };
   }
 
   private getAttribute(

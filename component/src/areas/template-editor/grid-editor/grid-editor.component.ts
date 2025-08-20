@@ -22,8 +22,8 @@ import {
 } from "../../../dialogs/add-partial-content-dialog/add-partial-content-dialog.component";
 import {CdkDragDrop, DragDropModule, moveItemInArray} from '@angular/cdk/drag-drop';
 import {
-  VisibilityConfigDialogComponent
-} from "../../../dialogs/validation-config-dialog/visibility-config-dialog.component";
+  DisplayLogicDialogComponent
+} from "../../../dialogs/display-logic-dialog/display-logic-dialog.component";
 import {DisplayLogicGroup} from "../../../models/display-logic.models";
 import {IconService} from "../../../services/icon.service";
 
@@ -334,12 +334,12 @@ export class GridEditorComponent implements OnInit {
       return;
     }
 
-    const dialogRef = this.dialog.open(VisibilityConfigDialogComponent, {
+    const dialogRef = this.dialog.open(DisplayLogicDialogComponent, {
       width: '1000px',
       height: '600px',
       panelClass: 'app-dialog',
       data: {
-        tokenAttrs: this.tokenAttrs.map((t) => ({ name: t.name })),
+        tokenAttrs: this.tokenAttrs,
         initialConfig: selectedCell.cell.displayLogic,
       },
     });
@@ -347,6 +347,7 @@ export class GridEditorComponent implements OnInit {
     dialogRef.afterClosed().subscribe((result: DisplayLogicGroup | undefined) => {
       if (result) {
         selectedCell.cell.displayLogic = result;
+        this.emitChange();
       }
     });
   }

@@ -1,7 +1,7 @@
-// assetsLoader.ts
+// assetsLoader.utility.ts
 import { vfsFonts } from '../assets/vfs-fonts';
 
-export const assetsLoader = {
+export const assetsLoaderUtility = {
   fonts: {
     Raleway: {
       normal: 'Raleway-Regular.ttf',

@@ -28,7 +28,7 @@ import {
 import {MatIcon} from "@angular/material/icon";
 import { MatIconButton, MatMiniFabButton} from "@angular/material/button";
 import {MatTooltip} from "@angular/material/tooltip";
-import {TokenEditorDialogComponent} from "../../dialogs/token-editor-dialog.component/token-editor-dialog.component";
+import {TokenEditorDialogComponent} from "../../dialogs/token-editor-dialog/token-editor-dialog.component";
 import {
   EditPartialContentData,
   EditPartialContentDialogComponent
@@ -38,6 +38,7 @@ import {debounceTime, Subject} from "rxjs";
 import {JsonListItem, JsonViewerComponent} from "../../shared/json-viewer/json-viewer.component";
 import {IconService} from "../../services/icon.service";
 import {DEFAULT_PAGE} from "../../models/default-page";
+import {collectDisplayRules} from "../../utils/displayLogic.utiltiy";
 
 @Component({
   standalone: true,
@@ -322,7 +323,11 @@ export class TemplateEditorComponent implements OnInit,AfterViewInit {
         name: 'Tokens',
         description: 'Tokens defined that can be used inside a template',
         data: page.tokenAttrs
-      }//do a dispay rule break down here alsooooooooooooooooooooooooooooooooooooooooooooooooooooo
+      },{
+        name: 'Display Rules',
+        description: 'Display Rules USed inside the template.',
+        data: collectDisplayRules(page)
+      }
     ];
     this.emitGridChange();
 

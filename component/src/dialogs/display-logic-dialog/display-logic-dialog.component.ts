@@ -8,7 +8,6 @@ import {
 import {
   MAT_DIALOG_DATA,
   MatDialogActions,
-  MatDialogContent,
   MatDialogModule,
   MatDialogRef,
 } from '@angular/material/dialog';
@@ -27,10 +26,9 @@ import {
   DisplayCondition,
   DisplayLogicGroup,
 } from '../../models/display-logic.models';
-import { DisplayLogicEvaluatorService } from '../../services/display-logic-evaluator.service';
+import { DisplayLogicService } from '../../services/display-logic.service';
 import { TokenAttribute } from '../../models/TokenAttribute';
 import { TokenAttributeTypeEnum } from '../../models/TokenAttributeTypeEnum';
-import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {MatTabsModule} from "@angular/material/tabs";
 
 export interface VisibilityConfigDialogData {
@@ -39,10 +37,9 @@ export interface VisibilityConfigDialogData {
 }
 
 @Component({
-  selector: 'app-visibility-config-dialog',
   standalone: true,
-  templateUrl: './visibility-config-dialog.component.html',
-  styleUrls: ['./visibility-config-dialog.component.scss'],
+  templateUrl: './display-logic-dialog.component.html',
+  styleUrls: ['./display-logic-dialog.component.scss'],
   imports: [
     CommonModule,
     ReactiveFormsModule,
@@ -53,15 +50,14 @@ export interface VisibilityConfigDialogData {
     MatButtonModule,
     MatOptionModule,
     MatDialogActions,
-    MatDialogContent,
     MatDialogModule,
-    MatChipsModule, // correct module
+    MatChipsModule,
     MatDividerModule,
     MatCardModule,
     MatTabsModule
   ],
 })
-export class VisibilityConfigDialogComponent implements OnInit {
+export class DisplayLogicDialogComponent implements OnInit {
   form!: FormGroup;
   conditionOutcomes: boolean[] = [];
   overallPass: boolean = false;
@@ -69,12 +65,12 @@ export class VisibilityConfigDialogComponent implements OnInit {
 
   constructor(
     public dialogRef: MatDialogRef<
-      VisibilityConfigDialogComponent,
+      DisplayLogicDialogComponent,
       DisplayLogicGroup
     >,
     @Inject(MAT_DIALOG_DATA) public data: VisibilityConfigDialogData,
     private fb: FormBuilder,
-    private evaluator: DisplayLogicEvaluatorService
+    private evaluator: DisplayLogicService
   ) {}
 
   ngOnInit(): void {

@@ -12,6 +12,7 @@ import type {Content, ContentColumns, TDocumentDefinitions} from "pdfmake/interf
 import {StructuredContentToPdfmakeService} from "./structured-content-to-pdfmake.service";
 import {GridToStructuredContentService} from "./grid-to-structured-content.service";
 import {TokenReplacerService} from "./token-replacer.service";
+import {DisplayLogicService} from "./display-logic.service";
 
 /**
  * PageToStructuredContentService
@@ -33,7 +34,8 @@ import {TokenReplacerService} from "./token-replacer.service";
 export class PageToStructuredContentService {
     constructor(private structuredContentToPdfmakeService: StructuredContentToPdfmakeService,
                 private gridToPdfmakeConverter: GridToStructuredContentService,
-                private tokenReplacerService: TokenReplacerService,) {}
+                private tokenReplacerService: TokenReplacerService,
+                private displayLogicService : DisplayLogicService) {}
 
 
   public convert(page: Page, tokenAttributeList?: TokenAttribute[]): TDocumentDefinitions {
@@ -41,6 +43,10 @@ export class PageToStructuredContentService {
     page.header.rows = this.tokenReplacerService.replaceTokensInRow(page.header.rows, tokenAttributeList);
     page.footer.rows = this.tokenReplacerService.replaceTokensInRow(page.footer.rows, tokenAttributeList);
     page.content.rows = this.tokenReplacerService.replaceTokensInRow(page.content.rows, tokenAttributeList);
+
+    page.header.rows = this.displayLogicService.evaulateCells(page.header.rows, tokenAttributeList);
+    page.footer.rows = this.displayLogicService.evaulateCells(page.footer.rows, tokenAttributeList);
+    page.content.rows = this.displayLogicService.evaulateCells(page.content.rows, tokenAttributeList);
 
     let htmlBlockContainerContent: HtmlBlockContainer = this.gridToPdfmakeConverter.convert(page.content.rows);
     let htmlBlockContainerHeader: HtmlBlockContainer = this.gridToPdfmakeConverter.convert(page.header.rows);
@@ -50,7 +56,6 @@ export class PageToStructuredContentService {
     const bodyContent: Content[] = this.structuredContentToPdfmakeService.convert(htmlBlockContainerContent);
     const footerContent: Content[] = this.structuredContentToPdfmakeService.convert(htmlBlockContainerFooter);
 
-    debugger;
     const gridAttrs: PageAttrs = page.pageAttrs || {};
 
     return {

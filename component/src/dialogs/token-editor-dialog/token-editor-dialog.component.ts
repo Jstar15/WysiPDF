@@ -60,8 +60,6 @@ export class TokenEditorDialogComponent {
   attributes: TokenAttribute[] = [];
   dataSource = new MatTableDataSource<TokenAttribute>(this.attributes);
 
-  displayedColumns: string[] = ['name', 'type', 'value', 'delete'];
-
   jsonText = '';
   isJsonValid = true;
   error: string | null = null;

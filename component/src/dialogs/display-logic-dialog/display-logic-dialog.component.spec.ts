@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { VisibilityConfigDialogComponent } from './visibility-config-dialog.component';
+import { DisplayLogicDialogComponent } from './display-logic-dialog.component';
 
 describe('ToolbarComponent', () => {
-  let component: VisibilityConfigDialogComponent;
-  let fixture: ComponentFixture<VisibilityConfigDialogComponent>;
+  let component: DisplayLogicDialogComponent;
+  let fixture: ComponentFixture<DisplayLogicDialogComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ VisibilityConfigDialogComponent ]
+      declarations: [ DisplayLogicDialogComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(VisibilityConfigDialogComponent);
+    fixture = TestBed.createComponent(DisplayLogicDialogComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
