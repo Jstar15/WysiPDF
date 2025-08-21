@@ -26,7 +26,6 @@ import { ImageBlock } from "../../models/interfaces";
     FormsModule,
     MatDialogActions,
     MatButton,
-    MatDialogContent,
     MatDialogTitle,
     NgIf,
     MatButtonToggleGroup,

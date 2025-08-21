@@ -20,7 +20,6 @@ import {NgIf} from "@angular/common";
   templateUrl: './cell-attributes-dialog.component.html',
   imports: [
     MatFormField,
-    MatDialogContent,
     MatDialogTitle,
     MatLabel,
     MatInput,

@@ -1,5 +1,11 @@
 import {Component, Inject, OnInit} from '@angular/core';
-import {MAT_DIALOG_DATA, MatDialogActions, MatDialogClose} from "@angular/material/dialog";
+import {
+  MAT_DIALOG_DATA,
+  MatDialogActions,
+  MatDialogClose,
+  MatDialogContent,
+  MatDialogTitle
+} from "@angular/material/dialog";
 import {TokenAttribute} from "../../models/TokenAttribute";
 import {FormsModule} from "@angular/forms";
 import {NgForOf} from "@angular/common";
@@ -13,21 +19,23 @@ interface DialogData {
 }
 @Component({
     selector: 'app-attribute-select-dialog',
-    templateUrl: './attribute-select-dialog.component.html',
-    imports: [
-        MatFormField,
-        MatLabel,
-        MatSelect,
-        MatOption,
-        FormsModule,
-        NgForOf,
-        MatDialogActions,
-        MatButton,
-        MatDialogClose
-    ],
-    styleUrls: ['./attribute-select-dialog.component.scss']
+    templateUrl: './add-token-dialog.component.html',
+  imports: [
+    MatFormField,
+    MatLabel,
+    MatSelect,
+    MatOption,
+    FormsModule,
+    NgForOf,
+    MatDialogActions,
+    MatButton,
+    MatDialogClose,
+    MatDialogTitle,
+    MatDialogContent
+  ],
+    styleUrls: ['./add-token-dialog.component.scss']
 })
-export class AttributeSelectDialogComponent implements OnInit {
+export class AddTokenDialogComponent implements OnInit {
   selectedType: TokenAttribute;
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: DialogData) {}

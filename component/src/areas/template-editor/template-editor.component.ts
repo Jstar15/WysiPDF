@@ -114,7 +114,7 @@ export class TemplateEditorComponent implements OnInit,AfterViewInit {
   openTokenEditorDialog(): void {
     const dialogRef = this.dialog.open(TokenEditorDialogComponent, {
       width: '1000px',
-      height: '100%',
+      height: '600px',
       panelClass: 'app-dialog',
       data: {attributes: this.page.tokenAttrs}
     });
@@ -138,7 +138,7 @@ export class TemplateEditorComponent implements OnInit,AfterViewInit {
   openPageEditorDialog(): void {
     const dialogRef = this.dialog.open(PageAttributesDialogComponent, {
       width: '1000px',
-      height: '100%',
+      height: '600px',
       panelClass: 'app-dialog',
 
       data: { ...this.page.pageAttrs }

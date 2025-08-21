@@ -1,0 +1,19 @@
+<h1 mat-dialog-title>Insert Token Attribute</h1>
+<div mat-dialog-content>
+
+  <mat-form-field appearance="outline" class="basicInput">
+    <mat-label>Token</mat-label>
+    <mat-select [(ngModel)]="selectedType" name="attribute" required>
+      <mat-option *ngFor="let attribute of data.data" [value]="attribute">
+        {{attribute.name}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+</div>
+
+<div mat-dialog-actions style="justify-content: center;">
+  <button mat-button [mat-dialog-close]="null">Cancel</button>
+  <button mat-button [disabled]="canSave()" [mat-dialog-close]="onSave()">Add</button>
+</div>
+

@@ -7,16 +7,14 @@ import {
   NgZone, AfterViewInit,
 } from '@angular/core';
 
-import {HttpClient} from "@angular/common/http";
 import {MatDialog} from "@angular/material/dialog";
 import {TokenAttribute} from "../../models/TokenAttribute";
-import {AttributeSelectDialogComponent} from "../../dialogs/attribute-select-dialog/attribute-select-dialog.component";
+import {AddTokenDialogComponent} from "../../dialogs/attribute-select-dialog/add-token-dialog.component";
 import {CustomElementBlot} from "./CustomElementBlot";
-import {MatButton} from "@angular/material/button";
-import Quill from 'quill'; // <-- includes themes
-import {PdfGenerateService} from "../../services/pdf-generate.service";
+import Quill from 'quill';
 import {HtmlBlockContainer} from "../../models/interfaces";
-import {HtmlToStructuredContentService} from "../../services/html-to-structured-content.service";
+import {HtmlToStructuredContentService} from "../../services/html-to-structured-content.service"; // <-- includes themes
+
 
 @Component({
   standalone: true,
@@ -131,7 +129,7 @@ export class QuillWrapperComponent implements OnInit, AfterViewInit  {
 
   openDialog(): void {
     this.currentRange =this.quill.getSelection(true);
-    const dialogRef = this.dialog.open(AttributeSelectDialogComponent, {
+    const dialogRef = this.dialog.open(AddTokenDialogComponent, {
       width: '300px',
       data: {data: this.attributeArray}
     });
