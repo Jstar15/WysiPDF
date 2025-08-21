@@ -316,10 +316,6 @@ export class TemplateEditorComponent implements OnInit,AfterViewInit {
         data: pdfGenerationResult1.docDefinition
       },
       {
-        name: 'Injected Payload',
-        description: 'Json data for partial/template injection (Test)',
-        data: JSON.parse(page.tokenInjectionJson ? page.tokenInjectionJson : '{}')
-      },{
         name: 'Tokens',
         description: 'Tokens defined that can be used inside a template',
         data: page.tokenAttrs

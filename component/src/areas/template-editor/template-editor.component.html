@@ -7,7 +7,7 @@
             class="split-container"
     >
         <!-- LEFT PANE -->
-        <as-split-area [size]="50" class="left-pane">
+        <as-split-area [size]="50" [minSize]="25" class="left-pane">
             <mat-card class="editor-card mat-elevation-z4">
               <mat-card-header class="editor-toolbar">
                 <div class="toolbar-row">
@@ -197,7 +197,7 @@
         </as-split-area>
 
         <!-- RIGHT PANE -->
-      <as-split-area [size]="50" *ngIf="showRightPane" class="right-pane">
+      <as-split-area [size]="50" [minSize]="25" *ngIf="showRightPane" class="right-pane">
 
         <app-pdf-viewer *ngIf="showPdfViewPane" class="pdf-viewer" [base64]="this.pdfGenerationResult.base64"></app-pdf-viewer>
 
