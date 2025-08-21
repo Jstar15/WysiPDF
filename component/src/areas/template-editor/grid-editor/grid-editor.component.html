@@ -35,13 +35,17 @@
     </button>
 
     <!-- Edit cell control (right aligned) -->
-  <button mat-icon-button color="accent" matTooltip="Display Rules" aria-label="Display Rules" (click)="displayRulesDialog()">
-    <mat-icon svgIcon="view_list"></mat-icon>
-  </button>
-
-    <button mat-icon-button color="accent" matTooltip="Edit Cell Style"  (click)="openCellEditorDialog()">
-        <mat-icon svgIcon="border_color"></mat-icon>
+    <button mat-icon-button color="accent" matTooltip="Display Rules" aria-label="Display Rules" (click)="displayRulesDialog()">
+      <mat-icon svgIcon="view_list"></mat-icon>
     </button>
+    <button mat-icon-button color="accent" matTooltip="Edit Cell Content"  (click)="openCellEditorDialog()">
+      <mat-icon svgIcon="edit"></mat-icon>
+    </button>
+
+    <button mat-icon-button color="accent" matTooltip="Edit Cell Style"  (click)="openCellStyleEditorDialog()">
+      <mat-icon svgIcon="border_color"></mat-icon>
+    </button>
+
 </mat-toolbar>
 
 

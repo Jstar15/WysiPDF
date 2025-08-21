@@ -191,10 +191,15 @@ export class GridEditorComponent implements OnInit {
     return this.sanitizer.bypassSecurityTrustHtml(html);
   }
 
-  onCellDoubleClick(r: number, c: number): void {
-    const cell = this.grid.rows[r].cells[c];
+  private openEditorForCell(r: number, c: number): void {
+    const row = this.grid.rows[r];
+    const cell = row?.cells?.[c];
+    if (!cell) {
+      console.warn('Cell not found at', r, c);
+      return;
+    }
 
-    if(cell.type == 'html'){
+    if (cell.type === 'html') {
       const dialogRef = this.dialog.open(QuillEditorDialogComponent, {
         width: '1000px',
         minHeight: '500px',
@@ -207,44 +212,66 @@ export class GridEditorComponent implements OnInit {
 
       dialogRef.afterClosed().subscribe((result: string | undefined) => {
         if (result !== undefined) {
+          // preserve your debug logging
           for (const char of result) {
+            // eslint-disable-next-line no-console
             console.log(`'${char}' => U+${char.charCodeAt(0).toString(16).toUpperCase()}`);
           }
           this.grid.rows[r].cells[c].value = result;
-          this.emitChange()
+          this.emitChange();
         }
       });
-    }else if(cell.type == 'image'){
+    } else if (cell.type === 'image') {
+      // ensure selection for image dialog
+      this.currentRow = r;
+      this.currentCol = c;
       this.openAddImageDialog();
     }
+  }
+
+
+  onCellDoubleClick(r: number, c: number): void {
+    this.currentRow = r;
+    this.currentCol = c;
+    this.openEditorForCell(r, c);
+  }
+
+  openCellEditorDialog(): void {
+    const selectedCell = this.getSelectedCell();
+    if (!selectedCell) {
+      console.warn('No cell selected.');
+      return;
+    }
+    this.openEditorForCell(selectedCell.rowIndex, selectedCell.colIndex);
   }
 
   emitChange(){
     this.gridChange.emit(this.grid);
   }
 
-  openCellEditorDialog(): void {
-    // Replace with your actual cell selection logic
-    const selectedCell = this.getSelectedCell(); // Assume this returns { cell: Cell, rowIndex: number, colIndex: number }
 
-    if (!selectedCell) {
-      console.warn('No cell selected.');
-      return;
-    }
+    openCellStyleEditorDialog(): void {
+      // Replace with your actual cell selection logic
+      const selectedCell = this.getSelectedCell(); // Assume this returns { cell: Cell, rowIndex: number, colIndex: number }
 
-    const dialogRef = this.dialog.open(CellAttributesDialogComponent, {
-      width: '1000px',
-      height: '600px',
-      panelClass: 'app-dialog',
-      data: selectedCell.cell.attrs  // Pass current attributes to dialog
-    });
-
-    dialogRef.afterClosed().subscribe((updatedAttrs: CellAttrs | undefined) => {
-      if (updatedAttrs) {
-        Object.assign(selectedCell.cell.attrs, updatedAttrs);
-        this.emitChange()
+      if (!selectedCell) {
+        console.warn('No cell selected.');
+        return;
       }
-    });
+
+      const dialogRef = this.dialog.open(CellAttributesDialogComponent, {
+        width: '1000px',
+        height: '600px',
+        panelClass: 'app-dialog',
+        data: selectedCell.cell.attrs  // Pass current attributes to dialog
+      });
+
+      dialogRef.afterClosed().subscribe((updatedAttrs: CellAttrs | undefined) => {
+        if (updatedAttrs) {
+          Object.assign(selectedCell.cell.attrs, updatedAttrs);
+          this.emitChange()
+        }
+      });
   }
 
   openAddImageDialog(): void {
