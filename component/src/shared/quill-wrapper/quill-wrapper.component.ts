@@ -4,17 +4,18 @@ import {
   Input,
   Output,
   EventEmitter,
-  NgZone, AfterViewInit,
+  NgZone,
+  AfterViewInit,
+  OnDestroy
 } from '@angular/core';
 
-import {MatDialog} from "@angular/material/dialog";
-import {TokenAttribute} from "../../models/TokenAttribute";
-import {AddTokenDialogComponent} from "../../dialogs/attribute-select-dialog/add-token-dialog.component";
-import {CustomElementBlot} from "./CustomElementBlot";
+import { MatDialog } from "@angular/material/dialog";
+import { TokenAttribute } from "../../models/TokenAttribute";
+import { AddTokenDialogComponent } from "../../dialogs/attribute-select-dialog/add-token-dialog.component";
+import { CustomElementBlot } from "./CustomElementBlot";
 import Quill from 'quill';
-import {HtmlBlockContainer} from "../../models/interfaces";
-import {HtmlToStructuredContentService} from "../../services/html-to-structured-content.service"; // <-- includes themes
-
+import { HtmlBlockContainer } from "../../models/interfaces";
+import { HtmlToStructuredContentService } from "../../services/html-to-structured-content.service";
 
 @Component({
   standalone: true,
@@ -22,25 +23,22 @@ import {HtmlToStructuredContentService} from "../../services/html-to-structured-
   templateUrl: './quill-wrapper.component.html',
   styleUrls: ['./quill-wrapper.component.scss']
 })
-export class QuillWrapperComponent implements OnInit, AfterViewInit  {
+export class QuillWrapperComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() html: string = '';
   @Input() attributeArray: TokenAttribute[];
   @Output() htmlChange = new EventEmitter<string>();
   @Output() htmlBlockContainerChange = new EventEmitter<HtmlBlockContainer>();
 
-
-
   zone: NgZone;
-  delta:any;
-  currentRange:any;
+  delta: any;
+  currentRange: any;
 
   toolbarId = `toolbar-${Math.random().toString(36).substring(2, 10)}`;
   editorId = `editor-${Math.random().toString(36).substring(2, 10)}`;
 
-  constructor(private htmlToStructuredContentService: HtmlToStructuredContentService, public dialog: MatDialog) {}
-
-  quill:any;
+  quill: any;
   textChangeEvent: any;
+
   formats: [
     "background",
     "bold",
@@ -52,14 +50,17 @@ export class QuillWrapperComponent implements OnInit, AfterViewInit  {
     "align"
   ];
 
+  constructor(
+    private htmlToStructuredContentService: HtmlToStructuredContentService,
+    public dialog: MatDialog
+  ) {}
 
   ngOnInit(): void {
     CustomElementBlot['blotName'] = 'mathjax';
     CustomElementBlot['className'] = 'ql-mathjax';
     CustomElementBlot['tagName'] = 'SPAN';
 
-    // ✅ Register custom fonts
-    const Font:any = Quill.import('formats/font');
+    const Font: any = Quill.import('formats/font');
     Font.whitelist = [
       'roboto',
       'raleway',
@@ -75,19 +76,10 @@ export class QuillWrapperComponent implements OnInit, AfterViewInit  {
     const SizeStyle: any = Quill.import('attributors/style/size');
     SizeStyle.whitelist = ['8px', '10px', '12px', '14px', '16px', '18px', '24px', '32px', '48px'];
     Quill.register(SizeStyle, true);
-
   }
 
   ngAfterViewInit(): void {
-    console.log('Toolbar element exists:', !!document.getElementById(this.toolbarId));
-
-    // Set module properties
-
-
-
-
-
-    let modules = {
+    const modules = {
       table: true,
       toolbar: `#${this.toolbarId}`
     };
@@ -96,7 +88,7 @@ export class QuillWrapperComponent implements OnInit, AfterViewInit  {
       modules: modules,
       formats: this.formats,
       placeholder: 'Compose here...',
-      theme: 'snow'  // or 'bubble'
+      theme: 'snow'
     });
 
     this.quill.root.innerHTML = this.html;
@@ -104,22 +96,37 @@ export class QuillWrapperComponent implements OnInit, AfterViewInit  {
     this.textChangeEvent = this.quill.on('text-change',
       (delta: any, oldDelta: any, source: string): void => {
         this.delta = oldDelta;
-        let html: string | null = this.quill.root.innerHTML;
-        const htmlBlockContainer: HtmlBlockContainer = this.htmlToStructuredContentService.convertHTmlToObject(html);
+        const html: string = this.quill.root.innerHTML;
+        const htmlBlockContainer: HtmlBlockContainer =
+          this.htmlToStructuredContentService.convertHTmlToObject(html);
         this.htmlChange.emit(html);
-        this.htmlBlockContainerChange.emit(htmlBlockContainer)
-        this.currentRange =this.quill.getSelection(true);
-        console.log(oldDelta)
-        console.log(html)
+        this.htmlBlockContainerChange.emit(htmlBlockContainer);
+        this.currentRange = this.quill.getSelection(true);
       }
     );
   }
 
+  ngOnDestroy(): void {
+    this.destroy();
+  }
 
+  /** Explicit cleanup method you can also call from parent dialogs */
+  public destroy(): void {
+    try {
+      if (this.quill) {
+        // Remove event listeners
+        this.quill.off('text-change', this.textChangeEvent);
+        // Clear references
+        this.quill = null;
+      }
+    } catch (e) {
+      console.warn('Error while destroying Quill instance:', e);
+    }
+  }
 
-  addTable(row:number, column:number){
+  addTable(row: number, column: number) {
     const table = this.quill.getModule('table');
-    table.insertTable(row, column)
+    table.insertTable(row, column);
   }
 
   deleteTable() {
@@ -128,18 +135,16 @@ export class QuillWrapperComponent implements OnInit, AfterViewInit  {
   }
 
   openDialog(): void {
-    this.currentRange =this.quill.getSelection(true);
+    this.currentRange = this.quill.getSelection(true);
     const dialogRef = this.dialog.open(AddTokenDialogComponent, {
       width: '300px',
-      data: {data: this.attributeArray}
+      data: { data: this.attributeArray }
     });
 
-    dialogRef.afterClosed().subscribe((result:TokenAttribute) => {
-      if(result != null){
-
+    dialogRef.afterClosed().subscribe((result: TokenAttribute) => {
+      if (result != null) {
         this.quill.insertEmbed(this.currentRange.index, 'mathjax', result);
       }
     });
   }
 }
-

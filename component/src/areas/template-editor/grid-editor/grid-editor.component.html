@@ -34,6 +34,10 @@
         <mat-icon svgIcon="add_photo_alternate"></mat-icon>
     </button>
 
+    <button mat-icon-button matTooltip="Insert Chart" (click)="openAddChartDialog()">
+        <mat-icon svgIcon="pie_chart"></mat-icon>
+    </button>
+
     <!-- Edit cell control (right aligned) -->
     <button mat-icon-button color="accent" matTooltip="Display Rules" aria-label="Display Rules" (click)="displayRulesDialog()">
       <mat-icon svgIcon="view_list"></mat-icon>
@@ -103,13 +107,24 @@
                                 [style.border-color]="cell.attrs?.borderColor || '#000'"
                                 [style.background-color]="cell.attrs?.backgroundColor || 'transparent'"
                         >
-                            <ng-container *ngIf="cell.imageBlock; else textBlock">
+                            <ng-container *ngIf="cell.imageBlock;">
                                 <div [style.text-align]="cell.imageBlock.alignment">
                                     <img
                                             [src]="cell.imageBlock.imageBase64"
                                             [style.width.%]="cell.imageBlock.width || 100"
-                                            style="max-height: 250px; display: inline-block;"
+                                            style="display: inline-block;"
                                             alt="{{ cell.imageBlock.filename }}"
+                                    />
+                                </div>
+                            </ng-container>
+
+                            <ng-container *ngIf="cell.chartBlock; else textBlock">
+                                <div [style.text-align]="cell.chartBlock.alignment">
+                                    <img
+                                            [src]="cell.chartBlock.imageBase64"
+                                            [style.width.%]="cell.chartBlock.width || 100"
+                                            style="display: inline-block;"
+                                            alt="{{ cell.chartBlock.title }}"
                                     />
                                 </div>
                             </ng-container>

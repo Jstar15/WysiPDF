@@ -64,6 +64,7 @@ export class GridToStructuredContentService {
             attrs,
             type: cell.type,
             imageBlock: cell.imageBlock,
+            chartBlock: cell.chartBlock,
             block: cell.block
         };
     }

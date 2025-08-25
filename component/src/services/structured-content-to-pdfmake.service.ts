@@ -35,89 +35,104 @@ export class StructuredContentToPdfmakeService {
     }
 
     private renderGridBlock(gb: HtmlGridBlock): Content[] {
-        const contents: Content[] = [];
+    const contents: Content[] = [];
 
-        const renderCell = (cell: Cell, row: Row, c: number) => {
-            const paddingLeft = cell.attrs?.paddingLeft ?? 0;
-            const paddingRight = cell.attrs?.paddingRight ?? 0;
+    const renderCell = (cell: Cell, row: Row, c: number) => {
+        const paddingLeft = cell.attrs?.paddingLeft ?? 0;
+        const paddingRight = cell.attrs?.paddingRight ?? 0;
 
-            const cellWidth = this.calculateCellWidth(
-                row.widths[c],
-                595.28, 40, 40,
-                paddingLeft, paddingRight
-            );
+        const cellWidth = this.calculateCellWidth(
+        row.widths[c],
+        595.28, 40, 40,
+        paddingLeft, paddingRight
+        );
 
-            const nested: Content[] = cell.type === 'image'
-                ? [{
-                    image: cell.imageBlock.imageBase64,
-                    width: cellWidth * (cell.imageBlock.width / 100) - 8, //this will need adjustign on page change of margin //todos
-                    alignment: cell.imageBlock.alignment as Alignment
-                }]
-                : cell.block
-                    ? cell.block.blocks.flatMap(i => this.renderBlock(i) as Content[])
-                    : [{ text: cell.value || '​', noWrap: false }];
+        // ---- minimal image handling: imageBlock OR ChartBlock ----
+        let imageBase64: string | null = null;
+        let imgWidthPct = 100;
+        let imgAlign: Alignment = 'left';
 
-            const border: [boolean, boolean, boolean, boolean] = [
-                (cell.attrs?.borderLeft ?? 1) > 0,
-                (cell.attrs?.borderTop ?? 1) > 0,
-                (cell.attrs?.borderRight ?? 1) > 0,
-                (cell.attrs?.borderBottom ?? 1) > 0
-            ];
+        if (cell.type === 'image' && cell.imageBlock) {
+        imageBase64 = cell.imageBlock.imageBase64;
+        imgWidthPct = cell.imageBlock.width ?? 100;
+        imgAlign = cell.imageBlock.alignment as Alignment;
+        } else if (cell.type === 'chart' && cell.chartBlock) {
+        imageBase64 = cell.chartBlock.imageBase64;
+        imgWidthPct = cell.chartBlock.width ?? 100;
+        imgAlign = cell.chartBlock.alignment as Alignment;
+        }
 
-          return {
-            stack: nested,
-            fillColor: !cell.attrs.backgroundColor || cell.attrs.backgroundColor === 'transparent'
-              ? row.backgroundColor
-              : cell.attrs.backgroundColor,
-            alignment: 'left',
-            border,
-            borderColor: [
-              cell.attrs?.borderColor,
-              cell.attrs?.borderColor,
-              cell.attrs?.borderColor,
-              cell.attrs?.borderColor
-            ],
-            margin: [
-              Number(cell.attrs?.paddingLeft ?? 0),
-              Number(cell.attrs?.paddingTop ?? 0),
-              Number(cell.attrs?.paddingRight ?? 0),
-              Number(cell.attrs?.paddingBottom ?? 0)
-            ],
-            __attrs: {
-              borderTop: Number(cell.attrs?.borderTop) || 0,
-              borderRight: Number(cell.attrs?.borderRight) || 0,
-              borderBottom: Number(cell.attrs?.borderBottom) || 0,
-              borderLeft: Number(cell.attrs?.borderLeft) || 0,
-              borderColor: cell.attrs?.borderColor || '#000'
-            }
-          } as TableCell & { __attrs: any };
-        };
+        const nested: Content[] =
+        imageBase64
+            ? [{
+                image: imageBase64,
+                width: cellWidth * (imgWidthPct / 100) - 8, // same sizing rule you already use
+                alignment: imgAlign
+            }]
+            : cell.block
+            ? cell.block.blocks.flatMap(i => this.renderBlock(i) as Content[])
+            : [{ text: cell.value || '​', noWrap: false }];
 
-        gb.rows.forEach((row, index) => {
-            if (row.type === 'page-break') {
-                // Only insert page break if it's not the last row
-                const hasMoreRows = gb.rows.slice(index + 1).some(r => r.type !== 'page-break');
-                if (hasMoreRows) {
-                    contents.push({ text: '', pageBreak: 'before' });
-                }
-                return;
-            }
+        const border: [boolean, boolean, boolean, boolean] = [
+        (cell.attrs?.borderLeft ?? 1) > 0,
+        (cell.attrs?.borderTop ?? 1) > 0,
+        (cell.attrs?.borderRight ?? 1) > 0,
+        (cell.attrs?.borderBottom ?? 1) > 0
+        ];
 
-            const widths = row.widths.map(w => `${w}%`);
-            const rowCells = row.cells.map((cell, c) => renderCell(cell, row, c));
+        return {
+        stack: nested,
+        fillColor:
+            !cell.attrs.backgroundColor || cell.attrs.backgroundColor === 'transparent'
+            ? row.backgroundColor
+            : cell.attrs.backgroundColor,
+        alignment: 'left',
+        border,
+        borderColor: [
+            cell.attrs?.borderColor,
+            cell.attrs?.borderColor,
+            cell.attrs?.borderColor,
+            cell.attrs?.borderColor
+        ],
+        margin: [
+            Number(cell.attrs?.paddingLeft ?? 0),
+            Number(cell.attrs?.paddingTop ?? 0),
+            Number(cell.attrs?.paddingRight ?? 0),
+            Number(cell.attrs?.paddingBottom ?? 0)
+        ],
+        __attrs: {
+            borderTop: Number(cell.attrs?.borderTop) || 0,
+            borderRight: Number(cell.attrs?.borderRight) || 0,
+            borderBottom: Number(cell.attrs?.borderBottom) || 0,
+            borderLeft: Number(cell.attrs?.borderLeft) || 0,
+            borderColor: cell.attrs?.borderColor || '#000'
+        }
+        } as TableCell & { __attrs: any };
+    };
 
-            contents.push({
-                table: {
-                    widths,
-                    body: [rowCells]
-                },
-                layout: this.getCustomLayout([rowCells]),
-                margin: [0, 0, 0, 0]
-            });
+    gb.rows.forEach((row, index) => {
+        if (row.type === 'page-break') {
+        const hasMoreRows = gb.rows.slice(index + 1).some(r => r.type !== 'page-break');
+        if (hasMoreRows) contents.push({ text: '', pageBreak: 'before' });
+        return;
+        }
+
+        const widths = row.widths.map(w => `${w}%`);
+        const rowCells = row.cells.map((cell, c) => renderCell(cell, row, c));
+
+        contents.push({
+        table: {
+            widths,
+            body: [rowCells]
+        },
+        layout: this.getCustomLayout([rowCells]),
+        margin: [0, 0, 0, 0]
         });
+    });
 
-        return contents;
+    return contents;
     }
+
 
 
     private renderTableBlock(tb: HtmlTableBlock): ContentTable {

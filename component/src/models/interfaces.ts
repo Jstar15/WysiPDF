@@ -70,6 +70,21 @@ export interface ImageBlock {
     alignment: 'left' | 'center' | 'right';
 }
 
+export interface ChartSlice {
+  attributeName: string;
+  label: string;
+}
+
+export interface ChartBlock {
+  chartType: 'pie' | 'doughnut'| 'bar' ;
+  imageBase64: string;
+  width: number;
+  alignment: 'left' | 'center' | 'right';
+  title?: string;
+  slices: ChartSlice[];
+  tokenSourceHint?: string;
+}
+
 export interface CellAttrs {
     paddingTop?: number;
     paddingRight?: number;
@@ -85,17 +100,17 @@ export interface CellAttrs {
     backgroundColor?: string;
 }
 
-
-
 export interface Cell {
-    type: 'html' | 'image';
+    type: 'html' | 'image' | 'chart' ;
     value: string;
     block?: HtmlBlockContainer;
     imageBlock?: ImageBlock
+    chartBlock?: ChartBlock
     attrs: CellAttrs;
     displayLogic?: DisplayLogicGroup
 
 }
+
 export interface Row {
     type?: 'content' | 'partial-content' | 'page-break';
     widths: number[];

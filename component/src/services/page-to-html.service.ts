@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Page, Grid, Row, Cell, CellAttrs, ImageBlock } from '../models/interfaces';
+import { Page, Grid, Row, Cell, CellAttrs, ImageBlock, ChartBlock } from '../models/interfaces';
 
 export interface PageToHtmlOptions {
   includeBaseStyles?: boolean;
@@ -168,6 +168,36 @@ ${body}
   }
 
   private renderCellContent(cell: Cell): string {
+    // NEW: chart support
+    if ((cell as any).type === 'chart' && (cell as any).chartBlock?.imageBase64) {
+      const cb = (cell as any).chartBlock as ChartBlock;
+      const src = this.imageSrcFromChart(cb);
+      const styleObj: Record<string, string | number | undefined> = {
+        display: 'block',
+        'max-width': '100%',
+        width: cb?.width ? `${Math.max(1, Math.min(100, Number(cb.width) || 0))}%` : '100%',
+      };
+
+      // Alignment via margins
+      if (cb?.alignment === 'center') {
+        styleObj['margin-left'] = 'auto';
+        styleObj['margin-right'] = 'auto';
+      } else if (cb?.alignment === 'right') {
+        styleObj['margin-left'] = 'auto';
+      }
+
+      const style = this.inlineStyle(styleObj);
+      const alt = this.escapeHtml(cb?.title || 'chart');
+
+      // Figure + optional caption for title
+      const caption = cb?.title ? `<figcaption class="p2h-chart-caption">${this.escapeHtml(cb.title)}</figcaption>` : '';
+      return `<figure class="p2h-chart">
+  <img src="${src}" alt="${alt}" style="${style}">
+  ${caption}
+</figure>`;
+    }
+
+    // Existing image support
     if (cell.type === 'image' && cell.imageBlock?.imageBase64) {
       const src = this.imageSrcFromBlock(cell.imageBlock);
       const styleObj: Record<string, string | number | undefined> = {
@@ -204,6 +234,10 @@ ${body}
 .${scopeClass} .p2h-row { width: 100%; box-sizing: border-box; }
 .${scopeClass} .p2h-cell { box-sizing: border-box; }
 .${scopeClass} .p2h-cell img { max-width: 100%; height: auto; display: block; }
+
+/* Charts */
+.${scopeClass} .p2h-chart { margin: 0; padding: 0; }
+.${scopeClass} .p2h-chart-caption { font-size: 12px; color: #556; margin-top: 6px; text-align: center; }
 
 /* Quill minimal shims so exported HTML matches editor look */
 .${scopeClass} .ql-align-center { text-align: center; }
@@ -335,6 +369,14 @@ ${body}
     if (img.imageBase64.startsWith('data:')) return img.imageBase64;
     const mime = this.mimeFromFilename(img.filename) ?? 'image/png';
     return `data:${mime};base64,${img.imageBase64}`;
+  }
+
+  // NEW: chart image helper (accept data URL or raw base64)
+  private imageSrcFromChart(chart: ChartBlock): string {
+    const b64 = chart?.imageBase64 ?? '';
+    if (b64.startsWith('data:')) return b64;
+    // ECharts getDataURL returns a full data URL; this is a fallback if only raw base64 is stored.
+    return `data:image/png;base64,${b64}`;
   }
 
   private mimeFromFilename(name?: string): string | undefined {

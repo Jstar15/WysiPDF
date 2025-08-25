@@ -1,0 +1,55 @@
+.editor-dialog-content { padding-bottom: .5rem; }
+
+.section-title {
+  margin: 1rem 0 .5rem;
+  font-weight: 600;
+}
+.section-title.small { margin-top: .25rem; font-size: .9rem; color: #555; }
+
+.row-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: .75rem;
+}
+
+.preview-container {
+  margin: .75rem 0 1rem;
+  text-align: center;
+}
+
+.labels-editor {
+  display: grid;
+  gap: .5rem;
+}
+
+.label-row {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: .5rem;
+  align-items: center;
+}
+
+.label-attr {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: .85rem;
+  background: #f6f7f9;
+  padding: .4rem .6rem;
+  border-radius: 6px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.label-input { width: 100%; }
+
+.controls-row {
+  grid-template-columns: 220px 1fr;
+  align-items: center;
+}
+
+.align-field {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+}
+.align-label { font-size: .9rem; color: #666; }

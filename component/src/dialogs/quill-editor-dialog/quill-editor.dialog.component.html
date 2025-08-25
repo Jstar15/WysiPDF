@@ -1,7 +1,8 @@
 <h1 mat-dialog-title>Edit Content</h1>
 
-<div class="editor-dialog-content">
+<div class="editor-dialog-content" *ngIf="editorVisible">
   <app-quill-wrapper
+    
     [(html)]="html"
     [attributeArray]="attributeArray">
   </app-quill-wrapper>
