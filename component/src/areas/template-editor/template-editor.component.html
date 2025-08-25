@@ -54,6 +54,22 @@
                       matTooltip="Manage tokens">
                       <mat-icon svgIcon="download"></mat-icon>
                     </button>
+                    <button
+                      mat-mini-fab
+                      color="primary"
+                      class="icon-btn"
+                      (click)="downloadHtml()"
+                      [matTooltip]="'Export html'">
+                      <mat-icon svgIcon="xhtml"></mat-icon>
+                    </button>
+                    <button
+                      mat-mini-fab
+                      color="primary"
+                      class="icon-btn"
+                      (click)="downloadDocx()"
+                      [matTooltip]="'Export docx'">
+                      <mat-icon svgIcon="docx"></mat-icon>
+                    </button>
                   </div>
 
                   <!-- Right: view toggles -->
@@ -74,6 +90,7 @@
                       [matTooltip]="showRightPane ? 'Hide Preview' : 'Show Preview'">
                       <mat-icon [svgIcon]="showRightPane ? 'visibility_off' : 'visibility'"></mat-icon>
                     </button>
+
                   </div>
 
                 </div>

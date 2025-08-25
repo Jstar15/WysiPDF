@@ -39,6 +39,8 @@ import {JsonListItem, JsonViewerComponent} from "../../shared/json-viewer/json-v
 import {IconService} from "../../services/icon.service";
 import {DEFAULT_PAGE} from "../../models/default-page";
 import {collectDisplayRules} from "../../utils/displayLogic.utiltiy";
+import {PageToHtmlService} from "../../services/page-to-html.service";
+import {PageToDocxService} from "../../services/page-to-docx.service";
 
 @Component({
   standalone: true,
@@ -91,6 +93,9 @@ export class TemplateEditorComponent implements OnInit,AfterViewInit {
       private gridHistoryService: GridHistoryService,
       private cdr: ChangeDetectorRef,
       private iconService: IconService,
+      private pageToHtmlService : PageToHtmlService,
+      private pageToDocx: PageToDocxService,
+
   ) {
 
     this.iconService.registerIcons();
@@ -126,6 +131,38 @@ export class TemplateEditorComponent implements OnInit,AfterViewInit {
 
       }
     });
+  }
+
+  downloadHtml(): void {
+    // Build a nice filename from page names
+    const base =
+      this.page?.content?.name ||
+      this.page?.header?.name ||
+      'page';
+    const filename = `${base.replace(/[^\w\-]+/g, '_')}.html`;
+
+    this.pageToHtmlService.downloadHtml(this.page, filename, {
+      includeBaseStyles: true,
+      rootClass: 'wysi-export',
+      page: {
+        // You can tweak these; pageAttrs margins are applied inside the service
+        width: '900px',
+        margin: '0 auto',
+        background: this.page.pageAttrs?.backgroundColor,
+        fontFamily: this.page.pageAttrs?.defaultFont,
+      },
+    });
+  }
+
+
+  async downloadDocx(): Promise<void> {
+    await this.pageToDocx.download(this.page, {
+      html: { forDocx: true, rootClass: 'wysi-export', includeBaseStyles: true },
+      orientation: 'portrait',
+      marginsTwip: { top: 720, right: 720, bottom: 720, left: 720 },
+      // pageSizeTwip: { width: 11906, height: 16838 }, // A4 portrait (optional)
+    });
+
   }
 
   toggleRightPane(): void {
