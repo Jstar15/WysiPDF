@@ -3,122 +3,129 @@
 > ⚠ **Disclaimer:** This project is **a work in progress** and **not ready for production**.  
 > Features, APIs, and behavior may change without notice. Use at your own risk.
 
-WysiPDF is a powerful, visual WYSIWYG editor for designing dynamic PDF templates.  
-It gives you complete control over layout, styling, reusable components, JSON-driven partials, conditional display logic, and live previewing — all in your browser.
+WysiPDF is a visual WYSIWYG editor and runtime for building **dynamic, data‑driven documents**.  
+It ships as a **single bundle** you can drop into any page to design, preview, and generate **PDF** and **HTML** from **predefined** and **dynamic tokens**.
 
 ---
 
 ## 🚀 Live Demo
-Try the current in-browser demo here:  
-[**WysiPDF Demo**](https://jstar15.github.io/WysiPDF/)
+Try the current in‑browser demo: https://jstar15.github.io/WysiPDF/
 
 ---
 
-## ✨ Features
+## ✨ Highlights
 
-### 🧹 Layout & Structure
-* **Grid-Based Layout:** Resizable columns, drag-and-drop rows, explicit page breaks.
-* **Rich Cells:** Styled HTML, images, and dynamic tokens supporting:
-  * Padding & margin
-  * Border size, radius & color
-  * Background color
-  * Rich text formatting
+### 📦 Single‑file bundle
+- One JavaScript file includes the editor UI **and** the generation runtime.
+- No servers or plugins required; runs entirely in the browser.
 
-### 🧠 Conditional Display Logic
-Define visibility rules per cell using token-based conditions with logical `AND` / `OR`.  
-Test rules live against token values with instant pass/fail feedback.
+### 🧹 Layout & Styling
+- **Grid layout**: resizable columns, drag‑and‑drop rows, explicit page breaks.
+- **Rich cells** with support for:
+  - **Images** and **Charts**
+  - **Rich text** (Quill formatting)
+  - **Padding / Margins**
+  - **Borders** (size, radius, color)
+  - **Background colors**
+- **Fonts**: 5 built‑in fonts (Roboto, Raleway, Nunito, Cormorant, Open Sans).
 
-### ♻️ Reusable Partials & Looping
-* **Partials:** Reusable snippet templates.
-* **One-Level Loop:** Bind JSON arrays to repeat partials per item, with index-aware tokens.
+### 🧩 Tokens & Data
+- Use **predefined tokens** in your template, and pass **dynamic tokens** at generation time.
+- Live token editor + payload inspector in the UI.
+- Conditional visibility with `AND` / `OR` logic.
+- Clean JSON emission for arrays and tables.
 
-### ♻️ Token System Enhancements
-* Inspect token payloads
-* Edit tokens live during testing
-* Clean JSON array emission
-* Robust table token handling
+### ♻️ Partials & Looping
+- **Partials** for reusable sections.
+- **Partial content looping** over arrays (one level) to repeat blocks for each item.
 
-### 🧪 Code & Payload Visibility
-* Side-by-side views: payload, pdfMake definition, and injection data
-* Inspect generated pdfMake before rendering
+### 📊 Charts (built‑in)
+- Powered by **ECharts (modular)**.
+- **Pie, Doughnut, Bar** charts supported.
+- Bind via `ChartBlock.slices` (token‑backed); PNG is generated under the hood for export.
+- Title, width (%) and alignment (**left / center / right**) respected in both PDF and HTML.
 
-### 👨‍💼 PDF Generation
-* Instant live preview using pdfMake
-* Automatic header/footer height cleanup
-* Multi-font support
+### 🖨 PDF Generation
+- Instant preview and export via **pdfMake**.
+- Automatic header/footer height cleanup.
+- Multi‑font support (with the 5 built‑ins out of the box).
 
-### 🖼 Media & Styling
-* Upload & position images
-* Global page styling and branding controls
-* Inline styles for portability
+### 🌐 HTML Export
+- Export a **standalone HTML** page with base styles inlined.
+- Browser uses CSS Grid; images/charts are embedded as `<img>` (PNG).
 
 ---
 
-## 📦 Installation & Usage
+## 🔌 Use It Your Way
 
-### 🧪 Development
-```bash
-npm install
-ng serve
-```
-
-### 🔌 Standalone Embedding
-Include the built `wysipdf.bundle.js` file in any HTML page and use the provided global API:
+### Standalone (single bundle)
+Include the built script and use the global API:
 
 ```html
 <script src="./wysipdf.bundle.js"></script>
+
+<!-- Optional: embedded editor -->
 <app-template-editor></app-template-editor>
+
 <script>
   window.addEventListener('DOMContentLoaded', async () => {
-    const page = { /* page model */ };
+    const page = {/* page model */};
+
+    // Load a template
     await window.loadPage(page);
-    await window.onPageChange(updated => console.log(updated));
+
+    // Observe edits
+    await window.onPageChange(updated => console.log('page changed', updated));
+
+    // Generate PDF (base64)
+    const tokens = {/* dynamic data */};
+    const pdfB64 = await window.generatePdfBase64(page, tokens);
+
+    // Generate HTML (string) & download helper
+    const html = window.generateHtmlString(page, { includeBaseStyles: true });
+    window.downloadHtml(page, 'page.html', { includeBaseStyles: true });
   });
 </script>
 ```
 
+### Angular (optional)
+All functionality is also available as Angular standalone components/services (editor, `PageToHtmlService`, generation helpers).
+
 ---
 
 ## 🌐 Global API
-
 | Function | Description |
-|----------|-------------|
-| `loadPage(page)` | Loads a page model |
-| `onPageChange(callback)` | Listens for changes |
-| `generatePdfBase64(page, tokens)` | Returns PDF as base64 string |
-| `generatePdfBase64FromJson(page, json)` | PDF from JSON token payload |
+|---|---|
+| `loadPage(page)` | Load a page model into the editor |
+| `onPageChange(cb)` | Listen for live edits to the page model |
+| `generatePdfBase64(page, tokens)` | Generate a PDF (base64) from a page + dynamic tokens |
+| `generatePdfBase64FromJson(page, json)` | Generate a PDF from raw JSON payload |
+| `generateHtmlString(page, opts?)` | Get a standalone HTML string for the page |
+| `downloadHtml(page, filename?, opts?)` | Download the page as an HTML file |
+
+> **Note:** If you only need the runtime (no editor), you can omit the `<app-template-editor>` tag and call the generation APIs directly.
 
 ---
 
-## 💠 Tech Stack
-* Angular (Standalone APIs)
-* Angular Material
-* QuillJS
-* pdfMake
-* Custom core services
+## 🛆 Outputs
+- pdfMake definition (for advanced integrations)
+- **PDF (base64)** blob
+- **Standalone HTML** (string or file)
+- Updated page model
 
 ---
 
-## 🛆 Output / Integration
-Outputs:
-* pdfMake definition
-* Base64 PDF blob
-* Updated page model
+## 🔧 Implementation Notes
+- Charts render through an Angular component into `imageBase64` (PNG), then the same block is embedded in HTML/PDF.  
+- Grid layout uses CSS Grid in the browser; exported HTML is self‑contained.  
+- Fonts can be themed; the five defaults are included to keep files lightweight.
 
 ---
 
-## 📈 Planned Features
-* Multi-level loop support
-* Advanced condition operators (regex, date math)
-* Theme import/export
-* Playground mode with sample data
-* Debug mode (`?debug=true`)
-* Export/import templates
-* Example template library (Invoice, Certificate, Survey, Label)
-* HTML export
-* Chart.js bar/pie chart support
-
----
+## 📈 Roadmap
+- Sample templates (invoice, report, certificate, survey, label)
+- Playground mode with sample data
+- Validation for tokens on genration
 
 ---
 
