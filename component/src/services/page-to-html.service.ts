@@ -1,5 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Page, Grid, Row, Cell, CellAttrs, ImageBlock, ChartBlock } from '../models/interfaces';
+import {TokenAttribute} from "../models/TokenAttribute";
+import {PageService} from "./page.service";
+import {JsonTokenParserService} from "./json-token-parser.service";
 
 export interface PageToHtmlOptions {
   includeBaseStyles?: boolean;
@@ -13,8 +16,40 @@ export interface PageToHtmlOptions {
   };
 }
 
+export interface HtmlGenerationResult {
+  page: Page;
+  html?: string; // full doc or fragment, depending on opts
+}
 @Injectable({ providedIn: 'root' })
 export class PageToHtmlService {
+  constructor(
+    private pageService: PageService,
+    private jsonTokenParserService: JsonTokenParserService
+  ) {}
+  public async generateHtml(
+    page: Page,
+    tokenAttributeList: TokenAttribute[],
+    opts?: PageToHtmlOptions & { title?: string; fullDocument?: boolean } // fullDocument=false => fragment
+  ): Promise<HtmlGenerationResult> {
+    // reuse your shared page pipeline
+    page = this.pageService.processPage(page, tokenAttributeList);
+
+    const html = opts?.fullDocument
+      ? this.toHtmlDocument(page, opts)
+      : this.toHtmlString(page, opts);
+
+    return { page, html };
+  }
+
+  public async generateHtmlFromJson(
+    page: Page,
+    json: string,
+    opts?: PageToHtmlOptions & { title?: string; fullDocument?: boolean }
+  ): Promise<HtmlGenerationResult> {
+    const tokenAttributeList: TokenAttribute[] = this.jsonTokenParserService.parse(json);
+    return this.generateHtml(page, tokenAttributeList, opts);
+  }
+
   /** Convert a full Page into an HTML string (no <!doctype>, just markup). */
   public toHtmlString(page: Page, opts?: PageToHtmlOptions): string {
     const rootClass = opts?.rootClass ?? 'p2h-root';
@@ -74,6 +109,8 @@ ${body}
   }
 
   public downloadHtml(page: Page, filename = 'page.html', opts?: PageToHtmlOptions & { title?: string }): void {
+    page = this.pageService.processPage(page, page.tokenAttrs);
+
     const blob = this.toHtmlBlob(page, opts);
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');

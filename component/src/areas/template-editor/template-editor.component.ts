@@ -40,6 +40,7 @@ import {IconService} from "../../services/icon.service";
 import {DEFAULT_PAGE} from "../../models/default-page";
 import {collectDisplayRules} from "../../utils/displayLogic.utiltiy";
 import {PageToHtmlService} from "../../services/page-to-html.service";
+import {LoadPresetDialogComponent} from "../../dialogs/load-preset-dialog/load-preset-dialog.component";
 
 @Component({
   standalone: true,
@@ -113,6 +114,22 @@ export class TemplateEditorComponent implements OnInit,AfterViewInit {
   ngOnInit(): void {
 
   }
+
+  openLoadPresetDialog(): void {
+    const dialogRef = this.dialog.open(LoadPresetDialogComponent, {
+      width: '800px',
+      height: '600px',
+      panelClass: 'app-dialog'
+    });
+
+    dialogRef.afterClosed().subscribe((result: Page | undefined) => {
+      if (result) {
+        this.page = result;
+        this.emitGridChange();
+      }
+    });
+  }
+
 
   openTokenEditorDialog(): void {
     const dialogRef = this.dialog.open(TokenEditorDialogComponent, {
