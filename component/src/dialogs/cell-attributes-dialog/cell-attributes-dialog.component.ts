@@ -1,50 +1,37 @@
 import { Component, Inject } from '@angular/core';
-import {
-  MAT_DIALOG_DATA,
-  MatDialogActions,
-  MatDialogContent,
-  MatDialogRef,
-  MatDialogTitle
-} from '@angular/material/dialog';
-import {MatFormField, MatInput, MatLabel} from "@angular/material/input";
-import {FormsModule} from "@angular/forms";
-import {MatButton} from "@angular/material/button";
-import {CellAttrs} from "../../models/interfaces";
-import {ColorPickerOverlayComponent} from "../../shared/color-picker/color-picker-overlay.component";
-import {NgIf} from "@angular/common";
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
+import { MAT_DIALOG_DATA, MatDialogRef, MatDialogModule } from '@angular/material/dialog';
+import { MatButtonModule }  from '@angular/material/button';
+import { MatIconModule }    from '@angular/material/icon';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule }   from '@angular/material/input';
+import { MatDividerModule } from '@angular/material/divider';
+import { ColorPickerComponent } from '../../shared/color-picker/color-picker.component';
 
 
 @Component({
   selector: 'app-cell-attributes-dialog',
+  standalone: true,
   templateUrl: './cell-attributes-dialog.component.html',
+  styleUrls: ['./cell-attributes-dialog.component.scss'],
   imports: [
-    MatFormField,
-    MatDialogTitle,
-    MatLabel,
-    MatInput,
-    FormsModule,
-    MatDialogActions,
-    MatButton,
-    ColorPickerOverlayComponent,
-    NgIf,
-  ],
-  styleUrls: ['./cell-attributes-dialog.component.scss']
+    CommonModule, FormsModule,
+    MatDialogModule, MatButtonModule, MatIconModule,
+    MatFormFieldModule, MatInputModule, MatDividerModule,
+    ColorPickerComponent
+  ]
 })
 export class CellAttributesDialogComponent {
   showBorderPicker = false;
   showBgPicker = false;
 
   constructor(
-      public dialogRef: MatDialogRef<CellAttributesDialogComponent>,
-      @Inject(MAT_DIALOG_DATA) public data: CellAttrs
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    private dialogRef: MatDialogRef<CellAttributesDialogComponent>
   ) {}
 
-  onCancel(): void {
-    this.dialogRef.close();
-  }
-
-  onSave(): void {
-    this.dialogRef.close(this.data);
-  }
+  onCancel() { this.dialogRef.close(); }
+  onSave()   { this.dialogRef.close(this.data); }
 }

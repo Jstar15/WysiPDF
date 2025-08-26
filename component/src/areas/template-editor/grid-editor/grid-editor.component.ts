@@ -72,7 +72,7 @@ export class GridEditorComponent implements OnInit, OnDestroy {
 
   public currentRow = 0;
   public currentCol = -1;
-
+  public hideCellAttributeToolbar = true;
   private activeDialog: MatDialogRef<any, any> | null = null;
   private lastDialogOpenAt = 0;
   private destroy$ = new Subject<void>();
@@ -219,7 +219,7 @@ export class GridEditorComponent implements OnInit, OnDestroy {
     const ref = this.openDialogOnce(() =>
       this.dialog.open<CellAttributesDialogComponent, CellAttrs, CellAttrs | undefined>(
         CellAttributesDialogComponent,
-        { width: '1000px', height: '600px', panelClass: 'app-dialog', data }
+        { width: '1200px', height: '600px', panelClass: 'app-dialog', data }
       )
     );
     if (!ref) return;

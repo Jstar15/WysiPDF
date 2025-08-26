@@ -1,59 +1,67 @@
-<mat-toolbar class="grid-toolbar" color="transparent">
+
+    
+
+
+    <div class="grid-toolbar toolbar-bottom-row">
     <!-- Row controls -->
-    <button mat-icon-button matTooltip="Add Row" (click)="addRow();emitChange();">
-        <mat-icon svgIcon="table_rows"></mat-icon>
-    </button>
+        <button mat-icon-button matTooltip="Add Row" (click)="addRow();emitChange();">
+            <mat-icon svgIcon="table_rows"></mat-icon>
+        </button>
 
-    <button mat-icon-button matTooltip="Remove Row"  (click)="removeRow();emitChange();">
-        <mat-icon svgIcon="horizontal_rule"></mat-icon>
-    </button>
-  <button mat-icon-button color="accent" matTooltip="Duplicate Row" aria-label="Duplicate Row" (click)="duplicateCurrentRow()">
-    <mat-icon svgIcon="control_point_duplicate"></mat-icon>
-  </button>
-    <!-- Column controls -->
-    <button mat-icon-button matTooltip="Add Column" (click)="addColumn();emitChange();">
-        <mat-icon svgIcon="view_column"></mat-icon>
-    </button>
+        <button mat-icon-button matTooltip="Remove Row"  (click)="removeRow();emitChange();">
+            <mat-icon svgIcon="horizontal_rule"></mat-icon>
+        </button>
+        <button mat-icon-button color="accent" matTooltip="Duplicate Row" aria-label="Duplicate Row" (click)="duplicateCurrentRow()">
+            <mat-icon svgIcon="control_point_duplicate"></mat-icon>
+        </button>
+        <!-- Column controls -->
+        <button mat-icon-button matTooltip="Add Column" (click)="addColumn();emitChange();">
+            <mat-icon svgIcon="view_column"></mat-icon>
+        </button>
 
-    <button mat-icon-button matTooltip="Remove Column" (click)="removeColumn();emitChange();">
-        <mat-icon svgIcon="vertical_align_center"></mat-icon>
-    </button>
+        <button mat-icon-button matTooltip="Remove Column" (click)="removeColumn();emitChange();">
+            <mat-icon svgIcon="vertical_align_center"></mat-icon>
+        </button>
 
-    <!-- Spacer to push the last item to the right -->
-    <span class="spacer"></span>
+        <!-- Spacer to push the last item to the right -->
+        <span class="spacer"></span>
 
-    <!-- Add Page Break -->
-    <button *ngIf="!hidePageBreak" mat-icon-button matTooltip="Add Page Break" (click)="addPageBreakRow()">
-        <mat-icon svgIcon="line_weight"></mat-icon>
-    </button>
-    <button *ngIf="!hidePartialContent"  mat-icon-button matTooltip="Add Partial Content" (click)="addPartialRow()">
-        <mat-icon svgIcon="call_split"></mat-icon>
-    </button>
+        <!-- Add Page Break -->
+        <button *ngIf="!hidePageBreak" mat-icon-button matTooltip="Add Page Break" (click)="addPageBreakRow()">
+            <mat-icon svgIcon="line_weight"></mat-icon>
+        </button>
+        <button *ngIf="!hidePartialContent"  mat-icon-button matTooltip="Add Partial Content" (click)="addPartialRow()">
+            <mat-icon svgIcon="call_split"></mat-icon>
+        </button>
 
-    <button mat-icon-button matTooltip="Insert Image" (click)="openAddImageDialog()">
-        <mat-icon svgIcon="add_photo_alternate"></mat-icon>
-    </button>
+        <button mat-icon-button matTooltip="Insert Image" (click)="openAddImageDialog()">
+            <mat-icon svgIcon="add_photo_alternate"></mat-icon>
+        </button>
 
-    <button *ngIf="!hideChart" mat-icon-button matTooltip="Insert Chart" (click)="openAddChartDialog()">
-        <mat-icon svgIcon="pie_chart"></mat-icon>
-    </button>
+        <button *ngIf="!hideChart" mat-icon-button matTooltip="Insert Chart" (click)="openAddChartDialog()">
+            <mat-icon svgIcon="pie_chart"></mat-icon>
+        </button>
 
-    <!-- Edit cell control (right aligned) -->
-    <button mat-icon-button color="accent" matTooltip="Display Rules" aria-label="Display Rules" (click)="displayRulesDialog()">
-      <mat-icon svgIcon="view_list"></mat-icon>
-    </button>
-    <button mat-icon-button color="accent" matTooltip="Edit Cell Content"  (click)="openCellEditorDialog()">
-      <mat-icon svgIcon="edit"></mat-icon>
-    </button>
+        <!-- Edit cell control (right aligned) -->
+        <button mat-icon-button color="accent" matTooltip="Display Rules" aria-label="Display Rules" (click)="displayRulesDialog()">
+        <mat-icon svgIcon="view_list"></mat-icon>
+        </button>
+        <button mat-icon-button color="accent" matTooltip="Edit Cell Content"  (click)="openCellEditorDialog()">
+        <mat-icon svgIcon="edit"></mat-icon>
+        </button>
 
-    <button mat-icon-button color="accent" matTooltip="Edit Cell Style"  (click)="openCellStyleEditorDialog()">
-      <mat-icon svgIcon="border_color"></mat-icon>
-    </button>
-    <app-cell-style-toolbar
-        (styleChange)="onToolbarPatch($event)"
-        (borderPresetChange)="onToolbarPreset($event)">
-    </app-cell-style-toolbar>
-</mat-toolbar>
+        <button mat-icon-button color="accent" matTooltip="Edit Cell Style"  (click)="hideCellAttributeToolbar = !hideCellAttributeToolbar">
+        <mat-icon svgIcon="border_color"></mat-icon>
+        </button>
+    </div>
+
+   
+    <div class="grid-toolbar toolbar-top-row" *ngIf="!hideCellAttributeToolbar">
+        <app-cell-style-toolbar
+            (styleChange)="onToolbarPatch($event)"
+            (borderPresetChange)="onToolbarPreset($event)">
+        </app-cell-style-toolbar>        
+    </div>
 
 
 

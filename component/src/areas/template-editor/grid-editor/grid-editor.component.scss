@@ -1,78 +1,110 @@
+/* ===============================
+   TOOLBARS
+   =============================== */
+
+/* Shared toolbar box */
+.grid-toolbar {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 4px 6px;
+}
+
+/* ── Top row: using Grid, right-align the color toolbar ─────────── */
+.grid-toolbar.toolbar-top-row {
+  display: grid;
+  grid-template-columns: 1fr auto;   // grow, then the toolbar
+  align-items: center;
+  column-gap: 6px;
+
+  /* Your <app-cell-style-toolbar> sits in the right auto column */
+  app-cell-style-toolbar {
+    justify-self: end;
+    min-width: 0;
+  }
+}
+
+/* ── Bottom row: use Flex so the spacer pushes controls right ───── */
+.grid-toolbar.toolbar-bottom-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: nowrap;                 // keep on one line; scroll if crowded
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-gutter: stable;
+  border-top: 1px solid rgba(0,0,0,0.08);
+  padding-top: 2px;
+
+  .spacer {
+    flex: 1 1 auto;                  // take all remaining space
+    min-width: 8px;                  // don’t fully collapse
+  }
+
+  [mat-icon-button] {
+    flex: 0 0 auto;
+    min-width: 0;
+  }
+}
+
+/* ===============================
+   GRID CANVAS / CELLS (editor)
+   =============================== */
+
 .grid-container {
   display: flex;
   flex-direction: column;
   gap: 4px;
 
+  * {
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+  }
+
+  .row {
+    display: flex;
+    width: 100%;
+    height: auto;
+    border: 1px solid #999;
+  }
+
+  .cell-container {
+    display: flex;
+    position: relative;
+    flex-grow: 0;
+    flex-shrink: 0;
+
+    .col-resize-handle {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      right: -2.5px;
+      width: 5px;
+      cursor: col-resize;
+      background: rgba(0, 0, 0, 0.1);
+    }
+  }
+
+  .cell {
+    flex: 1;
+    min-height: 30px;
+    border: 1px solid #ccc;
+    overflow: auto;
+    word-break: break-word;
+
+    .cell-content {
+      pointer-events: none; // prevent nested elements from eating clicks
+    }
+  }
 }
 
-.grid-container, .grid-container * {
-  user-select: none;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-}
-
-.row {
-  display: flex;
-  width: 100%;
-  height: auto;
-  border:1px solid #999;
-}
-
-.cell-container {
-  display: flex;
-  flex-grow: 0;
-  flex-shrink: 0;
-  position: relative;
-
-}
-
-.cell {
-  flex: 1;
-  min-height: 30px;
-  border: 1px solid #ccc;
-  overflow: auto;
-  word-break: break-all;
-}
-.cell-content {
-  pointer-events: none;  // disables clicks inside e.g., tables, spans, etc.
-}
-.col-resize-handle {
-  width: 5px;
-  cursor: col-resize;
-  background: rgba(0, 0, 0, 0.1);
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  right: -2.5px;
-}
-
-.selected {
-  outline: 2px solid blue;
-}
-
-.grid-toolbar {
-  display: flex;
-  flex-wrap: wrap;
-  height: auto !important;
-  align-content: center;
-}
-
-/* keep the right-side spacer working, even with wraps */
-.grid-toolbar .spacer {
-  flex: 1 1 auto;
-}
-
-/* optional: ensure each icon button sizes nicely on wrap */
-.grid-toolbar [mat-icon-button] {
-  flex: 0 0 auto;
-}
-
-.spacer {
-  flex: 1 1 auto;
-}
+/* ===========================
+   Selection + CDK drag states
+   =========================== */
+.selected,
 .selected-partial {
-  outline: 2px solid blue;
+  outline: 2px solid #1976d2;
   outline-offset: -1px;
 }
 
