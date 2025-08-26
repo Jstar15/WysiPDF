@@ -85,7 +85,7 @@ export const Preset3: Page = {
         "cells": [
           {
             "type": "html",
-            "value": "<p style=\"font-size:10px;color:#475569;\">Full Name</p><p style=\"font-size:14px;\"><strong>Jordan Ellis</strong></p>",
+            "value": "<p style=\"font-size:10px;color:#475569;\"><span style=\"font-size: 10px; color: rgb(68, 68, 68);\">Full Name</span></p><p style=\"font-size:14px;\"><strong>Jordan Ellis</strong></p>",
             "attrs": {
               "paddingTop": 10,
               "paddingRight": 8,
@@ -101,7 +101,7 @@ export const Preset3: Page = {
           },
           {
             "type": "html",
-            "value": "<p style=\"font-size:10px;color:#475569;\">Date of Birth</p><p style=\"font-size:14px;\">02 May 1974</p>",
+            "value": "<p style=\"font-size:10px;color:#475569;\"><span style=\"font-size: 10px; color: rgb(68, 68, 68);\">Date of Birth</span></p><p style=\"font-size:14px;\">02 May 1974</p>",
             "attrs": {
               "paddingTop": 10,
               "paddingRight": 8,
@@ -117,7 +117,7 @@ export const Preset3: Page = {
           },
           {
             "type": "html",
-            "value": "<p style=\"font-size:10px;color:#475569;\">Record No.</p><p style=\"font-size:14px;\">MRN-449210</p>",
+            "value": "<p style=\"font-size:10px;color:#475569;\"><span style=\"font-size: 10px; color: rgb(68, 68, 68);\">Record No.</span></p><p style=\"font-size:14px;\">MRN-449210</p>",
             "attrs": {
               "paddingTop": 10,
               "paddingRight": 10,
@@ -144,7 +144,7 @@ export const Preset3: Page = {
         "cells": [
           {
             "type": "html",
-            "value": "<p style=\"font-size:10px;color:#475569;\">Visit Date</p><p style=\"font-size:14px;\">18 Aug 2025</p>",
+            "value": "<p style=\"font-size:10px;color:#475569;\"><span style=\"color: rgb(68, 68, 68); font-size: 10px;\">Visit Date</span></p><p style=\"font-size:14px;\">18 Aug 2025</p>",
             "attrs": {
               "paddingTop": 10,
               "paddingRight": 8,
@@ -160,7 +160,7 @@ export const Preset3: Page = {
           },
           {
             "type": "html",
-            "value": "<p style=\"font-size:10px;color:#475569;\">Clinician</p><p style=\"font-size:14px;\">Dr. N. Patel</p>",
+            "value": "<p style=\"font-size:10px;color:#475569;\"><span style=\"font-size: 10px; color: rgb(68, 68, 68);\">Clinician</span></p><p style=\"font-size:14px;\">Dr. N. Patel</p>",
             "attrs": {
               "paddingTop": 10,
               "paddingRight": 8,
@@ -176,7 +176,7 @@ export const Preset3: Page = {
           },
           {
             "type": "html",
-            "value": "<p style=\"font-size:10px;color:#475569;\">Location</p><p style=\"font-size:14px;\">Room 3B · Seaside</p>",
+            "value": "<p style=\"font-size:10px;color:#475569;\"><span style=\"color: rgb(68, 68, 68); font-size: 10px;\">Location</span></p><p style=\"font-size:14px;\">Room 3B · Seaside</p>",
             "attrs": {
               "paddingTop": 10,
               "paddingRight": 10,
@@ -187,6 +187,56 @@ export const Preset3: Page = {
               "borderBottom": 1,
               "borderLeft": 0,
               "borderColor": "#cbd5e1",
+              "backgroundColor": "transparent"
+            }
+          }
+        ],
+        "backgroundColor": "white"
+      },
+      {
+        "height": 50,
+        "widths": [
+          100
+        ],
+        "cells": [
+          {
+            "type": "html",
+            "value": "",
+            "attrs": {
+              "paddingTop": 5,
+              "paddingRight": 5,
+              "paddingBottom": 5,
+              "paddingLeft": 5,
+              "borderTop": 0,
+              "borderRight": 0,
+              "borderBottom": 0,
+              "borderLeft": 0,
+              "borderColor": "white",
+              "backgroundColor": "transparent"
+            }
+          }
+        ],
+        "backgroundColor": "white"
+      },
+      {
+        "height": 50,
+        "widths": [
+          100
+        ],
+        "cells": [
+          {
+            "type": "html",
+            "value": "",
+            "attrs": {
+              "paddingTop": 5,
+              "paddingRight": 5,
+              "paddingBottom": 5,
+              "paddingLeft": 5,
+              "borderTop": 0,
+              "borderRight": 0,
+              "borderBottom": 0,
+              "borderLeft": 0,
+              "borderColor": "white",
               "backgroundColor": "transparent"
             }
           }
@@ -228,7 +278,7 @@ export const Preset3: Page = {
         "cells": [
           {
             "type": "html",
-            "value": "<p class=\"ql-align-center\" style=\"font-size:10px;color:#0f766e;\"><span style=\"font-size: 10px;\">HbA1c</span></p><p class=\"ql-align-center\" style=\"font-size:22px;color:#0d9488;\"><strong style=\"color: rgb(0, 138, 0);\">7.8%</strong></p><p class=\"ql-align-center\" style=\"font-size:11px;color:#64748b;\">(target &lt; 7.0%)</p>",
+            "value": "<p class=\"ql-align-center\" style=\"font-size:10px;color:#0f766e;\"><span style=\"font-size: 10px;\">HbA1c</span></p><p class=\"ql-align-center\" style=\"font-size:22px;color:#0d9488;\"><strong style=\"color: rgb(0, 138, 0);\">7.8%</strong></p><p class=\"ql-align-center\" style=\"font-size:11px;color:#64748b;\"><span style=\"font-size: 10px;\">(target &lt; 7.0%)</span></p>",
             "attrs": {
               "paddingTop": 10,
               "paddingRight": 10,
@@ -244,7 +294,7 @@ export const Preset3: Page = {
           },
           {
             "type": "html",
-            "value": "<p class=\"ql-align-center\" style=\"font-size:10px;color:#0f766e;\"><span style=\"font-size: 10px;\">Blood Pressure</span></p><p class=\"ql-align-center\" style=\"font-size:22px;color:#0d9488;\"><strong style=\"color: rgb(0, 138, 0);\">132/82</strong></p><p class=\"ql-align-center\" style=\"font-size:11px;color:#64748b;\">(mmHg)</p>",
+            "value": "<p class=\"ql-align-center\" style=\"font-size:10px;color:#0f766e;\"><span style=\"font-size: 10px;\">Blood Pressure</span></p><p class=\"ql-align-center\" style=\"font-size:22px;color:#0d9488;\"><strong style=\"color: rgb(0, 138, 0);\">132/82</strong></p><p class=\"ql-align-center\" style=\"font-size:11px;color:#64748b;\"><span style=\"font-size: 10px;\">(mmHg)</span></p>",
             "attrs": {
               "paddingTop": 10,
               "paddingRight": 10,
@@ -260,7 +310,7 @@ export const Preset3: Page = {
           },
           {
             "type": "html",
-            "value": "<p class=\"ql-align-center\" style=\"font-size:10px;color:#0f766e;\"><span style=\"font-size: 10px;\">BMI</span></p><p class=\"ql-align-center\" style=\"font-size:22px;color:#0d9488;\"><strong style=\"color: rgb(0, 138, 0);\">28.6</strong></p><p class=\"ql-align-center\" style=\"font-size:11px;color:#64748b;\">kg/m²</p>",
+            "value": "<p class=\"ql-align-center\" style=\"font-size:10px;color:#0f766e;\"><span style=\"font-size: 10px;\">BMI</span></p><p class=\"ql-align-center\" style=\"font-size:22px;color:#0d9488;\"><strong style=\"color: rgb(0, 138, 0);\">28.6</strong></p><p class=\"ql-align-center\" style=\"font-size:11px;color:#64748b;\"><span style=\"font-size: 10px;\">kg/m²</span></p>",
             "attrs": {
               "paddingTop": 10,
               "paddingRight": 10,
@@ -286,7 +336,7 @@ export const Preset3: Page = {
         "cells": [
           {
             "type": "html",
-            "value": "<p style=\"font-size:12px;color:#0d9488;\"><strong>Active Problems</strong></p><ul style=\"font-size:13px;line-height:1.5;color:#334155;\"><li>Type 2 diabetes mellitus (dx 2018)</li><li>Hypertension</li><li>Dyslipidaemia</li></ul>",
+            "value": "<p style=\"font-size:12px;color:#0d9488;\"><strong>Active Problems</strong></p><ol><li data-list=\"bullet\"><span class=\"ql-ui\" contenteditable=\"false\"></span>Type 2 diabetes melltus</li><li data-list=\"bullet\"><span class=\"ql-ui\" contenteditable=\"false\"></span>Hypertension </li><li data-list=\"bullet\"><span class=\"ql-ui\" contenteditable=\"false\"></span>Dyslipidaemia </li></ol>",
             "attrs": {
               "paddingTop": 12,
               "paddingRight": 10,
@@ -302,7 +352,7 @@ export const Preset3: Page = {
           },
           {
             "type": "html",
-            "value": "<p style=\"font-size:12px;color:#0d9488;\"><strong>Allergies</strong></p><ul style=\"font-size:13px;line-height:1.5;color:#334155;\"><li>Penicillin — rash</li><li>Statin-associated myalgia (mild)</li></ul>",
+            "value": "<p style=\"font-size:12px;color:#0d9488;\"><strong>Allergies</strong></p><ol><li data-list=\"bullet\"><span class=\"ql-ui\" contenteditable=\"false\"></span>Penicillin — rash </li><li data-list=\"bullet\"><span class=\"ql-ui\" contenteditable=\"false\"></span>Statin-associated myalgia</li></ol>",
             "attrs": {
               "paddingTop": 12,
               "paddingRight": 12,
@@ -317,15 +367,6 @@ export const Preset3: Page = {
             }
           }
         ],
-        "backgroundColor": "white"
-      },
-      {
-        "type": "page-break",
-        "height": 0,
-        "widths": [
-          100
-        ],
-        "cells": [],
         "backgroundColor": "white"
       },
       {
@@ -444,6 +485,65 @@ export const Preset3: Page = {
         }
       },
       {
+        "type": "page-break",
+        "height": 0,
+        "widths": [
+          100
+        ],
+        "cells": [],
+        "backgroundColor": "white"
+      },
+      {
+        "height": 50,
+        "widths": [
+          100
+        ],
+        "cells": [
+          {
+            "type": "html",
+            "value": "",
+            "attrs": {
+              "paddingTop": 5,
+              "paddingRight": 5,
+              "paddingBottom": 5,
+              "paddingLeft": 5,
+              "borderTop": 0,
+              "borderRight": 0,
+              "borderBottom": 0,
+              "borderLeft": 0,
+              "borderColor": "white",
+              "backgroundColor": "transparent"
+            }
+          }
+        ],
+        "backgroundColor": "white"
+      },
+      {
+        "height": 50,
+        "widths": [
+          100
+        ],
+        "cells": [
+          {
+            "type": "html",
+            "value": "",
+            "attrs": {
+              "paddingTop": 5,
+              "paddingRight": 5,
+              "paddingBottom": 5,
+              "paddingLeft": 5,
+              "borderTop": 0,
+              "borderRight": 0,
+              "borderBottom": 0,
+              "borderLeft": 0,
+              "borderColor": "white",
+              "backgroundColor": "transparent"
+            }
+          }
+        ],
+        "backgroundColor": "white"
+      },
+      {
         "height": 0,
         "widths": [
           100
@@ -477,7 +577,7 @@ export const Preset3: Page = {
         "cells": [
           {
             "type": "html",
-            "value": "<p style=\"font-size:12px;color:#0d9488;\"><strong>Patient Goals (next 3 months)</strong></p><ul style=\"font-size:13px;line-height:1.6;color:#334155;\"><li>□ Nutrition: plate method at dinner 5×/week</li><li>□ Activity: walk 30 minutes 4×/week</li><li>□ Foot care: daily inspection & moisturiser</li></ul>",
+            "value": "<p style=\"font-size:12px;color:#0d9488;\"><strong>Patient Goals (next 3 months)</strong></p><p>• Nutrition: plate method at d inner 5×/w eek </p><p>• Activity : walk 30 minutes 4× / week </p><p>• Foot car e: daily inspection &amp; moisturing </p>",
             "attrs": {
               "paddingTop": 10,
               "paddingRight": 10,
@@ -493,7 +593,7 @@ export const Preset3: Page = {
           },
           {
             "type": "html",
-            "value": "<p style=\"font-size:12px;color:#0d9488;\"><strong>Education Provided</strong></p><p><br></p>",
+            "value": "<p style=\"font-size:12px;color:#0d9488;\"><strong>Education Provided</strong></p><ol><li data-list=\"bullet\"><span class=\"ql-ui\" contenteditable=\"false\"></span>None</li></ol>",
             "attrs": {
               "paddingTop": 10,
               "paddingRight": 12,
@@ -509,97 +609,6 @@ export const Preset3: Page = {
           }
         ],
         "backgroundColor": "white"
-      },
-      {
-        "height": 0,
-        "widths": [
-          100
-        ],
-        "cells": [
-          {
-            "type": "html",
-            "value": "<p><strong class=\"ql-font-roboto\" style=\"font-size:15px;color:#0d9488;\">Monitoring & Follow-up</strong></p>",
-            "attrs": {
-              "paddingTop": 14,
-              "paddingRight": 8,
-              "paddingBottom": 8,
-              "paddingLeft": 8,
-              "borderTop": 0,
-              "borderRight": 0,
-              "borderBottom": 1,
-              "borderLeft": 0,
-              "borderColor": "#e2e8f0",
-              "backgroundColor": "#f0fdfa"
-            }
-          }
-        ],
-        "backgroundColor": "#f0fdfa"
-      },
-      {
-        "height": 0,
-        "widths": [
-          33.33,
-          33.33,
-          33.34
-        ],
-        "cells": [
-          {
-            "type": "html",
-            "value": "<p style=\"font-size:12px;color:#0d9488;\"><strong>Glucose Monitoring</strong></p><ul style=\"font-size:13px;line-height:1.5;color:#334155;\"><li>□ SMBG 2×/day (AM fasting & pre-dinner)</li><li>□ Log readings in app/book</li><li>□ Call if fasting &gt; 9.0 mmol/L for 3 days</li></ul>",
-            "attrs": {
-              "paddingTop": 10,
-              "paddingRight": 8,
-              "paddingBottom": 12,
-              "paddingLeft": 12,
-              "borderTop": 1,
-              "borderRight": 1,
-              "borderBottom": 1,
-              "borderLeft": 1,
-              "borderColor": "#cbd5e1",
-              "backgroundColor": "white"
-            }
-          },
-          {
-            "type": "html",
-            "value": "<p style=\"font-size:12px;color:#0d9488;\"><strong>Foot & Eyes</strong></p><ul style=\"font-size:13px;line-height:1.5;color:#334155;\"><li>□ Daily foot checks</li><li>□ Annual dilated eye exam</li><li>□ Podiatry if ulcer/callus</li></ul>",
-            "attrs": {
-              "paddingTop": 10,
-              "paddingRight": 8,
-              "paddingBottom": 12,
-              "paddingLeft": 10,
-              "borderTop": 1,
-              "borderRight": 1,
-              "borderBottom": 1,
-              "borderLeft": 0,
-              "borderColor": "#cbd5e1",
-              "backgroundColor": "white"
-            }
-          },
-          {
-            "type": "html",
-            "value": "<p style=\"font-size:12px;color:#0d9488;\"><strong>Labs & Targets</strong></p><ul style=\"font-size:13px;line-height:1.5;color:#334155;\"><li>□ A1c recheck in 3 months</li><li>□ eGFR & UACR in 6 months</li><li>□ LDL target &lt; 2.0 mmol/L</li></ul>",
-            "attrs": {
-              "paddingTop": 10,
-              "paddingRight": 12,
-              "paddingBottom": 12,
-              "paddingLeft": 10,
-              "borderTop": 1,
-              "borderRight": 1,
-              "borderBottom": 1,
-              "borderLeft": 0,
-              "borderColor": "#cbd5e1",
-              "backgroundColor": "white"
-            }
-          }
-        ],
-        "backgroundColor": "white"
-      },
-      {
-        "type": "page-break",
-        "height": 10,
-        "widths": [],
-        "cells": [],
-        "backgroundColor": "transparent"
       },
       {
         "height": 50,
@@ -685,7 +694,7 @@ export const Preset3: Page = {
         "cells": [
           {
             "type": "html",
-            "value": "<p style=\"font-size:12px;color:#334155;\"><strong>Primary Care</strong><br>Dr. N. Patel · (555) 123-4567<br>care@seaside.example</p>",
+            "value": "<p style=\"font-size:12px;color:#334155;\"><strong>Primary Care</strong></p><p style=\"font-size:12px;color:#334155;\">Dr. N. Patel · (555) 123-4567</p><p style=\"font-size:12px;color:#334155;\">care@seaside.example</p>",
             "attrs": {
               "paddingTop": 10,
               "paddingRight": 8,
@@ -701,7 +710,7 @@ export const Preset3: Page = {
           },
           {
             "type": "html",
-            "value": "<p class=\"ql-align-right\" style=\"font-size:12px;color:#334155;\"><strong>Endocrinology</strong><br>Dr. A. Romero · (555) 987-6543<br>endo@seaside.example</p>",
+            "value": "<p class=\"ql-align-right\" style=\"font-size:12px;color:#334155;\"><strong>Endocrinology</strong></p><p class=\"ql-align-right\" style=\"font-size:12px;color:#334155;\">Dr. A. Romero · (555) 987-6543</p><p class=\"ql-align-right\" style=\"font-size:12px;color:#334155;\">endo@seaside.example</p>",
             "attrs": {
               "paddingTop": 10,
               "paddingRight": 12,
@@ -713,6 +722,56 @@ export const Preset3: Page = {
               "borderLeft": 0,
               "borderColor": "#cbd5e1",
               "backgroundColor": "white"
+            }
+          }
+        ],
+        "backgroundColor": "white"
+      },
+      {
+        "height": 50,
+        "widths": [
+          100
+        ],
+        "cells": [
+          {
+            "type": "html",
+            "value": "",
+            "attrs": {
+              "paddingTop": 5,
+              "paddingRight": 5,
+              "paddingBottom": 5,
+              "paddingLeft": 5,
+              "borderTop": 0,
+              "borderRight": 0,
+              "borderBottom": 0,
+              "borderLeft": 0,
+              "borderColor": "white",
+              "backgroundColor": "transparent"
+            }
+          }
+        ],
+        "backgroundColor": "white"
+      },
+      {
+        "height": 50,
+        "widths": [
+          100
+        ],
+        "cells": [
+          {
+            "type": "html",
+            "value": "",
+            "attrs": {
+              "paddingTop": 5,
+              "paddingRight": 5,
+              "paddingBottom": 5,
+              "paddingLeft": 5,
+              "borderTop": 0,
+              "borderRight": 0,
+              "borderBottom": 0,
+              "borderLeft": 0,
+              "borderColor": "white",
+              "backgroundColor": "transparent"
             }
           }
         ],
@@ -752,7 +811,7 @@ export const Preset3: Page = {
         "cells": [
           {
             "type": "html",
-            "value": "<p style=\"font-size:12px;color:#334155;\">I agree with the plan above and consent to the recommended monitoring and medication changes. I understand when to seek urgent medical advice.</p>",
+            "value": "<p style=\"font-size:12px;color:#334155;\"><span style=\"color: rgb(68, 68, 68);\">I agree with the plan above and consent to the recommended monitoring and medication changes. I understand when to seek urgent medical advice.</span></p>",
             "attrs": {
               "paddingTop": 12,
               "paddingRight": 8,
@@ -768,7 +827,7 @@ export const Preset3: Page = {
           },
           {
             "type": "html",
-            "value": "<p class=\"ql-align-right\" style=\"font-size:12px;color:#334155;\">Patient Signature: __________________________</p><p class=\"ql-align-right\" style=\"font-size:12px;color:#334155;\">Date: ____/____/______</p><p class=\"ql-align-right\" style=\"font-size:12px;color:#334155;\">Clinician: __________________________</p>",
+            "value": "<p class=\"ql-align-right\" style=\"font-size:12px;color:#334155;\"><span style=\"color: rgb(68, 68, 68);\">Patient Signature: __________________________</span></p><p class=\"ql-align-right\" style=\"font-size:12px;color:#334155;\"><span style=\"color: rgb(68, 68, 68);\">Date: ____/____/______</span></p><p class=\"ql-align-right\" style=\"font-size:12px;color:#334155;\"><span style=\"color: rgb(68, 68, 68);\">Clinician: __________________________</span></p>",
             "attrs": {
               "paddingTop": 12,
               "paddingRight": 12,
