@@ -68,7 +68,7 @@ export const Preset1: Page = {
             }
           }
         ],
-        backgroundColor: 'transparent'
+        "backgroundColor": "transparent"
       },
       {
         "height": 0,
@@ -118,7 +118,7 @@ export const Preset1: Page = {
             }
           }
         ],
-        backgroundColor: ''
+        "backgroundColor": ""
       },
       {
         "height": 0,
@@ -349,6 +349,56 @@ export const Preset1: Page = {
         "cells": []
       },
       {
+        "height": 50,
+        "widths": [
+          100
+        ],
+        "cells": [
+          {
+            "type": "html",
+            "value": "",
+            "attrs": {
+              "paddingTop": 5,
+              "paddingRight": 5,
+              "paddingBottom": 5,
+              "paddingLeft": 5,
+              "borderTop": 0,
+              "borderRight": 0,
+              "borderBottom": 0,
+              "borderLeft": 0,
+              "borderColor": "white",
+              "backgroundColor": "transparent"
+            }
+          }
+        ],
+        "backgroundColor": "white"
+      },
+      {
+        "height": 50,
+        "widths": [
+          100
+        ],
+        "cells": [
+          {
+            "type": "html",
+            "value": "",
+            "attrs": {
+              "paddingTop": 5,
+              "paddingRight": 5,
+              "paddingBottom": 5,
+              "paddingLeft": 5,
+              "borderTop": 0,
+              "borderRight": 0,
+              "borderBottom": 0,
+              "borderLeft": 0,
+              "borderColor": "white",
+              "backgroundColor": "transparent"
+            }
+          }
+        ],
+        "backgroundColor": "white"
+      },
+      {
         "height": 0,
         "widths": [
           100
@@ -376,7 +426,7 @@ export const Preset1: Page = {
         "cells": [
           {
             "type": "html",
-            "value": "<ul style=\"font-size:13px;line-height:1.5;\"><li>□ Pacemaker/ICD</li><li>□ Cochlear implant</li><li>□ Aneurysm clips</li><li>□ Severe claustrophobia</li></ul>",
+            "value": "<p style=\"font-size:14px;\">• Pacemake r/ICD </p><p style=\"font-size:14px;\">• Cochlear implant </p><p style=\"font-size:14px;\">• Aneurysm clips </p><p style=\"font-size:14px;\">• Severe claustrophobia</p>",
             "attrs": {
               "paddingTop": 12,
               "paddingBottom": 12,
@@ -389,7 +439,7 @@ export const Preset1: Page = {
           },
           {
             "type": "html",
-            "value": "<ul style=\"font-size:13px;line-height:1.5;\"><li>□ Metal in eye</li><li>□ Recent surgery (&lt;6 weeks)</li><li>□ Allergy to iodine/contrast</li><li>□ Asthma</li><li>□ Diabetes (Metformin)</li></ul>",
+            "value": "<p style=\"font-size:14px;\">• Metal in eye </p><p style=\"font-size:14px;\">• Recent surgery (&lt;6 weeks) </p><p style=\"font-size:14px;\">• Allergy to iodine/ contrast </p><p style=\"font-size:14px;\">• Asthma • Diabetes (Meformin)</p>",
             "attrs": {
               "paddingTop": 12,
               "paddingBottom": 12,
@@ -523,7 +573,7 @@ export const Preset1: Page = {
         "cells": [
           {
             "type": "html",
-            "value": "<p class=\"ql-align-center\"><span style=\"font-size:11px;color:#64748b;\">Confidential — for clinical use only. If received in error, please contact the facility and destroy this form.</span></p>",
+            "value": "<p><span style=\"font-size:11px;color:#64748b;\">Confidential — for clinical use only. If received in error, please contact the facility and destroy this form.</span></p>",
             "attrs": {
               "paddingTop": 10,
               "paddingBottom": 10,

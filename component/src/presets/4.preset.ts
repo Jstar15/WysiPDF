@@ -13,7 +13,7 @@ export const Preset4: Page = {
         "cells": [
           {
             "type": "html",
-            "value": "<p><span style=\"color:#b45309;font-size:16px;\">Field Trip Permission &amp; Safety</span></p><p><span style=\"color:#94a3b8;font-size:10px;\">Please complete and return to homeroom teacher</span></p>",
+            "value": "<p><span class=\"ql-color-brown\" style=\"font-size:16px;\">Field Trip Permission &amp; Safety</span></p><p><span class=\"ql-color-slate\" style=\"font-size:10px;\">Please complete and return to homeroom teacher</span></p>",
             "attrs": {
               "paddingTop": 8,
               "paddingRight": 8,
@@ -64,7 +64,7 @@ export const Preset4: Page = {
         "cells": [
           {
             "type": "html",
-            "value": "<p><strong style=\"font-size:15px;color:#b45309;\">Trip Overview</strong></p>",
+            "value": "<p><strong class=\"ql-color-brown\" style=\"font-size:15px;\">Trip Overview</strong></p>",
             "attrs": {
               "paddingTop": 12,
               "paddingRight": 8,
@@ -91,7 +91,7 @@ export const Preset4: Page = {
         "cells": [
           {
             "type": "html",
-            "value": "<p style=\"font-size:10px;color:#475569;\">Destination</p><p style=\"font-size:14px;\"><strong>City Science Museum</strong></p>",
+            "value": "<p class=\"ql-color-slate\" style=\"font-size:10px;\"><span style=\"font-size: 10px;\">Destination</span></p><p style=\"font-size:14px;\"><strong>City Science Museum</strong></p>",
             "attrs": {
               "paddingTop": 10,
               "paddingRight": 8,
@@ -106,7 +106,7 @@ export const Preset4: Page = {
           },
           {
             "type": "html",
-            "value": "<p style=\"font-size:10px;color:#475569;\">Date</p><p style=\"font-size:14px;\">22 Nov 2025</p>",
+            "value": "<p class=\"ql-color-slate\" style=\"font-size:10px;\"><span style=\"font-size: 10px;\">Date</span></p><p style=\"font-size:14px;\">22 Nov 2025</p>",
             "attrs": {
               "paddingTop": 10,
               "paddingRight": 8,
@@ -121,7 +121,7 @@ export const Preset4: Page = {
           },
           {
             "type": "html",
-            "value": "<p style=\"font-size:10px;color:#475569;\">Depart / Return</p><p style=\"font-size:14px;\">08:45 → 15:30</p>",
+            "value": "<p class=\"ql-color-slate\" style=\"font-size:10px;\"><span style=\"font-size: 10px;\">Depart / Return</span></p><p style=\"font-size:14px;\">08:45 → 15:30</p>",
             "attrs": {
               "paddingTop": 10,
               "paddingRight": 10,
@@ -145,7 +145,7 @@ export const Preset4: Page = {
         "cells": [
           {
             "type": "html",
-            "value": "<p><strong style=\"font-size:15px;color:#b45309;\">Student Details</strong></p>",
+            "value": "<p><strong class=\"ql-color-brown\" style=\"font-size:15px;\">Student Details</strong></p>",
             "attrs": {
               "paddingTop": 12,
               "paddingRight": 8,
@@ -172,7 +172,7 @@ export const Preset4: Page = {
         "cells": [
           {
             "type": "html",
-            "value": "<p style=\"font-size:10px;color:#475569;\">Student Name</p><p style=\"font-size:14px;\"><strong>Maya Thompson</strong></p>",
+            "value": "<p class=\"ql-color-slate\" style=\"font-size:10px;\"><span style=\"font-size: 10px;\">Student Name</span></p><p style=\"font-size:14px;\"><strong>Maya Thompson</strong></p>",
             "attrs": {
               "paddingTop": 10,
               "paddingRight": 8,
@@ -187,7 +187,7 @@ export const Preset4: Page = {
           },
           {
             "type": "html",
-            "value": "<p style=\"font-size:10px;color:#475569;\">Class / Teacher</p><p style=\"font-size:14px;\">Year 6 — Ms. Alvarez</p>",
+            "value": "<p class=\"ql-color-slate\" style=\"font-size:10px;\"><span style=\"font-size: 10px;\">Class / Teacher</span></p><p style=\"font-size:14px;\">Year 6 — Ms. Alvarez</p>",
             "attrs": {
               "paddingTop": 10,
               "paddingRight": 8,
@@ -202,7 +202,7 @@ export const Preset4: Page = {
           },
           {
             "type": "html",
-            "value": "<p style=\"font-size:10px;color:#475569;\">Emergency Contact</p><p style=\"font-size:14px;\">E. Thompson · (555) 201-8899</p>",
+            "value": "<p class=\"ql-color-slate\" style=\"font-size:10px;\"><span style=\"font-size: 10px;\">Emergency Contact</span></p><p style=\"font-size:14px;\">E. Thompson · (555) 201-8899</p>",
             "attrs": {
               "paddingTop": 10,
               "paddingRight": 10,
@@ -226,7 +226,7 @@ export const Preset4: Page = {
         "cells": [
           {
             "type": "html",
-            "value": "<p><strong style=\"font-size:15px;color:#b45309;\">Medical & Dietary</strong></p>",
+            "value": "<p><strong class=\"ql-color-brown\" style=\"font-size:15px;\">Medical & Dietary</strong></p>",
             "attrs": {
               "paddingTop": 12,
               "paddingRight": 8,
@@ -246,14 +246,14 @@ export const Preset4: Page = {
       {
         "height": 0,
         "widths": [
-          40,
-          30,
+          39.148936170212764,
+          30.851063829787236,
           30
         ],
         "cells": [
           {
             "type": "html",
-            "value": "<p style=\"font-size:12px;color:#b45309;\"><strong>Allergies</strong></p><ul style=\"font-size:13px;line-height:1.5;color:#334155;\"><li>Peanuts — carries EpiPen</li><li>Seasonal pollen</li></ul>",
+            "value": "<p class=\"ql-color-brown\" style=\"font-size:12px;\"><strong>Allergies</strong></p><ol><li data-list=\"bullet\"><span class=\"ql-ui\" contenteditable=\"false\"></span><span style=\"font-size: 10px;\">Peanuts — carries EpiPen </span></li><li data-list=\"bullet\"><span class=\"ql-ui\" contenteditable=\"false\"></span><span style=\"font-size: 10px;\">Seasonal polle</span></li></ol>",
             "attrs": {
               "paddingTop": 10,
               "paddingRight": 10,
@@ -269,7 +269,7 @@ export const Preset4: Page = {
           },
           {
             "type": "html",
-            "value": "<p style=\"font-size:12px;color:#b45309;\"><strong>Medications</strong></p><ul style=\"font-size:13px;line-height:1.5;color:#334155;\"><li>Salbutamol inhaler PRN</li><li>EpiPen as directed</li></ul>",
+            "value": "<p class=\"ql-color-brown\" style=\"font-size:12px;\"><strong>Medications</strong></p><ol><li data-list=\"bullet\"><span class=\"ql-ui\" contenteditable=\"false\"></span><span style=\"font-size: 10px;\">None</span></li></ol>",
             "attrs": {
               "paddingTop": 10,
               "paddingRight": 8,
@@ -285,7 +285,7 @@ export const Preset4: Page = {
           },
           {
             "type": "html",
-            "value": "<p style=\"font-size:12px;color:#b45309;\"><strong>Dietary Needs</strong></p><ul style=\"font-size:13px;line-height:1.5;color:#334155;\"><li>Vegetarian lunch</li><li>No sesame products</li></ul>",
+            "value": "<p class=\"ql-color-brown\" style=\"font-size:12px;\"><strong>Dietary Needs</strong></p><ol><li data-list=\"bullet\"><span class=\"ql-ui\" contenteditable=\"false\"></span><span style=\"font-size: 10px;\"> Vegetarian lunch </span></li><li data-list=\"bullet\"><span class=\"ql-ui\" contenteditable=\"false\"></span><span style=\"font-size: 10px;\"> No sesame products</span></li></ol>",
             "attrs": {
               "paddingTop": 10,
               "paddingRight": 10,
@@ -296,73 +296,6 @@ export const Preset4: Page = {
               "borderBottom": 1,
               "borderLeft": 0,
               "borderColor": "#fcd34d",
-              "backgroundColor": "white"
-            }
-          }
-        ],
-        "backgroundColor": "white"
-      },
-      {
-        "height": 0,
-        "widths": [
-          100
-        ],
-        "cells": [
-          {
-            "type": "html",
-            "value": "<p><strong style=\"font-size:15px;color:#b45309;\">Packing Checklist</strong></p>",
-            "attrs": {
-              "paddingTop": 12,
-              "paddingRight": 8,
-              "paddingBottom": 8,
-              "paddingLeft": 8,
-              "borderTop": 0,
-              "borderRight": 0,
-              "borderBottom": 1,
-              "borderLeft": 0,
-              "borderColor": "#fde68a",
-              "backgroundColor": "#fffbeb"
-            }
-          }
-        ],
-        "backgroundColor": "#fffbeb"
-      },
-      {
-        "height": 0,
-        "widths": [
-          50,
-          50
-        ],
-        "cells": [
-          {
-            "type": "html",
-            "value": "<ul style=\"font-size:13px;line-height:1.6;color:#334155;\"><li>□ Packed lunch & water bottle</li><li>□ Comfortable walking shoes</li><li>□ Weather-appropriate jacket</li><li>□ Personal medication (labelled)</li></ul>",
-            "attrs": {
-              "paddingTop": 10,
-              "paddingRight": 10,
-              "paddingBottom": 12,
-              "paddingLeft": 12,
-              "borderTop": 1,
-              "borderRight": 1,
-              "borderBottom": 1,
-              "borderLeft": 1,
-              "borderColor": "#cbd5e1",
-              "backgroundColor": "white"
-            }
-          },
-          {
-            "type": "html",
-            "value": "<ul style=\"font-size:13px;line-height:1.6;color:#334155;\"><li>□ Sunscreen (apply before school)</li><li>□ Hat with brim</li><li>□ Small backpack</li><li>□ Pocket money (optional, max $10)</li></ul>",
-            "attrs": {
-              "paddingTop": 10,
-              "paddingRight": 12,
-              "paddingBottom": 12,
-              "paddingLeft": 10,
-              "borderTop": 1,
-              "borderRight": 1,
-              "borderBottom": 1,
-              "borderLeft": 0,
-              "borderColor": "#cbd5e1",
               "backgroundColor": "white"
             }
           }
@@ -379,6 +312,56 @@ export const Preset4: Page = {
         "backgroundColor": "white"
       },
       {
+        "height": 50,
+        "widths": [
+          100
+        ],
+        "cells": [
+          {
+            "type": "html",
+            "value": "",
+            "attrs": {
+              "paddingTop": 5,
+              "paddingRight": 5,
+              "paddingBottom": 5,
+              "paddingLeft": 5,
+              "borderTop": 0,
+              "borderRight": 0,
+              "borderBottom": 0,
+              "borderLeft": 0,
+              "borderColor": "white",
+              "backgroundColor": "transparent"
+            }
+          }
+        ],
+        "backgroundColor": "white"
+      },
+      {
+        "height": 50,
+        "widths": [
+          100
+        ],
+        "cells": [
+          {
+            "type": "html",
+            "value": "",
+            "attrs": {
+              "paddingTop": 5,
+              "paddingRight": 5,
+              "paddingBottom": 5,
+              "paddingLeft": 5,
+              "borderTop": 0,
+              "borderRight": 0,
+              "borderBottom": 0,
+              "borderLeft": 0,
+              "borderColor": "white",
+              "backgroundColor": "transparent"
+            }
+          }
+        ],
+        "backgroundColor": "white"
+      },
+      {
         "height": 0,
         "widths": [
           100
@@ -386,7 +369,7 @@ export const Preset4: Page = {
         "cells": [
           {
             "type": "html",
-            "value": "<p><strong style=\"font-size:15px;color:#b45309;\">Schedule & Conduct</strong></p>",
+            "value": "<p><strong class=\"ql-color-brown\" style=\"font-size:15px;\">Schedule &amp; Conduct</strong></p>",
             "attrs": {
               "paddingTop": 12,
               "paddingRight": 8,
@@ -406,13 +389,13 @@ export const Preset4: Page = {
       {
         "height": 0,
         "widths": [
-          60,
-          40
+          56.59574468085106,
+          43.40425531914894
         ],
         "cells": [
           {
             "type": "html",
-            "value": "<p style=\"font-size:12px;color:#b45309;\"><strong>Timeline</strong></p><ol style=\"font-size:13px;line-height:1.6;color:#334155;\"><li>08:45 — Board bus from North Gate</li><li>10:00 — Guided exhibits tour</li><li>12:00 — Lunch at museum courtyard</li><li>13:00 — Workshop: Renewable Energy</li><li>14:30 — Depart museum</li></ol>",
+            "value": "<ol class=\"ql-color-slate\" style=\"font-size:13px;line-height:1.6;\"><li><span class=\"ql-ui\" contenteditable=\"false\"></span><strong>Timeline</strong></li><li><span class=\"ql-ui\" contenteditable=\"false\"></span><span style=\"font-size: 10px;\"> 08:45 — Board bus from North Gate</span></li><li><span class=\"ql-ui\" contenteditable=\"false\"></span><span style=\"font-size: 10px;\"> 10:00 — Guided exhibits tour</span></li><li><span class=\"ql-ui\" contenteditable=\"false\"></span><span style=\"font-size: 10px;\"> 12:00 — Lunch at museum courtyard</span></li><li><span class=\"ql-ui\" contenteditable=\"false\"></span><span style=\"font-size: 10px;\"> 13:00 — Workshop: Renewable Energy</span></li><li><span class=\"ql-ui\" contenteditable=\"false\"></span><span style=\"font-size: 10px;\"> 14:30 — Depart museum</span></li></ol>",
             "attrs": {
               "paddingTop": 10,
               "paddingRight": 10,
@@ -428,7 +411,7 @@ export const Preset4: Page = {
           },
           {
             "type": "html",
-            "value": "<p style=\"font-size:12px;color:#b45309;\"><strong>Conduct & Safety</strong></p><ul style=\"font-size:13px;line-height:1.6;color:#334155;\"><li>□ Stay with assigned group</li><li>□ Follow staff instructions</li><li>□ No food/drink in exhibit halls</li><li>□ Report any issue to a teacher immediately</li></ul>",
+            "value": "<p class=\"ql-color-brown\" style=\"font-size:12px;\"><strong>Conduct &amp; Safety</strong></p><p><span style=\"font-size: 10px;\">• Stay with assigned group </span></p><p><span style=\"font-size: 10px;\">• Follow staff instructions </span></p><p><span style=\"font-size: 10px;\">• No food/ drink in exhibithalls </span></p><p><span style=\"font-size: 10px;\">• Report any issue to a teacher immediately</span></p>",
             "attrs": {
               "paddingTop": 10,
               "paddingRight": 12,
@@ -439,73 +422,6 @@ export const Preset4: Page = {
               "borderBottom": 1,
               "borderLeft": 0,
               "borderColor": "#fcd34d",
-              "backgroundColor": "white"
-            }
-          }
-        ],
-        "backgroundColor": "white"
-      },
-      {
-        "height": 0,
-        "widths": [
-          100
-        ],
-        "cells": [
-          {
-            "type": "html",
-            "value": "<p><strong style=\"font-size:15px;color:#b45309;\">Permissions</strong></p>",
-            "attrs": {
-              "paddingTop": 12,
-              "paddingRight": 8,
-              "paddingBottom": 8,
-              "paddingLeft": 8,
-              "borderTop": 0,
-              "borderRight": 0,
-              "borderBottom": 1,
-              "borderLeft": 0,
-              "borderColor": "#fde68a",
-              "backgroundColor": "#fffbeb"
-            }
-          }
-        ],
-        "backgroundColor": "#fffbeb"
-      },
-      {
-        "height": 0,
-        "widths": [
-          50,
-          50
-        ],
-        "cells": [
-          {
-            "type": "html",
-            "value": "<ul style=\"font-size:13px;line-height:1.6;color:#334155;\"><li>□ I give permission for my child to attend the trip.</li><li>□ I consent to first aid/medical treatment if required.</li><li>□ Photo consent: □ Yes  □ No</li></ul>",
-            "attrs": {
-              "paddingTop": 10,
-              "paddingRight": 8,
-              "paddingBottom": 12,
-              "paddingLeft": 12,
-              "borderTop": 1,
-              "borderRight": 1,
-              "borderBottom": 1,
-              "borderLeft": 1,
-              "borderColor": "#cbd5e1",
-              "backgroundColor": "white"
-            }
-          },
-          {
-            "type": "html",
-            "value": "<p class=\"ql-align-right\" style=\"font-size:12px;color:#334155;\">Parent/Guardian Signature: ______________________</p><p class=\"ql-align-right\" style=\"font-size:12px;color:#334155;\">Name & Date: ________________________________</p><p class=\"ql-align-right\" style=\"font-size:12px;color:#334155;\">Teacher Signature: ____________________________</p>",
-            "attrs": {
-              "paddingTop": 10,
-              "paddingRight": 12,
-              "paddingBottom": 12,
-              "paddingLeft": 8,
-              "borderTop": 1,
-              "borderRight": 1,
-              "borderBottom": 1,
-              "borderLeft": 0,
-              "borderColor": "#cbd5e1",
               "backgroundColor": "white"
             }
           }
@@ -524,7 +440,7 @@ export const Preset4: Page = {
         "cells": [
           {
             "type": "html",
-            "value": "<p class=\"ql-align-center\"><span style=\"font-size:11px;color:#64748b;\">School policy applies at all times during excursions. Bus provider: City Coaches · (555) 000-4411</span></p>",
+            "value": "<p class=\"ql-align-center\"><span class=\"ql-color-slate\" style=\"font-size:11px;\">School policy applies at all times during excursions. Bus provider: City Coaches · (555) 000-4411</span></p>",
             "attrs": {
               "paddingTop": 10,
               "paddingRight": 8,

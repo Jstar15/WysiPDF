@@ -295,7 +295,7 @@ export const Preset2: Page = {
         "cells": [
           {
             "type": "html",
-            "value": "<p class=\"ql-font-roboto\" style=\"font-size:12px;color: rgb(71, 85, 105);\"><strong style=\"font-size: 10px;\">Laterality</strong></p><p class=\"ql-font-roboto\" style=\"font-size:13px;\">Left</p>",
+            "value": "<p class=\"ql-font-roboto\" style=\"font-size:12px;color: rgb(71, 85, 105);\"><strong style=\"font-size: 10px; color: rgb(136, 136, 136);\">Laterality</strong></p><p class=\"ql-font-roboto\" style=\"font-size:13px;\">Left</p>",
             "attrs": {
               "paddingTop": 8,
               "paddingRight": 8,
@@ -310,7 +310,7 @@ export const Preset2: Page = {
           },
           {
             "type": "html",
-            "value": "<p class=\"ql-font-roboto\" style=\"font-size:12px;color: rgb(71, 85, 105);\"><strong style=\"font-size: 10px;\">Level</strong></p><p class=\"ql-font-roboto\" style=\"font-size:13px;\">Below knee</p>",
+            "value": "<p class=\"ql-font-roboto\" style=\"font-size:12px;color: rgb(71, 85, 105);\"><strong style=\"font-size: 10px; color: rgb(136, 136, 136);\">Level</strong></p><p class=\"ql-font-roboto\" style=\"font-size:13px;\">Below knee</p>",
             "attrs": {
               "paddingTop": 8,
               "paddingRight": 8,
@@ -325,7 +325,7 @@ export const Preset2: Page = {
           },
           {
             "type": "html",
-            "value": "<p class=\"ql-font-roboto\" style=\"font-size:12px;color: rgb(71, 85, 105);\"><strong style=\"font-size: 10px;\">Site Marked</strong></p><p class=\"ql-font-roboto\" style=\"font-size:13px;\">Yes</p>",
+            "value": "<p class=\"ql-font-roboto\" style=\"font-size:12px;color: rgb(71, 85, 105);\"><strong style=\"font-size: 10px; color: rgb(136, 136, 136);\">Site Marked</strong></p><p class=\"ql-font-roboto\" style=\"font-size:13px;\">Yes</p>",
             "attrs": {
               "paddingTop": 8,
               "paddingRight": 8,
@@ -340,7 +340,7 @@ export const Preset2: Page = {
           },
           {
             "type": "html",
-            "value": "<p class=\"ql-font-roboto\" style=\"font-size:12px;color: rgb(71, 85, 105);\"><strong style=\"font-size: 10px;\">Indication</strong></p><p class=\"ql-font-roboto\" style=\"font-size:13px;\">Critical limb ischaemia, infected ulcers, intractable pain.</p>",
+            "value": "<p class=\"ql-font-roboto\" style=\"font-size:12px;color: rgb(71, 85, 105);\"><strong style=\"font-size: 10px; color: rgb(136, 136, 136);\">Indication</strong></p><p class=\"ql-font-roboto\" style=\"font-size:13px;\">Critical limb ischaemia, infected ulcers, intractable pain.</p>",
             "attrs": {
               "paddingTop": 8,
               "paddingRight": 10,
@@ -390,7 +390,7 @@ export const Preset2: Page = {
         "cells": [
           {
             "type": "html",
-            "value": "<p class=\"ql-font-roboto\" style=\"font-size:12px;color: rgb(55, 48, 163);\"><strong style=\"color: rgb(0, 102, 204);\">Expected Benefits</strong></p><p>• Pain relie f and infe ction cont rol </p><p>• Removal of non-viabl e tissue </p><p>• Potential for prosth etic mobil ity</p>",
+            "value": "<p class=\"ql-font-roboto\" style=\"font-size:12px;color: rgb(55, 48, 163);\"><strong style=\"color: rgb(0, 102, 204);\">Expected Benefits</strong></p><p><span style=\"font-size: 10px;\">• Pain relief and infection control </span></p><p><span style=\"font-size: 10px;\">• Removal of non-viable tissue </span></p><p><span style=\"font-size: 10px;\">• Potential for prosthetic mobility</span></p>",
             "attrs": {
               "paddingTop": 10,
               "paddingRight": 8,
@@ -405,7 +405,7 @@ export const Preset2: Page = {
           },
           {
             "type": "html",
-            "value": "<p class=\"ql-font-roboto\" style=\"font-size:12px;color: rgb(185, 28, 28);\"><strong style=\"color: rgb(230, 0, 0);\">Material Risks</strong></p><p>• Bleeding, infection, wound bre akdown </p><p>• DVT/PE, an aesthetic or cardiac complicat ions </p><p>• Phantom li mb pain; r evision to above-kne e • Death (rar e but poss ible in hi gh-risk pa tients) </p>",
+            "value": "<p class=\"ql-font-roboto\" style=\"font-size:12px;color: rgb(185, 28, 28);\"><strong style=\"color: rgb(230, 0, 0);\">Material Risks</strong></p><p><span style=\"font-size: 10px;\">• Bleeding, infection, wound breakdown </span></p><p><span style=\"font-size: 10px;\">• DVT/PE, an aesthetic or cardiac complications </span></p><p><span style=\"font-size: 10px;\">• Phantom limb pain; revision to above-knee • Death (rare but possible in high-risk patients) </span></p>",
             "attrs": {
               "paddingTop": 10,
               "paddingRight": 12,
@@ -513,7 +513,7 @@ export const Preset2: Page = {
         "cells": [
           {
             "type": "html",
-            "value": "<ul class=\"ql-font-roboto\" style=\"font-size:13px;line-height:1.6;color: rgb(51, 65, 85);\"><li>Further revascularisation if feasible</li><li>Ongoing antibiotics and wound care</li><li>Pain management and palliative options</li><li>Second opinion or deferral</li></ul>",
+            "value": "<p><span style=\"font-size: 10px;\">• Further revascularisation if feasible </span></p><p><span style=\"font-size: 10px;\">• Ongoing antibiotics and wound care </span></p><p><span style=\"font-size: 10px;\">• Pain management and palliative options </span></p><p><span style=\"font-size: 10px;\">• Second opinion or deferral</span></p>",
             "attrs": {
               "paddingTop": 10,
               "paddingRight": 12,
@@ -563,7 +563,7 @@ export const Preset2: Page = {
         "cells": [
           {
             "type": "html",
-            "value": "<ol class=\"ql-font-roboto\" style=\"font-size:13px;line-height:1.6;color: rgb(51, 65, 85);\"><li>I have read and understood the information above, including benefits, material risks, and alternatives.</li><li>I understand the side and level of surgery: <strong>Left Below-Knee</strong>.</li><li>I consent to anaesthesia as advised.</li><li>I consent to blood products if necessary.</li><li>I understand intra-operative findings may require modification for safety.</li></ol>",
+            "value": "<p><span style=\"font-size: 10px;\">I have read and understood the information above, including benefits, material risks, and alternatives.</span></p><p><span style=\"font-size: 10px;\">I understand the side and level of surgery</span>. <strong style=\"font-size: 10px;\">Left Below-Knee</strong></p><p><span style=\"font-size: 10px;\">I consent to anaesthesia as advised.</span></p><p><span style=\"font-size: 10px;\">I consent to blood products if necessary.</span></p><p><span style=\"font-size: 10px;\">I understand intra-operative findings may require modification for safety.</span></p>",
             "attrs": {
               "paddingTop": 10,
               "paddingRight": 12,
@@ -589,7 +589,7 @@ export const Preset2: Page = {
         "cells": [
           {
             "type": "html",
-            "value": "<p class=\"ql-font-roboto\" style=\"font-size:12px;color: rgb(71, 85, 105);\">Patient/Guardian Signature</p><p class=\"ql-font-roboto\">_______________________________</p><p class=\"ql-font-roboto\" style=\"font-size:12px;color: rgb(71, 85, 105);\">Name &amp; Date/Time</p><p class=\"ql-font-roboto\">_______________________________</p>",
+            "value": "<p class=\"ql-font-roboto\" style=\"font-size:12px;color: rgb(71, 85, 105);\"><span style=\"font-size: 10px;\">Patient/Guardian Signature</span></p><p class=\"ql-font-roboto\">_______________________________</p><p class=\"ql-font-roboto\" style=\"font-size:12px;color: rgb(71, 85, 105);\"><span style=\"font-size: 10px;\">Name &amp; Date/Time</span></p><p class=\"ql-font-roboto\">_______________________________</p>",
             "attrs": {
               "paddingTop": 12,
               "paddingRight": 8,
@@ -604,7 +604,7 @@ export const Preset2: Page = {
           },
           {
             "type": "html",
-            "value": "<p class=\"ql-align-right ql-font-roboto\" style=\"font-size:12px;color: rgb(71, 85, 105);\">Surgeon (Consultant) Signature</p><p class=\"ql-align-right ql-font-roboto\">_______________________________</p><p class=\"ql-align-right ql-font-roboto\" style=\"font-size:12px;color: rgb(71, 85, 105);\">Name, GMC/Provider ID &amp; Date/Time</p><p class=\"ql-align-right ql-font-roboto\">_______________________________</p>",
+            "value": "<p class=\"ql-align-right ql-font-roboto\" style=\"font-size:12px;color: rgb(71, 85, 105);\"><span style=\"font-size: 10px;\">Surgeon (Consultant) Signature</span></p><p class=\"ql-align-right ql-font-roboto\">_______________________________</p><p class=\"ql-align-right ql-font-roboto\" style=\"font-size:12px;color: rgb(71, 85, 105);\"><span style=\"font-size: 10px;\">Name, GMC/Provider ID &amp; Date/Time</span></p><p class=\"ql-align-right ql-font-roboto\">_______________________________</p>",
             "attrs": {
               "paddingTop": 12,
               "paddingRight": 12,
@@ -629,7 +629,7 @@ export const Preset2: Page = {
         "cells": [
           {
             "type": "html",
-            "value": "<p class=\"ql-font-roboto\" style=\"font-size:12px;color: rgb(71, 85, 105);\">Anaesthetist Signature</p><p class=\"ql-font-roboto\">_______________________________</p>",
+            "value": "<p class=\"ql-font-roboto\" style=\"font-size:12px;color: rgb(71, 85, 105);\"><span style=\"font-size: 10px;\">Anaesthetist Signature</span></p><p class=\"ql-font-roboto\">_______________________________</p>",
             "attrs": {
               "paddingTop": 10,
               "paddingRight": 8,
@@ -644,7 +644,7 @@ export const Preset2: Page = {
           },
           {
             "type": "html",
-            "value": "<p class=\"ql-align-right ql-font-roboto\" style=\"font-size:12px;color: rgb(71, 85, 105);\">Witness (where required)</p><p class=\"ql-align-right ql-font-roboto\">_______________________________</p>",
+            "value": "<p class=\"ql-align-right ql-font-roboto\" style=\"font-size:12px;color: rgb(71, 85, 105);\"><span style=\"font-size: 10px;\">Witness (where required)</span></p><p class=\"ql-align-right ql-font-roboto\">_______________________________</p>",
             "attrs": {
               "paddingTop": 10,
               "paddingRight": 12,
@@ -672,7 +672,7 @@ export const Preset2: Page = {
         "cells": [
           {
             "type": "html",
-            "value": "<p class=\"ql-align-center ql-font-roboto\"><span style=\"font-size:11px;color: rgb(100, 116, 139);\">Confidential · Version 1.0 · Reviewed 2025-08-01</span></p>",
+            "value": "<p class=\"ql-font-roboto\"><span style=\"font-size:11px;color: rgb(100, 116, 139);\">Confidential · Version 1.0 · Reviewed 2025-08-01</span></p>",
             "attrs": {
               "paddingTop": 10,
               "paddingRight": 8,
