@@ -46,6 +46,7 @@ export class HtmlToStructuredContentService {
           break;
 
         case 'p':
+        case 'br':
         case 'h1':
         case 'h2':
         case 'h3':
@@ -90,6 +91,16 @@ export class HtmlToStructuredContentService {
     const inlineAlign = blockEl.style.textAlign;
     const alignment = inlineAlign || classAlign || 'left';
 
+    // ✨ if the block itself is <br>, return a paragraph with a newline
+    if (blockType === 'br') {
+      elements.push({
+        value: '\n',
+        attributes: { ...this.getDefaultAttributes(), align: alignment },
+        type: 'text'
+      });
+      return { elements, blockType: 'p', alignment };
+    }
+
     const parseNodeRecursively = (
       node: Node,
       inheritedAttrs: HtmlAttributes,
@@ -109,6 +120,16 @@ export class HtmlToStructuredContentService {
         }
       } else if (node.nodeType === Node.ELEMENT_NODE) {
         const el = node as HTMLElement;
+
+        if (el.tagName.toLowerCase() === 'br') {
+          elements.push({
+            value: '\n',
+            attributes: { ...inheritedAttrs, align: inheritedAttrs.align || alignment },
+            type: 'text'
+          });
+          return;
+        }
+
         const combinedClass = [inheritedClass, el.className].filter(Boolean).join(' ');
         // 🔧 Use extractAttributes with inheritance
         const mergedAttrs = this.extractAttributes(el, combinedClass, inheritedAttrs);

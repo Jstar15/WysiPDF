@@ -34,7 +34,7 @@
         <mat-icon svgIcon="add_photo_alternate"></mat-icon>
     </button>
 
-    <button mat-icon-button matTooltip="Insert Chart" (click)="openAddChartDialog()">
+    <button *ngIf="!hideChart" mat-icon-button matTooltip="Insert Chart" (click)="openAddChartDialog()">
         <mat-icon svgIcon="pie_chart"></mat-icon>
     </button>
 
