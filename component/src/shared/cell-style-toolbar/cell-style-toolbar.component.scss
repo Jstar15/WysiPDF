@@ -1,0 +1,100 @@
+/* Container */
+.cell-style-toolbar.mat-toolbar {
+  border: 1px solid #e5e7eb;
+  background: #ffffff;
+  border-radius: 10px;
+  padding: 6px 8px;
+  gap: 6px;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* Buttons nice & tight */
+.btn-tight.mat-mdc-button {
+  min-width: 0;
+  padding: 0 6px;
+}
+
+/* Swatches */
+.swatch {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  border: 1px solid #e5e7eb;
+  margin: 0 4px;
+  vertical-align: middle;
+}
+.swatch.tiny { width: 12px; height: 12px; border-radius: 3px; }
+.caret { margin-left: 0; }
+
+/* Palette menu */
+.palette-menu .palette {
+  width: 208px; /* 8 cols * 26px */
+  display: grid;
+  grid-template-columns: repeat(8, 26px);
+  gap: 6px;
+  padding: 10px;
+}
+.palette-menu .swatch-btn {
+  width: 22px;
+  height: 22px;
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+  padding: 0;
+  cursor: pointer;
+  background: transparent;
+}
+.palette-menu .swatch-btn:hover { border-color: #cbd5e1; }
+
+.palette-menu .menu-row {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px 10px 10px;
+  border-top: 1px solid #f1f5f9;
+}
+
+.custom-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: #fff;
+  cursor: pointer;
+  font-size: 12px;
+}
+.custom-btn:hover { background: #f8fafc; }
+
+/* Weight preview */
+.weight-preview {
+  display: inline-block;
+  width: 24px;
+  border-bottom-style: solid;
+  border-bottom-color: currentColor;
+  margin-right: 8px;
+}
+
+/* Preset menu grid */
+.preset-menu .preset-grid.compact {
+  display: grid;
+  grid-template-columns: repeat(7, 32px);
+  gap: 6px;
+  padding: 8px;
+}
+.preset-menu .preset-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  display: grid;
+  place-items: center;
+  border: 1px solid transparent;
+  background: transparent;
+}
+.preset-menu .preset-btn:hover {
+  background: #f8fafc;
+  border-color: #e5e7eb;
+}

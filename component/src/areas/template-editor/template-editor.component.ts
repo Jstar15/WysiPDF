@@ -64,7 +64,8 @@ import {PageToHtmlService} from "../../services/page-to-html.service";
     MatIconButton,
     MatCardActions,
     NgStyle,
-    JsonViewerComponent
+    JsonViewerComponent,
+
   ]
 })
 export class TemplateEditorComponent implements OnInit,AfterViewInit {

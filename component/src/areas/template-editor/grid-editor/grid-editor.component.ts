@@ -41,11 +41,16 @@ import {
   ChartBlock
 } from '../../../models/interfaces';
 import { DisplayLogicGroup } from '../../../models/display-logic.models';
+import {
+  CellStyleToolbarComponent,
+  CellStylePatch,
+  BorderPreset
+} from '../../../shared/cell-style-toolbar/cell-style-toolbar.component';
 
 @Component({
   selector: 'app-grid-editor',
   standalone: true,
-  imports: [CommonModule, MatIconButton, MatIcon, MatToolbar, MatTooltip, DragDropModule],
+  imports: [CommonModule, MatIconButton, MatIcon, MatToolbar, MatTooltip, DragDropModule, CellStyleToolbarComponent],
   templateUrl: './grid-editor.component.html',
   styleUrls: ['./grid-editor.component.scss']
 })
@@ -406,6 +411,67 @@ export class GridEditorComponent implements OnInit, OnDestroy {
     this.emitChange();
   }
 
+  // ---------------- toolbar handlers (wired) ----------------
+
+  /** Apply granular background/border patches from the toolbar to the selected cell. */
+// Apply granular background/border patches from the toolbar to the selected cell.
+public onToolbarPatch(patch: CellStylePatch): void {
+  const sel = this.getSelectedCell();
+  if (!sel) return;
+
+  const attrs = sel.cell.attrs ?? (sel.cell.attrs = {} as CellAttrs);
+
+  if (patch.backgroundColor !== undefined) {
+    attrs.backgroundColor = patch.backgroundColor || 'transparent';
+  }
+  if (patch.borderColor !== undefined) {
+    attrs.borderColor = patch.borderColor || attrs.borderColor || '#bbb';
+  }
+
+  if (typeof patch.borderTop === 'number')    attrs.borderTop    = Math.max(0, Math.round(patch.borderTop));
+  if (typeof patch.borderRight === 'number')  attrs.borderRight  = Math.max(0, Math.round(patch.borderRight));
+  if (typeof patch.borderBottom === 'number') attrs.borderBottom = Math.max(0, Math.round(patch.borderBottom));
+  if (typeof patch.borderLeft === 'number')   attrs.borderLeft   = Math.max(0, Math.round(patch.borderLeft));
+
+  // Note: patch.color is for text; apply it in your HTML content editor if desired.
+
+  if (!(this.cdr as any)?.destroyed) this.cdr.detectChanges();
+  this.emitChange();
+}
+
+/**
+ * Apply border preset from toolbar (reduced set).
+ * Supported: 'none' | 'outside' | 'all' | 'top' | 'right' | 'bottom' | 'left'
+ */
+public onToolbarPreset(e: { preset: BorderPreset; weight: number; color: string }): void {
+  const sel = this.getSelectedCell();
+  if (!sel) return;
+
+  const attrs = sel.cell.attrs ?? (sel.cell.attrs = {} as CellAttrs);
+  attrs.borderColor = e.color || attrs.borderColor || '#bbb';
+
+  const w = Math.max(0, Math.round(e.weight));
+  const z = 0;
+  const setAll = (t: number, r: number, b: number, l: number) => {
+    attrs.borderTop = t; attrs.borderRight = r; attrs.borderBottom = b; attrs.borderLeft = l;
+  };
+
+  switch (e.preset) {
+    case 'none':    setAll(z, z, z, z); break;
+    case 'outside': setAll(w, w, w, w); break;
+    case 'all':     setAll(w, w, w, w); break;
+    case 'top':     setAll(w, attrs.borderRight ?? z, attrs.borderBottom ?? z, attrs.borderLeft ?? z); break;
+    case 'right':   setAll(attrs.borderTop ?? z, w, attrs.borderBottom ?? z, attrs.borderLeft ?? z); break;
+    case 'bottom':  setAll(attrs.borderTop ?? z, attrs.borderRight ?? z, w, attrs.borderLeft ?? z); break;
+    case 'left':    setAll(attrs.borderTop ?? z, attrs.borderRight ?? z, attrs.borderBottom ?? z, w); break;
+    default:        /* no-op */ break;
+  }
+
+  if (!(this.cdr as any)?.destroyed) this.cdr.detectChanges();
+  this.emitChange();
+}
+
+
   // ---------------- private helpers ----------------
 
   private sanitizeHtmlInternal(html: string): SafeHtml {
@@ -468,11 +534,7 @@ export class GridEditorComponent implements OnInit, OnDestroy {
     this.activeDialog = ref;
 
     // Ensure proper teardown and re-entry safety
-    ref.beforeClosed().pipe(takeUntil(this.destroy$)).subscribe({
-      next: () => {
-        try { /* hook for dialog-specific cleanup if needed */ } catch {}
-      }
-    });
+    ref.beforeClosed().pipe(takeUntil(this.destroy$)).subscribe({ next: () => {} });
 
     ref.afterClosed().pipe(take(1), takeUntil(this.destroy$))
       .subscribe({

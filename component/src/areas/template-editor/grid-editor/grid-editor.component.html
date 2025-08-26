@@ -49,7 +49,10 @@
     <button mat-icon-button color="accent" matTooltip="Edit Cell Style"  (click)="openCellStyleEditorDialog()">
       <mat-icon svgIcon="border_color"></mat-icon>
     </button>
-
+    <app-cell-style-toolbar
+        (styleChange)="onToolbarPatch($event)"
+        (borderPresetChange)="onToolbarPreset($event)">
+    </app-cell-style-toolbar>
 </mat-toolbar>
 
 
