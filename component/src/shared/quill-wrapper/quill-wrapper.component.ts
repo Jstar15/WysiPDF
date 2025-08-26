@@ -74,7 +74,7 @@ export class QuillWrapperComponent implements OnInit, AfterViewInit, OnDestroy {
     Quill.register(CustomElementBlot);
 
     const SizeStyle: any = Quill.import('attributors/style/size');
-    SizeStyle.whitelist = ['8px', '10px', '12px', '14px', '16px', '18px', '24px', '32px', '48px'];
+    SizeStyle.whitelist = ['9px','10px','11px','12px','14px', '16px', '18px', '24px', '32px', '48px', '72px', '90px'];
     Quill.register(SizeStyle, true);
   }
 
