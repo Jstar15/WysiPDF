@@ -1,0 +1,26 @@
+<h1 mat-dialog-title>Load Preset</h1>
+
+<div mat-dialog-content>
+
+  <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 16px; padding-top: 10px;">
+    <mat-label>Select Preset</mat-label>
+    <mat-select [(ngModel)]="selectedPreset">
+      <mat-option *ngFor="let preset of presets; let i = index" [value]="preset">
+        Preset {{ i + 1 }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <div *ngIf="selectedPreset" class="preview-container">
+    <p class="section-title">Preview</p>
+    <pre class="json-preview">{{ selectedPreset | json }}</pre>
+  </div>
+
+</div>
+
+<div mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">Cancel</button>
+  <button mat-raised-button color="primary" (click)="onLoad()" [disabled]="!selectedPreset">
+    Load
+  </button>
+</div>
