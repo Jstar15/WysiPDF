@@ -6,6 +6,7 @@ import 'zone.js';
 import { TemplateEditorComponent } from './areas/template-editor/template-editor.component';
 import { MatIconModule } from '@angular/material/icon';
 import { PdfGenerateService } from './services/pdf-generate.service';
+import {HtmlGenerationResult, PageToHtmlService} from "./services/page-to-html.service";
 
 // ✅ CHANGED: appPromise now returns the app object so we can access the injector
 let appPromise: Promise<any>;
@@ -87,8 +88,39 @@ export async function generatePdfBase64FromJson(page: any, json: string): Promis
   return result.base64;
 }
 
+
+let pageToHtmlServiceInstance: PageToHtmlService | null = null;
+
+async function getHtmlService(): Promise<PageToHtmlService> {
+  const app = await appPromise; // ✅ Now this resolves to the app object
+  if (!pageToHtmlServiceInstance) {
+    pageToHtmlServiceInstance = app.injector.get(PageToHtmlService);
+  }
+  return pageToHtmlServiceInstance;
+}
+
+/**
+ * Generate html from a page and token list.
+ */
+export async function generateHtml(page: any, tokens: any[]): Promise<string> {
+  const service: PageToHtmlService = await getHtmlService();
+  const result: HtmlGenerationResult = await service.generateHtml(page, tokens);
+  return result.html;
+}
+
+/**
+ * Generate html from a page and JSON token string.
+ */
+export async function generateHtmlFromJson(page: any, json: string): Promise<string> {
+  const service: PageToHtmlService = await getHtmlService();
+  const result: HtmlGenerationResult = await service.generateHtmlFromJson(page, json);
+  return result.html;
+}
+
 // ✅ Expose to global scope for browser usage
 (window as any).loadPage = loadPage;
 (window as any).onPageChange = onPageChange;
 (window as any).generatePdfBase64 = generatePdfBase64;
 (window as any).generatePdfBase64FromJson = generatePdfBase64FromJson;
+(window as any).generateHtml = generateHtml;
+(window as any).generateHtmlFromJson = generateHtmlFromJson;
