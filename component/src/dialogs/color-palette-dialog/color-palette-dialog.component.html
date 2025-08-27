@@ -1,0 +1,88 @@
+<h1 mat-dialog-title>Build Color Palette</h1>
+
+<div mat-dialog-content class="editor-dialog-content">
+  <p class="section-title">Palette Colors</p>
+
+  <div
+    class="palette-list"
+    cdkDropList
+    (cdkDropListDropped)="drop($event)"
+    [class.palette-empty]="colorsArray.length === 0"
+  >
+    <div
+      class="palette-item"
+      *ngFor="let ctrl of colorsArray.controls; let i = index; trackBy: trackByIndex"
+      cdkDrag
+    >
+      <div class="drag-handle" cdkDragHandle matTooltip="Drag to reorder">
+        <mat-icon svgIcon="drag_indicator"></mat-icon>
+      </div>
+
+      <div class="swatch" [style.background]="swatch(ctrl.value)">
+        <span class="swatch-label" [style.color]="contrast(ctrl.value)">
+          {{ ctrl.value || '#------' }}
+        </span>
+      </div>
+
+      <mat-form-field appearance="fill" class="color-input">
+        <mat-label>Hex</mat-label>
+        <input
+          matInput
+          [formControl]="ctrl"
+          placeholder="#RRGGBB"
+          (blur)="autoFix(i)"
+          spellcheck="false"
+        />
+        <mat-error *ngIf="ctrl.hasError('required')">Required</mat-error>
+        <mat-error *ngIf="ctrl.hasError('pattern')">
+          Use <strong>#RGB</strong>, <strong>#RRGGBB</strong>, or
+          <strong>#RRGGBBAA</strong>
+        </mat-error>
+      </mat-form-field>
+
+      <button
+        mat-icon-button
+        type="button"
+        aria-label="Remove color"
+        matTooltip="Remove color"
+        (click)="removeColor(i)"
+      >
+        <mat-icon svgIcon="delete"></mat-icon>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Footer: Add on the left, Cancel/Save on the right -->
+<div mat-dialog-actions class="dialog-actions">
+  <div class="left-actions">
+    <button
+      mat-stroked-button
+      type="button"
+      (click)="generatePalette()"
+      matTooltip="Generate a harmonious 20-color theme"
+    >
+      <mat-icon svgIcon="auto_awesome_mosaic"></mat-icon>
+
+      Generate palette
+    </button>
+
+    <button mat-stroked-button type="button" (click)="addColor('#000000')">
+      <mat-icon svgIcon="add"></mat-icon>
+      Add color
+    </button>
+  </div>
+
+  <div class="right-actions">
+    <button mat-button type="button" (click)="onCancel()">Cancel</button>
+    <button
+      mat-raised-button
+      color="primary"
+      type="button"
+      (click)="onSave()"
+      [disabled]="form.invalid || colorsArray.length === 0"
+    >
+      Save
+    </button>
+  </div>
+</div>

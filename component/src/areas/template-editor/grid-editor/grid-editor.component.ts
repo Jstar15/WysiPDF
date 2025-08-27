@@ -13,12 +13,10 @@ import { CommonModule } from '@angular/common';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
-import { MatToolbar } from '@angular/material/toolbar';
 import { MatTooltip } from '@angular/material/tooltip';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { Subject, take, takeUntil } from 'rxjs';
-
 import { TokenAttribute } from '../../../models/TokenAttribute';
 import { QuillEditorDialogComponent } from '../../../dialogs/quill-editor-dialog/quill-editor.dialog.component';
 import { CellAttributesDialogComponent } from '../../../dialogs/cell-attributes-dialog/cell-attributes-dialog.component';
@@ -30,7 +28,6 @@ import {
 import { DisplayLogicDialogComponent } from '../../../dialogs/display-logic-dialog/display-logic-dialog.component';
 import { IconService } from '../../../services/icon.service';
 import { AddPieChartDialogComponent } from '../../../dialogs/add-pie-chart/add-pie-chart-dialog.component';
-
 import {
   Cell,
   CellAttrs,
@@ -43,14 +40,12 @@ import {
 import { DisplayLogicGroup } from '../../../models/display-logic.models';
 import {
   CellStyleToolbarComponent,
-  CellStylePatch,
-  BorderPreset
 } from '../../../shared/cell-style-toolbar/cell-style-toolbar.component';
 
 @Component({
   selector: 'app-grid-editor',
   standalone: true,
-  imports: [CommonModule, MatIconButton, MatIcon, MatToolbar, MatTooltip, DragDropModule, CellStyleToolbarComponent],
+  imports: [CommonModule, MatIconButton, MatIcon, MatTooltip, DragDropModule, CellStyleToolbarComponent],
   templateUrl: './grid-editor.component.html',
   styleUrls: ['./grid-editor.component.scss']
 })
@@ -63,6 +58,7 @@ export class GridEditorComponent implements OnInit, OnDestroy {
   @Input() public hidePartialContent: boolean = false;
   @Input() public hideChart: boolean = false;
   @Input() public pageAttrs: PageAttrs = {};
+  @Input() public colorPalettes: string[] | undefined = [];
   @Input() public grid!: Grid;
 
   @Output() public gridChange = new EventEmitter<Grid>();
@@ -72,6 +68,7 @@ export class GridEditorComponent implements OnInit, OnDestroy {
 
   public currentRow = 0;
   public currentCol = -1;
+  public presetAttributes: CellAttrs;
   public hideCellAttributeToolbar = true;
   private activeDialog: MatDialogRef<any, any> | null = null;
   private lastDialogOpenAt = 0;
@@ -97,6 +94,9 @@ export class GridEditorComponent implements OnInit, OnDestroy {
     if (this.partialContentAvailableList?.length && !this.selectedPartialId) {
       this.selectedPartialId = this.partialContentAvailableList[0]?.id ?? null;
     }
+
+
+
   }
 
   public ngOnDestroy(): void {
@@ -412,65 +412,6 @@ export class GridEditorComponent implements OnInit, OnDestroy {
     this.emitChange();
   }
 
-  // ---------------- toolbar handlers (wired) ----------------
-
-  /** Apply granular background/border patches from the toolbar to the selected cell. */
-// Apply granular background/border patches from the toolbar to the selected cell.
-public onToolbarPatch(patch: CellStylePatch): void {
-  const sel = this.getSelectedCell();
-  if (!sel) return;
-
-  const attrs = sel.cell.attrs ?? (sel.cell.attrs = {} as CellAttrs);
-
-  if (patch.backgroundColor !== undefined) {
-    attrs.backgroundColor = patch.backgroundColor || 'transparent';
-  }
-  if (patch.borderColor !== undefined) {
-    attrs.borderColor = patch.borderColor || attrs.borderColor || '#bbb';
-  }
-
-  if (typeof patch.borderTop === 'number')    attrs.borderTop    = Math.max(0, Math.round(patch.borderTop));
-  if (typeof patch.borderRight === 'number')  attrs.borderRight  = Math.max(0, Math.round(patch.borderRight));
-  if (typeof patch.borderBottom === 'number') attrs.borderBottom = Math.max(0, Math.round(patch.borderBottom));
-  if (typeof patch.borderLeft === 'number')   attrs.borderLeft   = Math.max(0, Math.round(patch.borderLeft));
-
-  // Note: patch.color is for text; apply it in your HTML content editor if desired.
-
-  if (!(this.cdr as any)?.destroyed) this.cdr.detectChanges();
-  this.emitChange();
-}
-
-/**
- * Apply border preset from toolbar (reduced set).
- * Supported: 'none' | 'outside' | 'all' | 'top' | 'right' | 'bottom' | 'left'
- */
-public onToolbarPreset(e: { preset: BorderPreset; weight: number; color: string }): void {
-  const sel = this.getSelectedCell();
-  if (!sel) return;
-
-  const attrs = sel.cell.attrs ?? (sel.cell.attrs = {} as CellAttrs);
-  attrs.borderColor = e.color || attrs.borderColor || '#bbb';
-
-  const w = Math.max(0, Math.round(e.weight));
-  const z = 0;
-  const setAll = (t: number, r: number, b: number, l: number) => {
-    attrs.borderTop = t; attrs.borderRight = r; attrs.borderBottom = b; attrs.borderLeft = l;
-  };
-
-  switch (e.preset) {
-    case 'none':    setAll(z, z, z, z); break;
-    case 'outside': setAll(w, w, w, w); break;
-    case 'all':     setAll(w, w, w, w); break;
-    case 'top':     setAll(w, attrs.borderRight ?? z, attrs.borderBottom ?? z, attrs.borderLeft ?? z); break;
-    case 'right':   setAll(attrs.borderTop ?? z, w, attrs.borderBottom ?? z, attrs.borderLeft ?? z); break;
-    case 'bottom':  setAll(attrs.borderTop ?? z, attrs.borderRight ?? z, w, attrs.borderLeft ?? z); break;
-    case 'left':    setAll(attrs.borderTop ?? z, attrs.borderRight ?? z, attrs.borderBottom ?? z, w); break;
-    default:        /* no-op */ break;
-  }
-
-  if (!(this.cdr as any)?.destroyed) this.cdr.detectChanges();
-  this.emitChange();
-}
 
 
   // ---------------- private helpers ----------------
@@ -491,7 +432,7 @@ public onToolbarPreset(e: { preset: BorderPreset; weight: number; color: string 
       const ref = this.openDialogOnce(() =>
         this.dialog.open<
           QuillEditorDialogComponent,
-          { html: string; attributes?: TokenAttribute[] },
+          { html: string; attributes?: TokenAttribute[]; colorPalettes?: string[] },
           string | undefined
         >(
           QuillEditorDialogComponent,
@@ -499,7 +440,7 @@ public onToolbarPreset(e: { preset: BorderPreset; weight: number; color: string 
             width: '1000px',
             minHeight: '500px',
             panelClass: 'app-dialog',
-            data: { html: cell.value, attributes: this.tokenAttrs }
+            data: { html: cell.value, attributes: this.tokenAttrs, colorPalettes: this.colorPalettes }
           }
         )
       );
@@ -547,7 +488,7 @@ public onToolbarPreset(e: { preset: BorderPreset; weight: number; color: string 
     return ref;
   }
 
-  private getSelectedCell():
+  public getSelectedCell():
     | { cell: Cell; rowIndex: number; colIndex: number }
     | null {
     if (
@@ -595,6 +536,11 @@ public onToolbarPreset(e: { preset: BorderPreset; weight: number; color: string 
   }
 
   public emitChange(): void {
+    this.gridChange.emit(this.grid);
+  }
+
+  public setCellAttribute(cellAttrs: CellAttrs): void {
+    this.getSelectedCell().cell.attrs = cellAttrs;
     this.gridChange.emit(this.grid);
   }
 

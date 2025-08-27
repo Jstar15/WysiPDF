@@ -1,0 +1,46 @@
+<div class="picker-surface">
+  <div class="picker-header">
+    <div class="title">Pick a color</div>
+    <button mat-icon-button type="button" (click)="onClose()" aria-label="Close">
+      <mat-icon svgIcon="close"></mat-icon>
+    </button>
+  </div>
+
+  <div class="picker-bottom" *ngIf="showBottomPicker">
+    <app-color-picker
+      [color]="color"
+      (colorChange)="colorSelect.emit($event)">
+    </app-color-picker>
+  </div>
+
+  <div class="picker-section" *ngIf="customPalette?.length">
+    <div class="section-title">Custom</div>
+    <div class="swatch-grid">
+      <button
+        type="button"
+        class="swatch"
+        *ngFor="let c of customPalette; trackBy: trackByIndex"
+        [style.background]="c"
+        [class.active]="c?.toUpperCase() === color?.toUpperCase()"
+        (click)="pick(c)"
+        [attr.aria-label]="c"
+      ></button>
+    </div>
+  </div>
+
+  <div class="picker-section" *ngFor="let row of defaultPalettes; trackBy: trackByIndex">
+    <div class="section-title">Defaults</div>
+    <div class="swatch-grid">
+      <button
+        type="button"
+        class="swatch"
+        *ngFor="let c of row; trackBy: trackByIndex"
+        [style.background]="c"
+        [class.active]="c?.toUpperCase() === color?.toUpperCase()"
+        (click)="pick(c)"
+        [attr.aria-label]="c"
+      ></button>
+    </div>
+  </div>
+
+</div>

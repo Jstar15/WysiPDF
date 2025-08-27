@@ -16,13 +16,15 @@ export class QuillEditorDialogComponent {
 
   html: string;
   attributeArray: TokenAttribute[];
+  colorPalettes: string[];
   editorVisible: boolean = true;
   constructor(
     private dialogRef: MatDialogRef<QuillEditorDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { html: string; attributes: TokenAttribute[] }
+    @Inject(MAT_DIALOG_DATA) public data: { html: string; attributes: TokenAttribute[], colorPalettes: string[] }
   ) {
     this.html = data.html;
     this.attributeArray = data.attributes;
+    this.colorPalettes = data.colorPalettes;
   }
 
   cancel(): void {

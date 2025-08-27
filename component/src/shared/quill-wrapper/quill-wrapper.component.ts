@@ -16,16 +16,21 @@ import { CustomElementBlot } from "./CustomElementBlot";
 import Quill from 'quill';
 import { HtmlBlockContainer } from "../../models/interfaces";
 import { HtmlToStructuredContentService } from "../../services/html-to-structured-content.service";
+import {NgForOf} from "@angular/common";
 
 @Component({
   standalone: true,
   selector: 'app-quill-wrapper',
   templateUrl: './quill-wrapper.component.html',
+  imports: [
+    NgForOf
+  ],
   styleUrls: ['./quill-wrapper.component.scss']
 })
 export class QuillWrapperComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() html: string = '';
   @Input() attributeArray: TokenAttribute[];
+  @Input() colorPalettes: string[] = [];
   @Output() htmlChange = new EventEmitter<string>();
   @Output() htmlBlockContainerChange = new EventEmitter<HtmlBlockContainer>();
 
@@ -54,6 +59,7 @@ export class QuillWrapperComponent implements OnInit, AfterViewInit, OnDestroy {
     private htmlToStructuredContentService: HtmlToStructuredContentService,
     public dialog: MatDialog
   ) {}
+
 
   ngOnInit(): void {
     CustomElementBlot['blotName'] = 'mathjax';
@@ -147,4 +153,5 @@ export class QuillWrapperComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     });
   }
+
 }

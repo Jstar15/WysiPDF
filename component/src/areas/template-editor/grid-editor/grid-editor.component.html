@@ -1,5 +1,5 @@
 
-    
+
 
 
     <div class="grid-toolbar toolbar-bottom-row">
@@ -55,12 +55,14 @@
         </button>
     </div>
 
-   
+
     <div class="grid-toolbar toolbar-top-row" *ngIf="!hideCellAttributeToolbar">
-        <app-cell-style-toolbar
-            (styleChange)="onToolbarPatch($event)"
-            (borderPresetChange)="onToolbarPreset($event)">
-        </app-cell-style-toolbar>        
+      <app-cell-style-toolbar
+        [cellAttributes]="this.getSelectedCell().cell.attrs"
+        [colorPalettes]="colorPalettes"
+        (cellAttributesChange)="this.setCellAttribute($event)">
+      </app-cell-style-toolbar>
+
     </div>
 
 

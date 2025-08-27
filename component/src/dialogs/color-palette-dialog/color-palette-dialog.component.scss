@@ -1,0 +1,113 @@
+
+.section-title {
+  margin: 0.25rem 0 0.25rem;
+  font-weight: 600;
+  color: #444;
+}
+
+/* Palette list */
+.palette-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 40px;
+  min-height: 40px;
+
+  /* NEW: make the list the scroller so the Add button stays put */
+  overflow-y: auto;
+  padding-right: 2px; /* avoid overlaying scrollbar */
+  /* optional: give it some breathing room so last item isn't tight to actions */
+  padding-bottom: 8px;
+
+  &.palette-empty {
+    border: 1px dashed rgba(0, 0, 0, 0.12);
+    border-radius: 8px;
+    padding: 16px;
+    background: repeating-linear-gradient(
+        45deg,
+        rgba(0, 0, 0, 0.02),
+        rgba(0, 0, 0, 0.02) 10px,
+        rgba(0, 0, 0, 0.04) 10px,
+        rgba(0, 0, 0, 0.04) 20px
+    );
+  }
+}
+
+.palette-item {
+  display: grid;
+  grid-template-columns: 32px 120px 1fr 40px;
+  align-items: center;
+  gap: 10px;
+  padding: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 10px;
+  background: #fff;
+
+  &.cdk-drag-preview {
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.16);
+  }
+  &.cdk-drag-placeholder {
+    opacity: 0;
+  }
+}
+
+.drag-handle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: grab;
+  color: #666;
+
+  mat-icon {
+    font-size: 22px;
+    width: 22px;
+    height: 22px;
+  }
+}
+
+.swatch {
+  position: relative;
+  height: 36px;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  overflow: hidden;
+
+  background-image:
+    linear-gradient(45deg, #e6e6e6 25%, transparent 25%),
+    linear-gradient(-45deg, #e6e6e6 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #e6e6e6 75%),
+    linear-gradient(-45deg, transparent 75%, #e6e6e6 75%);
+  background-size: 12px 12px;
+  background-position: 0 0, 0 6px, 6px -6px, -6px 0;
+
+  .swatch-label {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 12px;
+    font-weight: 600;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+    user-select: none;
+  }
+}
+
+.color-input {
+  width: 100%;
+}
+
+/* keep actions visible at the bottom */
+.row-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-start;
+
+  /* optional: sticky inside the dialog content as extra safety */
+  position: sticky;
+  bottom: 0;
+  background: #fff;
+  padding-top: 6px;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+  z-index: 1;
+}

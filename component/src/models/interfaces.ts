@@ -136,6 +136,7 @@ export interface Page {
     tokenAttrs?: TokenAttribute[];
     tokenInjectionJson?: any;
     partialContent?: Grid[];
+    colorPalettes?: string[]
 }
 
 export interface PageAttrs {

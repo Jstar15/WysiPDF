@@ -1,19 +1,21 @@
-import { Component, EventEmitter, Input, Output, ChangeDetectionStrategy } from '@angular/core';
+import {
+  Component, Input, Output, EventEmitter, ChangeDetectionStrategy
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
-// Angular Material (standalone)
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatButtonModule }  from '@angular/material/button';
-import { MatIconModule }    from '@angular/material/icon';
-import { MatMenuModule }    from '@angular/material/menu';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 
-// Your color picker
 import { ColorPickerComponent } from '../color-picker/color-picker.component';
+import { CellAttrs } from '../../models/interfaces';
+import {ColorSwatchPickerComponent} from "../color-swatch-picker/color-swatch-picker.component";
 
 export type BorderPreset =
   | 'none'
@@ -24,20 +26,6 @@ export type BorderPreset =
   | 'bottom'
   | 'left';
 
-export interface CellStylePatch {
-  color?: string;
-  backgroundColor?: string;
-  borderColor?: string;
-  borderTop?: number;
-  borderRight?: number;
-  borderBottom?: number;
-  borderLeft?: number;
-  paddingTop?: number;
-  paddingRight?: number;
-  paddingBottom?: number;
-  paddingLeft?: number;
-}
-
 @Component({
   selector: 'app-cell-style-toolbar',
   standalone: true,
@@ -45,139 +33,116 @@ export interface CellStylePatch {
   styleUrls: ['./cell-style-toolbar.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    CommonModule, FormsModule,
+    CommonModule,
+    FormsModule,
     MatToolbarModule, MatButtonModule, MatIconModule,
     MatMenuModule, MatTooltipModule, MatDividerModule,
     MatFormFieldModule, MatInputModule,
-    ColorPickerComponent
-  ]
+    ColorSwatchPickerComponent
+  ],
 })
 export class CellStyleToolbarComponent {
-  palette: string[] = [
-    '#000000', '#434343', '#666666', '#999999', '#b7b7b7', '#cccccc', '#d9d9d9', '#efefef', '#f3f4f6', '#ffffff',
-    '#ef4444', '#f59e0b', '#22c55e', '#10b981', '#06b6d4', '#3b82f6', '#6366f1', '#8b5cf6', '#ec4899', '#f97316'
-  ];
+  @Input() cellAttributes: CellAttrs | undefined;
+  @Input() colorPalettes: string[] | undefined;
+  @Output() cellAttributesChange = new EventEmitter<CellAttrs>();
 
-  weightOptions: number[] = [0, 1, 2, 3, 4, 6, 8];
+  /** Persistent brush (Excel-like painter) */
+  private brush: {
+    preset: BorderPreset;
+    weight: number;
+    borderColor: string;
+    fillColor: string;
+  } = {
+    preset: 'outside',
+    weight: 1,
+    borderColor: '#94a3b8',
+    fillColor: 'transparent'
+  };
 
-  /** persistent toolbar state */
-  @Input() fillColor: string = '#ffffff';
-  @Input() fontColor: string = '#111827';
-  @Input() borderColor: string = '#94a3b8';
 
-  /** legacy weight label stays (we’ll keep it in sync) */
-  @Input() borderWeight: number = 1;
+  public weightOptions: number[] = [0, 1, 2, 3, 4, 6, 8];
 
-  /** per-side padding */
-  @Input() paddingTop: number = 0;
-  @Input() paddingRight: number = 0;
-  @Input() paddingBottom: number = 0;
-  @Input() paddingLeft: number = 0;
-
-  /** per-side borders */
-  @Input() borderTop: number = 0;
-  @Input() borderRight: number = 0;
-  @Input() borderBottom: number = 0;
-  @Input() borderLeft: number = 0;
-
-  /** which preset is currently selected (kept for compatibility) */
-  selectedPreset: BorderPreset = 'outside';
-
-  /** emits granular patches for immediate preview on current selection */
-  @Output() styleChange = new EventEmitter<CellStylePatch>();
-
-  /** compatibility: still exposed (e.g. your parent is bound to it) */
-  @Output() borderPresetChange = new EventEmitter<{ preset: BorderPreset; weight: number; color: string }>();
-
-  // --- derived icon for current preset (unchanged) ---
-  get currentBorderIcon(): string {
-    switch (this.selectedPreset) {
-      case 'none':   return 'border_clear';
-      case 'top':    return 'border_top';
-      case 'right':  return 'border_right';
-      case 'bottom': return 'border_bottom';
-      case 'left':   return 'border_left';
-      case 'outside':return 'border_outer';
-      case 'all':    return 'border_all';
-      default:       return 'border_outer';
-    }
+  /* ================= Fill ================= */
+  public setFill(color: string): void {
+    this.brush.fillColor = color ?? 'transparent';
+    const cell = this.ensureCell();
+    cell.backgroundColor = this.brush.fillColor;
+    this.cellAttributesChange.emit(cell);
   }
 
-  // --- color setters ---
-  setFill(c: string) {
-    this.fillColor = c || '';
-    this.styleChange.emit({ backgroundColor: this.fillColor });
-  }
-  setFont(c: string) {
-    this.fontColor = c || '';
-    this.styleChange.emit({ color: this.fontColor });
-  }
-  setBorderColor(c: string) {
-    this.borderColor = c || '';
-    this.styleChange.emit({ borderColor: this.borderColor });
+  public clearFill(): void {
+    this.brush.fillColor = 'transparent';
+    const cell = this.ensureCell();
+    cell.backgroundColor = this.brush.fillColor;
+    this.cellAttributesChange.emit(cell);
   }
 
-  // --- uniform border weight quick-set (kept) ---
-  setBorderWeight(w: number) {
-    this.borderWeight = w;
-    // uniformly apply to all sides
-    this.borderTop = this.borderRight = this.borderBottom = this.borderLeft = w;
-    this.emitBorderPatch();
+  /* ================= Border color ================= */
+  public setBorderColor(color: string): void {
+    this.brush.borderColor = color ?? '#94a3b8';
+    const cell = this.ensureCell();
+    cell.borderColor = this.brush.borderColor;
+    this.cellAttributesChange.emit(cell);
   }
 
-  // --- presets (kept; remapped to per-side control) ---
-  choosePreset(preset: BorderPreset) {
-    this.selectedPreset = preset;
-    const w = this.borderWeight;
-    switch (preset) {
-      case 'none':   this.borderTop = this.borderRight = this.borderBottom = this.borderLeft = 0; break;
-      case 'all':
+  /* ================= Weight ================= */
+  public setPresetWeight(w: number): void {
+    this.brush.weight = this.coerce(w);
+    // don’t apply immediately, only sets brush
+  }
+
+  /* ================= Apply border preset only ================= */
+  public applyBorder(): void {
+    const cell = this.ensureCell();
+    const w = this.brush.weight;
+
+    switch (this.brush.preset) {
+      case 'none':
+        cell.borderTop = cell.borderRight = cell.borderBottom = cell.borderLeft = 0;
+        break;
+      case 'top':    cell.borderTop    = w; break;
+      case 'right':  cell.borderRight  = w; break;
+      case 'bottom': cell.borderBottom = w; break;
+      case 'left':   cell.borderLeft   = w; break;
       case 'outside':
-        this.borderTop = this.borderRight = this.borderBottom = this.borderLeft = w; break;
-      case 'top':    this.resetBorders(); this.borderTop = w; break;
-      case 'right':  this.resetBorders(); this.borderRight = w; break;
-      case 'bottom': this.resetBorders(); this.borderBottom = w; break;
-      case 'left':   this.resetBorders(); this.borderLeft = w; break;
+      case 'all':
+        cell.borderTop = cell.borderRight = cell.borderBottom = cell.borderLeft = w;
+        break;
     }
-    // notify parent (compat)
-    this.borderPresetChange.emit({ preset, weight: w, color: this.borderColor });
-    this.emitBorderPatch();
-  }
-  private resetBorders() {
-    this.borderTop = this.borderRight = this.borderBottom = this.borderLeft = 0;
+
+    cell.borderColor = this.brush.borderColor; // apply border color
+    // ⛔ do not touch fill here anymore
+    this.cellAttributesChange.emit(cell);
   }
 
-  // --- cross input handlers ---
-  onPaddingInput(side: 'Top'|'Right'|'Bottom'|'Left', v: number|string) {
-    (this as any)[`padding${side}`] = this.coerce(v);
-    this.styleChange.emit({
-      paddingTop: this.paddingTop,
-      paddingRight: this.paddingRight,
-      paddingBottom: this.paddingBottom,
-      paddingLeft: this.paddingLeft,
-    });
-  }
-  onBorderInput(side: 'Top'|'Right'|'Bottom'|'Left', v: number|string) {
-    (this as any)[`border${side}`] = this.coerce(v);
-    // keep the legacy label roughly in sync (average)
-    this.borderWeight = Math.round((this.borderTop + this.borderRight + this.borderBottom + this.borderLeft) / 4);
-    this.emitBorderPatch();
+  /* ================= User explicitly changes preset ================= */
+  public choosePreset(preset: BorderPreset): void {
+    this.brush.preset = preset; // update brush
+    this.applyBorder();
   }
 
-  private emitBorderPatch() {
-    this.styleChange.emit({
-      borderTop: this.borderTop,
-      borderRight: this.borderRight,
-      borderBottom: this.borderBottom,
-      borderLeft: this.borderLeft,
-      borderColor: this.borderColor
-    });
+  /* ================= Bindings ================= */
+  public get selectedPreset(): BorderPreset {
+    return this.brush.preset;
+  }
+  public ensureWeight(): number {
+    return this.brush.weight || 1;
+  }
+  public get borderBrushColor(): string {
+    return this.brush.borderColor;
+  }
+  public get fillBrushColor(): string {
+    return this.brush.fillColor;
   }
 
-  private coerce(v: number|string): number {
+  /* ================= Helpers ================= */
+  private ensureCell(): CellAttrs {
+    if (!this.cellAttributes) this.cellAttributes = {};
+    return this.cellAttributes;
+  }
+  private coerce(v: number | string): number {
     if (typeof v === 'number') return Math.max(0, Math.round(v));
     const n = parseInt(String(v), 10);
     return Number.isFinite(n) && n >= 0 ? n : 0;
   }
-  
 }

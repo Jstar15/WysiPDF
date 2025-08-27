@@ -2,9 +2,10 @@
 
 <div class="editor-dialog-content" *ngIf="editorVisible">
   <app-quill-wrapper
-    
+
     [(html)]="html"
-    [attributeArray]="attributeArray">
+    [attributeArray]="attributeArray"
+    [colorPalettes]="colorPalettes">
   </app-quill-wrapper>
 </div>
 

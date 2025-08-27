@@ -41,6 +41,7 @@ import {DEFAULT_PAGE} from "../../models/default-page";
 import {collectDisplayRules} from "../../utils/displayLogic.utiltiy";
 import {PageToHtmlService} from "../../services/page-to-html.service";
 import {LoadPresetDialogComponent} from "../../dialogs/load-preset-dialog/load-preset-dialog.component";
+import {ColorPaletteDialogComponent} from "../../dialogs/color-palette-dialog/color-palette-dialog.component";
 
 @Component({
   standalone: true,
@@ -175,6 +176,26 @@ export class TemplateEditorComponent implements OnInit,AfterViewInit {
   }
   togglePdfPane(): void {
     this.showPdfViewPane = !this.showPdfViewPane;
+  }
+
+  public openColorPaletteDialog(): void {
+    const dialogRef = this.dialog.open<
+      ColorPaletteDialogComponent,   // Component type
+      string[],                      // Data in
+      string[]                       // Result out
+    >(ColorPaletteDialogComponent, {
+      width: '1000px',
+      height: '600px',
+      panelClass: 'app-dialog',
+      data: this.page.colorPalettes ?? [],
+    });
+
+    dialogRef.afterClosed().subscribe((result: string[] | undefined) => {
+      if (Array.isArray(result)) {
+        this.page.colorPalettes = result;
+        this._emitGridChange();
+      }
+    });
   }
 
   openPageEditorDialog(): void {

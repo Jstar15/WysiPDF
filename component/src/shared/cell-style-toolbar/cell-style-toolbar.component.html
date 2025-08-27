@@ -1,89 +1,118 @@
 <mat-toolbar class="cell-style-toolbar mat-elevation-z1" role="toolbar" aria-label="Cell styling toolbar">
 
-  <!-- Fill (background) -->
-  <div class="tool group">
-    <button mat-button [matMenuTriggerFor]="fillMenu" matTooltip="Fill color" aria-label="Fill color" class="btn-tight">
+  <!-- Fill (background) : Split Button -->
+  <div class="tool group split">
+    <button mat-button class="btn-tight main"
+            matTooltip="Apply fill"
+            aria-label="Apply fill color"
+            (click)="setFill(fillBrushColor)">
       <mat-icon svgIcon="format_color_fill"></mat-icon>
-      <span class="swatch" [style.background]="fillColor"></span>
-      <mat-icon class="caret" svgIcon="arrow_drop_down"></mat-icon>
+      <span class="swatch" [style.background]="fillBrushColor"></span>
     </button>
-    <mat-menu #fillMenu="matMenu" class="palette-menu">
-      <div class="palette">
-        <button *ngFor="let c of palette"
-                class="swatch-btn"
-                [style.background]="c"
-                (click)="setFill(c)"
-                [attr.aria-label]="'Fill ' + c">
-        </button>
-      </div>
-    </mat-menu>
 
-    <div class="clear-fill">
-      <button mat-button matTooltip="Clear fill" (click)="setFill('')" aria-label="Clear fill" class="btn-tight">
-        <mat-icon svgIcon="format_color_reset"></mat-icon>
-      </button>
-    </div>
+    <button mat-icon-button class="btn-tight caret-btn"
+            [matMenuTriggerFor]="fillMenu"
+            aria-label="Open fill menu">
+      <mat-icon svgIcon="arrow_drop_down"></mat-icon>
+    </button>
+
+    <button mat-icon-button class="btn-tight"
+            matTooltip="Clear fill"
+            aria-label="Clear fill"
+            (click)="clearFill()">
+      <mat-icon svgIcon="format_color_reset"></mat-icon>
+    </button>
+
+    <mat-menu #fillMenu="matMenu" class="palette-menu">
+      <app-color-swatch-picker
+        [color]="fillBrushColor"
+        [customPalette]="colorPalettes"
+        (colorSelect)="setFill($event)">
+      </app-color-swatch-picker>
+    </mat-menu>
   </div>
 
-
-
-  <!-- Border color -->
-  <div class="tool group">
-    <button mat-button [matMenuTriggerFor]="borderColorMenu" matTooltip="Border color" aria-label="Border color" class="btn-tight">
-      <span class="swatch" [style.background]="borderColor"></span>
-      <mat-icon class="caret" svgIcon="arrow_drop_down"></mat-icon>
+  <!-- Border COLOR : Split Button -->
+  <div class="tool group split">
+    <button mat-button class="btn-tight main"
+            matTooltip="Apply border color"
+            aria-label="Apply border color"
+            (click)="setBorderColor(borderBrushColor)">
+      <span class="swatch" [style.background]="borderBrushColor"></span>
     </button>
+
+    <button mat-icon-button class="btn-tight caret-btn"
+            [matMenuTriggerFor]="borderColorMenu"
+            aria-label="Open border color menu">
+      <mat-icon svgIcon="arrow_drop_down"></mat-icon>
+    </button>
+
     <mat-menu #borderColorMenu="matMenu" class="palette-menu">
-      <div class="palette">
-        <button *ngFor="let c of palette"
-                class="swatch-btn"
-                [style.background]="c"
-                (click)="setBorderColor(c)"
-                [attr.aria-label]="'Border ' + c">
-        </button>
-      </div>
-
-      <div class="overlay-wrap">
-        <app-color-picker
-          [color]="borderColor"
-          (colorChange)="setBorderColor($event)">
-        </app-color-picker>
-      </div>
+      <app-color-swatch-picker
+        [color]="borderBrushColor"
+        [customPalette]="colorPalettes"
+        (colorSelect)="setBorderColor($event)">
+      </app-color-swatch-picker>
     </mat-menu>
+  </div>
 
-    <button mat-button [matMenuTriggerFor]="weightMenu" matTooltip="Border weight (px)" aria-label="Border weight" class="btn-tight">
-      <mat-icon class="caret" svgIcon="arrow_drop_down"></mat-icon>
-            <mat-icon svgIcon="line_weight"></mat-icon>
-        <span>{{ borderWeight }}px</span>
+  <!-- Border WEIGHT : Split Button -->
+  <div class="tool group split">
+    <button mat-button class="btn-tight main"
+            matTooltip="Apply border weight"
+            aria-label="Apply border weight"
+            (click)="applyBorder()">
+      <mat-icon svgIcon="line_weight"></mat-icon>
+      <span>{{ ensureWeight() }}px</span>
     </button>
+
+    <button mat-icon-button class="btn-tight caret-btn"
+            [matMenuTriggerFor]="weightMenu"
+            aria-label="Open border weight menu">
+      <mat-icon svgIcon="arrow_drop_down"></mat-icon>
+    </button>
+
     <mat-menu #weightMenu="matMenu">
-      <button mat-menu-item *ngFor="let w of weightOptions" (click)="setBorderWeight(w)">
+      <button mat-menu-item *ngFor="let w of weightOptions"
+              (click)="setPresetWeight(w); applyBorder()">
         <span class="weight-preview" [style.border-bottom-width.px]="w"></span>
         <span>{{ w }} px</span>
       </button>
     </mat-menu>
+  </div>
 
-    <button mat-button [matMenuTriggerFor]="presetMenu" matTooltip="Borders" aria-label="Border presets" class="btn-tight">
-      <mat-icon class="caret" svgIcon="arrow_drop_down"></mat-icon>
-      <mat-icon [svgIcon]="currentBorderIcon"></mat-icon>
-
+  <!-- BORDERS : Split Button (Presets) -->
+  <div class="tool group split">
+    <button mat-button class="btn-tight main"
+            matTooltip="Apply current borders"
+            aria-label="Apply borders"
+            (click)="applyBorder()">
+      <mat-icon [svgIcon]="
+        selectedPreset === 'none'   ? 'border_clear'  :
+        selectedPreset === 'top'    ? 'border_top'    :
+        selectedPreset === 'right'  ? 'border_right'  :
+        selectedPreset === 'bottom' ? 'border_bottom' :
+        selectedPreset === 'left'   ? 'border_left'   : 'border_outer'
+      "></mat-icon>
     </button>
-    <mat-menu #presetMenu="matMenu" class="preset-menu">
+
+    <button mat-icon-button class="btn-tight caret-btn"
+            [matMenuTriggerFor]="borderMenu"
+            aria-label="Open border menu">
+      <mat-icon svgIcon="arrow_drop_down"></mat-icon>
+    </button>
+
+    <mat-menu #borderMenu="matMenu" class="box-menu">
       <div class="preset-grid compact">
-        <button class="preset-btn" (click)="choosePreset('none')"   matTooltip="No border"       aria-label="No border"><mat-icon svgIcon="border_clear"></mat-icon></button>
-        <button class="preset-btn" (click)="choosePreset('top')"    matTooltip="Top border"      aria-label="Top border"><mat-icon svgIcon="border_top"></mat-icon></button>
-        <button class="preset-btn" (click)="choosePreset('right')"  matTooltip="Right border"    aria-label="Right border"><mat-icon svgIcon="border_right"></mat-icon></button>
-        <button class="preset-btn" (click)="choosePreset('bottom')" matTooltip="Bottom border"   aria-label="Bottom border"><mat-icon svgIcon="border_bottom"></mat-icon></button>
-        <button class="preset-btn" (click)="choosePreset('left')"   matTooltip="Left border"     aria-label="Left border"><mat-icon svgIcon="border_left"></mat-icon></button>
-        <button class="preset-btn" (click)="choosePreset('outside')"matTooltip="Outside borders" aria-label="Outside borders"><mat-icon svgIcon="border_outer"></mat-icon></button>
-        <button class="preset-btn" (click)="choosePreset('all')"    matTooltip="All borders"     aria-label="All borders"><mat-icon svgIcon="border_all"></mat-icon></button>
+        <button class="preset-btn" (click)="choosePreset('none')"    matTooltip="No border"><mat-icon svgIcon="border_clear"></mat-icon></button>
+        <button class="preset-btn" (click)="choosePreset('top')"     matTooltip="Top border"><mat-icon svgIcon="border_top"></mat-icon></button>
+        <button class="preset-btn" (click)="choosePreset('right')"   matTooltip="Right border"><mat-icon svgIcon="border_right"></mat-icon></button>
+        <button class="preset-btn" (click)="choosePreset('bottom')"  matTooltip="Bottom border"><mat-icon svgIcon="border_bottom"></mat-icon></button>
+        <button class="preset-btn" (click)="choosePreset('left')"    matTooltip="Left border"><mat-icon svgIcon="border_left"></mat-icon></button>
+        <button class="preset-btn" (click)="choosePreset('outside')" matTooltip="Outside borders"><mat-icon svgIcon="border_outer"></mat-icon></button>
       </div>
     </mat-menu>
-  </div>
-    <div class="clear-border">
 
-      <button mat-button matTooltip="Clear borders" (click)="choosePreset('none')" aria-label="Clear borders" class="btn-tight">
-        <mat-icon svgIcon="border_clear"></mat-icon>
-      </button>
-    </div>
+  </div>
+
 </mat-toolbar>

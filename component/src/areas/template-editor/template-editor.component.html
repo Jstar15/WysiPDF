@@ -48,6 +48,15 @@
                     <button
                       mat-mini-fab
                       color="primary"
+                      (click)="openColorPaletteDialog()"
+                      class="icon-btn"
+                      aria-label="Edit color Palettes"
+                      matTooltip="Edit color Palettes">
+                      <mat-icon svgIcon="colors"></mat-icon>
+                    </button>
+                    <button
+                      mat-mini-fab
+                      color="primary"
                       (click)="openTokenEditorDialog()"
                       class="icon-btn"
                       aria-label="Manage tokens"
@@ -119,6 +128,7 @@
                                     [hidePageBreak]="true"
                                     [hideChart]="true"
                                     [hidePartialContent]="true"
+                                    [colorPalettes]="page.colorPalettes"
                             ></app-grid-editor>
                         </mat-expansion-panel>
 
@@ -136,6 +146,7 @@
                                     [tokenAttrs]="page.tokenAttrs"
                                     [pageAttrs]="page.pageAttrs"
                                     [partialContentAvailableList]="page.partialContent"
+                                    [colorPalettes]="page.colorPalettes"
                             ></app-grid-editor>
                         </mat-expansion-panel>
 
@@ -156,6 +167,7 @@
                                     [hidePageBreak]="true"
                                     [hideChart]="true"
                                     [hidePartialContent]="true"
+                                    [colorPalettes]="page.colorPalettes"
                             ></app-grid-editor>
                         </mat-expansion-panel>
 
