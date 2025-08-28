@@ -42,6 +42,9 @@ import {collectDisplayRules} from "../../utils/displayLogic.utiltiy";
 import {PageToHtmlService} from "../../services/page-to-html.service";
 import {LoadPresetDialogComponent} from "../../dialogs/load-preset-dialog/load-preset-dialog.component";
 import {ColorPaletteDialogComponent} from "../../dialogs/color-palette-dialog/color-palette-dialog.component";
+import {
+  PageImportExportDialogComponent
+} from "../../dialogs/page-import-export-dialog/page-import-export-dialog.component";
 
 @Component({
   standalone: true,
@@ -145,6 +148,21 @@ export class TemplateEditorComponent implements OnInit,AfterViewInit {
         this.page.tokenAttrs = result;
         this._emitGridChange();
 
+      }
+    });
+  }
+
+  openPageImportExportDialog(): void {
+    const dialogRef = this.dialog.open(PageImportExportDialogComponent, {
+      width: '1000px',
+      panelClass: 'app-dialog',
+      data: { page: this.page }
+    });
+
+    dialogRef.afterClosed().subscribe((result?: { page: Page }) => {
+      if (result?.page) {
+        this.page = result.page;
+        this._emitGridChange?.(); // keep your existing change hook
       }
     });
   }

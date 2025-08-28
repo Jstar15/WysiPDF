@@ -39,9 +39,18 @@
                     <button
                       mat-mini-fab
                       color="primary"
+                      (click)="openPageImportExportDialog()"
+                      class="icon-btn"
+                      aria-label="Import / Export page"
+                      matTooltip="Import / Export page">
+                      <mat-icon svgIcon="file_open"></mat-icon>
+                    </button>
+                    <button
+                      mat-mini-fab
+                      color="primary"
                       (click)="openPageEditorDialog()"
                       class="icon-btn"
-                      aria-label="Edit page"
+                      aria-label="Edit page layout"
                       matTooltip="Edit page layout">
                       <mat-icon svgIcon="border_color"></mat-icon>
                     </button>

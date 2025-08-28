@@ -1,0 +1,68 @@
+<h1 mat-dialog-title>Import / Export Page</h1>
+
+<div mat-dialog-content class="editor-dialog-content simple">
+  <mat-tab-group [(selectedIndex)]="tabIndex">
+    <!-- IMPORT -->
+    <mat-tab label="Import">
+      <div class="stack">
+        <input
+          #fileInput
+          type="file"
+          accept=".json,application/json"
+          hidden
+          (change)="onFileSelected($event)"
+        />
+
+        <button mat-raised-button color="primary" (click)="fileInput.click()">
+          <mat-icon svgIcon="upload_file" aria-hidden="true"></mat-icon>
+          Choose JSON file…
+        </button>
+
+        <span class="file-chip" *ngIf="selectedFilename">
+          <mat-icon svgIcon="description" aria-hidden="true"></mat-icon>
+          {{ selectedFilename }}
+        </span>
+
+        <div *ngIf="importError" class="error">
+          <mat-icon svgIcon="error_outline" aria-hidden="true"></mat-icon>
+          {{ importError }}
+        </div>
+      </div>
+    </mat-tab>
+
+    <!-- EXPORT -->
+    <mat-tab label="Export">
+      <div class="stack">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Filename</mat-label>
+          <input matInput [(ngModel)]="filename" placeholder="page.json" />
+        </mat-form-field>
+
+        <button
+          mat-raised-button
+          color="primary"
+          (click)="downloadExport()"
+          [disabled]="!exportText"
+        >
+          <mat-icon svgIcon="file_download" aria-hidden="true"></mat-icon>
+          Download
+        </button>
+
+        <span class="hint">We’ll append <code>.json</code> if you forget it.</span>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+</div>
+
+<div mat-dialog-actions class="dialog-actions">
+  <button mat-button (click)="onClose()">Close</button>
+  <button
+    *ngIf="tabIndex === 0"
+    mat-raised-button
+    color="primary"
+    (click)="onImport()"
+    [disabled]="!importText"
+  >
+    Load Page
+  </button>
+</div>
