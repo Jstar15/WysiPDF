@@ -12,6 +12,7 @@ It ships as a **single bundle** you can drop into any page to design, preview, a
 
 Try the current in-browser demo: [https://jstar15.github.io/WysiPDF/](https://jstar15.github.io/WysiPDF/)
 
+![WysiPDF screenshot](readme/images/screenshot-1.png)
 ---
 
 ## ✨ Highlights
@@ -202,3 +203,16 @@ All methods are **async**.
 ## 📄 License
 
 MIT License
+
+
+Quick wins (1–2 weeks)
+
+Publish types (even if partial) + tiny validate(page) using Zod/Ajv.
+
+Add barcodes/QR (huge for invoices/labels).
+
+Ship 5–8 polished presets (invoice, quote, receipt, label, certificate, simple dashboard).
+
+Add a “Preflight” drawer (missing tokens, overset text, image sizes).
+
+Record a 60–90s GIF: design → token import → PDF export. Put it at the top of the README.
