@@ -64,6 +64,7 @@ export class GridEditorComponent implements OnInit, OnDestroy {
   @Input() public hidePageBreak: boolean = false;
   @Input() public hidePartialContent: boolean = false;
   @Input() public hideChart: boolean = false;
+  @Input() public hideBarcode: boolean = false;
   @Input() public pageAttrs: PageAttrs = {};
   @Input() public colorPalettes: string[] | undefined = [];
   @Input() public grid!: Grid;

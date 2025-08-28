@@ -38,12 +38,12 @@
           <mat-icon svgIcon="view_list"></mat-icon>
         </button>
 
-        <button mat-icon-button color="accent" matTooltip="Insert Barcode" aria-label="Insert Barcode" (click)="openAddBarcodeDialog()">
-          <mat-icon svgIcon="barcode"></mat-icon>
-        </button>
-
         <button *ngIf="!hideChart" mat-icon-button matTooltip="Insert Chart" (click)="openAddChartDialog()">
           <mat-icon svgIcon="pie_chart"></mat-icon>
+        </button>
+
+        <button *ngIf="!hideBarcode" mat-icon-button color="accent" matTooltip="Insert Barcode" aria-label="Insert Barcode" (click)="openAddBarcodeDialog()">
+          <mat-icon svgIcon="barcode"></mat-icon>
         </button>
 
         <button mat-icon-button matTooltip="Insert Image" (click)="openAddImageDialog()">
