@@ -42,8 +42,7 @@ export class PageAttributesDialogComponent {
       'Raleway',
       'Roboto',
       'Nunito',
-      'Cormorant',
-      'OpenSans'
+      'Cormorant'
   ];
 
   constructor(

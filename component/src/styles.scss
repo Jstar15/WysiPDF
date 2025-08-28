@@ -49,9 +49,6 @@ p{
 
 
 /* Set content font-families */
-.ql-font-opensans {
-  font-family: "Open Sans Condensed";
-}
 .ql-font-roboto {
   font-family: 'Roboto', sans-serif;
 }
@@ -79,11 +76,6 @@ p{
 .ql-snow .ql-picker.ql-font .ql-picker-label[data-value="cormorant"]::before,
 .ql-snow .ql-picker.ql-font .ql-picker-item[data-value="cormorant"]::before {
   font-family: 'Cormorant Garamond', serif;
-}
-
-.ql-snow .ql-picker.ql-font .ql-picker-label[data-value="opensans"]::before,
-.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="opensans"]::before {
-  font-family: 'Open Sans Condensed', sans-serif;
 }
 
 .ql-snow .ql-picker.ql-font .ql-picker-label[data-value="roboto"]::before,

@@ -284,7 +284,6 @@ ${body}
 .${scopeClass} .ql-font-roboto { font-family: Roboto, Arial, sans-serif; }
 .${scopeClass} .ql-font-nunito { font-family: Nunito, Arial, sans-serif; }
 .${scopeClass} .ql-font-cormorant { font-family: Cormorant, serif; }
-.${scopeClass} .ql-font-opensans { font-family: "Open Sans", Arial, sans-serif; }
 
 /* Optional page break support for print */
 .${scopeClass} .p2h-page-break { display: block; page-break-after: always; }

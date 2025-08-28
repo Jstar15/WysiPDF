@@ -368,8 +368,7 @@ export class HtmlToStructuredContentService {
         raleway: 'Raleway',
         roboto: 'Roboto',
         nunito: 'Nunito',
-        cormorant: 'Cormorant',
-        opensans: 'OpenSans'
+        cormorant: 'Cormorant'
       };
       return fontMap[fontName.toLowerCase()] || undefined;
     }

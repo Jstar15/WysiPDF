@@ -34,12 +34,6 @@ export class PdfMakeService {
       bold: 'Nunito-Bold.ttf',
       italics: 'Nunito-Italic.ttf',
       bolditalics: 'Nunito-BoldItalic.ttf'
-    },
-    OpenSans: {
-      normal: 'OpenSans_Condensed-Regular.ttf',
-      bold: 'OpenSans_Condensed-Bold.ttf',
-      italics: 'OpenSans_Condensed-Italic.ttf',
-      bolditalics: 'OpenSans_Condensed-BoldItalic.ttf'
     }
   };
 
