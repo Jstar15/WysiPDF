@@ -33,12 +33,14 @@
 <button id="downloadHtmlBtn">Download HTML</button>
 <button id="downloadBtn">Download PDF</button>
 
-<!-- Editor component -->
-<app-template-editor></app-template-editor>
+<!-- Host container for the editor -->
+<div id="editor-host"></div>
 
 <script>
   let currentPage = null;
+  let wysi = null;
 
+  // --- Inject page margins/styles into exported HTML ---
   function injectPageMargins(html, page) {
     const bg = (page && page.pageAttrs && page.pageAttrs.backgroundColor) || '#ffffff';
     const font = (page && page.pageAttrs && page.pageAttrs.defaultFont) || 'Roboto, Arial, sans-serif';
@@ -71,6 +73,14 @@
   }
 
   window.addEventListener('DOMContentLoaded', async () => {
+    if (typeof WysiPDF === 'undefined') {
+      console.error('WysiPDF class not found. Is wysipdf.bundle.js loaded correctly?');
+      return;
+    }
+
+    // Create an instance mounted to our host container
+    wysi = new WysiPDF({ mount: '#editor-host' });
+
     // Default starter page
     const page = {
       header: { rows: [] },
@@ -103,9 +113,9 @@
     };
 
     currentPage = page;
-    await window.loadPage(page);
+    await wysi.loadPage(page);
 
-    await window.onPageChange(updatedPage => {
+    await wysi.onPageChange(updatedPage => {
       currentPage = updatedPage;
       console.log('Page was updated:', updatedPage);
     });
@@ -114,18 +124,18 @@
     document.getElementById('downloadBtn').addEventListener('click', async () => {
       if (!currentPage) return;
       const tokens = currentPage.tokenAttrs || [];
-      const base64 = await window.generatePdfBase64(currentPage, tokens);
+      const base64 = await wysi.generatePdfBase64(currentPage, tokens);
       const link = document.createElement('a');
       link.href = 'data:application/pdf;base64,' + base64;
       link.download = 'wysipdf-document.pdf';
       link.click();
     });
 
-    // Download HTML with margins
+    // Download HTML with injected margins
     document.getElementById('downloadHtmlBtn').addEventListener('click', async () => {
       if (!currentPage) return;
       const tokens = currentPage.tokenAttrs || [];
-      const rawHtml = await window.generateHtml(currentPage, tokens);
+      const rawHtml = await wysi.generateHtml(currentPage, tokens);
       const html = injectPageMargins(rawHtml, currentPage);
 
       const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
