@@ -221,12 +221,10 @@
 
         <!-- RIGHT PANE -->
       <as-split-area [size]="50" [minSize]="25" *ngIf="showRightPane" class="right-pane">
-
         <app-pdf-viewer *ngIf="showPdfViewPane" class="pdf-viewer" [base64]="this.pdfGenerationResult.base64"></app-pdf-viewer>
-
         <app-json-viewer *ngIf="!showPdfViewPane"  class="json-viewer" [jsonList]="jsonList"></app-json-viewer>
-
       </as-split-area>
+
     </as-split>
 
 

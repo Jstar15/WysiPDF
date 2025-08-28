@@ -12,9 +12,9 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { CellAttrs } from '../../models/interfaces';
-import {ColorSwatchPickerComponent} from "../color-swatch-picker/color-swatch-picker.component";
-import {SpacingPickerComponent} from "../spacing-picker/spacing-picker.component";
+import { CellAttrs } from '../../../../models/interfaces';
+import {ColorSwatchPickerComponent} from "../../../../shared/color-swatch-picker/color-swatch-picker.component";
+import {SpacingPickerComponent} from "../../../../shared/spacing-picker/spacing-picker.component";
 
 export type BorderPreset =
   | 'none'

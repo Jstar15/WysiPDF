@@ -40,7 +40,7 @@ import {
 import { DisplayLogicGroup } from '../../../models/display-logic.models';
 import {
   CellStyleToolbarComponent,
-} from '../../../shared/cell-style-toolbar/cell-style-toolbar.component';
+} from './cell-style-toolbar/cell-style-toolbar.component';
 
 @Component({
   selector: 'app-grid-editor',
