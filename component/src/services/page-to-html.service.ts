@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Page, Grid, Row, Cell, CellAttrs, ImageBlock, ChartBlock } from '../models/interfaces';
+import {Page, Grid, Row, Cell, CellAttrs, ImageBlock, ChartBlock, BarcodeBlock} from '../models/interfaces';
 import {TokenAttribute} from "../models/TokenAttribute";
 import {PageService} from "./page.service";
 import {JsonTokenParserService} from "./json-token-parser.service";
@@ -206,7 +206,7 @@ ${body}
 
   private renderCellContent(cell: Cell): string {
     // NEW: chart support
-    if ((cell as any).type === 'chart' && (cell as any).chartBlock?.imageBase64) {
+    if ((cell as any).type === 'chart' && cell.chartBlock?.imageBase64) {
       const cb = (cell as any).chartBlock as ChartBlock;
       const src = this.imageSrcFromChart(cb);
       const styleObj: Record<string, string | number | undefined> = {
@@ -239,7 +239,7 @@ ${body}
       const src = this.imageSrcFromBlock(cell.imageBlock);
       const styleObj: Record<string, string | number | undefined> = {
         display: 'block',
-        'max-width': '100%',
+        width: cell.imageBlock?.width ? `${Math.max(1, Math.min(100, Number(cell.imageBlock.width) || 0))}%` : '100%',
       };
 
       // Alignment via margins
@@ -255,6 +255,29 @@ ${body}
       const alt = this.escapeHtml(cell.imageBlock.filename || 'image');
       return `<img src="${src}" alt="${alt}" style="${style}">`;
     }
+
+    // Existing image support
+    if (cell.type === 'barcode' && cell.barcodeBlock?.imageBase64) {
+      const src = this.imageSrcFromBlock(cell.barcodeBlock);
+      const styleObj: Record<string, string | number | undefined> = {
+        display: 'block',
+        width: cell.barcodeBlock?.width ? `${Math.max(1, Math.min(100, Number(cell.barcodeBlock.width) || 0))}%` : '100%',
+      };
+
+      // Alignment via margins
+      const a = cell.barcodeBlock.alignment;
+      if (a === 'center') {
+        styleObj['margin-left'] = 'auto';
+        styleObj['margin-right'] = 'auto';
+      } else if (a === 'right') {
+        styleObj['margin-left'] = 'auto';
+      }
+
+      const style = this.inlineStyle(styleObj);
+      const alt = this.escapeHtml(cell.barcodeBlock.filename || 'image');
+      return `<img src="${src}" alt="${alt}" style="${style}">`;
+    }
+
 
     // Use the editor HTML as-is (tables, headings, fonts, etc.)
     return cell.value ?? '';
@@ -401,7 +424,7 @@ ${body}
   // Image helpers
   // -----------------------
 
-  private imageSrcFromBlock(img: ImageBlock): string {
+  private imageSrcFromBlock(img: ImageBlock | BarcodeBlock): string {
     if (img.imageBase64.startsWith('data:')) return img.imageBase64;
     const mime = this.mimeFromFilename(img.filename) ?? 'image/png';
     return `data:${mime};base64,${img.imageBase64}`;
