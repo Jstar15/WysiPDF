@@ -69,13 +69,6 @@ export class CellStyleToolbarComponent {
     this.cellAttributesChange.emit(cell);
   }
 
-  public clearFill(): void {
-    this.brush.fillColor = 'transparent';
-    const cell = this.ensureCell();
-    cell.backgroundColor = this.brush.fillColor;
-    this.cellAttributesChange.emit(cell);
-  }
-
   /* ================= Border color ================= */
   public setBorderColor(color: string): void {
     this.brush.borderColor = color ?? '#94a3b8';
@@ -125,7 +118,8 @@ export class CellStyleToolbarComponent {
     return this.brush.preset;
   }
   public ensureWeight(): number {
-    return this.brush.weight || 1;
+    // old: return this.brush.weight || 1;
+    return Number.isFinite(this.brush.weight) ? this.brush.weight : 1;
   }
   public get borderBrushColor(): string {
     return this.brush.borderColor;
@@ -158,6 +152,23 @@ export class CellStyleToolbarComponent {
     cell.paddingRight = clamp(v?.right);
     cell.paddingBottom = clamp(v?.bottom);
     cell.paddingLeft = clamp(v?.left);
+
+    this.cellAttributesChange.emit(cell);
+  }
+
+  public applyBorder2(v: { top: number; right: number; bottom: number; left: number }): void {
+    const cell = this.ensureCell();
+
+    const clamp = (n: unknown): number => {
+      const num = typeof n === 'number' ? n : Number(n);
+      if (!Number.isFinite(num)) return 0;
+      return Math.max(0, Math.round(num));
+    };
+
+    cell.borderTop = clamp(v?.top);
+    cell.borderRight = clamp(v?.right);
+    cell.borderBottom = clamp(v?.bottom);
+    cell.borderLeft = clamp(v?.left);
 
     this.cellAttributesChange.emit(cell);
   }

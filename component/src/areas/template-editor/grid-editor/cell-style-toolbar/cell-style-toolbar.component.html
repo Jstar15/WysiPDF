@@ -4,6 +4,56 @@
     <button
       mat-button
       class="btn-tight main"
+      matTooltip="Edit Border"
+      aria-label="Edit Border"
+      [matMenuTriggerFor]="borderFullMenu"
+      #borderTrigger="matMenuTrigger">
+      <mat-icon svgIcon="border_all"></mat-icon>
+    </button>
+
+    <button
+      mat-icon-button
+      class="btn-tight caret-btn"
+      [matMenuTriggerFor]="borderFullMenu"
+      aria-label="Open border menu">
+      <mat-icon svgIcon="arrow_drop_down"></mat-icon>
+    </button>
+  </div>
+
+  <!-- Keep this menu open while interacting inside -->
+  <mat-menu
+    #borderFullMenu="matMenu"
+    class="box-menu"
+    xPosition="after"
+    yPosition="below"
+    [overlapTrigger]="false">
+    <div
+      class="menu-keep-open"
+      (click)="$event.stopPropagation()"
+      (mousedown)="$event.stopPropagation()"
+      (mouseup)="$event.stopPropagation()"
+      (keydown)="$event.stopPropagation()">
+      <app-spacing-picker
+        title="Cell Border"
+        [top]="cellAttributes?.borderTop ?? 0"
+        [right]="cellAttributes?.borderRight ?? 0"
+        [bottom]="cellAttributes?.borderBottom ?? 0"
+        [left]="cellAttributes?.borderLeft ?? 0"
+        (confirm)="applyBorder2($event); borderTrigger.closeMenu()"
+        (cancel)="borderTrigger.closeMenu()">
+      </app-spacing-picker>
+    </div>
+  </mat-menu>
+
+  <!-- 👇 manual separator -->
+  <div class="space" aria-hidden="true"></div>
+
+
+  <!-- Spacing (Padding) split button -->
+  <div class="tool group split">
+    <button
+      mat-button
+      class="btn-tight main"
       matTooltip="Edit padding"
       aria-label="Edit padding"
       [matMenuTriggerFor]="spacingMenu"
@@ -145,13 +195,44 @@
     </button>
     <mat-menu #borderMenu="matMenu" class="box-menu" xPosition="after" yPosition="below">
       <div class="preset-grid compact" (click)="$event.stopPropagation()">
-        <button class="preset-btn" (click)="choosePreset('none')"    matTooltip="No border"><mat-icon svgIcon="border_clear"></mat-icon></button>
-        <button class="preset-btn" (click)="choosePreset('top')"     matTooltip="Top border"><mat-icon svgIcon="border_top"></mat-icon></button>
-        <button class="preset-btn" (click)="choosePreset('right')"   matTooltip="Right border"><mat-icon svgIcon="border_right"></mat-icon></button>
-        <button class="preset-btn" (click)="choosePreset('bottom')"  matTooltip="Bottom border"><mat-icon svgIcon="border_bottom"></mat-icon></button>
-        <button class="preset-btn" (click)="choosePreset('left')"    matTooltip="Left border"><mat-icon svgIcon="border_left"></mat-icon></button>
-        <button class="preset-btn" (click)="choosePreset('outside')" matTooltip="Outside borders"><mat-icon svgIcon="border_outer"></mat-icon></button>
+        <button class="preset-btn"
+                [class.active]="selectedPreset === 'none'"
+                (click)="choosePreset('none')"    matTooltip="No border">
+          <mat-icon svgIcon="border_clear"></mat-icon>
+        </button>
+
+        <button class="preset-btn"
+                [class.active]="selectedPreset === 'top'"
+                (click)="choosePreset('top')"     matTooltip="Top border">
+          <mat-icon svgIcon="border_top"></mat-icon>
+        </button>
+
+        <button class="preset-btn"
+                [class.active]="selectedPreset === 'outside'"
+                (click)="choosePreset('outside')" matTooltip="Outside borders">
+          <mat-icon svgIcon="border_outer"></mat-icon>
+        </button>
+
+        <button class="preset-btn"
+                [class.active]="selectedPreset === 'left'"
+                (click)="choosePreset('left')"    matTooltip="Left border">
+          <mat-icon svgIcon="border_left"></mat-icon>
+        </button>
+
+        <button class="preset-btn"
+                [class.active]="selectedPreset === 'bottom'"
+                (click)="choosePreset('bottom')"  matTooltip="Bottom border">
+          <mat-icon svgIcon="border_bottom"></mat-icon>
+        </button>
+
+        <button class="preset-btn"
+                [class.active]="selectedPreset === 'right'"
+                (click)="choosePreset('right')"   matTooltip="Right border">
+          <mat-icon svgIcon="border_right"></mat-icon>
+        </button>
+
       </div>
+
     </mat-menu>
   </div>
 </div>
