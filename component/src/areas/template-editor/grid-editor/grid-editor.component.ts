@@ -66,6 +66,7 @@ export class GridEditorComponent implements OnInit, OnDestroy {
   public selectedPartialId: string | null = null;
   public isResizing = false;
 
+  public currentCell: Cell | null = null;
   public currentRow = 0;
   public currentCol = -1;
   public hideCellAttributeToolbar = true;
@@ -111,6 +112,7 @@ export class GridEditorComponent implements OnInit, OnDestroy {
   public addRow(): void {
     this.grid.rows.splice(this.currentRow + 1, 0, this.createEmptyRow());
     this.currentRow++;
+    this.currentCell = this.grid.rows[this.currentRow].cells[this.currentCol];
     this.emitChange();
   }
 
@@ -123,6 +125,7 @@ export class GridEditorComponent implements OnInit, OnDestroy {
       this.grid.rows.push(this.createEmptyRow());
       this.currentRow = 0;
     }
+    this.currentCell = this.grid.rows[this.currentRow].cells[this.currentCol];
     this.emitChange();
   }
 
@@ -195,6 +198,15 @@ export class GridEditorComponent implements OnInit, OnDestroy {
   public onCellClick(rowIndex: number, colIndex: number): void {
     this.currentRow = rowIndex;
     this.currentCol = colIndex;
+    if (
+      this.currentRow >= 0 &&
+      this.currentCol >= 0 &&
+      this.grid?.rows?.[this.currentRow]?.cells?.[this.currentCol]
+    ) {
+      this.currentCell =  this.grid?.rows?.[this.currentRow]?.cells?.[this.currentCol];
+    }else{
+      this.currentCell = null;
+    }
   }
 
   public onCellDoubleClick(r: number, c: number): void {
@@ -204,16 +216,16 @@ export class GridEditorComponent implements OnInit, OnDestroy {
   }
 
   public openCellEditorDialog(): void {
-    const selected = this.getSelectedCell();
+    const selected = this.currentCell;
     if (!selected) { console.warn('No cell selected.'); return; }
-    this.openEditorForCell(selected.rowIndex, selected.colIndex);
+    this.openEditorForCell(this.currentRow, this.currentCol);
   }
 
   public openCellStyleEditorDialog(): void {
-    const selected = this.getSelectedCell();
+    const selected = this.currentCell;
     if (!selected) { console.warn('No cell selected.'); return; }
 
-    const data = this.clone(selected.cell.attrs);
+    const data = this.clone(selected.attrs);
 
     const ref = this.openDialogOnce(() =>
       this.dialog.open<CellAttributesDialogComponent, CellAttrs, CellAttrs | undefined>(
@@ -226,20 +238,19 @@ export class GridEditorComponent implements OnInit, OnDestroy {
     ref.afterClosed().pipe(take(1), takeUntil(this.destroy$))
       .subscribe((updated: CellAttrs | undefined) => {
         if (!updated) return;
-        const { rowIndex, colIndex } = selected;
-        if (!this.grid?.rows?.[rowIndex]?.cells?.[colIndex]) return;
+        if (!this.grid?.rows?.[this.currentRow]?.cells?.[this.currentCol]) return;
 
-        Object.assign(this.grid.rows[rowIndex].cells[colIndex].attrs, updated);
+        Object.assign(this.grid.rows[this.currentRow].cells[this.currentCol].attrs, updated);
         if (!(this.cdr as any)?.destroyed) this.cdr.detectChanges();
         this.emitChange();
       });
   }
 
   public openAddImageDialog(): void {
-    const selected = this.getSelectedCell();
+    const selected = this.currentCell;
     if (!selected) { console.warn('No cell selected.'); return; }
 
-    const data = this.clone(selected.cell.imageBlock);
+    const data = this.clone(selected.imageBlock);
 
     const ref = this.openDialogOnce(() =>
       this.dialog.open<AddImageDialogComponent, ImageBlock | undefined, ImageBlock | undefined>(
@@ -252,11 +263,10 @@ export class GridEditorComponent implements OnInit, OnDestroy {
     ref.afterClosed().pipe(take(1), takeUntil(this.destroy$))
       .subscribe((result: ImageBlock | undefined) => {
         if (!result) return;
-        const { rowIndex, colIndex } = selected;
-        if (!this.grid?.rows?.[rowIndex]?.cells?.[colIndex]) return;
+        if (!this.grid?.rows?.[this.currentRow]?.cells?.[this.currentCol]) return;
 
-        const oldCell = this.grid.rows[rowIndex].cells[colIndex];
-        this.grid.rows[rowIndex].cells[colIndex] = {
+        const oldCell = this.grid.rows[this.currentRow].cells[this.currentCol];
+        this.grid.rows[this.currentRow].cells[this.currentCol] = {
           ...oldCell,
           imageBlock: this.clone(result),
           type: 'image'
@@ -268,13 +278,12 @@ export class GridEditorComponent implements OnInit, OnDestroy {
   }
 
   public openAddChartDialog(): void {
-    const selected = this.getSelectedCell();
+    const selected = this.currentCell;
     if (!selected) { console.warn('No cell selected.'); return; }
 
-    const { rowIndex, colIndex } = selected;
     const data = {
       tokens: Array.isArray(this.tokenAttrs) ? [...this.tokenAttrs] : [],
-      existing: this.clone(selected.cell.chartBlock)
+      existing: this.clone(selected.chartBlock)
     };
 
     const ref = this.openDialogOnce(() =>
@@ -292,10 +301,10 @@ export class GridEditorComponent implements OnInit, OnDestroy {
     ref.afterClosed().pipe(take(1), takeUntil(this.destroy$))
       .subscribe((result: ChartBlock | undefined) => {
         if (!result) return;
-        if (!this.grid?.rows?.[rowIndex]?.cells?.[colIndex]) return;
+        if (!this.grid?.rows?.[this.currentRow]?.cells?.[this.currentCol]) return;
 
-        const oldCell = this.grid.rows[rowIndex].cells[colIndex];
-        this.grid.rows[rowIndex].cells[colIndex] = {
+        const oldCell = this.grid.rows[this.currentRow].cells[this.currentCol];
+        this.grid.rows[this.currentRow].cells[this.currentCol] = {
           ...oldCell,
           type: 'chart',
           chartBlock: this.clone(result)
@@ -344,7 +353,7 @@ export class GridEditorComponent implements OnInit, OnDestroy {
   }
 
   public displayRulesDialog(): void {
-    const selected = this.getSelectedCell();
+    const selected = this.currentCell;
     if (!selected) { console.warn('No cell selected.'); return; }
 
     const ref = this.openDialogOnce(() =>
@@ -358,7 +367,7 @@ export class GridEditorComponent implements OnInit, OnDestroy {
           width: '1000px',
           height: '600px',
           panelClass: 'app-dialog',
-          data: { tokenAttrs: this.tokenAttrs, initialConfig: selected.cell.displayLogic }
+          data: { tokenAttrs: this.tokenAttrs, initialConfig: selected.displayLogic }
         }
       )
     );
@@ -367,7 +376,7 @@ export class GridEditorComponent implements OnInit, OnDestroy {
     ref.afterClosed().pipe(take(1), takeUntil(this.destroy$))
       .subscribe((result: DisplayLogicGroup | undefined) => {
         if (!result) return;
-        selected.cell.displayLogic = result;
+        selected.displayLogic = result;
         this.emitChange();
       });
   }
@@ -487,19 +496,6 @@ export class GridEditorComponent implements OnInit, OnDestroy {
     return ref;
   }
 
-  public getSelectedCell():
-    | { cell: Cell; rowIndex: number; colIndex: number }
-    | null {
-    if (
-      this.currentRow >= 0 &&
-      this.currentCol >= 0 &&
-      this.grid?.rows?.[this.currentRow]?.cells?.[this.currentCol]
-    ) {
-      const cell = this.grid.rows[this.currentRow].cells[this.currentCol];
-      return { cell, rowIndex: this.currentRow, colIndex: this.currentCol };
-    }
-    return null;
-  }
 
   private createEmptyCell(): Cell {
     return {
@@ -539,7 +535,7 @@ export class GridEditorComponent implements OnInit, OnDestroy {
   }
 
   public setCellAttribute(cellAttrs: CellAttrs): void {
-    this.getSelectedCell().cell.attrs = cellAttrs;
+    this.currentCell.attrs = cellAttrs;
     this.gridChange.emit(this.grid);
   }
 

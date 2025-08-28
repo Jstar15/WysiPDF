@@ -34,35 +34,31 @@
             <mat-icon svgIcon="call_split"></mat-icon>
         </button>
 
+        <button mat-icon-button color="accent" matTooltip="Display Rules" aria-label="Display Rules" (click)="displayRulesDialog()">
+          <mat-icon svgIcon="view_list"></mat-icon>
+        </button>
+
+        <button *ngIf="!hideChart" mat-icon-button matTooltip="Insert Chart" (click)="openAddChartDialog()">
+          <mat-icon svgIcon="pie_chart"></mat-icon>
+        </button>
+
         <button mat-icon-button matTooltip="Insert Image" (click)="openAddImageDialog()">
             <mat-icon svgIcon="add_photo_alternate"></mat-icon>
         </button>
 
-        <button *ngIf="!hideChart" mat-icon-button matTooltip="Insert Chart" (click)="openAddChartDialog()">
-            <mat-icon svgIcon="pie_chart"></mat-icon>
-        </button>
-
-        <!-- Edit cell control (right aligned) -->
-        <button mat-icon-button color="accent" matTooltip="Display Rules" aria-label="Display Rules" (click)="displayRulesDialog()">
-        <mat-icon svgIcon="view_list"></mat-icon>
-        </button>
         <button mat-icon-button color="accent" matTooltip="Edit Cell Content"  (click)="openCellEditorDialog()">
         <mat-icon svgIcon="edit"></mat-icon>
-        </button>
-
-        <button mat-icon-button color="accent" matTooltip="Edit Cell Style"  (click)="hideCellAttributeToolbar = !hideCellAttributeToolbar">
-        <mat-icon svgIcon="border_color"></mat-icon>
         </button>
     </div>
 
 
-    <div class="grid-toolbar toolbar-top-row" *ngIf="!hideCellAttributeToolbar">
+    <div class="grid-toolbar toolbar-top-row">
       <app-cell-style-toolbar
-        [cellAttributes]="this.getSelectedCell().cell.attrs"
+        *ngIf="this.currentCell"
+        [cellAttributes]="this.currentCell.attrs"
         [colorPalettes]="colorPalettes"
         (cellAttributesChange)="this.setCellAttribute($event)">
       </app-cell-style-toolbar>
-
     </div>
 
 

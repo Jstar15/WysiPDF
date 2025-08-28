@@ -149,28 +149,6 @@ export class TemplateEditorComponent implements OnInit,AfterViewInit {
     });
   }
 
-  downloadHtml(): void {
-    // Build a nice filename from page names
-    const base =
-      this.page?.content?.name ||
-      this.page?.header?.name ||
-      'page';
-    const filename = `${base.replace(/[^\w\-]+/g, '_')}.html`;
-
-    this.pageToHtmlService.downloadHtml(this.page, filename, {
-      includeBaseStyles: true,
-      rootClass: 'wysi-export',
-      page: {
-        // You can tweak these; pageAttrs margins are applied inside the service
-        width: '900px',
-        margin: '0 auto',
-        background: this.page.pageAttrs?.backgroundColor,
-        fontFamily: this.page.pageAttrs?.defaultFont,
-      },
-    });
-  }
-
-
   toggleRightPane(): void {
     this.showRightPane = !this.showRightPane;
   }

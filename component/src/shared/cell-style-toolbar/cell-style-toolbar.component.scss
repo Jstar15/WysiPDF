@@ -1,18 +1,40 @@
-/* Minimal clean styling for the toolbar */
+/* ── Compact variables (tweak here) ───────────────────────────── */
 .cell-style-toolbar {
+  --toolbar-gap: 2px;
+  --toolbar-pad-x: 3px;
+  --toolbar-pad-y: 1px;
+
+  --btn-w: 24px;
+  --btn-h: 24px;
+  --btn-font: 11px;
+  --icon-size: 18px;
+
+  --swatch-size: 14px;
+
+  --menu-pad-x: 6px;
+  --menu-pad-y: 4px;
+
+  --grid-gap: 2px;
+  --preset-btn: 22px;
+}
+
+/* Minimal clean styling for the toolbar (compact) */
+.cell-style-toolbar {
+  position: relative;
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  padding: 2px 4px;
-  border: 1px solid rgba(0,0,0,0.08);
-  border-radius: 8px;
+  gap: var(--toolbar-gap);
+  padding: var(--toolbar-pad-y) var(--toolbar-pad-x);
+  border-top: 1px solid rgba(0,0,0,0.08);
+  border-radius: 6px;
+  width: 100%;
+  justify-content: flex-end;
 
   .tool {
     display: inline-flex;
     align-items: center;
-    gap: 4px;
+    gap: var(--toolbar-gap);
 
-    /* divider between groups */
     &.group + .group {
       border-left: 1px solid rgba(0,0,0,0.08);
       margin-left: 6px;
@@ -20,57 +42,100 @@
     }
   }
 
-  /* tighten the split button internals (main + caret) */
   .tool.split { gap: 0; }
-  .tool.split .caret-btn { margin-left: -3px; } /* pull caret closer */
+  .tool.split .caret-btn { margin-left: -2px; } /* slightly less overlap */
 }
 
-/* compact text buttons */
-.btn-tight { padding: 0 4px; min-width: 0; line-height: 1; }
+/* Compact text/icon buttons */
+.btn-tight { padding: 0 3px; min-width: 0; line-height: 1; font-size: var(--btn-font); }
 
-/* icon-only buttons: shrink so ripple hugs the icon */
+/* Angular Material overrides for tighter icon buttons */
 .btn-tight.mat-mdc-icon-button {
-  width: 28px;
-  height: 28px;
+  width: var(--btn-w);
+  height: var(--btn-h);
   padding: 0;
 }
 .btn-tight.mat-mdc-icon-button .mat-mdc-button-touch-target {
-  width: 28px;
-  height: 28px;
+  width: var(--btn-w);
+  height: var(--btn-h);
 }
 
-/* Swatch preview in toolbar buttons */
+/* Tighten standard buttons inside the toolbar */
+.cell-style-toolbar .mat-mdc-button {
+  padding: 0 4px;
+  min-width: auto;
+  line-height: 1;
+}
+.cell-style-toolbar .mat-mdc-button .mdc-button__label {
+  font-size: var(--btn-font);
+}
+
+/* Smaller icons */
+.cell-style-toolbar .mat-icon {
+  width: var(--icon-size);
+  height: var(--icon-size);
+  font-size: var(--icon-size);
+}
+
+/* Swatch preview in toolbar buttons (smaller) */
 .swatch {
   display: inline-block;
-  width: 18px; height: 18px;
-  margin: 0 4px;
+  width: var(--swatch-size);
+  height: var(--swatch-size);
+  margin: 0 2px;
   border: 1px solid rgba(0,0,0,0.25);
-  border-radius: 3px;
+  border-radius: 2px;
   box-sizing: border-box;
 }
 
-/* caret icon: remove extra left gap since we pulled buttons together */
 .caret { margin-left: 0; opacity: .75; }
 
-/* Palette popover */
-.palette-menu { padding: 6px 8px; }
+/* Palette menu spacing (smaller) */
+.palette-menu { padding: var(--menu-pad-y) var(--menu-pad-x); }
 .palette {
   display: grid;
-  grid-template-columns: repeat(10, 18px);
-  gap: 6px;
-  padding: 4px 0 8px;
+  grid-template-columns: repeat(10, var(--swatch-size));
+  gap: 4px;
+  padding: 2px 0 6px;
 }
 .swatch-btn {
-  width: 18px; height: 18px;
-  border-radius: 3px;
+  width: var(--swatch-size);
+  height: var(--swatch-size);
+  border-radius: 2px;
   border: 1px solid rgba(0,0,0,0.2);
   cursor: pointer;
 }
-.overlay-wrap { padding-top: 6px; }
 
-/* Preset border grid */
+/* Optional top spacing for overlay content */
+.overlay-wrap { padding-top: 4px; }
+
+/* Preset border grid (smaller) */
 .preset-grid {
   display: grid;
-  grid-template-columns: repeat(6, auto);
-  gap: 4px;
+  grid-template-columns: repeat(6, var(--preset-btn));
+  gap: var(--grid-gap);
+}
+.preset-grid .preset-btn {
+  width: var(--preset-btn);
+  height: var(--preset-btn);
+  padding: 0;
+  min-width: 0;
+}
+.preset-grid .preset-btn .mat-icon {
+  width: 16px;
+  height: 16px;
+  font-size: 16px;
+}
+
+/* Optional: compact menu content in box/palette menus */
+::ng-deep .mat-mdc-menu-panel.box-menu .mat-mdc-menu-content,
+::ng-deep .mat-mdc-menu-panel.palette-menu .mat-mdc-menu-content {
+  padding: var(--menu-pad-y) var(--menu-pad-x);
+}
+/* Vertical divider between tool groups */
+.cell-style-toolbar .space {
+  align-self: stretch;        /* match toolbar height */
+  width: 0;                   /* collapse width; border draws the line */
+  border-left: 1px solid rgba(0,0,0,0.08);
+  margin: 0 6px;              /* breathing room */
 }

@@ -1,0 +1,154 @@
+/* ── Compact spacing picker (smaller footprint) ───────────────────────────── */
+
+.picker-surface {
+  /* quick-tune knobs */
+  --ps-pad: 8px;
+  --ps-gap: 8px;
+  --radius: 8px;
+  --shadow: 0 6px 18px rgba(0,0,0,.12);
+
+  max-height: 360px;                /* was 420px */
+  padding: var(--ps-pad);           /* was 10px */
+  border: 1px solid rgba(0,0,0,.12);
+  border-radius: var(--radius);     /* was 10px */
+  background: #fff;
+  box-shadow: var(--shadow);        /* was 0 8px 24px */
+  display: flex;
+  flex-direction: column;
+  gap: var(--ps-gap);               /* was 10px */
+}
+
+.picker-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  .title { font-weight: 600; color: #374151; font-size: 13px; }  /* smaller */
+  .actions { display: inline-flex; gap: 4px; }                   /* was 6px */
+}
+
+/* Cross grid: 3x3 with inputs on the arms and a preview in the center */
+.cross-grid {
+  --grid-gap: 8px;
+  --mid-min: 120px;                 /* was 160px */
+  --row-min: 110px;                 /* was 140px */
+
+  display: grid;
+  grid-template-columns: 1fr minmax(var(--mid-min), 1.2fr) 1fr;
+  grid-template-rows: auto minmax(var(--row-min), 1fr) auto;
+  gap: var(--grid-gap);             /* was 10px */
+  align-items: center;
+  justify-items: center;
+  padding: 2px;                     /* was 4px */
+}
+
+.cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;                         /* was 6px */
+
+  &.top    { grid-column: 2; grid-row: 1; }
+  &.left   { grid-column: 1; grid-row: 2; }
+  &.center { grid-column: 2; grid-row: 2; width: 100%; height: 100%; }
+  &.right  { grid-column: 3; grid-row: 2; }
+  &.bottom { grid-column: 2; grid-row: 3; }
+}
+
+.edge-label {
+  font-size: 11px;                  /* was 12px */
+  font-weight: 600;
+  color: #6B7280;
+}
+
+.edge-input {
+  --inp-pad-y: 3px;                 /* was 4px */
+  --inp-pad-x: 6px;                 /* was 6px */
+  --inp-radius: 6px;                /* was 8px */
+  --field-w: 52px;                  /* was 64px */
+  --field-pad-y: 4px;               /* was 6px */
+  --field-pad-x: 6px;               /* was 8px */
+  --field-font: 12px;               /* was 13px */
+
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid rgba(0,0,0,.12);
+  border-radius: var(--inp-radius);
+  padding: var(--inp-pad-y) var(--inp-pad-x);
+
+  input {
+    width: var(--field-w);
+    padding: var(--field-pad-y) var(--field-pad-x);
+    border: 1px solid rgba(0,0,0,.14);
+    border-radius: 5px;            /* slightly smaller */
+    outline: none;
+    font-size: var(--field-font);
+  }
+
+  .unit {
+    font-size: 11px;               /* was 12px */
+    color: #6B7280;
+    padding-left: 2px;
+  }
+
+  /* tighten icon buttons just inside picker (scoped) */
+  .mat-mdc-icon-button {
+    width: 28px;                   /* was 36-ish default */
+    height: 28px;
+    padding: 0;
+  }
+  .mat-mdc-icon-button .mat-mdc-button-touch-target {
+    width: 28px; height: 28px;
+  }
+  .mat-icon {
+    width: 18px; height: 18px;     /* smaller icons */
+    font-size: 18px;
+  }
+}
+
+/* Center preview box; shows spacing visually using custom CSS vars */
+.preview-box {
+  --t: 0px; --r: 0px; --b: 0px; --l: 0px;
+
+  margin-top:    var(--t);
+  margin-right:  var(--r);
+  margin-bottom: var(--b);
+  margin-left:   var(--l);
+
+  width: 100%;
+  height: 100%;
+  min-height: 110px;               /* was 140px */
+  border-radius: 8px;              /* was 10px */
+  background:
+    repeating-conic-gradient(#f9fafb 0 25%, #f3f4f6 0 50%) 50% / 18px 18px; /* smaller tiles (was 24px) */
+  border: 1px dashed rgba(0,0,0,.16);
+  display: grid;
+  place-items: center;
+  position: relative;
+
+  .preview-content {
+    background: #ffffff;
+    border: 1px solid rgba(0,0,0,.12);
+    border-radius: 6px;            /* was 8px */
+    padding: 8px 10px;             /* was 12px 14px */
+    text-align: center;
+    box-shadow: 0 1px 6px rgba(0,0,0,.08); /* lighter */
+
+    .pv-title {
+      font-weight: 600;
+      color: #374151;
+      margin-bottom: 2px;
+      font-size: 12px;             /* was default */
+    }
+    .pv-values {
+      font-size: 11px;             /* was 12px */
+      color: #6B7280;
+    }
+  }
+}
+
+/* keep menu body a touch tighter when used inside mat-menu overlays */
+:host ::ng-deep .mat-mdc-menu-panel .mat-mdc-menu-content {
+  padding: 6px 8px;                /* smaller interior padding */
+}

@@ -12,10 +12,9 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-
-import { ColorPickerComponent } from '../color-picker/color-picker.component';
 import { CellAttrs } from '../../models/interfaces';
 import {ColorSwatchPickerComponent} from "../color-swatch-picker/color-swatch-picker.component";
+import {SpacingPickerComponent} from "../spacing-picker/spacing-picker.component";
 
 export type BorderPreset =
   | 'none'
@@ -38,7 +37,7 @@ export type BorderPreset =
     MatToolbarModule, MatButtonModule, MatIconModule,
     MatMenuModule, MatTooltipModule, MatDividerModule,
     MatFormFieldModule, MatInputModule,
-    ColorSwatchPickerComponent
+    ColorSwatchPickerComponent, SpacingPickerComponent
   ],
 })
 export class CellStyleToolbarComponent {
@@ -144,5 +143,22 @@ export class CellStyleToolbarComponent {
     if (typeof v === 'number') return Math.max(0, Math.round(v));
     const n = parseInt(String(v), 10);
     return Number.isFinite(n) && n >= 0 ? n : 0;
+  }
+
+  public applyPadding(v: { top: number; right: number; bottom: number; left: number }): void {
+    const cell = this.ensureCell();
+
+    const clamp = (n: unknown): number => {
+      const num = typeof n === 'number' ? n : Number(n);
+      if (!Number.isFinite(num)) return 0;
+      return Math.max(0, Math.round(num));
+    };
+
+    cell.paddingTop = clamp(v?.top);
+    cell.paddingRight = clamp(v?.right);
+    cell.paddingBottom = clamp(v?.bottom);
+    cell.paddingLeft = clamp(v?.left);
+
+    this.cellAttributesChange.emit(cell);
   }
 }

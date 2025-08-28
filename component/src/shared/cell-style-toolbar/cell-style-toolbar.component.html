@@ -1,4 +1,52 @@
-<mat-toolbar class="cell-style-toolbar mat-elevation-z1" role="toolbar" aria-label="Cell styling toolbar">
+<div class="cell-style-toolbar" role="toolbar" aria-label="Cell styling toolbar">
+  <!-- Spacing (Padding) split button -->
+  <div class="tool group split">
+    <button
+      mat-button
+      class="btn-tight main"
+      matTooltip="Edit padding"
+      aria-label="Edit padding"
+      [matMenuTriggerFor]="spacingMenu"
+      #spacingTrigger="matMenuTrigger">
+      <mat-icon svgIcon="open_in_full"></mat-icon>
+    </button>
+
+    <button
+      mat-icon-button
+      class="btn-tight caret-btn"
+      [matMenuTriggerFor]="spacingMenu"
+      aria-label="Open padding menu">
+      <mat-icon svgIcon="arrow_drop_down"></mat-icon>
+    </button>
+  </div>
+
+  <!-- Keep this menu open while interacting inside -->
+  <mat-menu
+    #spacingMenu="matMenu"
+    class="box-menu"
+    xPosition="after"
+    yPosition="below"
+    [overlapTrigger]="false">
+    <div
+      class="menu-keep-open"
+      (click)="$event.stopPropagation()"
+      (mousedown)="$event.stopPropagation()"
+      (mouseup)="$event.stopPropagation()"
+      (keydown)="$event.stopPropagation()">
+      <app-spacing-picker
+        title="Cell Padding"
+        [top]="cellAttributes?.paddingTop ?? 0"
+        [right]="cellAttributes?.paddingRight ?? 0"
+        [bottom]="cellAttributes?.paddingBottom ?? 0"
+        [left]="cellAttributes?.paddingLeft ?? 0"
+        (confirm)="applyPadding($event); spacingTrigger.closeMenu()"
+        (cancel)="spacingTrigger.closeMenu()">
+      </app-spacing-picker>
+    </div>
+  </mat-menu>
+
+  <!-- 👇 manual separator -->
+  <div class="space" aria-hidden="true"></div>
 
   <!-- Fill (background) : Split Button -->
   <div class="tool group split">
@@ -6,24 +54,14 @@
             matTooltip="Apply fill"
             aria-label="Apply fill color"
             (click)="setFill(fillBrushColor)">
-      <mat-icon svgIcon="format_color_fill"></mat-icon>
       <span class="swatch" [style.background]="fillBrushColor"></span>
     </button>
-
     <button mat-icon-button class="btn-tight caret-btn"
             [matMenuTriggerFor]="fillMenu"
             aria-label="Open fill menu">
       <mat-icon svgIcon="arrow_drop_down"></mat-icon>
     </button>
-
-    <button mat-icon-button class="btn-tight"
-            matTooltip="Clear fill"
-            aria-label="Clear fill"
-            (click)="clearFill()">
-      <mat-icon svgIcon="format_color_reset"></mat-icon>
-    </button>
-
-    <mat-menu #fillMenu="matMenu" class="palette-menu">
+    <mat-menu #fillMenu="matMenu" class="palette-menu" xPosition="after" yPosition="below">
       <app-color-swatch-picker
         [color]="fillBrushColor"
         [customPalette]="colorPalettes"
@@ -31,6 +69,9 @@
       </app-color-swatch-picker>
     </mat-menu>
   </div>
+
+  <!-- 👇 manual separator -->
+  <div class="space" aria-hidden="true"></div>
 
   <!-- Border COLOR : Split Button -->
   <div class="tool group split">
@@ -40,14 +81,12 @@
             (click)="setBorderColor(borderBrushColor)">
       <span class="swatch" [style.background]="borderBrushColor"></span>
     </button>
-
     <button mat-icon-button class="btn-tight caret-btn"
             [matMenuTriggerFor]="borderColorMenu"
             aria-label="Open border color menu">
       <mat-icon svgIcon="arrow_drop_down"></mat-icon>
     </button>
-
-    <mat-menu #borderColorMenu="matMenu" class="palette-menu">
+    <mat-menu #borderColorMenu="matMenu" class="palette-menu" xPosition="after" yPosition="below">
       <app-color-swatch-picker
         [color]="borderBrushColor"
         [customPalette]="colorPalettes"
@@ -55,6 +94,9 @@
       </app-color-swatch-picker>
     </mat-menu>
   </div>
+
+  <!-- 👇 manual separator -->
+  <div class="space" aria-hidden="true"></div>
 
   <!-- Border WEIGHT : Split Button -->
   <div class="tool group split">
@@ -65,14 +107,12 @@
       <mat-icon svgIcon="line_weight"></mat-icon>
       <span>{{ ensureWeight() }}px</span>
     </button>
-
     <button mat-icon-button class="btn-tight caret-btn"
             [matMenuTriggerFor]="weightMenu"
             aria-label="Open border weight menu">
       <mat-icon svgIcon="arrow_drop_down"></mat-icon>
     </button>
-
-    <mat-menu #weightMenu="matMenu">
+    <mat-menu #weightMenu="matMenu" xPosition="after" yPosition="below">
       <button mat-menu-item *ngFor="let w of weightOptions"
               (click)="setPresetWeight(w); applyBorder()">
         <span class="weight-preview" [style.border-bottom-width.px]="w"></span>
@@ -80,6 +120,9 @@
       </button>
     </mat-menu>
   </div>
+
+  <!-- 👇 manual separator -->
+  <div class="space" aria-hidden="true"></div>
 
   <!-- BORDERS : Split Button (Presets) -->
   <div class="tool group split">
@@ -95,15 +138,13 @@
         selectedPreset === 'left'   ? 'border_left'   : 'border_outer'
       "></mat-icon>
     </button>
-
     <button mat-icon-button class="btn-tight caret-btn"
             [matMenuTriggerFor]="borderMenu"
             aria-label="Open border menu">
       <mat-icon svgIcon="arrow_drop_down"></mat-icon>
     </button>
-
-    <mat-menu #borderMenu="matMenu" class="box-menu">
-      <div class="preset-grid compact">
+    <mat-menu #borderMenu="matMenu" class="box-menu" xPosition="after" yPosition="below">
+      <div class="preset-grid compact" (click)="$event.stopPropagation()">
         <button class="preset-btn" (click)="choosePreset('none')"    matTooltip="No border"><mat-icon svgIcon="border_clear"></mat-icon></button>
         <button class="preset-btn" (click)="choosePreset('top')"     matTooltip="Top border"><mat-icon svgIcon="border_top"></mat-icon></button>
         <button class="preset-btn" (click)="choosePreset('right')"   matTooltip="Right border"><mat-icon svgIcon="border_right"></mat-icon></button>
@@ -112,7 +153,5 @@
         <button class="preset-btn" (click)="choosePreset('outside')" matTooltip="Outside borders"><mat-icon svgIcon="border_outer"></mat-icon></button>
       </div>
     </mat-menu>
-
   </div>
-
-</mat-toolbar>
+</div>

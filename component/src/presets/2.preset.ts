@@ -295,7 +295,7 @@ export const Preset2: Page = {
         "cells": [
           {
             "type": "html",
-            "value": "<p class=\"ql-font-roboto\" style=\"font-size:12px;color: rgb(71, 85, 105);\"><strong style=\"font-size: 10px; color: rgb(136, 136, 136);\">Laterality</strong></p><p class=\"ql-font-roboto\" style=\"font-size:13px;\">Left</p>",
+            "value": "<p class=\"ql-font-roboto\" style=\"font-size:12px;color: rgb(71, 85, 105);\"><strong style=\"font-size: 10px; color: rgb(136, 136, 136);\">Laterality</strong></p><p class=\"ql-font-roboto\" style=\"font-size:13px;\"><span style=\"font-size: 10px;\">Left</span></p>",
             "attrs": {
               "paddingTop": 8,
               "paddingRight": 8,
@@ -310,7 +310,7 @@ export const Preset2: Page = {
           },
           {
             "type": "html",
-            "value": "<p class=\"ql-font-roboto\" style=\"font-size:12px;color: rgb(71, 85, 105);\"><strong style=\"font-size: 10px; color: rgb(136, 136, 136);\">Level</strong></p><p class=\"ql-font-roboto\" style=\"font-size:13px;\">Below knee</p>",
+            "value": "<p class=\"ql-font-roboto\" style=\"font-size:12px;color: rgb(71, 85, 105);\"><strong style=\"font-size: 10px; color: rgb(136, 136, 136);\">Level</strong></p><p class=\"ql-font-roboto\" style=\"font-size:13px;\"><span style=\"font-size: 10px;\">Below knee</span></p>",
             "attrs": {
               "paddingTop": 8,
               "paddingRight": 8,
@@ -325,7 +325,7 @@ export const Preset2: Page = {
           },
           {
             "type": "html",
-            "value": "<p class=\"ql-font-roboto\" style=\"font-size:12px;color: rgb(71, 85, 105);\"><strong style=\"font-size: 10px; color: rgb(136, 136, 136);\">Site Marked</strong></p><p class=\"ql-font-roboto\" style=\"font-size:13px;\">Yes</p>",
+            "value": "<p class=\"ql-font-roboto\" style=\"font-size:12px;color: rgb(71, 85, 105);\"><strong style=\"font-size: 10px; color: rgb(136, 136, 136);\">Site Marked</strong></p><p class=\"ql-font-roboto\" style=\"font-size:13px;\"><span style=\"font-size: 10px;\">Yes</span></p>",
             "attrs": {
               "paddingTop": 8,
               "paddingRight": 8,
@@ -340,7 +340,7 @@ export const Preset2: Page = {
           },
           {
             "type": "html",
-            "value": "<p class=\"ql-font-roboto\" style=\"font-size:12px;color: rgb(71, 85, 105);\"><strong style=\"font-size: 10px; color: rgb(136, 136, 136);\">Indication</strong></p><p class=\"ql-font-roboto\" style=\"font-size:13px;\">Critical limb ischaemia, infected ulcers, intractable pain.</p>",
+            "value": "<p class=\"ql-font-roboto\" style=\"font-size:12px;color: rgb(71, 85, 105);\"><strong style=\"font-size: 10px; color: rgb(136, 136, 136);\">Indication</strong></p><p class=\"ql-font-roboto\" style=\"font-size:13px;\"><span style=\"font-size: 10px;\">Critical limb ischaemia, infected ulcers, intractable pain.</span></p>",
             "attrs": {
               "paddingTop": 8,
               "paddingRight": 10,
@@ -704,13 +704,42 @@ export const Preset2: Page = {
   "tokenAttrs": [],
   "partialContent": [],
   "colorPalettes": [
-    '#000000', '#111827', '#1F2937', '#374151', '#4B5563',
-    '#6B7280', '#9CA3AF', '#D1D5DB', '#E5E7EB', '#FFFFFF',
-    '#1D4ED8', '#2563EB', '#3B82F6', '#6366F1', '#818CF8',
-    '#0E7490', '#06B6D4', '#22D3EE', '#67E8F9',
-    '#065F46', '#10B981', '#34D399', '#86EFAC',
-    '#B45309', '#F59E0B', '#FBBF24', '#FB923C',
-    '#B91C1C', '#EF4444', '#F87171', '#FCA5A5',
-    '#BE185D', '#EC4899', '#F472B6', '#8B5CF6', '#A78BFA', '#DDD6FE'
+    "#000000",
+    "#111827",
+    "#1F2937",
+    "#374151",
+    "#4B5563",
+    "#6B7280",
+    "#9CA3AF",
+    "#D1D5DB",
+    "#E5E7EB",
+    "#FFFFFF",
+    "#1D4ED8",
+    "#2563EB",
+    "#3B82F6",
+    "#6366F1",
+    "#818CF8",
+    "#0E7490",
+    "#06B6D4",
+    "#22D3EE",
+    "#67E8F9",
+    "#065F46",
+    "#10B981",
+    "#34D399",
+    "#86EFAC",
+    "#B45309",
+    "#F59E0B",
+    "#FBBF24",
+    "#FB923C",
+    "#B91C1C",
+    "#EF4444",
+    "#F87171",
+    "#FCA5A5",
+    "#BE185D",
+    "#EC4899",
+    "#F472B6",
+    "#8B5CF6",
+    "#A78BFA",
+    "#DDD6FE"
   ]
 };
