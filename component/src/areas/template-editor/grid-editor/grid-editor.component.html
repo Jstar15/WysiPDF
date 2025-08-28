@@ -38,6 +38,10 @@
           <mat-icon svgIcon="view_list"></mat-icon>
         </button>
 
+        <button mat-icon-button color="accent" matTooltip="Insert Barcode" aria-label="Insert Barcode" (click)="openAddBarcodeDialog()">
+          <mat-icon svgIcon="barcode"></mat-icon>
+        </button>
+
         <button *ngIf="!hideChart" mat-icon-button matTooltip="Insert Chart" (click)="openAddChartDialog()">
           <mat-icon svgIcon="pie_chart"></mat-icon>
         </button>
@@ -125,6 +129,17 @@
                                             alt="{{ cell.imageBlock.filename }}"
                                     />
                                 </div>
+                            </ng-container>
+
+                            <ng-container *ngIf="cell.barcodeBlock;">
+                              <div [style.text-align]="cell.barcodeBlock.alignment">
+                                <img
+                                  [src]="cell.barcodeBlock.imageBase64"
+                                  [style.width.%]="cell.barcodeBlock.width || 100"
+                                  style="display: inline-block;"
+                                  alt="{{ cell.barcodeBlock.filename }}"
+                                />
+                              </div>
                             </ng-container>
 
                             <ng-container *ngIf="cell.chartBlock; else textBlock">

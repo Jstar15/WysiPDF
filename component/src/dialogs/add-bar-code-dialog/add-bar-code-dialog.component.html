@@ -1,0 +1,104 @@
+<h1 mat-dialog-title>Add Barcode</h1>
+
+<div class="editor-dialog-content">
+  <!-- Manual text -->
+  <p class="section-title">Barcode Text</p>
+  <div class="row-grid-3-3-3-auto">
+    <mat-form-field appearance="fill" class="w-100">
+      <mat-label>Text</mat-label>
+      <input
+        matInput
+        [(ngModel)]="textValue"
+        (keyup.enter)="tryGenerate()"
+        placeholder="Enter text for barcode"
+      />
+    </mat-form-field>
+  </div>
+
+  <!-- Token selection -->
+  <p class="section-title" *ngIf="barcodeTokens.length">Or select token</p>
+  <div class="row-grid-3-3-3-auto" *ngIf="barcodeTokens.length">
+    <mat-form-field appearance="fill" class="w-100">
+      <mat-label>Token</mat-label>
+      <mat-select [(ngModel)]="selectedTokenKey" (selectionChange)="onTokenChanged()">
+        <mat-option [value]="null">None</mat-option>
+        <mat-option *ngFor="let t of barcodeTokens" [value]="t.name">
+          {{ t.name }} <span *ngIf="t.value">— "{{ t.value }}"</span>
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <!-- Type selection + Generate -->
+  <p class="section-title">Barcode Type</p>
+  <div class="row-grid-3-3-3-auto">
+    <mat-form-field appearance="fill" class="w-100">
+      <mat-label>Type</mat-label>
+      <mat-select [(ngModel)]="selectedFormat">
+        <mat-option *ngFor="let f of availableFormats" [value]="f.value">
+          {{ f.label }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <button mat-raised-button color="primary" (click)="tryGenerate()" [disabled]="isGenerating">
+      Generate
+    </button>
+  </div>
+
+  <!-- Preview / errors -->
+  <div *ngIf="errorMsg" class="file-info" style="color:#b00020">{{ errorMsg }}</div>
+
+  <div *ngIf="imageBase64" class="preview-container">
+    <p class="section-title">Preview</p>
+    <img
+      [src]="imageBase64"
+      alt="barcode preview"
+      class="image-preview"
+      [style.width.%]="width"
+    />
+  </div>
+
+  <div *ngIf="selectedTokenKey && !imageBase64 && !errorMsg" class="file-info">
+    Preview not available for this token value yet, but it will render at runtime.
+  </div>
+
+  <!-- Display width -->
+  <p class="section-title">Display Width (%)</p>
+  <div class="row-grid-3-3-3-auto">
+    <mat-form-field appearance="fill" class="w-100">
+      <mat-label>Width (%)</mat-label>
+      <input
+        matInput
+        type="number"
+        [(ngModel)]="width"
+        min="1"
+        max="100"
+        placeholder="100"
+      />
+    </mat-form-field>
+  </div>
+
+  <!-- Alignment -->
+  <p class="section-title">Alignment</p>
+  <div class="align-group">
+    <mat-button-toggle-group [(ngModel)]="alignment">
+      <mat-button-toggle value="left">
+        <mat-icon svgIcon="format_align_left"></mat-icon>
+      </mat-button-toggle>
+      <mat-button-toggle value="center">
+        <mat-icon svgIcon="format_align_center"></mat-icon>
+      </mat-button-toggle>
+      <mat-button-toggle value="right">
+        <mat-icon svgIcon="format_align_right"></mat-icon>
+      </mat-button-toggle>
+    </mat-button-toggle-group>
+  </div>
+</div>
+
+<div mat-dialog-actions>
+  <button mat-button (click)="onCancel()">Cancel</button>
+  <button mat-raised-button color="primary" (click)="onSave()" [disabled]="!canSave()">
+    Save
+  </button>
+</div>

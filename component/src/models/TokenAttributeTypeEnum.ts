@@ -4,5 +4,7 @@ export enum TokenAttributeTypeEnum {
   BOOLEAN = "boolean",
   JSON_ARRAY = "json_array",
   STRING_ARRAY = "string_array",
-  OBJECT = "object"
+  OBJECT = "object",
+  IMAGE = "image",
+  BARCODE = "barcode"
 }

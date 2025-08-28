@@ -65,6 +65,8 @@ export class GridToStructuredContentService {
             type: cell.type,
             imageBlock: cell.imageBlock,
             chartBlock: cell.chartBlock,
+            barcodeBlock: cell.barcodeBlock,
+
             block: cell.block
         };
     }

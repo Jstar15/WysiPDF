@@ -53,13 +53,17 @@ export class StructuredContentToPdfmakeService {
         let imgAlign: Alignment = 'left';
 
         if (cell.type === 'image' && cell.imageBlock) {
-        imageBase64 = cell.imageBlock.imageBase64;
-        imgWidthPct = cell.imageBlock.width ?? 100;
-        imgAlign = cell.imageBlock.alignment as Alignment;
+          imageBase64 = cell.imageBlock.imageBase64;
+          imgWidthPct = cell.imageBlock.width ?? 100;
+          imgAlign = cell.imageBlock.alignment as Alignment;
         } else if (cell.type === 'chart' && cell.chartBlock) {
-        imageBase64 = cell.chartBlock.imageBase64;
-        imgWidthPct = cell.chartBlock.width ?? 100;
-        imgAlign = cell.chartBlock.alignment as Alignment;
+          imageBase64 = cell.chartBlock.imageBase64;
+          imgWidthPct = cell.chartBlock.width ?? 100;
+          imgAlign = cell.chartBlock.alignment as Alignment;
+        } else if (cell.type === 'barcode' && cell.barcodeBlock) {
+          imageBase64 = cell.barcodeBlock.imageBase64;
+          imgWidthPct = cell.barcodeBlock.width ?? 100;
+          imgAlign = cell.barcodeBlock.alignment as Alignment;
         }
 
         const nested: Content[] =

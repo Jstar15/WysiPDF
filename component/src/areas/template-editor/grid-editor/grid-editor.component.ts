@@ -20,7 +20,10 @@ import { Subject, take, takeUntil } from 'rxjs';
 import { TokenAttribute } from '../../../models/TokenAttribute';
 import { QuillEditorDialogComponent } from '../../../dialogs/quill-editor-dialog/quill-editor.dialog.component';
 import { CellAttributesDialogComponent } from '../../../dialogs/cell-attributes-dialog/cell-attributes-dialog.component';
-import { AddImageDialogComponent } from '../../../dialogs/add-image-dialog/add-image-dialog.component';
+import {
+  AddImageDialogComponent,
+  AddImageDialogPayload
+} from '../../../dialogs/add-image-dialog/add-image-dialog.component';
 import {
   AddPartialContentDialogComponent,
   AddPartialContentDialogResult
@@ -35,12 +38,16 @@ import {
   Row,
   PageAttrs,
   ImageBlock,
-  ChartBlock
+  ChartBlock, BarcodeBlock
 } from '../../../models/interfaces';
 import { DisplayLogicGroup } from '../../../models/display-logic.models';
 import {
   CellStyleToolbarComponent,
 } from './cell-style-toolbar/cell-style-toolbar.component';
+import {
+  AddBarCodeDialogComponent,
+  AddBarCodeDialogPayload
+} from "../../../dialogs/add-bar-code-dialog/add-bar-code-dialog.component";
 
 @Component({
   selector: 'app-grid-editor',
@@ -247,15 +254,15 @@ export class GridEditorComponent implements OnInit, OnDestroy {
   }
 
   public openAddImageDialog(): void {
-    const selected = this.currentCell;
+    const selected: Cell = this.currentCell;
     if (!selected) { console.warn('No cell selected.'); return; }
 
-    const data = this.clone(selected.imageBlock);
+    const imageBlockCopy: ImageBlock = this.clone(selected.imageBlock);
 
     const ref = this.openDialogOnce(() =>
-      this.dialog.open<AddImageDialogComponent, ImageBlock | undefined, ImageBlock | undefined>(
+      this.dialog.open<AddImageDialogComponent, AddImageDialogPayload>(
         AddImageDialogComponent,
-        { width: '1000px', height: '600px', panelClass: 'app-dialog', data }
+        { width: '1000px', height: '600px', panelClass: 'app-dialog', data: {imageBlock: imageBlockCopy, tokenAttrs: this.tokenAttrs} }
       )
     );
     if (!ref) return;
@@ -314,6 +321,57 @@ export class GridEditorComponent implements OnInit, OnDestroy {
         this.emitChange();
       });
   }
+
+  public openAddBarcodeDialog(): void {
+    const selected = this.currentCell;
+    if (!selected) { console.warn('No cell selected.'); return; }
+
+    // Prepare dialog data (clone existing or provide a clean default)
+    const existing: BarcodeBlock | undefined = selected.barcodeBlock ? this.clone(selected.barcodeBlock) : undefined;
+    const data: AddBarCodeDialogPayload = {
+      barcodeBlock: existing ?? {
+        imageBase64: '',
+        filename: '',
+        width: 100,
+        alignment: 'left'
+        // HtmlTokenElement will be set by the dialog if a token is chosen
+      },
+      tokenAttrs: Array.isArray(this.tokenAttrs) ? [...this.tokenAttrs] : []
+    };
+
+    const ref = this.openDialogOnce(() =>
+      this.dialog.open<
+        AddBarCodeDialogComponent,
+        AddBarCodeDialogPayload,
+        BarcodeBlock | undefined
+      >(
+        AddBarCodeDialogComponent,
+        { width: '900px', height: '700px', panelClass: 'app-dialog', data }
+      )
+    );
+    if (!ref) return;
+
+    ref.afterClosed().pipe(take(1), takeUntil(this.destroy$))
+      .subscribe((result: BarcodeBlock | undefined) => {
+        if (!result) return;
+        if (!this.grid?.rows?.[this.currentRow]?.cells?.[this.currentCol]) return;
+
+        const oldCell = this.grid.rows[this.currentRow].cells[this.currentCol];
+
+        // Store as an "image" type cell carrying a barcodeBlock payload (minimal change)
+        this.grid.rows[this.currentRow].cells[this.currentCol] = {
+          ...oldCell,
+          type: 'barcode',
+          barcodeBlock: this.clone(result),
+          // (optional) clear a conflicting imageBlock to avoid ambiguity
+          imageBlock: undefined
+        };
+
+        if (!(this.cdr as any)?.destroyed) this.cdr.detectChanges();
+        this.emitChange();
+      });
+  }
+
 
   public addPartialRow(): void {
     if (!this.partialContentAvailableList?.length) {
@@ -434,6 +492,9 @@ export class GridEditorComponent implements OnInit, OnDestroy {
   private openEditorForCell(r: number, c: number): void {
     const row = this.grid.rows[r];
     const cell = row?.cells?.[c];
+    this.currentRow = r;
+    this.currentCol = c;
+
     if (!cell) { console.warn('Cell not found at', r, c); return; }
 
     if (cell.type === 'html') {
@@ -462,12 +523,11 @@ export class GridEditorComponent implements OnInit, OnDestroy {
         });
 
     } else if (cell.type === 'image') {
-      this.currentRow = r; this.currentCol = c;
       this.openAddImageDialog();
-
     } else if (cell.type === 'chart') {
-      this.currentRow = r; this.currentCol = c;
       this.openAddChartDialog();
+    }else if (cell.type === 'barcode') {
+      this.openAddBarcodeDialog();
     }
   }
 

@@ -13,6 +13,20 @@
     </div>
   </div>
 
+  <!-- NEW: Token-based image selection (IMAGE tokens only) -->
+  <p class="section-title" *ngIf="imageTokens.length">Or select image token</p>
+  <div class="row-grid-3-3-3-auto" *ngIf="imageTokens.length">
+    <mat-form-field appearance="fill" class="w-100">
+      <mat-label>Image Token</mat-label>
+      <mat-select [(ngModel)]="selectedTokenKey" (selectionChange)="onTokenChanged()">
+        <mat-option [value]="null">None</mat-option>
+        <mat-option *ngFor="let t of imageTokens" [value]="t.name">
+          {{ t.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
   <div *ngIf="imageBase64" class="preview-container">
     <p class="section-title">Preview</p>
     <img
@@ -21,6 +35,9 @@
       class="image-preview"
       [style.width.%]="width"
     />
+  </div>
+  <div *ngIf="selectedTokenKey && !imageBase64" class="file-info">
+    Preview not available for this token value, but it will render at runtime.
   </div>
 
   <p class="section-title">Image Width (%)</p>
@@ -56,7 +73,7 @@
 
 <div mat-dialog-actions>
   <button mat-button (click)="onCancel()">Cancel</button>
-  <button mat-raised-button color="primary" (click)="onSave()" [disabled]="!imageBase64">
+  <button mat-raised-button color="primary" (click)="onSave()" [disabled]="!canSave()">
     Save
   </button>
 </div>

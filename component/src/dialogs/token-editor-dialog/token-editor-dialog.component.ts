@@ -15,7 +15,7 @@ import { FormsModule } from '@angular/forms';
 import { MatIcon } from '@angular/material/icon';
 import { MatTab, MatTabGroup } from '@angular/material/tabs';
 import { TokenAttribute } from '../../models/TokenAttribute';
-import { TokenAttributeTypeEnum } from '../../models/display-logic.models';
+import {TokenAttributeTypeEnum} from "../../models/TokenAttributeTypeEnum";
 
 @Component({
   selector: 'app-token-editor-dialog',
@@ -53,8 +53,11 @@ export class TokenEditorDialogComponent {
     { value: TokenAttributeTypeEnum.BOOLEAN,      viewValue: 'Boolean' },
     { value: TokenAttributeTypeEnum.NUMBER,       viewValue: 'Number' },
     { value: TokenAttributeTypeEnum.JSON_ARRAY,   viewValue: 'JSON Array' },
-    { value: TokenAttributeTypeEnum.STRING_ARRAY, viewValue: 'String Array' },
+    { value: TokenAttributeTypeEnum.STRING_ARRAY, viewValue: 'STRING Array' },
     { value: TokenAttributeTypeEnum.OBJECT,       viewValue: 'Object' },
+    { value: TokenAttributeTypeEnum.IMAGE,        viewValue: 'Image' },
+    { value: TokenAttributeTypeEnum.BARCODE,      viewValue: 'Barcode' },
+
   ];
 
   attributes: TokenAttribute[] = [];

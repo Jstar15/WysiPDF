@@ -65,9 +65,18 @@ export interface HtmlGridBlock {
 
 export interface ImageBlock {
     imageBase64: string;
+    HtmlTokenElement?: HtmlTokenElement;
     filename: string;
     width: number;
     alignment: 'left' | 'center' | 'right';
+}
+
+export interface BarcodeBlock {
+  imageBase64: string;
+  HtmlTokenElement?: HtmlTokenElement;
+  filename: string;
+  width: number;
+  alignment: 'left' | 'center' | 'right';
 }
 
 export interface ChartSlice {
@@ -101,11 +110,12 @@ export interface CellAttrs {
 }
 
 export interface Cell {
-    type: 'html' | 'image' | 'chart' ;
+    type: 'html' | 'image' | 'chart' | 'barcode';
     value: string;
     block?: HtmlBlockContainer;
     imageBlock?: ImageBlock
     chartBlock?: ChartBlock
+    barcodeBlock?: BarcodeBlock
     attrs: CellAttrs;
     displayLogic?: DisplayLogicGroup
 
