@@ -76,23 +76,24 @@ export class PageToStructuredContentService {
           margin: [30,20,30,gridAttrs.headerMargin] // ✅ Left, Top, Right, Bottom
         };
       },
-      footer: (currentPage: number, pageCount: number): ContentColumns => {
-        return {
-          columns: [
-            {
-              stack: footerContent,
-              margin: [gridAttrs.footerMargin, 0, 0, 0] // ✅ Left, Top, Right, Bottom
-
-            },
-            {
-              text: `Page ${currentPage} of ${pageCount}`,
-              alignment: 'right',
-              fontSize: 9,
-              margin: [0, 0, gridAttrs.footerMargin, 0] // ✅ Left, Top, Right, Bottom
-            }
-          ]
-        };
-      },
+      footer: (currentPage: number, pageCount: number): ContentColumns => ({
+        columns: [
+          {
+            width: '70%',
+            stack: footerContent,
+            margin: [50, 0, 0, 0] // L,T,R,B
+          },
+          {
+            width: '30%',
+            text: `Page ${currentPage} of ${pageCount}`,
+            alignment: 'right',
+            fontSize: 9,
+            margin: [0, 13, 50, 0]
+          }
+        ],
+        columnGap: 10
+      })
+,
       background: gridAttrs.backgroundColor
         ? () => ({
           canvas: [
