@@ -11,7 +11,7 @@ export class CustomElementBlot extends EmbedBlot {
     const node = super.create() as HTMLElement;
 
     node.classList.add('custom-token'); // optional styling hook
-    node.setAttribute('data-value', value.value);
+    node.setAttribute('data-value', '<<' + value.name + '>>');
     node.setAttribute('data-type', value.type);
     node.setAttribute('data-name', value.name);
 

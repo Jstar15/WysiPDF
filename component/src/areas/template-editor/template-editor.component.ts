@@ -46,6 +46,7 @@ import {
   PageImportExportDialogComponent
 } from "../../dialogs/page-import-export-dialog/page-import-export-dialog.component";
 import {PageTokenValidator} from "../../services/page-token-validator.service";
+import {PageService} from "../../services/page.service";
 
 @Component({
   standalone: true,
@@ -99,7 +100,6 @@ export class TemplateEditorComponent implements OnInit,AfterViewInit {
       private gridHistoryService: GridHistoryService,
       private cdr: ChangeDetectorRef,
       private iconService: IconService,
-      private pageToHtmlService : PageToHtmlService,
       private pageTokenValidator : PageTokenValidator
   ) {
 
@@ -302,6 +302,7 @@ export class TemplateEditorComponent implements OnInit,AfterViewInit {
       this.gridHistoryService.pushSnapshot(this.page);
     }
     this.pdfGenerationResult = await this.pdfService.generatePdfBase64(this.page, this.page.tokenAttrs);
+    this.page = this.pageTokenValidator.validatePage(this.page, this.page.tokenAttrs);
     this.jsonList = this.buildJsonViewerList(this.page, this.pdfGenerationResult);
     this.cdr.detectChanges();
 
@@ -391,10 +392,6 @@ export class TemplateEditorComponent implements OnInit,AfterViewInit {
 
   }
 
-  isValid() {
-    this.page = this.pageTokenValidator.validatePage(this.page, this.page.tokenAttrs);
-
-  }
 
 
 }
