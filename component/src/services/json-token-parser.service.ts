@@ -93,37 +93,18 @@ export class JsonTokenParserService {
     }, obj);
   }
 
-  /** Get string value by path (like jsonb ->>) */
-  public getTextByPath(obj: any, path: string): string | null {
-    const val = this.getValueByPath(obj, path);
-    return val !== null && val !== undefined ? String(val) : null;
-  }
+  /** 🔍 Extract all unique keys from a JSON array of objects */
+  public getAllKeysFromJsonArray(arr: any[]): string[] {
+    const keys = new Set<string>();
 
-  /** Check if a key exists at a given path (like jsonb_exists) */
-  public hasKey(obj: any, path: string): boolean {
-    if (!obj || !path) return false;
-    const keys = path.split('.');
-    let current = obj;
-    for (let k of keys) {
-      if (current && typeof current === 'object' && k in current) {
-        current = current[k];
-      } else {
-        return false;
+    if (!Array.isArray(arr)) return [];
+
+    arr.forEach(item => {
+      if (item && typeof item === 'object' && !Array.isArray(item)) {
+        Object.keys(item).forEach(k => keys.add(k));
       }
-    }
-    return true;
-  }
+    });
 
-  /** Return sub-object as JSON string (like jsonb_extract_path) */
-  public extractJson(obj: any, path: string): string | null {
-    const val = this.getValueByPath(obj, path);
-    return val ? JSON.stringify(val) : null;
-  }
-
-  /** Flatten sub-object into TokenAttributes (like jsonb_each) */
-  public extractTokens(obj: any, path: string): TokenAttribute[] {
-    const val = this.getValueByPath(obj, path);
-    if (!val) return [];
-    return this.parse(JSON.stringify(val));
+    return Array.from(keys);
   }
 }

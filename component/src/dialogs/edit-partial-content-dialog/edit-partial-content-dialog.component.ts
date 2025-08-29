@@ -12,6 +12,7 @@ import { MatButton } from "@angular/material/button";
 import {MatInput} from "@angular/material/input";
 import {NgForOf} from "@angular/common";
 import {TokenAttribute} from "../../models/TokenAttribute";
+import {TokenAttributeTypeEnum} from "../../models/TokenAttributeTypeEnum";
 
 export interface EditPartialContentData {
   name: string;
@@ -38,6 +39,11 @@ export interface EditPartialContentData {
   styleUrls: ['./edit-partial-content-dialog.component.scss']
 })
 export class EditPartialContentDialogComponent {
+  root: TokenAttribute = {
+    name: 'root',
+    value: '',
+    type: TokenAttributeTypeEnum.TEXT
+  }
   constructor(
       public dialogRef: MatDialogRef<EditPartialContentDialogComponent>,
       @Inject(MAT_DIALOG_DATA) public data: EditPartialContentData

@@ -126,30 +126,45 @@ export class PageTokenValidator {
 
     return errors;
   }
-
-  /** 🔄 Partial content validator */
+  /** Partial content validator */
   private processPartialContent(page: Page, tokens: TokenAttribute[]): void {
     for (let content of page.partialContent) {
       if (!content.tokenSource) continue;
 
+      // ✅ Case 1: tokenSource = "root" → use regular tokens
+      if (content.tokenSource.toLowerCase() === 'root') {
+        content.rows = this.validateRow(content.rows, tokens);
+        continue;
+      }
+
       const sourceToken: TokenAttribute = tokens.find(
-        (t: TokenAttribute) => t.name?.toLowerCase() === content.tokenSource.toLowerCase()
+        (t: TokenAttribute) =>
+          t.name?.toLowerCase() === content.tokenSource.toLowerCase()
       );
 
-      if (!sourceToken || !sourceToken.value) continue;
+      // ✅ Case 2: no matching token found → mark all cells with error
+      if (!sourceToken) {
+        this.setErrorOnAllCells(
+          content.rows,
+          `Partial content source '${content.tokenSource}' not found`
+        );
+        continue;
+      }
+
+      if (!sourceToken.value) continue;
 
       try {
         // parse JSON into subset of tokens
         let partialTokens: TokenAttribute[] = [];
-        if(sourceToken.type == TokenAttributeTypeEnum.JSON_ARRAY){
+        if (sourceToken.type == TokenAttributeTypeEnum.JSON_ARRAY) {
           const object: any[] = JSON.parse(sourceToken.value);
-          const keys = this.getAllKeysFromJsonArray(object);
-          debugger;
-          for(let key of keys){
+          const keys: string[] = this.jsonTokenParser.getAllKeysFromJsonArray(object);
+
+          for (let key of keys) {
             partialTokens.push({
               name: `${sourceToken.name}.${key}`,
-              type: TokenAttributeTypeEnum.TEXT, // 👈 you could infer type if needed
-              value: '' // placeholder, since we're just building keys
+              type: TokenAttributeTypeEnum.TEXT,
+              value: ''
             });
           }
         }
@@ -165,26 +180,24 @@ export class PageTokenValidator {
     }
   }
 
+  /** 🚨 Mark all cells in given rows with an error */
+  private setErrorOnAllCells(rows: Row[], message: string): void {
+    for (let row of rows) {
+      for (let cell of row.cells) {
+        cell.hasError = true;
+        cell.errorMessage = message;
+      }
+    }
+  }
+
+
   private isTokenAvailable(tokenKey: string, tokens: TokenAttribute[]): boolean {
     if (!tokenKey || !tokens) return false;
     return tokens.some(
       (t) => t.name?.toLowerCase() === tokenKey.toLowerCase()
     );
   }
-  /** 🔍 Extract all unique keys from a JSON array of objects */
-  private getAllKeysFromJsonArray(arr: any[]): string[] {
-    const keys = new Set<string>();
 
-    if (!Array.isArray(arr)) return [];
-
-    arr.forEach(item => {
-      if (item && typeof item === 'object' && !Array.isArray(item)) {
-        Object.keys(item).forEach(k => keys.add(k));
-      }
-    });
-
-    return Array.from(keys);
-  }
 
 
 }

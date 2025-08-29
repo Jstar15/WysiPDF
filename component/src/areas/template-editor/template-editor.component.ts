@@ -246,6 +246,7 @@ export class TemplateEditorComponent implements OnInit,AfterViewInit {
           this.page.partialContent[index].tokenAttributeList = availableTokens;
           console.log('Available tokens from json[]:', availableTokens);
         }
+        this._emitGridChange();
 
       }
     });

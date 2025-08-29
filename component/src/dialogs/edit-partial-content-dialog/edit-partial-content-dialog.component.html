@@ -10,7 +10,7 @@
     <mat-form-field appearance="outline" style="width: 100%;;padding-top: 10px;">
         <mat-label>Token Source</mat-label>
         <mat-select [(ngModel)]="data.selectedToken">
-            <mat-option value="root">root</mat-option>
+            <mat-option [value]="root">root</mat-option>
             <mat-option *ngFor="let token of data.tokenOptions" [value]="token">
                 {{ token.name}}  - {{token.type}}
             </mat-option>
