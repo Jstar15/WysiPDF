@@ -383,7 +383,8 @@ export class TemplateEditorComponent implements OnInit,AfterViewInit {
         name: 'Tokens',
         description: 'Tokens defined that can be used inside a template',
         data: page.tokenAttrs
-      },{
+      },
+      {
         name: 'Display Rules',
         description: 'Display Rules USed inside the template.',
         data: collectDisplayRules(page)

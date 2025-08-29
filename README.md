@@ -3,7 +3,7 @@
 > ⚠️ **Disclaimer:** WysiPDF is **in active development**. Features and APIs may change without notice. Use at your own risk.
 
 WysiPDF is a visual WYSIWYG editor **and** an embeddable runtime for building **dynamic, data-driven documents**.
-Design once, then generate **PDF** or **standalone HTML** from **static tokens**, **live JSON**, or **looped partials**—all in the browser.
+Design once, then generate **PDF** or **standalone HTML** from **dynamic tokens**, **live JSON**, or **looped partials**—all in the browser.
 
 ![WysiPDF screenshot](readme/images/screenshot-1.png)
 
@@ -43,6 +43,7 @@ Try it in the browser: **[https://jstar15.github.io/WysiPDF/](https://jstar15.gi
 * **Conditional display** via **AND/OR** rules evaluated live in the editor.
 * **Partials** for re-usable sections.
 * **Looping**: repeat partials over array tokens (per-item blocks with local context).
+* **Validation**: Validation on tokens included in the form, will highlight cells in red which contain invalid tokens.
 
 ### Export & Runtime
 
@@ -234,8 +235,3 @@ All methods are **async**.
 MIT
 
 ---
-
-
-Add section break.
-this will try put everthing above on the same page (keep cell on one page option
-)
