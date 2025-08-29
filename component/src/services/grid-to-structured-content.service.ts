@@ -60,7 +60,7 @@ export class GridToStructuredContentService {
         };
 
         return {
-            value: cell.value || '',
+          value: cell.value || '',
             attrs,
             type: cell.type,
             imageBlock: cell.imageBlock,

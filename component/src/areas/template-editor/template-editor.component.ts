@@ -45,6 +45,7 @@ import {ColorPaletteDialogComponent} from "../../dialogs/color-palette-dialog/co
 import {
   PageImportExportDialogComponent
 } from "../../dialogs/page-import-export-dialog/page-import-export-dialog.component";
+import {PageTokenValidator} from "../../services/page-token-validator.service";
 
 @Component({
   standalone: true,
@@ -98,8 +99,10 @@ export class TemplateEditorComponent implements OnInit,AfterViewInit {
       private gridHistoryService: GridHistoryService,
       private cdr: ChangeDetectorRef,
       private iconService: IconService,
-      private pageToHtmlService : PageToHtmlService
+      private pageToHtmlService : PageToHtmlService,
+      private pageTokenValidator : PageTokenValidator
   ) {
+
 
     this.iconService.registerIcons();
 
@@ -385,6 +388,11 @@ export class TemplateEditorComponent implements OnInit,AfterViewInit {
       }
     ];
     this.emitGridChange();
+
+  }
+
+  isValid() {
+    this.page = this.pageTokenValidator.validatePage(this.page, this.page.tokenAttrs);
 
   }
 

@@ -99,7 +99,20 @@
         <ng-template #normalRow>
             <div class="row" [style.background-color]="pageAttrs.backgroundColor">
                 <ng-container *ngFor="let cell of row.cells; let c = index">
-                    <div class="cell-container" [style.flex-basis.%]="row.widths[c]">
+
+                    <div class="cell-container" [class.has-error]="cell.hasError" [style.flex-basis.%]="row.widths[c]">
+                      <!--  Corner error badge (only if error) -->
+                        <button
+                          *ngIf="cell.hasError"
+                          mat-icon-button
+                          class="error-badge"
+                          [matTooltip]="cell.errorMessage"
+                          matTooltipPosition="left"
+                          [attr.aria-label]="cell.errorMessage"
+                          type="button"
+                        >
+                          <mat-icon svgIcon="error"></mat-icon>
+                        </button>
                         <div
                                 class="cell ql-editor"
                                 [ngClass]="{ 'selected': r === currentRow && c === currentCol }"

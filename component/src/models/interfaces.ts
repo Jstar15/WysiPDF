@@ -118,7 +118,8 @@ export interface Cell {
     barcodeBlock?: BarcodeBlock
     attrs: CellAttrs;
     displayLogic?: DisplayLogicGroup
-
+    hasError?:boolean;
+    errorMessage?: string;
 }
 
 export interface Row {
@@ -144,7 +145,6 @@ export interface Page {
     content?: Grid;
     pageAttrs?: PageAttrs;
     tokenAttrs?: TokenAttribute[];
-    tokenInjectionJson?: any;
     partialContent?: Grid[];
     colorPalettes?: string[]
 }
