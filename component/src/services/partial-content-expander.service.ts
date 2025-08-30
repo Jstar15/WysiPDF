@@ -3,12 +3,14 @@ import { Grid, Page, Row } from '../models/interfaces';
 import { TokenAttribute } from '../models/TokenAttribute';
 import { TokenReplacerService } from './token-replacer.service';
 import { JsonTokenParserService } from './json-token-parser.service';
+import {TokenHtmlReplacerService} from "./token-html-cell-replacer.service";
 
 @Injectable({ providedIn: 'root' })
 export class PartialContentExpanderService {
     constructor(
         private jsonTokenParserService: JsonTokenParserService,
-        private tokenReplacerService: TokenReplacerService
+        private tokenReplacerService: TokenReplacerService,
+        private tokenHtmlReplacerService : TokenHtmlReplacerService
     ) {}
 
     /**
@@ -25,14 +27,14 @@ export class PartialContentExpanderService {
                 const partialRows: Row[] = this.fetchPartialPage(row.partialContent.name, page.partialContent).rows;
 
                 // default to one repetition
-                let count = 1;
+                let count: number = 1;
                 let arr: any[] = [];
 
                 if (row.partialContent.tokenSource) {
-                    const token = this.getTokenFromTokenSource(row.partialContent.tokenSource, tokenAttributeList);
+                    const token: TokenAttribute = this.getTokenFromTokenSource(row.partialContent.tokenSource, tokenAttributeList);
                     if (token) {
                         try {
-                            const parsed = JSON.parse(token.value);
+                            const parsed: any = JSON.parse(token.value);
                             if (Array.isArray(parsed)) {
                                 arr = parsed;
                                 count = parsed.length;
@@ -51,11 +53,12 @@ export class PartialContentExpanderService {
 
                     // parse the a-th fragment into TokenAttributes
                     const fragment = arr[a] ?? {};
-                    const attributeList = this.jsonTokenParserService.parse(JSON.stringify(fragment));
+                    const attributeList: TokenAttribute[] = this.jsonTokenParserService.parse(JSON.stringify(fragment));
 
 
                     // replace tokens in *this* clone
-                    const replaced = this.tokenReplacerService.replaceTokensInRow(cloneRows, attributeList);
+                    let replaced: Row[] = this.tokenReplacerService.replaceTokensInRow(cloneRows, attributeList);
+                    replaced  = this.tokenHtmlReplacerService.replaceTokensInRow(replaced, attributeList);
 
                     toInsert.push(...replaced);
                 }

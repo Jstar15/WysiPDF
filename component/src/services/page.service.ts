@@ -3,12 +3,16 @@ import { Page, Row } from '../models/interfaces';
 import { PartialContentExpanderService } from './partial-content-expander.service';
 import { HtmlToStructuredContentService } from './html-to-structured-content.service';
 import { TokenAttribute } from '../models/TokenAttribute';
+import {TokenReplacerService} from "./token-replacer.service";
+import {DisplayLogicService} from "./display-logic.service";
 
 @Injectable({ providedIn: 'root' })
 export class PageService {
   constructor(
     private partialContentExpander: PartialContentExpanderService,
-    private htmlToStructuredContentService: HtmlToStructuredContentService
+    private htmlToStructuredContentService: HtmlToStructuredContentService,
+    private tokenReplacerService: TokenReplacerService,
+    private displayLogicService : DisplayLogicService
   ) {}
 
   /**
@@ -29,6 +33,16 @@ export class PageService {
 
     // 4) clean header/footer: remove explicit row heights
     page = this.cleanHeaderFooter(page);
+
+    // 5) Replace tokens
+    page.header.rows = this.tokenReplacerService.replaceTokensInRow(page.header.rows, tokenAttributeList);
+    page.footer.rows = this.tokenReplacerService.replaceTokensInRow(page.footer.rows, tokenAttributeList);
+    page.content.rows = this.tokenReplacerService.replaceTokensInRow(page.content.rows, tokenAttributeList);
+
+    // 6) Evaluate display logic show / hide
+    page.header.rows = this.displayLogicService.evaulateCells(page.header.rows, tokenAttributeList);
+    page.footer.rows = this.displayLogicService.evaulateCells(page.footer.rows, tokenAttributeList);
+    page.content.rows = this.displayLogicService.evaulateCells(page.content.rows, tokenAttributeList);
 
     return page;
   }

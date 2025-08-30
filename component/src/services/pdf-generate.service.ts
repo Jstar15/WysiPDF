@@ -24,7 +24,7 @@ export class PdfGenerateService {
     public async generatePdfBase64(page: Page, tokenAttributeList: TokenAttribute[]): Promise<PdfGenerationResult> {
         page = this.pageService.processPage(page, tokenAttributeList);
 
-        const docDefinition: TDocumentDefinitions = this.structuredContentToPdfmakeService.convert(page, tokenAttributeList);
+        const docDefinition: TDocumentDefinitions = this.structuredContentToPdfmakeService.convert(page);
 
         // Correct usage: get base64 via service
         const base64: string = await this.pdfMakeService.getBase64(docDefinition);

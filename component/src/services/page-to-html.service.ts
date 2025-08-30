@@ -3,6 +3,7 @@ import {Page, Grid, Row, Cell, CellAttrs, ImageBlock, ChartBlock, BarcodeBlock} 
 import {TokenAttribute} from "../models/TokenAttribute";
 import {PageService} from "./page.service";
 import {JsonTokenParserService} from "./json-token-parser.service";
+import {TokenHtmlReplacerService} from "./token-html-cell-replacer.service";
 
 export interface PageToHtmlOptions {
   includeBaseStyles?: boolean;
@@ -24,7 +25,8 @@ export interface HtmlGenerationResult {
 export class PageToHtmlService {
   constructor(
     private pageService: PageService,
-    private jsonTokenParserService: JsonTokenParserService
+    private jsonTokenParserService: JsonTokenParserService,
+    private tokenHtmlCellReplacerService : TokenHtmlReplacerService
   ) {}
   public async generateHtml(
     page: Page,
@@ -33,6 +35,7 @@ export class PageToHtmlService {
   ): Promise<HtmlGenerationResult> {
     // reuse your shared page pipeline
     page = this.pageService.processPage(page, tokenAttributeList);
+    page = this.tokenHtmlCellReplacerService.replaceTokensInPageHtml(page, page.tokenAttrs);
 
     const html = opts?.fullDocument
       ? this.toHtmlDocument(page, opts)
@@ -71,9 +74,6 @@ export class PageToHtmlService {
 
     const headerHtml   = page.header ? this.renderSection('header',  page.header, p.headerMargin) : '';
     const contentHtml  = page.content ? this.renderSection('content', page.content) : '';
-    const partialsHtml = Array.isArray(page.partialContent) && page.partialContent.length
-      ? page.partialContent.map(g => this.renderSection('partial', g)).join('')
-      : '';
     const footerHtml   = page.footer ? this.renderSection('footer',  page.footer, p.footerMargin) : '';
 
     return `
@@ -81,7 +81,6 @@ ${styleTag}
 <div class="${rootClass}" style="${wrapperStyle}">
   ${headerHtml}
   ${contentHtml}
-  ${partialsHtml}
   ${footerHtml}
 </div>`.trim();
   }
@@ -110,6 +109,7 @@ ${body}
 
   public downloadHtml(page: Page, filename = 'page.html', opts?: PageToHtmlOptions & { title?: string }): void {
     page = this.pageService.processPage(page, page.tokenAttrs);
+    page = this.tokenHtmlCellReplacerService.replaceTokensInPageHtml(page, page.tokenAttrs);
 
     const blob = this.toHtmlBlob(page, opts);
     const url = URL.createObjectURL(blob);
@@ -280,6 +280,7 @@ ${body}
 
 
     // Use the editor HTML as-is (tables, headings, fonts, etc.)
+    debugger;
     return cell.value ?? '';
   }
 

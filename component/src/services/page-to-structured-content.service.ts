@@ -7,12 +7,9 @@ import {
   CellAttrs, Page, PageAttrs
 } from '../models/interfaces';
 import {Injectable} from "@angular/core";
-import {TokenAttribute} from "../models/TokenAttribute";
 import type {Content, ContentColumns, TDocumentDefinitions} from "pdfmake/interfaces";
 import {StructuredContentToPdfmakeService} from "./structured-content-to-pdfmake.service";
 import {GridToStructuredContentService} from "./grid-to-structured-content.service";
-import {TokenReplacerService} from "./token-replacer.service";
-import {DisplayLogicService} from "./display-logic.service";
 
 /**
  * PageToStructuredContentService
@@ -33,20 +30,10 @@ import {DisplayLogicService} from "./display-logic.service";
 @Injectable({ providedIn: 'root' })
 export class PageToStructuredContentService {
     constructor(private structuredContentToPdfmakeService: StructuredContentToPdfmakeService,
-                private gridToPdfmakeConverter: GridToStructuredContentService,
-                private tokenReplacerService: TokenReplacerService,
-                private displayLogicService : DisplayLogicService) {}
+                private gridToPdfmakeConverter: GridToStructuredContentService) {}
 
 
-  public convert(page: Page, tokenAttributeList?: TokenAttribute[]): TDocumentDefinitions {
-
-    page.header.rows = this.tokenReplacerService.replaceTokensInRow(page.header.rows, tokenAttributeList);
-    page.footer.rows = this.tokenReplacerService.replaceTokensInRow(page.footer.rows, tokenAttributeList);
-    page.content.rows = this.tokenReplacerService.replaceTokensInRow(page.content.rows, tokenAttributeList);
-
-    page.header.rows = this.displayLogicService.evaulateCells(page.header.rows, tokenAttributeList);
-    page.footer.rows = this.displayLogicService.evaulateCells(page.footer.rows, tokenAttributeList);
-    page.content.rows = this.displayLogicService.evaulateCells(page.content.rows, tokenAttributeList);
+  public convert(page: Page): TDocumentDefinitions {
 
     let htmlBlockContainerContent: HtmlBlockContainer = this.gridToPdfmakeConverter.convert(page.content.rows);
     let htmlBlockContainerHeader: HtmlBlockContainer = this.gridToPdfmakeConverter.convert(page.header.rows);
