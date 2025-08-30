@@ -205,14 +205,6 @@ const html = await wysi.generateHtml(page, tokens);
 
 ---
 
-## 🗺️ Roadmap
-
-* Additional presets (invoice, quote, receipt, shipping label, certificate, dashboard).
-* “**Preflight**” drawer: missing tokens, overset text, large assets, font fallbacks.
-* Type definitions and a light `validate(page)` (Zod/Ajv).
-* Richer table/column flows (keep-with-next, orphan control) where feasible.
-
----
 
 ## 📄 License
 
