@@ -71,38 +71,6 @@
   let currentPage = null;
   let wysi = null;
 
-  // --- Inject page margins/styles into exported HTML ---
-  function injectPageMargins(html, page) {
-    const bg = (page && page.pageAttrs && page.pageAttrs.backgroundColor) || '#ffffff';
-    const font = (page && page.pageAttrs && page.pageAttrs.defaultFont) || 'Roboto, Arial, sans-serif';
-    const styleTag = `
-<style id="wysi-export-margins">
-  html { background: #f6f7f9; }
-  body {
-    margin: 32px auto !important;
-    padding: 24px !important;
-    max-width: 900px;
-    background: ${bg};
-    font-family: ${font};
-    box-sizing: border-box;
-  }
-  @page { margin: 15mm; }
-</style>`.trim();
-
-    if (/<\/head>/i.test(html)) {
-      return html.replace(/<\/head>/i, styleTag + '</head>');
-    }
-    if (!/<html/i.test(html)) {
-      // If it's a fragment, wrap it into a minimal document
-      return `<!doctype html><html><head>${styleTag}</head><body>${html}</body></html>`;
-    }
-    // Has <html> but maybe no <head>
-    if (!/<head>/i.test(html)) {
-      return html.replace(/<html([^>]*)>/i, `<html$1><head>${styleTag}</head>`);
-    }
-    return html;
-  }
-
   window.addEventListener('DOMContentLoaded', async () => {
     if (typeof WysiPDF === 'undefined') {
       console.error('WysiPDF class not found. Is wysipdf.bundle.js loaded correctly?');
@@ -184,8 +152,15 @@
     document.getElementById('downloadHtmlBtn').addEventListener('click', async () => {
       if (!currentPage) return;
       const tokens = currentPage.tokenAttrs || [];
-      const rawHtml = await wysi.generateHtml(currentPage, tokens);
-      const html = injectPageMargins(rawHtml, currentPage);
+      const html = await wysi.generateHtml(
+              currentPage,
+              tokens,
+              {
+                fullDocument: true,
+                pageView: true,
+                title: 'WysiPDF Document'
+              }
+      );
 
       const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
       const url = URL.createObjectURL(blob);

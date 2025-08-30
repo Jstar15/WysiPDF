@@ -185,7 +185,12 @@ export class PageImportExportDialogComponent implements OnInit {
 
       const result: HtmlGenerationResult = await this.pageToHtmlService.generateHtml(
         this.data.page,
-        this.getTokens()
+        this.getTokens(),
+        {
+          fullDocument: true,
+          pageView: true,
+          title: 'WysiPDF Document'
+        }
       );
       if (!result?.html) throw new Error('HTML generation returned no markup.');
 

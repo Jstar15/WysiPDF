@@ -6,7 +6,7 @@ import 'zone.js';
 import { TemplateEditorComponent } from './areas/template-editor/template-editor.component';
 import { MatIconModule } from '@angular/material/icon';
 import { PdfGenerateService } from './services/pdf-generate.service';
-import { HtmlGenerationResult, PageToHtmlService } from './services/converters/page-to-html.service';
+import {HtmlGenerationResult, PageToHtmlOptions, PageToHtmlService} from './services/converters/page-to-html.service';
 
 // 👇 NEW: import the validator service
 import { PageTokenValidator } from './services/page-token-validator.service';
@@ -125,16 +125,16 @@ export class WysiPDF {
   }
 
   /** Generate HTML from a page and token list. */
-  async generateHtml(page: any, tokens: any[]): Promise<string> {
+  async generateHtml(page: any, tokens: any[], opts?: PageToHtmlOptions): Promise<string> {
     const service = await getHtmlService();
-    const result: HtmlGenerationResult = await service.generateHtml(page, tokens);
+    const result: HtmlGenerationResult = await service.generateHtml(page, tokens, opts);
     return result.html;
   }
 
   /** Generate HTML from a page and JSON token string. */
-  async generateHtmlFromJson(page: any, json: string): Promise<string> {
+  async generateHtmlFromJson(page: any, json: string, opts?: PageToHtmlOptions): Promise<string> {
     const service = await getHtmlService();
-    const result: HtmlGenerationResult = await service.generateHtmlFromJson(page, json);
+    const result: HtmlGenerationResult = await service.generateHtmlFromJson(page, json, opts);
     return result.html;
   }
 

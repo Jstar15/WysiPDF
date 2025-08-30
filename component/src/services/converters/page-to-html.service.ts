@@ -8,13 +8,8 @@ import {TokenHtmlReplacerService} from "../token-html-cell-replacer.service";
 export interface PageToHtmlOptions {
   includeBaseStyles?: boolean;
   rootClass?: string; // default: 'p2h-root'
-  page?: {
-    width?: string;       // e.g. '100%' or '900px'
-    margin?: string;      // e.g. '0 auto'
-    background?: string;  // fallback if pageAttrs.backgroundColor missing
-    padding?: string;     // fallback if pageAttrs margins missing
-    fontFamily?: string;  // fallback if pageAttrs.defaultFont missing
-  };
+  pageView?: boolean
+
 }
 
 export interface HtmlGenerationResult {
@@ -61,29 +56,55 @@ export class PageToHtmlService {
       : '';
 
     const p = page.pageAttrs ?? {};
-    const paddingFromMargins = this.fourSidePadding(p.marginTop, p.marginRight, p.marginBottom, p.marginLeft);
+    const paddingFromMargins = this.fourSidePadding(
+      p.marginTop, p.marginRight, p.marginBottom, p.marginLeft
+    );
 
-    const wrapperStyle = this.inlineStyle({
-      width: opts?.page?.width ?? '100%',
-      margin: opts?.page?.margin ?? undefined,
+    // Original inline wrapper style (used when NOT in pageView)
+    const wrapperStyle: string = this.inlineStyle({
+      width: '100%',
       'box-sizing': 'border-box',
-      padding: paddingFromMargins ?? opts?.page?.padding ?? undefined,
-      'background-color': p.backgroundColor ?? opts?.page?.background ?? undefined,
-      'font-family': p.defaultFont ?? opts?.page?.fontFamily ?? undefined
+      padding: paddingFromMargins ?? undefined,
+      'background-color': p.backgroundColor ?? undefined,
+      'font-family': p.defaultFont ?? undefined
     });
 
-    const headerHtml   = page.header ? this.renderSection('header',  page.header, p.headerMargin) : '';
-    const contentHtml  = page.content ? this.renderSection('content', page.content) : '';
-    const footerHtml   = page.footer ? this.renderSection('footer',  page.footer, p.footerMargin) : '';
+    const headerHtml  = page.header  ? this.renderSection('header',  page.header, p.headerMargin) : '';
+    const contentHtml = page.content ? this.renderSection('content', page.content) : '';
+    const footerHtml  = page.footer  ? this.renderSection('footer',  page.footer, p.footerMargin) : '';
 
+    // When pageView=true, we wrap with canvas/page shells to emulate a printed page
+    if (opts?.pageView) {
+      // Inner “page” style (padding == margins)
+      const pageStyle = this.inlineStyle({
+        'box-sizing': 'border-box',
+        padding: paddingFromMargins ?? '24px',
+        'background-color': p.backgroundColor ?? '#ffffff',
+        'font-family': p.defaultFont ?? 'Roboto, Arial, sans-serif'
+      });
+
+      return `
+        ${styleTag}
+        <div class="${rootClass} ${rootClass}--page-view">
+          <div class="${rootClass}__canvas">
+            <div class="${rootClass}__page" style="${pageStyle}">
+              ${headerHtml}
+              ${contentHtml}
+              ${footerHtml}
+            </div>
+          </div>
+        </div>`.trim();
+            }
+
+    // Default: no page shell — preserve existing behavior
     return `
-${styleTag}
-<div class="${rootClass}" style="${wrapperStyle}">
-  ${headerHtml}
-  ${contentHtml}
-  ${footerHtml}
-</div>`.trim();
-  }
+      ${styleTag}
+      <div class="${rootClass}" style="${wrapperStyle}">
+        ${headerHtml}
+        ${contentHtml}
+        ${footerHtml}
+      </div>`.trim();
+        }
 
   /** Full HTML document (for download). */
   public toHtmlDocument(page: Page, opts?: PageToHtmlOptions & { title?: string }): string {
@@ -290,31 +311,54 @@ ${body}
 
   private baseCss(scopeClass: string): string {
     return `
-.${scopeClass} { width: 100%; display: block; }
-.${scopeClass} .p2h-section { width: 100%; box-sizing: border-box; }
-.${scopeClass} .p2h-row { width: 100%; box-sizing: border-box; }
-.${scopeClass} .p2h-cell { box-sizing: border-box; }
-.${scopeClass} .p2h-cell img { max-width: 100%; height: auto; display: block; }
-
-/* Charts */
-.${scopeClass} .p2h-chart { margin: 0; padding: 0; }
-.${scopeClass} .p2h-chart-caption { font-size: 12px; color: #556; margin-top: 6px; text-align: center; }
-
-/* Quill minimal shims so exported HTML matches editor look */
-.${scopeClass} .ql-align-center { text-align: center; }
-.${scopeClass} .ql-align-right  { text-align: right; }
-.${scopeClass} .ql-align-justify{ text-align: justify; }
-.${scopeClass} .ql-font-raleway { font-family: Raleway, Arial, sans-serif; }
-.${scopeClass} .ql-font-roboto { font-family: Roboto, Arial, sans-serif; }
-.${scopeClass} .ql-font-nunito { font-family: Nunito, Arial, sans-serif; }
-.${scopeClass} .ql-font-cormorant { font-family: Cormorant, serif; }
-
-/* Optional page break support for print */
-.${scopeClass} .p2h-page-break { display: block; page-break-after: always; }
-
-@media print {
-  .${scopeClass} { width: 100%; }
+.${scopeClass}--page-view .${scopeClass}__canvas {
+  min-height: 100vh;
+  padding: 32px 16px;                 /* space around the page */
+  box-sizing: border-box;
+  background: #f6f7f9;                /* soft app/canvas bg */
 }
+
+.${scopeClass}--page-view .${scopeClass}__page {
+  max-width: 900px;                   /* page width */
+  margin: 0 auto;
+  padding: 24px;                      /* default; inline style can override */
+  box-sizing: border-box;
+  background: #ffffff;
+  border: 1px solid rgba(0,0,0,0.08); /* small border */
+  border-radius: 10px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08),
+              0  2px  8px rgba(0,0,0,0.06);
+}
+
+/* Section rhythm when in page view */
+.${scopeClass}--page-view [data-section="header"] { margin-bottom: 16px; }
+.${scopeClass}--page-view [data-section="footer"] { margin-top: 16px; }
+
+/* Keep rows/cells from splitting awkwardly when printing */
+@media print {
+  .${scopeClass}--page-view .${scopeClass}__canvas {
+    padding: 0;
+    background: #ffffff;
+  }
+  .${scopeClass}--page-view .${scopeClass}__page {
+    max-width: none;
+    margin: 0;
+    border: none;
+    box-shadow: none;
+    border-radius: 0;
+  }
+  .${scopeClass} .p2h-row { break-inside: avoid; page-break-inside: avoid; }
+}
+
+/* Small screens: soften spacing/radius a bit */
+@media (max-width: 640px) {
+  .${scopeClass}--page-view .${scopeClass}__canvas { padding: 16px 8px; }
+  .${scopeClass}--page-view .${scopeClass}__page { border-radius: 8px; }
+}
+
+/* Optional: page margins for print output */
+@page { margin: 15mm; }
+
 `.trim();
   }
 
