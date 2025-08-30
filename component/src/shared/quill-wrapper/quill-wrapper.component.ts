@@ -6,7 +6,9 @@ import {
   EventEmitter,
   NgZone,
   AfterViewInit,
-  OnDestroy
+  OnDestroy,
+  OnChanges,
+  SimpleChanges
 } from '@angular/core';
 
 import { MatDialog } from "@angular/material/dialog";
@@ -31,6 +33,10 @@ export class QuillWrapperComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() html: string = '';
   @Input() attributeArray: TokenAttribute[];
   @Input() colorPalettes: string[] = [];
+
+  /** NEW: when true, disables undo/redo (keyboard shortcuts + clears stack) */
+  @Input() disableUndoRedo: boolean = false;
+
   @Output() htmlChange = new EventEmitter<string>();
   @Output() htmlBlockContainerChange = new EventEmitter<HtmlBlockContainer>();
 
@@ -43,6 +49,19 @@ export class QuillWrapperComponent implements OnInit, AfterViewInit, OnDestroy {
 
   quill: any;
   textChangeEvent: any;
+
+  private keydownHandler = (e: KeyboardEvent) => {
+    if (!this.disableUndoRedo) return;
+    if (e.ctrlKey || e.metaKey) {
+      const k = e.key.toLowerCase();
+      const isUndo = k === 'z';
+      const isRedo = k === 'y' || (k === 'z' && e.shiftKey);
+      if (isUndo || isRedo) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+    }
+  };
 
   formats: [
     "background",
@@ -59,7 +78,6 @@ export class QuillWrapperComponent implements OnInit, AfterViewInit, OnDestroy {
     private htmlToStructuredContentService: HtmlToStructuredContentService,
     public dialog: MatDialog
   ) {}
-
 
   ngOnInit(): void {
     CustomElementBlot['blotName'] = 'mathjax';
@@ -85,7 +103,7 @@ export class QuillWrapperComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    const modules = {
+    const modules: any = {
       table: true,
       toolbar: `#${this.toolbarId}`
     };
@@ -98,6 +116,9 @@ export class QuillWrapperComponent implements OnInit, AfterViewInit, OnDestroy {
     });
 
     this.quill.root.innerHTML = this.html;
+
+    // Apply initial undo/redo disabling if requested
+    this.applyUndoRedoDisabling();
 
     this.textChangeEvent = this.quill.on('text-change',
       (delta: any, oldDelta: any, source: string): void => {
@@ -127,6 +148,30 @@ export class QuillWrapperComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     } catch (e) {
       console.warn('Error while destroying Quill instance:', e);
+    }
+  }
+
+  private applyUndoRedoDisabling(): void {
+    if (!this.quill) return;
+
+    // Always remove prior listener to avoid duplicates
+    this.quill.root.removeEventListener('keydown', this.keydownHandler, true);
+
+    if (this.disableUndoRedo) {
+      // Clear existing stacks so no undo levels exist
+      const history = this.quill.getModule('history');
+      if (history) {
+        try {
+          history.clear?.();
+          // hard reset stack if available
+          if ((history as any).stack) {
+            (history as any).stack.undo = [];
+            (history as any).stack.redo = [];
+          }
+        } catch {}
+      }
+      // Block keyboard shortcuts at capture phase
+      this.quill.root.addEventListener('keydown', this.keydownHandler, true);
     }
   }
 
