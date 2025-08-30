@@ -7,7 +7,7 @@ import {
   ChangeDetectorRef,
   Output,
   EventEmitter,
-  Input
+  Input, OnChanges, SimpleChanges
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
@@ -56,7 +56,7 @@ import {
   templateUrl: './grid-editor.component.html',
   styleUrls: ['./grid-editor.component.scss']
 })
-export class GridEditorComponent implements OnInit, OnDestroy {
+export class GridEditorComponent implements OnInit, OnDestroy, OnChanges {
   @ViewChild('gridContainer', { static: true }) public gridContainer!: ElementRef<HTMLDivElement>;
 
   @Input() public tokenAttrs: TokenAttribute[] = [];
@@ -77,7 +77,6 @@ export class GridEditorComponent implements OnInit, OnDestroy {
   public currentCell: Cell | null = null;
   public currentRow = 0;
   public currentCol = -1;
-  public hideCellAttributeToolbar = true;
   private activeDialog: MatDialogRef<any, any> | null = null;
   private lastDialogOpenAt = 0;
   private destroy$ = new Subject<void>();
@@ -92,21 +91,33 @@ export class GridEditorComponent implements OnInit, OnDestroy {
     this.iconService.registerIcons();
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    this.addRowIfNone();
+  }
   // ---------------- lifecycle ----------------
 
+
   public ngOnInit(): void {
-    if (!this.grid?.rows || this.grid.rows.length === 0) {
-      this.grid.rows = [this.createEmptyRow()];
-      this.currentRow = 0;
-    }
+    this.addRowIfNone();
     if (this.partialContentAvailableList?.length && !this.selectedPartialId) {
       this.selectedPartialId = this.partialContentAvailableList[0]?.id ?? null;
     }
-
-
-
   }
 
+  private addRowIfNone(){
+    if (!this.grid?.rows || this.grid.rows.length === 0) {
+      this.grid.rows = [this.createEmptyRow()];
+    }
+    this.selectFirstRowIfNoneSelected();
+  }
+
+  private selectFirstRowIfNoneSelected(){
+    if(!this.currentRow){
+      this.currentRow = 0;
+      this.currentCol = 0;
+      this.currentCell = this.grid.rows[this.currentRow].cells[this.currentCol];
+    }
+  }
   public ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
