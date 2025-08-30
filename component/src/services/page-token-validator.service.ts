@@ -8,7 +8,7 @@ import {
   Row,
 } from '../models/interfaces';
 import { TokenAttribute } from '../models/TokenAttribute';
-import { HtmlToStructuredContentService } from './html-to-structured-content.service';
+import { HtmlToStructuredContentService } from './converters/html-to-structured-content.service';
 import { JsonTokenParserService } from './json-token-parser.service';
 import {TokenAttributeTypeEnum} from "../models/TokenAttributeTypeEnum";
 
@@ -196,6 +196,54 @@ export class PageTokenValidator {
     return tokens.some(
       (t) => t.name?.toLowerCase() === tokenKey.toLowerCase()
     );
+  }
+
+  /** 📋 Validate and return a (de-duplicated) list of error messages.
+   *  By default this DOES NOT mutate the input page. Pass mutateOriginal=true to allow mutation.
+   */
+  public hasErrors(
+    page: Page,
+    tokens: TokenAttribute[],
+    mutateOriginal: boolean = false
+  ): string[] {
+    if (!page) return ['Page is null or undefined'];
+
+    const working = mutateOriginal ? page : this.clonePage(page);
+
+    // Run validation (populates cell.hasError / cell.errorMessage on `working`)
+    this.validatePage(working, tokens);
+
+    const messages = new Set<string>();
+
+    const addFromRows = (rows?: Row[]) => {
+      if (!rows || !Array.isArray(rows)) return;
+      for (const row of rows) {
+        for (const cell of row?.cells ?? []) {
+          // Defensive: some cells may not have block/blocks depending on type
+          if (cell?.hasError && cell?.errorMessage) {
+            messages.add(cell.errorMessage);
+          }
+        }
+      }
+    };
+
+    addFromRows(working.header?.rows);
+    addFromRows(working.content?.rows);
+    addFromRows(working.footer?.rows);
+
+    for (const pc of working.partialContent ?? []) {
+      addFromRows(pc?.rows);
+    }
+
+    return Array.from(messages);
+  }
+
+  /** Simple deep clone to avoid mutating the caller’s page */
+  private clonePage<T>(obj: T): T {
+    try {
+      if (typeof structuredClone === 'function') return structuredClone(obj);
+    } catch {}
+    return JSON.parse(JSON.stringify(obj));
   }
 
 

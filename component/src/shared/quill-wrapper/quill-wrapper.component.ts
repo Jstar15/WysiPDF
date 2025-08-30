@@ -15,7 +15,7 @@ import { AddTokenDialogComponent } from "../../dialogs/attribute-select-dialog/a
 import { CustomElementBlot } from "./CustomElementBlot";
 import Quill from 'quill';
 import { HtmlBlockContainer } from "../../models/interfaces";
-import { HtmlToStructuredContentService } from "../../services/html-to-structured-content.service";
+import { HtmlToStructuredContentService } from "../../services/converters/html-to-structured-content.service";
 import {NgForOf} from "@angular/common";
 
 @Component({

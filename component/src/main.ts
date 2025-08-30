@@ -6,7 +6,10 @@ import 'zone.js';
 import { TemplateEditorComponent } from './areas/template-editor/template-editor.component';
 import { MatIconModule } from '@angular/material/icon';
 import { PdfGenerateService } from './services/pdf-generate.service';
-import { HtmlGenerationResult, PageToHtmlService } from './services/page-to-html.service';
+import { HtmlGenerationResult, PageToHtmlService } from './services/converters/page-to-html.service';
+
+// 👇 NEW: import the validator service
+import { PageTokenValidator } from './services/page-token-validator.service';
 
 // ---- keep a single Angular app instance (unchanged) ----
 let appPromise: Promise<any>;
@@ -50,6 +53,16 @@ async function getHtmlService(): Promise<PageToHtmlService> {
     pageToHtmlServiceInstance = app.injector.get(PageToHtmlService);
   }
   return pageToHtmlServiceInstance!;
+}
+
+// 👇 NEW: singleton getter for PageTokenValidator
+let pageTokenValidatorInstance: PageTokenValidator | null = null;
+async function getValidatorService(): Promise<PageTokenValidator> {
+  const app = await appPromise;
+  if (!pageTokenValidatorInstance) {
+    pageTokenValidatorInstance = app.injector.get(PageTokenValidator);
+  }
+  return pageTokenValidatorInstance!;
 }
 
 // ---- lightweight instance wrapper (no globals) ----
@@ -124,9 +137,21 @@ export class WysiPDF {
     const result: HtmlGenerationResult = await service.generateHtmlFromJson(page, json);
     return result.html;
   }
+
+  // 👇 NEW: expose validation
+
+  /** Validate and return a de-duplicated list of error messages (does not mutate by default). */
+  async hasErrors(page: any, tokens: any[], mutateOriginal: boolean = false): Promise<string[]> {
+    const svc = await getValidatorService();
+    return svc.hasErrors(page, tokens, mutateOriginal);
+  }
+
+  /** Convenience boolean check using hasErrors. */
+  async isValid(page: any, tokens: any[]): Promise<boolean> {
+    const svc = await getValidatorService();
+    return (await svc.hasErrors(page, tokens)).length === 0;
+  }
 }
-
-
 
 // ---- ONE-LINER: expose constructor for non-module HTML pages ----
 declare global { interface Window { WysiPDF: typeof WysiPDF } }

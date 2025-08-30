@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import {Page, Grid, Row, Cell, CellAttrs, ImageBlock, ChartBlock, BarcodeBlock} from '../models/interfaces';
-import {TokenAttribute} from "../models/TokenAttribute";
+import {Page, Grid, Row, Cell, CellAttrs, ImageBlock, ChartBlock, BarcodeBlock} from '../../models/interfaces';
+import {TokenAttribute} from "../../models/TokenAttribute";
 import {PageService} from "./page.service";
-import {JsonTokenParserService} from "./json-token-parser.service";
-import {TokenHtmlReplacerService} from "./token-html-cell-replacer.service";
+import {JsonTokenParserService} from "../json-token-parser.service";
+import {TokenHtmlReplacerService} from "../token-html-cell-replacer.service";
 
 export interface PageToHtmlOptions {
   includeBaseStyles?: boolean;

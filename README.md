@@ -159,14 +159,31 @@ const pdf64 = await wysi.generatePdfBase64(page, tokens);
 
 All methods are **async**.
 
-| Method                                  | Description                                         |
-| --------------------------------------- | --------------------------------------------------- |
-| `loadPage(page)`                        | Load a page model into the editor host              |
-| `onPageChange(cb)`                      | Subscribe to live edits of the page model           |
-| `generatePdfBase64(page, tokens)`       | Produce a PDF (base64) from a page + dynamic tokens |
-| `generatePdfBase64FromJson(page, json)` | Produce a PDF from a raw JSON payload               |
-| `generateHtml(page, tokens)`            | Produce standalone HTML (string) for the page       |
-| `generateHtmlFromJson(page, json)`      | Produce HTML from a raw JSON token payload          |
+| Method                                  | Description                                                                 |
+|-----------------------------------------|-----------------------------------------------------------------------------|
+| `loadPage(page)`                        | Load a page model into the editor host                                      |
+| `onPageChange(cb)`                      | Subscribe to live edits of the page model                                   |
+| `generatePdfBase64(page, tokens)`       | Produce a PDF (base64) from a page + dynamic tokens                         |
+| `generatePdfBase64FromJson(page, json)` | Produce a PDF from a raw JSON payload                                       |
+| `generateHtml(page, tokens)`            | Produce standalone HTML (string) for the page                               |
+| `generateHtmlFromJson(page, json)`      | Produce HTML from a raw JSON token payload                                  |
+| `hasErrors(page, tokens)`               | Validate and return a **de-duplicated** list of error messages. By default this **does not mutate** the input `page`. Pass `true` to validate in place. |
+| `isValid(page, tokens)`                 | Convenience boolean. Resolves to `true` when `hasErrors(...).length === 0`. |
+
+> If you only need generation, you can omit the editor host entirely.
+
+### Quick example
+
+```ts
+const wysi = new window.WysiPDF({ mount: '#host' });
+await wysi.loadPage(page);
+
+const errors = await wysi.hasErrors(page, tokens);        // [] when all good
+const ok = await wysi.isValid(page, tokens);              // true when no errors
+
+const pdfBase64 = await wysi.generatePdfBase64(page, tokens);
+const html = await wysi.generateHtml(page, tokens);
+```
 
 > If you only need generation, you can omit the editor host entirely.
 
@@ -181,8 +198,10 @@ All methods are **async**.
 * **Table**: Rows/cells, header styling; pairs well with array tokens.
 * **Spacer / Divider**: Visual rhythm control.
 * **Page Break**: Forces a new page at a deterministic point.
+* **Validation (live)**: Any cell using a missing/invalid token is highlighted **red** so issues are obvious before export.
 
 ---
+
 
 ## 🧩 Tokens, Partials & Looping
 

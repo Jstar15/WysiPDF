@@ -5,7 +5,7 @@ import {
     Row,
     Cell,
     CellAttrs
-} from '../models/interfaces';
+} from '../../models/interfaces';
 import {Injectable} from "@angular/core";
 
 /**

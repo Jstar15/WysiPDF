@@ -7,7 +7,7 @@ import {
     HtmlGridBlock,
     HtmlTableBlock,
     Row
-} from '../models/interfaces';
+} from '../../models/interfaces';
 
 import type {
     Content,

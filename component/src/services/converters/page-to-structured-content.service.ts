@@ -5,7 +5,7 @@ import {
   Row,
   Cell,
   CellAttrs, Page, PageAttrs
-} from '../models/interfaces';
+} from '../../models/interfaces';
 import {Injectable} from "@angular/core";
 import type {Content, ContentColumns, TDocumentDefinitions} from "pdfmake/interfaces";
 import {StructuredContentToPdfmakeService} from "./structured-content-to-pdfmake.service";

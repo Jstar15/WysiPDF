@@ -6,10 +6,10 @@ import type {
 import { Page } from '../models/interfaces';
 
 import {TokenAttribute} from "../models/TokenAttribute";
-import {PageToStructuredContentService} from "./page-to-structured-content.service";
+import {PageToStructuredContentService} from "./converters/page-to-structured-content.service";
 import {PdfMakeService} from "./pdf-make.service";
 import {JsonTokenParserService} from "./json-token-parser.service";
-import {PageService} from "./page.service";
+import {PageService} from "./converters/page.service";
 
 @Injectable({ providedIn: 'root' })
 export class PdfGenerateService {

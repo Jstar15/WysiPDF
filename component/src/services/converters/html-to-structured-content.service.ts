@@ -9,7 +9,7 @@ import {
   HtmlTableCell,
   HtmlTokenElement,
   Page
-} from "../models/interfaces";
+} from "../../models/interfaces";
 
 /**
  * HtmlToStructuredContentService

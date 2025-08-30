@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
-import { Page, Row } from '../models/interfaces';
-import { PartialContentExpanderService } from './partial-content-expander.service';
+import { Page, Row } from '../../models/interfaces';
+import { PartialContentExpanderService } from '../partial-content-expander.service';
 import { HtmlToStructuredContentService } from './html-to-structured-content.service';
-import { TokenAttribute } from '../models/TokenAttribute';
-import {TokenReplacerService} from "./token-replacer.service";
-import {DisplayLogicService} from "./display-logic.service";
+import { TokenAttribute } from '../../models/TokenAttribute';
+import {TokenReplacerService} from "../token-replacer.service";
+import {DisplayLogicService} from "../display-logic.service";
 
 @Injectable({ providedIn: 'root' })
 export class PageService {
