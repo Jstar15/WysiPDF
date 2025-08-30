@@ -70,30 +70,6 @@ Include the built script and use the global constructor `WysiPDF` (exposed on `w
 <button id="exportPdf">Export PDF</button>
 
 <script>
-  // Optional: inject margins for nicer browser printing of exported HTML
-  function injectPageMargins(html, page) {
-    const bg   = (page?.pageAttrs?.backgroundColor) || '#ffffff';
-    const font = (page?.pageAttrs?.defaultFont) || 'Roboto, Arial, sans-serif';
-    const styleTag = `
-<style id="wysi-export-margins">
-  html { background: #f6f7f9; }
-  body {
-    margin: 32px auto !important;
-    padding: 24px !important;
-    max-width: 900px;
-    background: ${bg};
-    font-family: ${font};
-    box-sizing: border-box;
-  }
-  @page { margin: 15mm; }
-</style>`.trim();
-
-    if (/<\/head>/i.test(html)) return html.replace(/<\/head>/i, styleTag + '</head>');
-    if (!/<html/i.test(html))  return `<!doctype html><html><head>${styleTag}</head><body>${html}</body></html>`;
-    if (!/<head>/i.test(html)) return html.replace(/<html([^>]*)>/i, `<html$1><head>${styleTag}</head>`);
-    return html;
-  }
-
   let wysi, page;
 
   window.addEventListener('DOMContentLoaded', async () => {
@@ -116,16 +92,6 @@ Include the built script and use the global constructor `WysiPDF` (exposed on `w
 
     await wysi.loadPage(page);
     await wysi.onPageChange(p => (page = p));
-
-    // Export HTML
-    document.getElementById('exportHtml').addEventListener('click', async () => {
-      const raw  = await wysi.generateHtml(page, page.tokenAttrs || []);
-      const html = injectPageMargins(raw, page);
-      const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
-      const url  = URL.createObjectURL(blob);
-      const a = Object.assign(document.createElement('a'), { href: url, download: 'wysipdf.html' });
-      document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
-    });
 
     // Export PDF
     document.getElementById('exportPdf').addEventListener('click', async () => {
@@ -220,7 +186,6 @@ const html = await wysi.generateHtml(page, tokens);
   * Current **Page JSON**
   * Current **Token payload**
   * Generated **pdfMake definition**
-    This makes it easy to spot missing tokens, shape mismatches, and layout quirks.
 
 ---
 
