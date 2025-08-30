@@ -2,7 +2,7 @@
 import { Page } from '../models/interfaces';
 import {TokenAttributeTypeEnum} from "../models/TokenAttributeTypeEnum";
 
-export const Preset5: Page = {
+export const Preset5: any = {
   "header": {
     "rows": [
       {
@@ -26,11 +26,55 @@ export const Preset5: Page = {
               "borderLeft": 0,
               "borderColor": "#1D4ED8",
               "backgroundColor": "transparent"
-            }
+            },
+            "block": {
+              "blocks": [
+                {
+                  "elements": [
+                    {
+                      "value": "NOVA SUPPLY CO.",
+                      "attributes": {
+                        "bold": "true",
+                        "italic": "false",
+                        "underline": "false",
+                        "size": 16,
+                        "font": "Roboto",
+                        "color": "#1d4ed8",
+                        "align": "left"
+                      },
+                      "type": "text"
+                    }
+                  ],
+                  "blockType": "p",
+                  "alignment": "left"
+                },
+                {
+                  "elements": [
+                    {
+                      "value": "www.novasupply.example · support@nova.example",
+                      "attributes": {
+                        "bold": "false",
+                        "italic": "false",
+                        "underline": "false",
+                        "size": 11,
+                        "font": "Roboto",
+                        "color": "#475569",
+                        "align": "left"
+                      },
+                      "type": "text"
+                    }
+                  ],
+                  "blockType": "p",
+                  "alignment": "left"
+                }
+              ]
+            },
+            "errorMessage": "",
+            "hasError": false
           },
           {
             "type": "html",
-            "value": "<p class=\"ql-align-right ql-font-roboto\"><strong style=\"font-size:14px;color: rgb(29, 78, 216);\">INVOICE</strong></p><p class=\"ql-align-right ql-font-roboto\"><span style=\"font-size: 11px; color: rgb(100, 116, 139);\">No. INV-2025-0087</span></p>",
+            "value": "<p class=\"ql-align-right ql-font-roboto\"><strong style=\"font-size:14px;color: rgb(29, 78, 216);\">INVOICE</strong></p><p class=\"ql-align-right ql-font-roboto\"><span style=\"font-size: 11px; color: rgb(100, 116, 139);\">No. </span><span class=\"ql-mathjax custom-token\" data-value=\"&lt;&lt;invoice.number&gt;&gt;\" data-type=\"text\" data-name=\"invoice.number\" contenteditable=\"false\">﻿<span contenteditable=\"false\">text[invoice.number]</span>﻿</span></p>",
             "attrs": {
               "paddingTop": 10,
               "paddingRight": 10,
@@ -42,7 +86,68 @@ export const Preset5: Page = {
               "borderLeft": 0,
               "borderColor": "#1D4ED8",
               "backgroundColor": "transparent"
-            }
+            },
+            "block": {
+              "blocks": [
+                {
+                  "elements": [
+                    {
+                      "value": "INVOICE",
+                      "attributes": {
+                        "bold": "true",
+                        "italic": "false",
+                        "underline": "false",
+                        "size": 14,
+                        "font": "Roboto",
+                        "align": "right",
+                        "color": "#1d4ed8"
+                      },
+                      "type": "text"
+                    }
+                  ],
+                  "blockType": "p",
+                  "alignment": "right"
+                },
+                {
+                  "elements": [
+                    {
+                      "value": "No. ",
+                      "attributes": {
+                        "bold": "false",
+                        "italic": "false",
+                        "underline": "false",
+                        "size": 11,
+                        "font": "Roboto",
+                        "align": "right",
+                        "color": "#64748b"
+                      },
+                      "type": "text"
+                    },
+                    {
+                      "value": "<<invoice.number>>",
+                      "attributes": {
+                        "bold": "false",
+                        "italic": "false",
+                        "underline": "false",
+                        "size": 14,
+                        "font": "Roboto",
+                        "align": "right",
+                        "value": "<<invoice.number>>",
+                        "type": "text",
+                        "currentColumnName": "invoice.number",
+                        "isCustomElement": true,
+                        "isMergeField": true
+                      },
+                      "type": "token"
+                    }
+                  ],
+                  "blockType": "p",
+                  "alignment": "right"
+                }
+              ]
+            },
+            "errorMessage": "",
+            "hasError": false
           }
         ],
         "backgroundColor": "white"
@@ -71,7 +176,32 @@ export const Preset5: Page = {
               "borderLeft": 0,
               "borderColor": "#E5E7EB",
               "backgroundColor": "#EFF6FF"
-            }
+            },
+            "block": {
+              "blocks": [
+                {
+                  "elements": [
+                    {
+                      "value": "Billing",
+                      "attributes": {
+                        "bold": "true",
+                        "italic": "false",
+                        "underline": "false",
+                        "size": 13,
+                        "font": "Roboto",
+                        "color": "#1d4ed8",
+                        "align": "left"
+                      },
+                      "type": "text"
+                    }
+                  ],
+                  "blockType": "p",
+                  "alignment": "left"
+                }
+              ]
+            },
+            "errorMessage": "",
+            "hasError": false
           }
         ],
         "backgroundColor": "#EFF6FF"
@@ -85,7 +215,7 @@ export const Preset5: Page = {
         "cells": [
           {
             "type": "html",
-            "value": "<p class=\"ql-font-roboto\" style=\"font-size:12px;color: rgb(71, 85, 105);\"><strong style=\"font-size: 10px;\">Bill To</strong></p><p class=\"ql-font-roboto\" style=\"font-size:12px;\"><span class=\"ql-mathjax custom-token\" data-value=\"Alexandra Mills\" data-type=\"text\" data-name=\"customer.name\" contenteditable=\"false\">﻿<span contenteditable=\"false\">text[customer.name]</span>﻿</span></p><p class=\"ql-font-roboto\" style=\"font-size:12px;\"><span class=\"ql-mathjax custom-token\" data-value=\"71 Riverbank Way\" data-type=\"text\" data-name=\"customer.address1\" contenteditable=\"false\">﻿<span contenteditable=\"false\">text[customer.address1]</span>﻿</span></p><p class=\"ql-font-roboto\" style=\"font-size:12px;\"><span class=\"ql-mathjax custom-token\" data-value=\"London\" data-type=\"text\" data-name=\"customer.city\" contenteditable=\"false\">﻿<span contenteditable=\"false\">text[customer.city]</span>﻿</span></p><p class=\"ql-font-roboto\" style=\"font-size:12px;\"><span class=\"ql-mathjax custom-token\" data-value=\"SW1A 1AA\" data-type=\"text\" data-name=\"customer.postcode\" contenteditable=\"false\">﻿<span contenteditable=\"false\">text[customer.postcode]</span>﻿</span></p>",
+            "value": "<p class=\"ql-font-roboto\" style=\"font-size:12px;color: rgb(71, 85, 105);\"><strong style=\"font-size: 10px;\">Bill To</strong></p><p class=\"ql-font-roboto\" style=\"font-size:12px;\"><span class=\"ql-mathjax custom-token\" data-value=\"&lt;&lt;customer.name&gt;&gt;\" data-type=\"text\" data-name=\"customer.name\" contenteditable=\"false\">﻿<span contenteditable=\"false\">﻿<span contenteditable=\"false\">text[customer.name]</span>﻿</span>﻿</span></p><p class=\"ql-font-roboto\" style=\"font-size:12px;\"><span class=\"ql-mathjax custom-token\" data-value=\"&lt;&lt;customer.address1&gt;&gt;\" data-type=\"text\" data-name=\"customer.address1\" contenteditable=\"false\">﻿<span contenteditable=\"false\">﻿<span contenteditable=\"false\">text[customer.address1]</span>﻿</span>﻿</span></p><p class=\"ql-font-roboto\" style=\"font-size:12px;\"><span class=\"ql-mathjax custom-token\" data-value=\"&lt;&lt;customer.city&gt;&gt;\" data-type=\"text\" data-name=\"customer.city\" contenteditable=\"false\">﻿<span contenteditable=\"false\">﻿<span contenteditable=\"false\">text[customer.city]</span>﻿</span>﻿</span></p><p class=\"ql-font-roboto\" style=\"font-size:12px;\"><span class=\"ql-mathjax custom-token\" data-value=\"&lt;&lt;customer.postcode&gt;&gt;\" data-type=\"text\" data-name=\"customer.postcode\" contenteditable=\"false\">﻿<span contenteditable=\"false\">﻿<span contenteditable=\"false\">text[customer.postcode]</span>﻿</span>﻿</span></p>",
             "attrs": {
               "paddingTop": 10,
               "paddingRight": 10,
@@ -96,11 +226,123 @@ export const Preset5: Page = {
               "borderBottom": 1,
               "borderLeft": 1,
               "borderColor": "#E5E7EB"
-            }
+            },
+            "block": {
+              "blocks": [
+                {
+                  "elements": [
+                    {
+                      "value": "Bill To",
+                      "attributes": {
+                        "bold": "true",
+                        "italic": "false",
+                        "underline": "false",
+                        "size": 10,
+                        "font": "Roboto",
+                        "align": "left"
+                      },
+                      "type": "text"
+                    }
+                  ],
+                  "blockType": "p",
+                  "alignment": "left"
+                },
+                {
+                  "elements": [
+                    {
+                      "value": "<<customer.name>>",
+                      "attributes": {
+                        "bold": "false",
+                        "italic": "false",
+                        "underline": "false",
+                        "size": 14,
+                        "font": "Roboto",
+                        "value": "<<customer.name>>",
+                        "type": "text",
+                        "currentColumnName": "customer.name",
+                        "isCustomElement": true,
+                        "isMergeField": true
+                      },
+                      "type": "token"
+                    }
+                  ],
+                  "blockType": "p",
+                  "alignment": "left"
+                },
+                {
+                  "elements": [
+                    {
+                      "value": "<<customer.address1>>",
+                      "attributes": {
+                        "bold": "false",
+                        "italic": "false",
+                        "underline": "false",
+                        "size": 14,
+                        "font": "Roboto",
+                        "value": "<<customer.address1>>",
+                        "type": "text",
+                        "currentColumnName": "customer.address1",
+                        "isCustomElement": true,
+                        "isMergeField": true
+                      },
+                      "type": "token"
+                    }
+                  ],
+                  "blockType": "p",
+                  "alignment": "left"
+                },
+                {
+                  "elements": [
+                    {
+                      "value": "<<customer.city>>",
+                      "attributes": {
+                        "bold": "false",
+                        "italic": "false",
+                        "underline": "false",
+                        "size": 14,
+                        "font": "Roboto",
+                        "value": "<<customer.city>>",
+                        "type": "text",
+                        "currentColumnName": "customer.city",
+                        "isCustomElement": true,
+                        "isMergeField": true
+                      },
+                      "type": "token"
+                    }
+                  ],
+                  "blockType": "p",
+                  "alignment": "left"
+                },
+                {
+                  "elements": [
+                    {
+                      "value": "<<customer.postcode>>",
+                      "attributes": {
+                        "bold": "false",
+                        "italic": "false",
+                        "underline": "false",
+                        "size": 14,
+                        "font": "Roboto",
+                        "value": "<<customer.postcode>>",
+                        "type": "text",
+                        "currentColumnName": "customer.postcode",
+                        "isCustomElement": true,
+                        "isMergeField": true
+                      },
+                      "type": "token"
+                    }
+                  ],
+                  "blockType": "p",
+                  "alignment": "left"
+                }
+              ]
+            },
+            "errorMessage": "",
+            "hasError": false
           },
           {
             "type": "html",
-            "value": "<p class=\"ql-font-roboto\" style=\"font-size:12px;color: rgb(71, 85, 105);\"><strong style=\"font-size: 10px;\">Ship To</strong></p><p class=\"ql-font-roboto\" style=\"font-size:12px;\"><span class=\"ql-mathjax custom-token\" data-value=\"Alexandra Mills\" data-type=\"text\" data-name=\"shipping.name\" contenteditable=\"false\">﻿<span contenteditable=\"false\">text[shipping.name]</span>﻿</span></p><p class=\"ql-font-roboto\" style=\"font-size:12px;\"><span class=\"ql-mathjax custom-token\" data-value=\"71 Riverbank Way\" data-type=\"text\" data-name=\"shipping.address1\" contenteditable=\"false\">﻿<span contenteditable=\"false\">text[shipping.address1]</span>﻿</span></p><p class=\"ql-font-roboto\" style=\"font-size:12px;\"><span class=\"ql-mathjax custom-token\" data-value=\"London\" data-type=\"text\" data-name=\"shipping.city\" contenteditable=\"false\">﻿<span contenteditable=\"false\">text[shipping.city]</span>﻿</span></p><p class=\"ql-font-roboto\" style=\"font-size:12px;\"><span class=\"ql-mathjax custom-token\" data-value=\"SW1A 1AA\" data-type=\"text\" data-name=\"shipping.postcode\" contenteditable=\"false\">﻿<span contenteditable=\"false\">text[shipping.postcode]</span>﻿</span></p>",
+            "value": "<p class=\"ql-font-roboto\" style=\"font-size:12px;color: rgb(71, 85, 105);\"><strong style=\"font-size: 10px;\">Ship To</strong></p><p class=\"ql-font-roboto\" style=\"font-size:12px;\"><span class=\"ql-mathjax custom-token\" data-value=\"&lt;&lt;shipping.name&gt;&gt;\" data-type=\"text\" data-name=\"shipping.name\" contenteditable=\"false\">﻿<span contenteditable=\"false\">﻿<span contenteditable=\"false\">text[shipping.name]</span>﻿</span>﻿</span></p><p class=\"ql-font-roboto\" style=\"font-size:12px;\"><span class=\"ql-mathjax custom-token\" data-value=\"&lt;&lt;shipping.address1&gt;&gt;\" data-type=\"text\" data-name=\"shipping.address1\" contenteditable=\"false\">﻿<span contenteditable=\"false\">﻿<span contenteditable=\"false\">text[shipping.address1]</span>﻿</span>﻿</span></p><p class=\"ql-font-roboto\" style=\"font-size:12px;\"><span class=\"ql-mathjax custom-token\" data-value=\"&lt;&lt;shipping.city&gt;&gt;\" data-type=\"text\" data-name=\"shipping.city\" contenteditable=\"false\">﻿<span contenteditable=\"false\">﻿<span contenteditable=\"false\">text[shipping.city]</span>﻿</span>﻿</span></p><p class=\"ql-font-roboto\" style=\"font-size:12px;\"><span class=\"ql-mathjax custom-token\" data-value=\"&lt;&lt;shipping.postcode&gt;&gt;\" data-type=\"text\" data-name=\"shipping.postcode\" contenteditable=\"false\">﻿<span contenteditable=\"false\">﻿<span contenteditable=\"false\">text[shipping.postcode]</span>﻿</span>﻿</span></p>",
             "attrs": {
               "paddingTop": 10,
               "paddingRight": 10,
@@ -111,7 +353,119 @@ export const Preset5: Page = {
               "borderBottom": 1,
               "borderLeft": 0,
               "borderColor": "#E5E7EB"
-            }
+            },
+            "block": {
+              "blocks": [
+                {
+                  "elements": [
+                    {
+                      "value": "Ship To",
+                      "attributes": {
+                        "bold": "true",
+                        "italic": "false",
+                        "underline": "false",
+                        "size": 10,
+                        "font": "Roboto",
+                        "align": "left"
+                      },
+                      "type": "text"
+                    }
+                  ],
+                  "blockType": "p",
+                  "alignment": "left"
+                },
+                {
+                  "elements": [
+                    {
+                      "value": "<<shipping.name>>",
+                      "attributes": {
+                        "bold": "false",
+                        "italic": "false",
+                        "underline": "false",
+                        "size": 14,
+                        "font": "Roboto",
+                        "value": "<<shipping.name>>",
+                        "type": "text",
+                        "currentColumnName": "shipping.name",
+                        "isCustomElement": true,
+                        "isMergeField": true
+                      },
+                      "type": "token"
+                    }
+                  ],
+                  "blockType": "p",
+                  "alignment": "left"
+                },
+                {
+                  "elements": [
+                    {
+                      "value": "<<shipping.address1>>",
+                      "attributes": {
+                        "bold": "false",
+                        "italic": "false",
+                        "underline": "false",
+                        "size": 14,
+                        "font": "Roboto",
+                        "value": "<<shipping.address1>>",
+                        "type": "text",
+                        "currentColumnName": "shipping.address1",
+                        "isCustomElement": true,
+                        "isMergeField": true
+                      },
+                      "type": "token"
+                    }
+                  ],
+                  "blockType": "p",
+                  "alignment": "left"
+                },
+                {
+                  "elements": [
+                    {
+                      "value": "<<shipping.city>>",
+                      "attributes": {
+                        "bold": "false",
+                        "italic": "false",
+                        "underline": "false",
+                        "size": 14,
+                        "font": "Roboto",
+                        "value": "<<shipping.city>>",
+                        "type": "text",
+                        "currentColumnName": "shipping.city",
+                        "isCustomElement": true,
+                        "isMergeField": true
+                      },
+                      "type": "token"
+                    }
+                  ],
+                  "blockType": "p",
+                  "alignment": "left"
+                },
+                {
+                  "elements": [
+                    {
+                      "value": "<<shipping.postcode>>",
+                      "attributes": {
+                        "bold": "false",
+                        "italic": "false",
+                        "underline": "false",
+                        "size": 14,
+                        "font": "Roboto",
+                        "value": "<<shipping.postcode>>",
+                        "type": "text",
+                        "currentColumnName": "shipping.postcode",
+                        "isCustomElement": true,
+                        "isMergeField": true
+                      },
+                      "type": "token"
+                    }
+                  ],
+                  "blockType": "p",
+                  "alignment": "left"
+                }
+              ]
+            },
+            "errorMessage": "",
+            "hasError": false
           }
         ],
         "backgroundColor": "white"
@@ -126,7 +480,7 @@ export const Preset5: Page = {
         "cells": [
           {
             "type": "html",
-            "value": "<p class=\"ql-font-roboto\" style=\"font-size:11px;color: rgb(100, 116, 139);\"><strong style=\"font-size: 10px;\">Invoice No.</strong></p><p class=\"ql-font-roboto\" style=\"font-size:12px;\"><span class=\"ql-mathjax custom-token\" data-value=\"INV-2025-0087\" data-type=\"text\" data-name=\"invoice.number\" contenteditable=\"false\">﻿<span contenteditable=\"false\">text[invoice.number]</span>﻿</span></p>",
+            "value": "<p class=\"ql-font-roboto\" style=\"font-size:11px;color: rgb(100, 116, 139);\"><strong style=\"font-size: 10px;\">Invoice No.</strong></p><p class=\"ql-font-roboto\" style=\"font-size:12px;\"><span class=\"ql-mathjax custom-token\" data-value=\"&lt;&lt;invoice.number&gt;&gt;\" data-type=\"text\" data-name=\"invoice.number\" contenteditable=\"false\">﻿<span contenteditable=\"false\">text[invoice.number]</span>﻿</span></p>",
             "attrs": {
               "paddingTop": 8,
               "paddingRight": 8,
@@ -137,11 +491,57 @@ export const Preset5: Page = {
               "borderBottom": 1,
               "borderLeft": 1,
               "borderColor": "#E5E7EB"
-            }
+            },
+            "block": {
+              "blocks": [
+                {
+                  "elements": [
+                    {
+                      "value": "Invoice No.",
+                      "attributes": {
+                        "bold": "true",
+                        "italic": "false",
+                        "underline": "false",
+                        "size": 10,
+                        "font": "Roboto",
+                        "align": "left"
+                      },
+                      "type": "text"
+                    }
+                  ],
+                  "blockType": "p",
+                  "alignment": "left"
+                },
+                {
+                  "elements": [
+                    {
+                      "value": "<<invoice.number>>",
+                      "attributes": {
+                        "bold": "false",
+                        "italic": "false",
+                        "underline": "false",
+                        "size": 14,
+                        "font": "Roboto",
+                        "value": "<<invoice.number>>",
+                        "type": "text",
+                        "currentColumnName": "invoice.number",
+                        "isCustomElement": true,
+                        "isMergeField": true
+                      },
+                      "type": "token"
+                    }
+                  ],
+                  "blockType": "p",
+                  "alignment": "left"
+                }
+              ]
+            },
+            "errorMessage": "",
+            "hasError": false
           },
           {
             "type": "html",
-            "value": "<p class=\"ql-font-roboto\" style=\"font-size:11px;color: rgb(100, 116, 139);\"><strong style=\"font-size: 10px;\">Invoice Date</strong></p><p class=\"ql-font-roboto\" style=\"font-size:12px;\"><span class=\"ql-mathjax custom-token\" data-value=\"2025-03-14\" data-type=\"text\" data-name=\"invoice.date\" contenteditable=\"false\">﻿<span contenteditable=\"false\">text[invoice.date]</span>﻿</span></p>",
+            "value": "<p class=\"ql-font-roboto\" style=\"font-size:11px;color: rgb(100, 116, 139);\"><strong style=\"font-size: 10px;\">Invoice Date</strong></p><p class=\"ql-font-roboto\" style=\"font-size:12px;\"><span class=\"ql-mathjax custom-token\" data-value=\"&lt;&lt;invoice.date&gt;&gt;\" data-type=\"text\" data-name=\"invoice.date\" contenteditable=\"false\">﻿<span contenteditable=\"false\">text[invoice.date]</span>﻿</span></p>",
             "attrs": {
               "paddingTop": 8,
               "paddingRight": 8,
@@ -152,11 +552,57 @@ export const Preset5: Page = {
               "borderBottom": 1,
               "borderLeft": 0,
               "borderColor": "#E5E7EB"
-            }
+            },
+            "block": {
+              "blocks": [
+                {
+                  "elements": [
+                    {
+                      "value": "Invoice Date",
+                      "attributes": {
+                        "bold": "true",
+                        "italic": "false",
+                        "underline": "false",
+                        "size": 10,
+                        "font": "Roboto",
+                        "align": "left"
+                      },
+                      "type": "text"
+                    }
+                  ],
+                  "blockType": "p",
+                  "alignment": "left"
+                },
+                {
+                  "elements": [
+                    {
+                      "value": "<<invoice.date>>",
+                      "attributes": {
+                        "bold": "false",
+                        "italic": "false",
+                        "underline": "false",
+                        "size": 14,
+                        "font": "Roboto",
+                        "value": "<<invoice.date>>",
+                        "type": "text",
+                        "currentColumnName": "invoice.date",
+                        "isCustomElement": true,
+                        "isMergeField": true
+                      },
+                      "type": "token"
+                    }
+                  ],
+                  "blockType": "p",
+                  "alignment": "left"
+                }
+              ]
+            },
+            "errorMessage": "",
+            "hasError": false
           },
           {
             "type": "html",
-            "value": "<p class=\"ql-font-roboto\" style=\"font-size:11px;color: rgb(100, 116, 139);\"><strong style=\"font-size: 10px;\">Due Date</strong></p><p class=\"ql-font-roboto\" style=\"font-size:12px;\"><span class=\"ql-mathjax custom-token\" data-value=\"2025-03-28\" data-type=\"text\" data-name=\"invoice.dueDate\" contenteditable=\"false\">﻿<span contenteditable=\"false\">text[invoice.dueDate]</span>﻿</span></p>",
+            "value": "<p class=\"ql-font-roboto\" style=\"font-size:11px;color: rgb(100, 116, 139);\"><strong style=\"font-size: 10px;\">Due Date</strong></p><p class=\"ql-font-roboto\" style=\"font-size:12px;\"><span class=\"ql-mathjax custom-token\" data-value=\"&lt;&lt;invoice.dueDate&gt;&gt;\" data-type=\"text\" data-name=\"invoice.dueDate\" contenteditable=\"false\">﻿<span contenteditable=\"false\">text[invoice.dueDate]</span>﻿</span></p>",
             "attrs": {
               "paddingTop": 8,
               "paddingRight": 10,
@@ -167,7 +613,53 @@ export const Preset5: Page = {
               "borderBottom": 1,
               "borderLeft": 0,
               "borderColor": "#E5E7EB"
-            }
+            },
+            "block": {
+              "blocks": [
+                {
+                  "elements": [
+                    {
+                      "value": "Due Date",
+                      "attributes": {
+                        "bold": "true",
+                        "italic": "false",
+                        "underline": "false",
+                        "size": 10,
+                        "font": "Roboto",
+                        "align": "left"
+                      },
+                      "type": "text"
+                    }
+                  ],
+                  "blockType": "p",
+                  "alignment": "left"
+                },
+                {
+                  "elements": [
+                    {
+                      "value": "<<invoice.dueDate>>",
+                      "attributes": {
+                        "bold": "false",
+                        "italic": "false",
+                        "underline": "false",
+                        "size": 14,
+                        "font": "Roboto",
+                        "value": "<<invoice.dueDate>>",
+                        "type": "text",
+                        "currentColumnName": "invoice.dueDate",
+                        "isCustomElement": true,
+                        "isMergeField": true
+                      },
+                      "type": "token"
+                    }
+                  ],
+                  "blockType": "p",
+                  "alignment": "left"
+                }
+              ]
+            },
+            "errorMessage": "",
+            "hasError": false
           }
         ],
         "backgroundColor": "white"
@@ -192,7 +684,12 @@ export const Preset5: Page = {
               "borderLeft": 0,
               "borderColor": "white",
               "backgroundColor": "transparent"
-            }
+            },
+            "block": {
+              "blocks": []
+            },
+            "errorMessage": "",
+            "hasError": false
           }
         ],
         "backgroundColor": "white"
@@ -217,7 +714,12 @@ export const Preset5: Page = {
               "borderLeft": 0,
               "borderColor": "white",
               "backgroundColor": "transparent"
-            }
+            },
+            "block": {
+              "blocks": []
+            },
+            "errorMessage": "",
+            "hasError": false
           }
         ],
         "backgroundColor": "white"
@@ -242,7 +744,32 @@ export const Preset5: Page = {
               "borderLeft": 0,
               "borderColor": "#E5E7EB",
               "backgroundColor": "#EFF6FF"
-            }
+            },
+            "block": {
+              "blocks": [
+                {
+                  "elements": [
+                    {
+                      "value": "Line Items",
+                      "attributes": {
+                        "bold": "true",
+                        "italic": "false",
+                        "underline": "false",
+                        "size": 13,
+                        "font": "Roboto",
+                        "color": "#1d4ed8",
+                        "align": "left"
+                      },
+                      "type": "text"
+                    }
+                  ],
+                  "blockType": "p",
+                  "alignment": "left"
+                }
+              ]
+            },
+            "errorMessage": "",
+            "hasError": false
           }
         ],
         "backgroundColor": "#EFF6FF"
@@ -270,7 +797,32 @@ export const Preset5: Page = {
               "borderLeft": 1,
               "borderColor": "#CBD5E1",
               "backgroundColor": "#F8FAFC"
-            }
+            },
+            "block": {
+              "blocks": [
+                {
+                  "elements": [
+                    {
+                      "value": "Description",
+                      "attributes": {
+                        "bold": "true",
+                        "italic": "false",
+                        "underline": "false",
+                        "size": 11,
+                        "font": "Roboto",
+                        "color": "#64748b",
+                        "align": "left"
+                      },
+                      "type": "text"
+                    }
+                  ],
+                  "blockType": "p",
+                  "alignment": "left"
+                }
+              ]
+            },
+            "errorMessage": "",
+            "hasError": false
           },
           {
             "type": "html",
@@ -286,7 +838,32 @@ export const Preset5: Page = {
               "borderLeft": 0,
               "borderColor": "#CBD5E1",
               "backgroundColor": "#F8FAFC"
-            }
+            },
+            "block": {
+              "blocks": [
+                {
+                  "elements": [
+                    {
+                      "value": "Qty",
+                      "attributes": {
+                        "bold": "true",
+                        "italic": "false",
+                        "underline": "false",
+                        "size": 11,
+                        "font": "Roboto",
+                        "align": "right",
+                        "color": "#64748b"
+                      },
+                      "type": "text"
+                    }
+                  ],
+                  "blockType": "p",
+                  "alignment": "right"
+                }
+              ]
+            },
+            "errorMessage": "",
+            "hasError": false
           },
           {
             "type": "html",
@@ -302,7 +879,32 @@ export const Preset5: Page = {
               "borderLeft": 0,
               "borderColor": "#CBD5E1",
               "backgroundColor": "#F8FAFC"
-            }
+            },
+            "block": {
+              "blocks": [
+                {
+                  "elements": [
+                    {
+                      "value": "Unit",
+                      "attributes": {
+                        "bold": "true",
+                        "italic": "false",
+                        "underline": "false",
+                        "size": 11,
+                        "font": "Roboto",
+                        "align": "right",
+                        "color": "#64748b"
+                      },
+                      "type": "text"
+                    }
+                  ],
+                  "blockType": "p",
+                  "alignment": "right"
+                }
+              ]
+            },
+            "errorMessage": "",
+            "hasError": false
           },
           {
             "type": "html",
@@ -318,7 +920,32 @@ export const Preset5: Page = {
               "borderLeft": 0,
               "borderColor": "#CBD5E1",
               "backgroundColor": "#F8FAFC"
-            }
+            },
+            "block": {
+              "blocks": [
+                {
+                  "elements": [
+                    {
+                      "value": "Amount",
+                      "attributes": {
+                        "bold": "true",
+                        "italic": "false",
+                        "underline": "false",
+                        "size": 11,
+                        "font": "Roboto",
+                        "align": "right",
+                        "color": "#64748b"
+                      },
+                      "type": "text"
+                    }
+                  ],
+                  "blockType": "p",
+                  "alignment": "right"
+                }
+              ]
+            },
+            "errorMessage": "",
+            "hasError": false
           }
         ],
         "backgroundColor": "white"
@@ -415,22 +1042,22 @@ export const Preset5: Page = {
             {
               "name": "items.description",
               "value": "",
-              "type": TokenAttributeTypeEnum.TEXT
+              "type": "text"
             },
             {
               "name": "items.qty",
               "value": "",
-              "type": TokenAttributeTypeEnum.NUMBER
+              "type": "number"
             },
             {
               "name": "items.unitPrice",
               "value": "",
-              "type": TokenAttributeTypeEnum.NUMBER
+              "type": "number"
             },
             {
               "name": "items.amount",
               "value": "",
-              "type": TokenAttributeTypeEnum.NUMBER
+              "type": "number"
             }
           ]
         }
@@ -455,7 +1082,12 @@ export const Preset5: Page = {
               "borderLeft": 0,
               "borderColor": "white",
               "backgroundColor": "transparent"
-            }
+            },
+            "block": {
+              "blocks": []
+            },
+            "errorMessage": "",
+            "hasError": false
           }
         ],
         "backgroundColor": "white"
@@ -480,7 +1112,12 @@ export const Preset5: Page = {
               "borderLeft": 0,
               "borderColor": "white",
               "backgroundColor": "transparent"
-            }
+            },
+            "block": {
+              "blocks": []
+            },
+            "errorMessage": "",
+            "hasError": false
           }
         ],
         "backgroundColor": "white"
@@ -506,7 +1143,49 @@ export const Preset5: Page = {
               "borderLeft": 1,
               "borderColor": "#FFFFFF",
               "backgroundColor": "transparent"
-            }
+            },
+            "block": {
+              "blocks": [
+                {
+                  "elements": [
+                    {
+                      "value": "Notes",
+                      "attributes": {
+                        "bold": "true",
+                        "italic": "false",
+                        "underline": "false",
+                        "size": 10,
+                        "font": "Roboto",
+                        "align": "left"
+                      },
+                      "type": "text"
+                    }
+                  ],
+                  "blockType": "p",
+                  "alignment": "left"
+                },
+                {
+                  "elements": [
+                    {
+                      "value": "Payment due within 14 days. Thank you for your business.",
+                      "attributes": {
+                        "bold": "false",
+                        "italic": "false",
+                        "underline": "false",
+                        "size": 14,
+                        "font": "Roboto",
+                        "align": "left"
+                      },
+                      "type": "text"
+                    }
+                  ],
+                  "blockType": "p",
+                  "alignment": "left"
+                }
+              ]
+            },
+            "errorMessage": "",
+            "hasError": false
           },
           {
             "type": "html",
@@ -522,7 +1201,132 @@ export const Preset5: Page = {
               "borderLeft": 1,
               "borderColor": "#E5E7EB",
               "backgroundColor": "#F8FAFC"
-            }
+            },
+            "block": {
+              "blocks": [
+                {
+                  "elements": [
+                    {
+                      "value": "Subtotal",
+                      "attributes": {
+                        "bold": "true",
+                        "italic": "false",
+                        "underline": "false",
+                        "size": 14,
+                        "font": "Roboto",
+                        "align": "right"
+                      },
+                      "type": "text"
+                    },
+                    {
+                      "value": " £",
+                      "attributes": {
+                        "bold": "false",
+                        "italic": "false",
+                        "underline": "false",
+                        "size": 14,
+                        "font": "Roboto",
+                        "align": "right"
+                      },
+                      "type": "text"
+                    },
+                    {
+                      "value": "1020",
+                      "attributes": {
+                        "bold": "false",
+                        "italic": "false",
+                        "underline": "false",
+                        "size": 14,
+                        "font": "Roboto",
+                        "align": "right",
+                        "value": "1020",
+                        "type": "number",
+                        "currentColumnName": "invoice.subtotal",
+                        "isCustomElement": true,
+                        "isMergeField": true
+                      },
+                      "type": "token"
+                    }
+                  ],
+                  "blockType": "p",
+                  "alignment": "right"
+                },
+                {
+                  "elements": [
+                    {
+                      "value": "VAT (20%) £",
+                      "attributes": {
+                        "bold": "false",
+                        "italic": "false",
+                        "underline": "false",
+                        "size": 14,
+                        "font": "Roboto",
+                        "align": "right"
+                      },
+                      "type": "text"
+                    },
+                    {
+                      "value": "204",
+                      "attributes": {
+                        "bold": "false",
+                        "italic": "false",
+                        "underline": "false",
+                        "size": 14,
+                        "font": "Roboto",
+                        "align": "right",
+                        "value": "204",
+                        "type": "number",
+                        "currentColumnName": "invoice.vatAmount",
+                        "isCustomElement": true,
+                        "isMergeField": true
+                      },
+                      "type": "token"
+                    }
+                  ],
+                  "blockType": "p",
+                  "alignment": "right"
+                },
+                {
+                  "elements": [
+                    {
+                      "value": "Total £",
+                      "attributes": {
+                        "bold": "true",
+                        "italic": "false",
+                        "underline": "false",
+                        "size": 14,
+                        "font": "Roboto",
+                        "align": "right",
+                        "color": "#1d4ed8"
+                      },
+                      "type": "text"
+                    },
+                    {
+                      "value": "1224",
+                      "attributes": {
+                        "bold": "true",
+                        "italic": "false",
+                        "underline": "false",
+                        "size": 14,
+                        "font": "Roboto",
+                        "align": "right",
+                        "color": "#2563eb",
+                        "value": "1224",
+                        "type": "number",
+                        "currentColumnName": "invoice.total",
+                        "isCustomElement": true,
+                        "isMergeField": true
+                      },
+                      "type": "token"
+                    }
+                  ],
+                  "blockType": "p",
+                  "alignment": "right"
+                }
+              ]
+            },
+            "errorMessage": "",
+            "hasError": false
           }
         ],
         "backgroundColor": "white"
@@ -548,7 +1352,50 @@ export const Preset5: Page = {
               "borderLeft": 1,
               "borderColor": "#E5E7EB",
               "backgroundColor": "white"
-            }
+            },
+            "block": {
+              "blocks": [
+                {
+                  "elements": [
+                    {
+                      "value": "Pay Online",
+                      "attributes": {
+                        "bold": "true",
+                        "italic": "false",
+                        "underline": "false",
+                        "size": 12,
+                        "font": "Roboto",
+                        "color": "#1d4ed8",
+                        "align": "left"
+                      },
+                      "type": "text"
+                    }
+                  ],
+                  "blockType": "p",
+                  "alignment": "left"
+                },
+                {
+                  "elements": [
+                    {
+                      "value": "Scan the code or visit the link in your email to complete payment securely.",
+                      "attributes": {
+                        "bold": "false",
+                        "italic": "false",
+                        "underline": "false",
+                        "size": 14,
+                        "font": "Roboto",
+                        "align": "left"
+                      },
+                      "type": "text"
+                    }
+                  ],
+                  "blockType": "p",
+                  "alignment": "left"
+                }
+              ]
+            },
+            "errorMessage": "",
+            "hasError": false
           },
           {
             "type": "barcode",
@@ -574,7 +1421,12 @@ export const Preset5: Page = {
               "borderLeft": 0,
               "borderColor": "#E5E7EB",
               "backgroundColor": "white"
-            }
+            },
+            "block": {
+              "blocks": []
+            },
+            "errorMessage": "",
+            "hasError": false
           }
         ],
         "backgroundColor": "white"
@@ -603,7 +1455,32 @@ export const Preset5: Page = {
               "borderLeft": 0,
               "borderColor": "#E5E7EB",
               "backgroundColor": "transparent"
-            }
+            },
+            "block": {
+              "blocks": [
+                {
+                  "elements": [
+                    {
+                      "value": "NOVA SUPPLY CO. · 221B Market Street, London · (020) 1234 5678",
+                      "attributes": {
+                        "bold": "false",
+                        "italic": "false",
+                        "underline": "false",
+                        "size": 11,
+                        "font": "Roboto",
+                        "align": "center",
+                        "color": "#64748b"
+                      },
+                      "type": "text"
+                    }
+                  ],
+                  "blockType": "p",
+                  "alignment": "center"
+                }
+              ]
+            },
+            "errorMessage": "",
+            "hasError": false
           }
         ],
         "backgroundColor": "white"
@@ -624,157 +1501,157 @@ export const Preset5: Page = {
     {
       "name": "company.name",
       "value": "NOVA SUPPLY CO.",
-      "type": TokenAttributeTypeEnum.TEXT
+      "type": "text"
     },
     {
       "name": "company.website",
       "value": "https://novasupply.example",
-      "type": TokenAttributeTypeEnum.TEXT
+      "type": "text"
     },
     {
       "name": "company.email",
       "value": "support@nova.example",
-      "type": TokenAttributeTypeEnum.TEXT
+      "type": "text"
     },
     {
       "name": "company.phone",
       "value": "(020) 1234 5678",
-      "type": TokenAttributeTypeEnum.TEXT
+      "type": "text"
     },
     {
       "name": "company.address",
       "value": "221B Market Street, London",
-      "type": TokenAttributeTypeEnum.TEXT
+      "type": "text"
     },
     {
       "name": "invoice.number",
       "value": "INV-2025-0087",
-      "type": TokenAttributeTypeEnum.TEXT
+      "type": "text"
     },
     {
       "name": "invoice.date",
       "value": "2025-03-14",
-      "type": TokenAttributeTypeEnum.TEXT
+      "type": "text"
     },
     {
       "name": "invoice.dueDate",
       "value": "2025-03-28",
-      "type": TokenAttributeTypeEnum.TEXT
+      "type": "text"
     },
     {
       "name": "invoice.currency",
       "value": "GBP",
-      "type": TokenAttributeTypeEnum.TEXT
+      "type": "text"
     },
     {
       "name": "invoice.notes",
       "value": "Payment due within 14 days. Thank you for your business.",
-      "type": TokenAttributeTypeEnum.TEXT
+      "type": "text"
     },
     {
       "name": "invoice.subtotal",
       "value": "1020",
-      "type": TokenAttributeTypeEnum.NUMBER
+      "type": "number"
     },
     {
       "name": "invoice.vatRate",
       "value": "0.2",
-      "type": TokenAttributeTypeEnum.NUMBER
+      "type": "number"
     },
     {
       "name": "invoice.vatAmount",
       "value": "204",
-      "type": TokenAttributeTypeEnum.NUMBER
+      "type": "number"
     },
     {
       "name": "invoice.total",
       "value": "1224",
-      "type": TokenAttributeTypeEnum.NUMBER
+      "type": "number"
     },
     {
       "name": "invoice.paymentUrl",
       "value": "https://pay.nova.example/i/INV-2025-0087",
-      "type": TokenAttributeTypeEnum.TEXT
+      "type": "text"
     },
     {
       "name": "customer.name",
       "value": "Alexandra Mills",
-      "type": TokenAttributeTypeEnum.TEXT
+      "type": "text"
     },
     {
       "name": "customer.address1",
       "value": "71 Riverbank Way",
-      "type": TokenAttributeTypeEnum.TEXT
+      "type": "text"
     },
     {
       "name": "customer.city",
       "value": "London",
-      "type": TokenAttributeTypeEnum.TEXT
+      "type": "text"
     },
     {
       "name": "customer.postcode",
       "value": "SW1A 1AA",
-      "type": TokenAttributeTypeEnum.TEXT
+      "type": "text"
     },
     {
       "name": "customer.country",
       "value": "United Kingdom",
-      "type": TokenAttributeTypeEnum.TEXT
+      "type": "text"
     },
     {
       "name": "shipping.name",
       "value": "Alexandra Mills",
-      "type": TokenAttributeTypeEnum.TEXT
+      "type": "text"
     },
     {
       "name": "shipping.address1",
       "value": "71 Riverbank Way",
-      "type": TokenAttributeTypeEnum.TEXT
+      "type": "text"
     },
     {
       "name": "shipping.city",
       "value": "London",
-      "type": TokenAttributeTypeEnum.TEXT
+      "type": "text"
     },
     {
       "name": "shipping.postcode",
       "value": "SW1A 1AA",
-      "type": TokenAttributeTypeEnum.TEXT
+      "type": "text"
     },
     {
       "name": "shipping.country",
       "value": "United Kingdom",
-      "type": TokenAttributeTypeEnum.TEXT
+      "type": "text"
     },
     {
       "name": "items",
       "value": "[{\"description\":\"Consulting services – March\",\"qty\":12,\"unitPrice\":75,\"amount\":900},{\"description\":\"Premium support plan\",\"qty\":1,\"unitPrice\":120,\"amount\":120}]",
-      "type": TokenAttributeTypeEnum.JSON_ARRAY
+      "type": "json_array"
     },
     {
       "name": "totals.lines",
       "value": "[{\"label\":\"Subtotal\",\"value\":1020,\"emphasis\":false},{\"label\":\"VAT (20%)\",\"value\":204,\"emphasis\":false},{\"label\":\"Total\",\"value\":1224,\"emphasis\":true}]",
-      "type": TokenAttributeTypeEnum.JSON_ARRAY
+      "type": "json_array"
     },
     {
       "name": "barcode.format",
       "value": "QR",
-      "type": TokenAttributeTypeEnum.TEXT
+      "type": "text"
     },
     {
       "name": "barcode.value",
       "value": "https://pay.nova.example/i/INV-2025-0087",
-      "type": TokenAttributeTypeEnum.TEXT
+      "type": "text"
     },
     {
       "name": "barcode.imageBase64",
       "value": "data:image/png;base64,{{INVOICE_BARCODE_BASE64}}",
-      "type": TokenAttributeTypeEnum.TEXT
+      "type": "text"
     },
     {
       "name": "footer.line",
       "value": "NOVA SUPPLY CO. · 221B Market Street, London · (020) 1234 5678",
-      "type": TokenAttributeTypeEnum.TEXT
+      "type": "text"
     }
   ],
   "partialContent": [
@@ -806,7 +1683,35 @@ export const Preset5: Page = {
                 "borderLeft": 1,
                 "borderColor": "#94a3b8",
                 "backgroundColor": "transparent"
-              }
+              },
+              "block": {
+                "blocks": [
+                  {
+                    "elements": [
+                      {
+                        "value": "﻿text[items.description]﻿",
+                        "attributes": {
+                          "bold": "false",
+                          "italic": "false",
+                          "underline": "false",
+                          "size": 14,
+                          "font": "Roboto",
+                          "value": "﻿text[items.description]﻿",
+                          "type": "text",
+                          "currentColumnName": "items.description",
+                          "isCustomElement": true,
+                          "isMergeField": true
+                        },
+                        "type": "token"
+                      }
+                    ],
+                    "blockType": "p",
+                    "alignment": "left"
+                  }
+                ]
+              },
+              "errorMessage": "",
+              "hasError": false
             },
             {
               "type": "html",
@@ -822,7 +1727,35 @@ export const Preset5: Page = {
                 "borderLeft": 1,
                 "borderColor": "#94a3b8",
                 "backgroundColor": "transparent"
-              }
+              },
+              "block": {
+                "blocks": [
+                  {
+                    "elements": [
+                      {
+                        "value": "﻿number[items.qty]﻿",
+                        "attributes": {
+                          "bold": "false",
+                          "italic": "false",
+                          "underline": "false",
+                          "size": 14,
+                          "font": "Roboto",
+                          "value": "﻿number[items.qty]﻿",
+                          "type": "number",
+                          "currentColumnName": "items.qty",
+                          "isCustomElement": true,
+                          "isMergeField": true
+                        },
+                        "type": "token"
+                      }
+                    ],
+                    "blockType": "p",
+                    "alignment": "left"
+                  }
+                ]
+              },
+              "errorMessage": "",
+              "hasError": false
             },
             {
               "type": "html",
@@ -838,7 +1771,35 @@ export const Preset5: Page = {
                 "borderLeft": 1,
                 "borderColor": "#94a3b8",
                 "backgroundColor": "transparent"
-              }
+              },
+              "block": {
+                "blocks": [
+                  {
+                    "elements": [
+                      {
+                        "value": "﻿number[items.unitPrice]﻿",
+                        "attributes": {
+                          "bold": "false",
+                          "italic": "false",
+                          "underline": "false",
+                          "size": 14,
+                          "font": "Roboto",
+                          "value": "﻿number[items.unitPrice]﻿",
+                          "type": "number",
+                          "currentColumnName": "items.unitPrice",
+                          "isCustomElement": true,
+                          "isMergeField": true
+                        },
+                        "type": "token"
+                      }
+                    ],
+                    "blockType": "p",
+                    "alignment": "left"
+                  }
+                ]
+              },
+              "errorMessage": "",
+              "hasError": false
             },
             {
               "type": "html",
@@ -854,7 +1815,47 @@ export const Preset5: Page = {
                 "borderLeft": 1,
                 "borderColor": "#94a3b8",
                 "backgroundColor": "transparent"
-              }
+              },
+              "block": {
+                "blocks": [
+                  {
+                    "elements": [
+                      {
+                        "value": "£",
+                        "attributes": {
+                          "bold": "false",
+                          "italic": "false",
+                          "underline": "false",
+                          "size": 14,
+                          "font": "Roboto",
+                          "align": "left"
+                        },
+                        "type": "text"
+                      },
+                      {
+                        "value": "﻿﻿number[items.amount]﻿﻿",
+                        "attributes": {
+                          "bold": "false",
+                          "italic": "false",
+                          "underline": "false",
+                          "size": 14,
+                          "font": "Roboto",
+                          "value": "﻿﻿number[items.amount]﻿﻿",
+                          "type": "number",
+                          "currentColumnName": "items.amount",
+                          "isCustomElement": true,
+                          "isMergeField": true
+                        },
+                        "type": "token"
+                      }
+                    ],
+                    "blockType": "p",
+                    "alignment": "left"
+                  }
+                ]
+              },
+              "errorMessage": "",
+              "hasError": false
             }
           ],
           "backgroundColor": "white"
@@ -864,22 +1865,22 @@ export const Preset5: Page = {
         {
           "name": "items.description",
           "value": "",
-          "type": TokenAttributeTypeEnum.TEXT
+          "type": "text"
         },
         {
           "name": "items.qty",
           "value": "",
-          "type": TokenAttributeTypeEnum.NUMBER
+          "type": "number"
         },
         {
           "name": "items.unitPrice",
           "value": "",
-          "type": TokenAttributeTypeEnum.NUMBER
+          "type": "number"
         },
         {
           "name": "items.amount",
           "value": "",
-          "type": TokenAttributeTypeEnum.NUMBER
+          "type": "number"
         }
       ]
     }

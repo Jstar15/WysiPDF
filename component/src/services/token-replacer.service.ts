@@ -9,17 +9,7 @@ export class TokenReplacerService {
     const tokenMap: { [key: string]: string } = {};
     for (const t of tokens ?? []) {
       if (!t?.name) continue;
-      const full = t.name.trim();
-      const last = full.split('.').pop() ?? full;
-      const val = (t.value ?? '').toString();
-
-      // exact keys
-      tokenMap[full] = val;
-      tokenMap[last] = tokenMap[last] ?? val;
-
-      // normalized keys
-      tokenMap[this.norm(full)] = val;
-      tokenMap[this.norm(last)] = tokenMap[this.norm(last)] ?? val;
+      tokenMap[t.name.trim()] = String(t.value ?? '');
     }
 
     for (const row of rows) {
