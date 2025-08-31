@@ -54,7 +54,7 @@ export class CellStyleToolbarComponent {
   } = {
     preset: 'outside',
     weight: 1,
-    borderColor: '#94a3b8',
+    borderColor: '#000000',
     fillColor: 'transparent'
   };
 
@@ -153,10 +153,12 @@ export class CellStyleToolbarComponent {
     cell.paddingBottom = clamp(v?.bottom);
     cell.paddingLeft = clamp(v?.left);
 
+
     this.cellAttributesChange.emit(cell);
   }
 
   public applyBorder2(v: { top: number; right: number; bottom: number; left: number }): void {
+    this.setBorderColor(this.borderBrushColor);
     const cell = this.ensureCell();
 
     const clamp = (n: unknown): number => {
