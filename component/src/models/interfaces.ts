@@ -155,8 +155,17 @@ export interface PageAttrs {
     marginBottom?: number;
     marginLeft?: number;
 
-    footerMargin?: number;
-    headerMargin?: number;
+    headerHeight?: number;
+    headerMarginTop?: number;
+    headerMarginRight?: number;
+    headerMarginBottom?: number;
+    headerMarginLeft?: number;
+
+    footerHeight?: number;
+    footerMarginTop?: number;
+    footerMarginRight?: number;
+    footerMarginBottom?: number;
+    footerMarginLeft?: number;
 
 
     backgroundColor?: string;

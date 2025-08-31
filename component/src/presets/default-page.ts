@@ -1,6 +1,6 @@
-import { Page } from './interfaces';
-import { TokenAttribute } from './TokenAttribute';
-import { TokenAttributeTypeEnum } from './TokenAttributeTypeEnum';
+import { Page } from '../models/interfaces';
+import { TokenAttribute } from '../models/TokenAttribute';
+import { TokenAttributeTypeEnum } from '../models/TokenAttributeTypeEnum';
 
 export const DEFAULT_PAGE: Page = {
   header: { rows: [] },
@@ -8,12 +8,20 @@ export const DEFAULT_PAGE: Page = {
   footer: { rows: [] },
   pageAttrs: {
     backgroundColor: 'white',
-    marginTop: 10,
-    marginRight: 0,
-    marginLeft: 0,
-    marginBottom: 10,
-    footerMargin: 50,
-    headerMargin: 30,
+    marginTop: 0,
+    marginRight: 25,
+    marginLeft: 25,
+    marginBottom: 0,
+    headerMarginTop: 25,
+    headerMarginRight: 25,
+    headerMarginLeft: 25,
+    headerMarginBottom: 5,
+    headerHeight: 40,
+    footerMarginTop: 0,
+    footerMarginRight: 25,
+    footerMarginLeft: 25,
+    footerMarginBottom: 5,
+    footerHeight: 40,
     defaultFont: 'Roboto'
   },
   tokenAttrs: [

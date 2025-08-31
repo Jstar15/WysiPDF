@@ -69,9 +69,9 @@ export class PageToHtmlService {
       'font-family': p.defaultFont ?? undefined
     });
 
-    const headerHtml  = page.header  ? this.renderSection('header',  page.header, p.headerMargin) : '';
+    const headerHtml  = page.header  ? this.renderSection('header',  page.header, p.headerMarginTop) : '';
     const contentHtml = page.content ? this.renderSection('content', page.content) : '';
-    const footerHtml  = page.footer  ? this.renderSection('footer',  page.footer, p.footerMargin) : '';
+    const footerHtml  = page.footer  ? this.renderSection('footer',  page.footer, p.footerMarginTop) : '';
 
     // When pageView=true, we wrap with canvas/page shells to emulate a printed page
     if (opts?.pageView) {

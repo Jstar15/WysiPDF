@@ -37,7 +37,7 @@ import {GridHistoryService} from "../../services/grid-history.service";
 import {debounceTime, Subject} from "rxjs";
 import {JsonListItem, JsonViewerComponent} from "../../shared/json-viewer/json-viewer.component";
 import {IconService} from "../../services/icon.service";
-import {DEFAULT_PAGE} from "../../models/default-page";
+import {DEFAULT_PAGE} from "../../presets/default-page";
 import {collectDisplayRules} from "../../utils/displayLogic.utiltiy";
 import {LoadPresetDialogComponent} from "../../dialogs/load-preset-dialog/load-preset-dialog.component";
 import {ColorPaletteDialogComponent} from "../../dialogs/color-palette-dialog/color-palette-dialog.component";

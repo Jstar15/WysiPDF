@@ -14,6 +14,7 @@ import {MatButton} from "@angular/material/button";
 import {PageAttrs} from "../../models/interfaces";
 import {MatOption} from "@angular/material/core";
 import {MatSelect} from "@angular/material/select";
+import {SpacingPickerComponent} from "../../shared/spacing-picker/spacing-picker.component";
 
 @Component({
   selector: 'app-page-attributes-dialog',

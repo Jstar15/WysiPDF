@@ -460,12 +460,20 @@ export const Preset4: Page = {
     ]
   },
   "pageAttrs": {
-    "marginTop": 24,
+    "marginTop": 0,
     "marginRight": 24,
     "marginLeft": 24,
     "marginBottom": 24,
-    "headerMargin": 16,
-    "footerMargin": 16,
+    "headerMarginTop": 15,
+    "headerMarginRight": 24,
+    "headerMarginLeft": 24,
+    "headerMarginBottom": 0,
+    "headerHeight": 70,
+    "footerMarginTop": 5,
+    "footerMarginRight": 30,
+    "footerMarginLeft": 30,
+    "footerMarginBottom": 5,
+    "footerHeight": 50,
     "backgroundColor": "white",
     "defaultFont": "Roboto"
   },

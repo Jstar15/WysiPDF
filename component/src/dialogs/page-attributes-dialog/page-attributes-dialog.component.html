@@ -1,6 +1,16 @@
 <h1 mat-dialog-title>Edit Page Styles</h1>
 
 <div class="editor-dialog-content">
+  <p class="section-title">Default Font</p>
+  <mat-form-field appearance="fill" class="w-100">
+    <mat-label>Font</mat-label>
+    <mat-select [(ngModel)]="data.defaultFont">
+      <mat-option *ngFor="let font of availableFonts" [value]="font">
+        {{ font }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
   <p class="section-title">Background Color</p>
   <div class="row-grid-3-3-3-auto">
     <div class="color-picker w-100">
@@ -18,7 +28,7 @@
     </div>
   </div>
 
-  <p class="section-title">Margin</p>
+  <p class="section-title">Page Margin</p>
   <div class="row-grid-3-3-3-auto">
     <mat-form-field appearance="fill">
       <mat-label>Top</mat-label>
@@ -38,15 +48,58 @@
     </mat-form-field>
   </div>
 
-  <p class="section-title">Default Font</p>
-  <mat-form-field appearance="fill" class="w-100">
-    <mat-label>Font</mat-label>
-    <mat-select [(ngModel)]="data.defaultFont">
-      <mat-option *ngFor="let font of availableFonts" [value]="font">
-        {{ font }}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
+
+  <p class="section-title">Header Margin</p>
+  <div class="row-grid-3-3-3-auto">
+    <mat-form-field appearance="fill">
+      <mat-label>Top</mat-label>
+      <input matInput type="number" [(ngModel)]="data.headerMarginTop" />
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+      <mat-label>Right</mat-label>
+      <input matInput type="number" [(ngModel)]="data.headerMarginRight" />
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+      <mat-label>Bottom</mat-label>
+      <input matInput type="number" [(ngModel)]="data.headerMarginBottom" />
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+      <mat-label>Left</mat-label>
+      <input matInput type="number" [(ngModel)]="data.headerMarginLeft" />
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+      <mat-label>Height</mat-label>
+      <input matInput type="number" [(ngModel)]="data.headerHeight" />
+    </mat-form-field>
+  </div>
+
+
+  <p class="section-title">Footer Margin</p>
+  <div class="row-grid-3-3-3-auto">
+    <mat-form-field appearance="fill">
+      <mat-label>Top</mat-label>
+      <input matInput type="number" [(ngModel)]="data.footerMarginTop" />
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+      <mat-label>Right</mat-label>
+      <input matInput type="number" [(ngModel)]="data.footerMarginRight" />
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+      <mat-label>Bottom</mat-label>
+      <input matInput type="number" [(ngModel)]="data.footerMarginBottom" />
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+      <mat-label>Left</mat-label>
+      <input matInput type="number" [(ngModel)]="data.footerMarginLeft" />
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+      <mat-label>Height</mat-label>
+      <input matInput type="number" [(ngModel)]="data.footerHeight" />
+    </mat-form-field>
+  </div>
+
+
+
 </div>
 
 <div mat-dialog-actions>
