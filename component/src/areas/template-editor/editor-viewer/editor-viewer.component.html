@@ -1,0 +1,61 @@
+<div class="editor-shell" role="dialog" aria-labelledby="editorTitle">
+  <!-- Header -->
+  <header class="editor-header">
+    <mat-icon *ngIf="type == EditorType.IMPORT && page" svgIcon="file_open"></mat-icon>
+    <mat-icon *ngIf="type == EditorType.PAGE_LAYOUT && page" svgIcon="border_color"></mat-icon>
+    <mat-icon *ngIf="type == EditorType.COLOR_PALETTE && page" svgIcon="colors"></mat-icon>
+    <mat-icon *ngIf="type == EditorType.TOKEN && page" svgIcon="download"></mat-icon>
+    <mat-icon *ngIf="type == EditorType.PRESET && page" svgIcon="inventory_2"></mat-icon>
+
+
+    <h2 id="editorTitle" *ngIf="type == EditorType.IMPORT && page">Import / Export</h2>
+    <h2 id="editorTitle" *ngIf="type == EditorType.PAGE_LAYOUT && page">Page Layout Editor</h2>
+    <h2 id="editorTitle" *ngIf="type == EditorType.COLOR_PALETTE && page">Color Palette Editor</h2>
+    <h2 id="editorTitle" *ngIf="type == EditorType.TOKEN && page">Token Editor</h2>
+    <h2 id="editorTitle" *ngIf="type == EditorType.PRESET && page">Page Layout Editor</h2>
+
+  </header>
+
+  <!-- Content (scrollable) -->
+  <section class="editor-content">
+    <!-- Project your editor UI here -->
+    <ng-content *ngIf="type == EditorType.PAGE_LAYOUT && page">
+      <app-page-layout-editor [pageAttrs]="page.pageAttrs"></app-page-layout-editor>
+    </ng-content>
+
+    <ng-content *ngIf="type == EditorType.IMPORT && page">
+      <app-import-editor [page]="page" (pageImported)="updatePage($event)"></app-import-editor>
+    </ng-content>
+
+    <ng-content *ngIf="type == EditorType.COLOR_PALETTE && page">
+      <app-color-palette-editor
+        [colorPalettes]="page.colorPalettes"
+        (colorPalettesChange)="page.colorPalettes = $event">
+      </app-color-palette-editor>
+    </ng-content>
+
+    <ng-content *ngIf="type == EditorType.TOKEN && page">
+      <app-token-editor
+        [attributes]="page.tokenAttrs"
+        (attributesChange)="page.tokenAttrs = $event">
+      </app-token-editor>
+    </ng-content>
+
+    <ng-content *ngIf="type == EditorType.PRESET && page">
+      <app-preset-loader
+        (pageSelected)="page = $event">
+      </app-preset-loader>
+    </ng-content>
+
+
+
+
+  </section>
+
+  <!-- Footer (buttons right-aligned) -->
+  <footer class="editor-footer">
+    <div class="spacer"></div>
+    <button mat-button type="button" (click)="onCancel()">{{ cancelLabel }}</button>
+    <button mat-flat-button color="primary" type="button" (click)="onOk()">{{ okLabel }}</button>
+  </footer>
+</div>

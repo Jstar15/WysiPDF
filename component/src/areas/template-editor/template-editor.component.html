@@ -39,7 +39,7 @@
                     <button
                       mat-mini-fab
                       color="primary"
-                      (click)="openPageImportExportDialog()"
+                      (click)="openEditorViewer(EditorType.IMPORT)"
                       class="icon-btn"
                       aria-label="Import / Export page"
                       matTooltip="Import / Export page">
@@ -48,7 +48,7 @@
                     <button
                       mat-mini-fab
                       color="primary"
-                      (click)="openPageEditorDialog()"
+                      (click)="openEditorViewer(EditorType.PAGE_LAYOUT)"
                       class="icon-btn"
                       aria-label="Edit page layout"
                       matTooltip="Edit page layout">
@@ -57,7 +57,7 @@
                     <button
                       mat-mini-fab
                       color="primary"
-                      (click)="openColorPaletteDialog()"
+                      (click)="openEditorViewer(EditorType.COLOR_PALETTE)"
                       class="icon-btn"
                       aria-label="Edit color Palettes"
                       matTooltip="Edit color Palettes">
@@ -66,7 +66,7 @@
                     <button
                       mat-mini-fab
                       color="primary"
-                      (click)="openTokenEditorDialog()"
+                      (click)="openEditorViewer(EditorType.TOKEN)"
                       class="icon-btn"
                       aria-label="Manage tokens"
                       matTooltip="Manage tokens">
@@ -76,7 +76,7 @@
                       mat-mini-fab
                       color="primary"
                       class="icon-btn"
-                      (click)="openLoadPresetDialog()"
+                      (click)="openEditorViewer(EditorType.PRESET)"
                       [matTooltip]="'Load Preset'">
                       <mat-icon svgIcon="inventory_2"></mat-icon>
                     </button>
@@ -233,9 +233,15 @@
         </as-split-area>
 
         <!-- RIGHT PANE -->
-      <as-split-area [size]="50" [minSize]="25" *ngIf="showRightPane" class="right-pane">
-        <app-pdf-viewer *ngIf="showPdfViewPane" class="pdf-viewer" [base64]="this.pdfGenerationResult.base64"></app-pdf-viewer>
-        <app-json-viewer *ngIf="!showPdfViewPane"  class="json-viewer" [jsonList]="jsonList"></app-json-viewer>
+      <as-split-area [size]="50" [minSize]="25" *ngIf="showRightPane || iEditOpen" class="right-pane">
+        <app-pdf-viewer *ngIf="showPdfViewPane && !iEditOpen" class="pdf-viewer" [base64]="this.pdfGenerationResult.base64"></app-pdf-viewer>
+        <app-json-viewer *ngIf="!showPdfViewPane && !iEditOpen"  class="json-viewer" [jsonList]="jsonList"></app-json-viewer>
+
+        <app-editor-viewer  *ngIf="iEditOpen"
+                            [type]="editorType"
+                            [page]="page"
+                            (editorEvent)="handleEditorEvent($event)">
+        </app-editor-viewer>
       </as-split-area>
 
     </as-split>

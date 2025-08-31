@@ -15,36 +15,23 @@ import {GridEditorComponent} from './grid-editor/grid-editor.component';
 import {PdfGenerateService, PdfGenerationResult} from '../../services/pdf-generate.service';
 import {TokenAttribute} from '../../models/TokenAttribute';
 import {TokenAttributeTypeEnum} from '../../models/TokenAttributeTypeEnum';
-import {Grid, Page, PageAttrs} from '../../models/interfaces';
+import {Grid, Page} from '../../models/interfaces';
 import {NgForOf, NgIf, NgStyle} from "@angular/common";
 import {PdfViewerComponent} from "../../shared/pdf-viewer/pdf-viewer.component";
-import {PageAttributesDialogComponent} from "../../dialogs/page-attributes-dialog/page-attributes-dialog.component";
-import {
-  MatCard,
-  MatCardActions,
-  MatCardContent,
-  MatCardHeader,
-} from "@angular/material/card";
+import {MatCard, MatCardActions, MatCardContent, MatCardHeader,} from "@angular/material/card";
 import {MatIcon} from "@angular/material/icon";
-import { MatIconButton, MatMiniFabButton} from "@angular/material/button";
+import {MatIconButton, MatMiniFabButton} from "@angular/material/button";
 import {MatTooltip} from "@angular/material/tooltip";
-import {TokenEditorDialogComponent} from "../../dialogs/token-editor-dialog/token-editor-dialog.component";
-import {
-  EditPartialContentData,
-  EditPartialContentDialogComponent
-} from "../../dialogs/edit-partial-content-dialog/edit-partial-content-dialog.component";
+import {EditPartialContentData, EditPartialContentDialogComponent} from "../../dialogs/edit-partial-content-dialog/edit-partial-content-dialog.component";
 import {GridHistoryService} from "../../services/grid-history.service";
 import {debounceTime, Subject} from "rxjs";
 import {JsonListItem, JsonViewerComponent} from "../../shared/json-viewer/json-viewer.component";
 import {IconService} from "../../services/icon.service";
 import {DEFAULT_PAGE} from "../../presets/default-page";
 import {collectDisplayRules} from "../../utils/displayLogic.utiltiy";
-import {LoadPresetDialogComponent} from "../../dialogs/load-preset-dialog/load-preset-dialog.component";
-import {ColorPaletteDialogComponent} from "../../dialogs/color-palette-dialog/color-palette-dialog.component";
-import {
-  PageImportExportDialogComponent
-} from "../../dialogs/page-import-export-dialog/page-import-export-dialog.component";
 import {PageTokenValidator} from "../../services/page-token-validator.service";
+import {EditorAction, EditorEvent, EditorType, EditorViewerComponent} from "./editor-viewer/editor-viewer.component";
+import {JsonTokenParserService} from "../../utils/json-token-parser.service";
 
 @Component({
   standalone: true,
@@ -70,6 +57,7 @@ import {PageTokenValidator} from "../../services/page-token-validator.service";
     MatCardActions,
     NgStyle,
     JsonViewerComponent,
+    EditorViewerComponent,
 
   ]
 })
@@ -77,6 +65,9 @@ export class TemplateEditorComponent implements OnInit,AfterViewInit {
   showRightPane: boolean = true;
   showPdfViewPane: boolean = true;
   jsonList: JsonListItem[] = [];
+
+  iEditOpen: boolean = false;
+  editorType: EditorType
 
   @Input('page') page: Page = DEFAULT_PAGE;    // ← default value
   @Output('page-change') pageChange = new EventEmitter<Page>();
@@ -98,7 +89,8 @@ export class TemplateEditorComponent implements OnInit,AfterViewInit {
       private gridHistoryService: GridHistoryService,
       private cdr: ChangeDetectorRef,
       private iconService: IconService,
-      private pageTokenValidator : PageTokenValidator
+      private pageTokenValidator : PageTokenValidator,
+      private jsonTokenParserService: JsonTokenParserService
   ) {
 
 
@@ -120,96 +112,11 @@ export class TemplateEditorComponent implements OnInit,AfterViewInit {
 
   }
 
-  openLoadPresetDialog(): void {
-    const dialogRef = this.dialog.open(LoadPresetDialogComponent, {
-      width: '800px',
-      height: '600px',
-      panelClass: 'app-dialog'
-    });
-
-    dialogRef.afterClosed().subscribe((result: Page | undefined) => {
-      if (result) {
-        this.page = result;
-        this.emitGridChange();
-      }
-    });
-  }
-
-
-  openTokenEditorDialog(): void {
-    const dialogRef = this.dialog.open(TokenEditorDialogComponent, {
-      width: '1000px',
-      height: '600px',
-      panelClass: 'app-dialog',
-      data: {attributes: this.page.tokenAttrs}
-    });
-
-    dialogRef.afterClosed().subscribe((result: TokenAttribute[] | null) => {
-      if (result) {
-        this.page.tokenAttrs = result;
-        this._emitGridChange();
-
-      }
-    });
-  }
-
-  openPageImportExportDialog(): void {
-    const dialogRef = this.dialog.open(PageImportExportDialogComponent, {
-      width: '1000px',
-      panelClass: 'app-dialog',
-      data: { page: this.page }
-    });
-
-    dialogRef.afterClosed().subscribe((result?: { page: Page }) => {
-      if (result?.page) {
-        this.page = result.page;
-        this._emitGridChange?.(); // keep your existing change hook
-      }
-    });
-  }
-
   toggleRightPane(): void {
     this.showRightPane = !this.showRightPane;
   }
   togglePdfPane(): void {
     this.showPdfViewPane = !this.showPdfViewPane;
-  }
-
-  public openColorPaletteDialog(): void {
-    const dialogRef = this.dialog.open<
-      ColorPaletteDialogComponent,   // Component type
-      string[],                      // Data in
-      string[]                       // Result out
-    >(ColorPaletteDialogComponent, {
-      width: '1000px',
-      height: '600px',
-      panelClass: 'app-dialog',
-      data: this.page.colorPalettes ?? [],
-    });
-
-    dialogRef.afterClosed().subscribe((result: string[] | undefined) => {
-      if (Array.isArray(result)) {
-        this.page.colorPalettes = result;
-        this._emitGridChange();
-      }
-    });
-  }
-
-  openPageEditorDialog(): void {
-    const dialogRef = this.dialog.open(PageAttributesDialogComponent, {
-      width: '1000px',
-      height: '600px',
-      panelClass: 'app-dialog',
-
-      data: { ...this.page.pageAttrs }
-    });
-
-    dialogRef.afterClosed().subscribe((updatedAttrs: PageAttrs | undefined) => {
-      if (updatedAttrs) {
-        this.page.pageAttrs = updatedAttrs;
-        this._emitGridChange();
-      }
-    });
   }
 
   editPartialContent(index: number): void {
@@ -240,7 +147,7 @@ export class TemplateEditorComponent implements OnInit,AfterViewInit {
         if(result.selectedToken.name == 'root'){
           this.page.partialContent[index].tokenAttributeList = this.page.tokenAttrs;
         }else{
-          const availableTokens = this.getAvailableTokensFromJsonList(result.selectedToken.name);
+          const availableTokens: TokenAttribute[] = this.jsonTokenParserService.getAvailableTokensFromJsonList(result.selectedToken.name, this.page.tokenAttrs);
           this.page.partialContent[index].tokenAttributeList = availableTokens;
           console.log('Available tokens from json[]:', availableTokens);
         }
@@ -250,50 +157,6 @@ export class TemplateEditorComponent implements OnInit,AfterViewInit {
     });
   }
 
-  getAvailableTokensFromJsonList(sourceName: string): TokenAttribute[] {
-    const root = this.page.tokenAttrs.find(attr =>
-        attr.name === sourceName && attr.type === TokenAttributeTypeEnum.JSON_ARRAY
-    );
-
-    if (!root) return [];
-
-    try {
-      const parsed = JSON.parse(root.value);
-      if (!Array.isArray(parsed) || parsed.length === 0 || typeof parsed[0] !== 'object') {
-        return [];
-      }
-
-      const firstItem = parsed[0];
-      return Object.keys(firstItem).map(key => {
-        const value = firstItem[key];
-        let type: TokenAttributeTypeEnum;
-
-        switch (typeof value) {
-          case 'string':
-            type = TokenAttributeTypeEnum.TEXT;
-            break;
-          case 'number':
-            type = TokenAttributeTypeEnum.NUMBER;
-            break;
-          case 'boolean':
-            type = TokenAttributeTypeEnum.BOOLEAN;
-            break;
-          case 'object':
-            type = Array.isArray(value)
-                ? TokenAttributeTypeEnum.STRING_ARRAY
-                : TokenAttributeTypeEnum.OBJECT;
-            break;
-          default:
-            type = TokenAttributeTypeEnum.TEXT;
-        }
-
-        return new TokenAttribute(`${sourceName}.${key}`, '', type);
-      });
-    } catch (err) {
-      console.warn('Failed to parse json[] value:', root?.value);
-      return [];
-    }
-  }
 
 
   private async _emitGridChange(push = true): Promise<void> {
@@ -393,5 +256,19 @@ export class TemplateEditorComponent implements OnInit,AfterViewInit {
   }
 
 
+  openEditorViewer(editorType: EditorType){
+      this.editorType = editorType;
+      this.iEditOpen = true;
+  }
 
+  handleEditorEvent(editorEvent: EditorEvent){
+    if(editorEvent.action == EditorAction.OK){
+      this.page = editorEvent.page;
+      this._emitGridChange();
+    }
+    this.iEditOpen = false;
+  }
+
+
+  protected readonly EditorType = EditorType;
 }

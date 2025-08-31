@@ -1,0 +1,103 @@
+<div mat-dialog-content>
+  <mat-tab-group [(selectedIndex)]="tabIndex" class="dialog-body">
+    <!-- Token Management Tab -->
+    <mat-tab label="Tokens">
+      <div class="editor-dialog-content">
+        <p class="section-title">Add New Token</p>
+
+        <!-- One-line add row -->
+        <div class="row-grid-3-3-3-auto">
+          <mat-form-field appearance="fill">
+            <mat-label>Name</mat-label>
+            <input matInput [(ngModel)]="name" />
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Type</mat-label>
+            <mat-select [(ngModel)]="selectedType">
+              <mat-option *ngFor="let type of typeSelections" [value]="type.value">
+                {{ type.viewValue }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Value</mat-label>
+            <input matInput [(ngModel)]="value" />
+          </mat-form-field>
+
+          <button
+            mat-flat-button
+            color="primary"
+            class="btn-pill"
+            [disabled]="canAdd()"
+            (click)="addAttribute()"
+          >
+            <mat-icon svgIcon="add"></mat-icon>
+          </button>
+        </div>
+
+        <p class="section-title">Current Tokens</p>
+
+        <div>
+          <div class="row-grid-3-3-3-auto" *ngFor="let element of attributes">
+            <mat-form-field appearance="fill">
+              <input matInput [(ngModel)]="element.name" placeholder="Name" />
+            </mat-form-field>
+
+            <mat-form-field appearance="fill">
+              <mat-select [(ngModel)]="element.type">
+                <mat-option *ngFor="let type of typeSelections" [value]="type.value">
+                  {{ type.viewValue }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="fill">
+              <input matInput [(ngModel)]="element.value" placeholder="Value" />
+            </mat-form-field>
+
+            <button
+              mat-icon-button
+              color="warn"
+              aria-label="Delete token"
+              (click)="removeAttribute(element)">
+              <mat-icon svgIcon="delete"></mat-icon>
+            </button>
+          </div>
+        </div>
+      </div>
+    </mat-tab>
+
+    <!-- JSON Inject Tab -->
+    <mat-tab label="Inject">
+      <div class="editor-dialog-content">
+        <p class="section-title">Paste JSON Payload</p>
+
+        <mat-form-field appearance="fill" class="w-100">
+          <mat-label>JSON</mat-label>
+          <textarea
+            matInput
+            [(ngModel)]="jsonText"
+            (ngModelChange)="validateJson()"
+            rows="10"
+            class="code-textarea"
+          ></textarea>
+        </mat-form-field>
+
+        <p *ngIf="!isJsonValid" class="error">⚠ Invalid JSON</p>
+
+        <div class="inject-actions">
+          <button mat-stroked-button (click)="clearJson()">Clear</button>
+          <button mat-raised-button color="primary" (click)="injectJson()" [disabled]="!isJsonValid">
+            Inject
+          </button>
+        </div>
+
+        <div *ngIf="error" class="error">{{ error }}</div>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+
+
+</div>

@@ -1,5 +1,3 @@
-<h1 mat-dialog-title>Import / Export Page</h1>
-
 <div mat-dialog-content class="editor-dialog-content simple">
   <mat-tab-group [(selectedIndex)]="tabIndex">
     <!-- IMPORT -->
@@ -63,17 +61,4 @@
       </div>
     </mat-tab>
   </mat-tab-group>
-</div>
-
-<div mat-dialog-actions class="dialog-actions">
-  <button mat-button (click)="onClose()">Close</button>
-  <button
-    *ngIf="tabIndex === 0"
-    mat-raised-button
-    color="primary"
-    (click)="onImport()"
-    [disabled]="!importText"
-  >
-    Load Page
-  </button>
 </div>

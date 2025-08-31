@@ -1,48 +1,27 @@
-import { Component, Inject, OnInit } from '@angular/core';
-import {
-  MatDialogRef,
-  MAT_DIALOG_DATA,
-  MatDialogTitle,
-  MatDialogActions,
-  MatDialogContent
-} from '@angular/material/dialog';
-import { NgIf } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-
-// Material
-import { MatButton } from '@angular/material/button';
-import { MatIcon } from '@angular/material/icon';
-import { MatTabGroup, MatTab } from '@angular/material/tabs';
-import { MatFormField, MatLabel } from '@angular/material/form-field';
-import { MatInput } from '@angular/material/input';
-
-import type { Page } from '../../models/interfaces';
-import { PdfGenerateService, PdfGenerationResult } from '../../services/pdf-generate.service';
-import { HtmlGenerationResult, PageToHtmlService } from '../../services/converters/page-to-html.service';
-
-export interface PageImportExportDialogData {
-  page: Page;
-}
+import {Component, Input, Output, EventEmitter} from '@angular/core';
+import { CommonModule } from '@angular/common';
+import {MatButton} from "@angular/material/button";
+import {FormsModule} from "@angular/forms";
+import { MatDialogContent } from "@angular/material/dialog";
+import {MatInput, MatLabel} from "@angular/material/input";
+import {MatTab, MatTabGroup} from "@angular/material/tabs";
+import {PdfGenerateService, PdfGenerationResult} from "../../../../services/pdf-generate.service";
+import {HtmlGenerationResult, PageToHtmlService} from "../../../../services/converters/page-to-html.service";
+import {Page} from "../../../../models/interfaces";
+import {MatIcon} from "@angular/material/icon";
+import {MatFormField} from "@angular/material/form-field";
 
 @Component({
-  selector: 'app-page-import-export-dialog',
+  selector: 'app-import-editor',
   standalone: true,
-  templateUrl: './page-import-export-dialog.component.html',
-  styleUrls: ['./page-import-export-dialog.component.scss'],
-  imports: [
-    // Angular
-    NgIf, FormsModule,
-    // Dialog scaffolding
-    MatDialogTitle, MatDialogActions, MatDialogContent,
-    // Tabs
-    MatTabGroup, MatTab,
-    // Form & Inputs
-    MatFormField, MatInput, MatLabel,
-    // Buttons / Icons
-    MatButton, MatIcon
-  ]
+  imports: [CommonModule, FormsModule, MatButton, MatDialogContent, MatFormField, MatIcon, MatInput, MatLabel, MatTab, MatTabGroup],
+  templateUrl: './import-editor.component.html',
+  styleUrls: ['./import-editor.component.scss']
 })
-export class PageImportExportDialogComponent implements OnInit {
+export class ImportEditorComponent {
+  @Input() page : Page;
+  @Output() pageImported = new EventEmitter<Page>(); // <-- added
+
   public tabIndex = 0;
 
   // Import state
@@ -56,10 +35,7 @@ export class PageImportExportDialogComponent implements OnInit {
 
   constructor(
     private pdfGenerateService: PdfGenerateService,
-    private pageToHtmlService: PageToHtmlService,
-    public dialogRef: MatDialogRef<PageImportExportDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: PageImportExportDialogData
-  ) {}
+    private pageToHtmlService: PageToHtmlService) {}
 
   public ngOnInit(): void {
     this.buildExport();
@@ -77,19 +53,23 @@ export class PageImportExportDialogComponent implements OnInit {
     reader.onload = () => {
       this.importText = (reader.result || '').toString();
       this.importError = null;
+      this.onImport();
     };
     reader.onerror = () => {
       this.importError = 'Failed to read file.';
       this.importText = '';
     };
     reader.readAsText(file);
+
   }
 
   public onImport(): void {
     try {
       const parsed = JSON.parse(this.importText) as Page;
       if (!parsed || typeof parsed !== 'object') throw new Error('Invalid JSON.');
-      this.dialogRef.close({ page: parsed });
+      this.pageImported.emit(parsed);                 // <-- emit page to parent
+      this.page = parsed;                             // keep local state useful
+      this.buildExport();
     } catch (e: any) {
       this.importError = e?.message || 'Invalid JSON.';
     }
@@ -98,7 +78,7 @@ export class PageImportExportDialogComponent implements OnInit {
   // ----- Export -----
   private buildExport(): void {
     try {
-      this.exportText = JSON.stringify(this.data.page, null, 2);
+      this.exportText = JSON.stringify(this.page, null, 2);
     } catch {
       this.exportText = '';
     }
@@ -125,7 +105,7 @@ export class PageImportExportDialogComponent implements OnInit {
   // ----- Utilities -----
   private getTokens(): any[] {
     // Adjust if tokens live elsewhere
-    return (this.data.page as any)?.tokenAttrs ?? [];
+    return (this.page as any)?.tokenAttrs ?? [];
   }
 
   private base64ToUint8Array(base64: string): Uint8Array {
@@ -149,16 +129,11 @@ export class PageImportExportDialogComponent implements OnInit {
     return window.open('', '_blank');
   }
 
-  // ----- Dialog -----
-  public onClose(): void {
-    this.dialogRef.close();
-  }
-
   // ----- Previews -----
   public async generatePDFPreview(): Promise<void> {
     try {
       const result: PdfGenerationResult = await this.pdfGenerateService.generatePdfBase64(
-        this.data.page,
+        this.page,
         this.getTokens()
       );
       if (!result?.base64) throw new Error('PDF generation returned no data.');
@@ -184,7 +159,7 @@ export class PageImportExportDialogComponent implements OnInit {
       tab.document.close();
 
       const result: HtmlGenerationResult = await this.pageToHtmlService.generateHtml(
-        this.data.page,
+        this.page,
         this.getTokens(),
         {
           fullDocument: true,
