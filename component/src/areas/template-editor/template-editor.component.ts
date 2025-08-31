@@ -15,7 +15,7 @@ import {GridEditorComponent} from './grid-editor/grid-editor.component';
 import {PdfGenerateService, PdfGenerationResult} from '../../services/pdf-generate.service';
 import {TokenAttribute} from '../../models/TokenAttribute';
 import {TokenAttributeTypeEnum} from '../../models/TokenAttributeTypeEnum';
-import {Grid, Page} from '../../models/interfaces';
+import {Cell, Grid, Page} from '../../models/interfaces';
 import {NgForOf, NgIf, NgStyle} from "@angular/common";
 import {PdfViewerComponent} from "../../shared/pdf-viewer/pdf-viewer.component";
 import {MatCard, MatCardActions, MatCardContent, MatCardHeader,} from "@angular/material/card";
@@ -30,8 +30,12 @@ import {IconService} from "../../services/icon.service";
 import {DEFAULT_PAGE} from "../../presets/default-page";
 import {collectDisplayRules} from "../../utils/displayLogic.utiltiy";
 import {PageTokenValidator} from "../../services/page-token-validator.service";
-import {EditorAction, EditorEvent, EditorType, EditorViewerComponent} from "./editor-viewer/editor-viewer.component";
 import {JsonTokenParserService} from "../../utils/json-token-parser.service";
+import {EditorViewerComponent} from "./editor-viewer/editor-viewer.component";
+import {EditorAction, EditorEvent, EditorType} from "./editor-viewer/editor-viewer.interfaces";
+import {CellEditorViewerComponent} from "./cell-editor-viewer/cell-editor-viewer.component";
+import {CellEditorAction, CellEditorEvent, CellEditorType} from "./cell-editor-viewer/cell-editor-viewer.interfaces";
+import {OpenCellEditorEvent} from "./grid-editor/grid-editor.interfaces";
 
 @Component({
   standalone: true,
@@ -58,6 +62,7 @@ import {JsonTokenParserService} from "../../utils/json-token-parser.service";
     NgStyle,
     JsonViewerComponent,
     EditorViewerComponent,
+    CellEditorViewerComponent,
 
   ]
 })
@@ -66,8 +71,11 @@ export class TemplateEditorComponent implements OnInit,AfterViewInit {
   showPdfViewPane: boolean = true;
   jsonList: JsonListItem[] = [];
 
+
   iEditOpen: boolean = false;
-  editorType: EditorType
+  isCellEditorOpen: boolean = false;
+  editorType: EditorType;
+  lastCellEditorEvent: OpenCellEditorEvent;
 
   @Input('page') page: Page = DEFAULT_PAGE;    // ← default value
   @Output('page-change') pageChange = new EventEmitter<Page>();
@@ -119,46 +127,6 @@ export class TemplateEditorComponent implements OnInit,AfterViewInit {
     this.showPdfViewPane = !this.showPdfViewPane;
   }
 
-  editPartialContent(index: number): void {
-    const allowedTypes = [
-      TokenAttributeTypeEnum.OBJECT,
-      TokenAttributeTypeEnum.STRING_ARRAY,
-      TokenAttributeTypeEnum.JSON_ARRAY,
-    ];
-
-    const tokenOptions: TokenAttribute[] = this.page.tokenAttrs
-      .filter(t => allowedTypes.includes(t.type));
-
-    const dialogRef = this.dialog.open(EditPartialContentDialogComponent, {
-      width: '700px',
-      data: {
-        name: this.page.partialContent[index].name,
-        tokenOptions: tokenOptions,
-        selectedToken: this.page.partialContent[index].tokenSource || 'root'
-      }
-    });
-
-    dialogRef.afterClosed().subscribe((result: EditPartialContentData) => {
-      if (result !== undefined) {
-        debugger;
-        this.page.partialContent[index].tokenSource = result.selectedToken.name;
-        this.page.partialContent[index].name = result.name;
-
-        if(result.selectedToken.name == 'root'){
-          this.page.partialContent[index].tokenAttributeList = this.page.tokenAttrs;
-        }else{
-          const availableTokens: TokenAttribute[] = this.jsonTokenParserService.getAvailableTokensFromJsonList(result.selectedToken.name, this.page.tokenAttrs);
-          this.page.partialContent[index].tokenAttributeList = availableTokens;
-          console.log('Available tokens from json[]:', availableTokens);
-        }
-        this._emitGridChange();
-
-      }
-    });
-  }
-
-
-
   private async _emitGridChange(push = true): Promise<void> {
     if (push) {
       this.gridHistoryService.pushSnapshot(this.page);
@@ -176,7 +144,7 @@ export class TemplateEditorComponent implements OnInit,AfterViewInit {
     this.emitChange$.next(push);
   }
 
-  // ✅ New: Add partial content grid
+
   addPartialContent(): void {
     const newGrid: Grid = {
       id: 'partial_' + Date.now(),
@@ -259,7 +227,15 @@ export class TemplateEditorComponent implements OnInit,AfterViewInit {
   openEditorViewer(editorType: EditorType){
       this.editorType = editorType;
       this.iEditOpen = true;
+      this.isCellEditorOpen = false;
   }
+
+  onCellChange(event: OpenCellEditorEvent){
+    this.lastCellEditorEvent = event;
+    this.iEditOpen = false;
+    this.isCellEditorOpen = true;
+  }
+
 
   handleEditorEvent(editorEvent: EditorEvent){
     if(editorEvent.action == EditorAction.OK){
@@ -267,8 +243,63 @@ export class TemplateEditorComponent implements OnInit,AfterViewInit {
       this._emitGridChange();
     }
     this.iEditOpen = false;
+    this.isCellEditorOpen = false;
   }
 
+  handleCellEditorEvent(editorEvent: CellEditorEvent){
+    if(editorEvent.action == CellEditorAction.OK){
+      const area: string= this.lastCellEditorEvent.area;
+      const row: number= this.lastCellEditorEvent.row;
+      const column: number= this.lastCellEditorEvent.column;
+
+      this.page[area].rows[row].cells[column].imageBlock= editorEvent.cell.imageBlock;
+      this.page[area].rows[row].cells[column].type= 'image';
+
+      this._emitGridChange();
+    }
+    this.iEditOpen = false;
+    this.isCellEditorOpen = false;
+  }
+
+
+
+  editPartialContent(index: number): void {
+    const allowedTypes = [
+      TokenAttributeTypeEnum.OBJECT,
+      TokenAttributeTypeEnum.STRING_ARRAY,
+      TokenAttributeTypeEnum.JSON_ARRAY,
+    ];
+
+    const tokenOptions: TokenAttribute[] = this.page.tokenAttrs
+      .filter(t => allowedTypes.includes(t.type));
+
+    const dialogRef = this.dialog.open(EditPartialContentDialogComponent, {
+      width: '700px',
+      data: {
+        name: this.page.partialContent[index].name,
+        tokenOptions: tokenOptions,
+        selectedToken: this.page.partialContent[index].tokenSource || 'root'
+      }
+    });
+
+    dialogRef.afterClosed().subscribe((result: EditPartialContentData) => {
+      if (result !== undefined) {
+        debugger;
+        this.page.partialContent[index].tokenSource = result.selectedToken.name;
+        this.page.partialContent[index].name = result.name;
+
+        if(result.selectedToken.name == 'root'){
+          this.page.partialContent[index].tokenAttributeList = this.page.tokenAttrs;
+        }else{
+          const availableTokens: TokenAttribute[] = this.jsonTokenParserService.getAvailableTokensFromJsonList(result.selectedToken.name, this.page.tokenAttrs);
+          this.page.partialContent[index].tokenAttributeList = availableTokens;
+          console.log('Available tokens from json[]:', availableTokens);
+        }
+        this._emitGridChange();
+
+      }
+    });
+  }
 
   protected readonly EditorType = EditorType;
 }

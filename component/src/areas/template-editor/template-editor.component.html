@@ -132,6 +132,7 @@
                                     [hideBarcode]="true"
                                     [hidePartialContent]="true"
                                     [colorPalettes]="page.colorPalettes"
+                                    (cellChange)="onCellChange($event)"
                             ></app-grid-editor>
                         </mat-expansion-panel>
 
@@ -150,6 +151,7 @@
                                     [pageAttrs]="page.pageAttrs"
                                     [partialContentAvailableList]="page.partialContent"
                                     [colorPalettes]="page.colorPalettes"
+                                    (cellChange)="onCellChange($event)"
                             ></app-grid-editor>
                         </mat-expansion-panel>
 
@@ -172,6 +174,7 @@
                                     [hideBarcode]="true"
                                     [hidePartialContent]="true"
                                     [colorPalettes]="page.colorPalettes"
+                                    (cellChange)="onCellChange($event)"
                             ></app-grid-editor>
                         </mat-expansion-panel>
 
@@ -234,14 +237,21 @@
 
         <!-- RIGHT PANE -->
       <as-split-area [size]="50" [minSize]="25" *ngIf="showRightPane || iEditOpen" class="right-pane">
-        <app-pdf-viewer *ngIf="showPdfViewPane && !iEditOpen" class="pdf-viewer" [base64]="this.pdfGenerationResult.base64"></app-pdf-viewer>
-        <app-json-viewer *ngIf="!showPdfViewPane && !iEditOpen"  class="json-viewer" [jsonList]="jsonList"></app-json-viewer>
+        <app-pdf-viewer *ngIf="showPdfViewPane && !iEditOpen && !isCellEditorOpen" class="pdf-viewer" [base64]="this.pdfGenerationResult.base64"></app-pdf-viewer>
+        <app-json-viewer *ngIf="!showPdfViewPane && !iEditOpen && !isCellEditorOpen"  class="json-viewer" [jsonList]="jsonList"></app-json-viewer>
 
         <app-editor-viewer  *ngIf="iEditOpen"
                             [type]="editorType"
                             [page]="page"
                             (editorEvent)="handleEditorEvent($event)">
         </app-editor-viewer>
+
+        <app-cell-editor-viewer *ngIf="isCellEditorOpen"
+                                [type]="lastCellEditorEvent.type"
+                                [cell]="lastCellEditorEvent.cell"
+                                [tokens]="page.tokenAttrs"
+                                (editorEvent)="handleCellEditorEvent($event)">
+        </app-cell-editor-viewer>
       </as-split-area>
 
     </as-split>

@@ -8,27 +8,8 @@ import {ColorPaletteEditorComponent} from "./color-palette-editor/color-palette-
 import {PresetLoaderComponent} from "./preset-loader/preset-loader.component";
 import {TokenEditorComponent} from "./token-editor/token-editor.component";
 import {MatIcon} from "@angular/material/icon";
+import {EditorAction, EditorEvent, EditorType} from "./editor-viewer.interfaces";
 
-/** Enum of editor types your viewer can host */
-export enum EditorType {
-  IMPORT        = 'IMPORT',
-  PAGE_LAYOUT        = 'PAGE_LAYOUT',
-  COLOR_PALETTE = 'COLOR_PALETTE',
-  TOKEN         = 'GRID',
-  PRESET        = 'PRESET'
-}
-
-export enum EditorAction {
-  OK            = 'OK',
-  CANCEL            = 'CANCEL'
-}
-
-/** Shape of the outbound event */
-export interface EditorEvent {
-  type: EditorType;
-  action: EditorAction
-  page: Page;
-}
 
 @Component({
   selector: 'app-editor-viewer',

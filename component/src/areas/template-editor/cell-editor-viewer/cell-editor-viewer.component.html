@@ -1,0 +1,33 @@
+<div class="editor-shell" role="dialog" aria-labelledby="editorTitle">
+  <!-- Header -->
+  <header class="editor-header">
+    <mat-icon *ngIf="type == CellEditorType.IMAGE && cell" svgIcon="add_photo_alternate"></mat-icon>
+    <mat-icon *ngIf="type == CellEditorType.PARTIAL_CONTENT && cell" svgIcon="call_split"></mat-icon>
+
+
+    <h2 id="editorTitle" *ngIf="type == CellEditorType.IMAGE && cell">Cell Image Editor</h2>
+    <h2 id="editorTitle" *ngIf="type == CellEditorType.PARTIAL_CONTENT && cell">Partial Content Editor</h2>
+
+
+  </header>
+
+  <!-- Content (scrollable) -->
+  <section class="editor-content">
+    <!-- Project your editor UI here -->
+    <ng-content *ngIf="type == CellEditorType.IMAGE && cell">
+      <app-image-editor [cell]="cell" [tokenAttrs]="tokens" (change)="cell = $event"></app-image-editor>
+    </ng-content>
+
+    <ng-content *ngIf="type == CellEditorType.PARTIAL_CONTENT && cell">
+
+    </ng-content>
+
+  </section>
+
+  <!-- Footer (buttons right-aligned) -->
+  <footer class="editor-footer">
+    <div class="spacer"></div>
+    <button mat-button type="button" (click)="onCancel()">{{ cancelLabel }}</button>
+    <button mat-flat-button color="primary" type="button" (click)="onOk()">{{ okLabel }}</button>
+  </footer>
+</div>

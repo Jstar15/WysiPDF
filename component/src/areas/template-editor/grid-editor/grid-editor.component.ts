@@ -19,11 +19,6 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { Subject, take, takeUntil } from 'rxjs';
 import { TokenAttribute } from '../../../models/TokenAttribute';
 import { QuillEditorDialogComponent } from '../../../dialogs/quill-editor-dialog/quill-editor.dialog.component';
-import { CellAttributesDialogComponent } from '../../../dialogs/cell-attributes-dialog/cell-attributes-dialog.component';
-import {
-  AddImageDialogComponent,
-  AddImageDialogPayload
-} from '../../../dialogs/add-image-dialog/add-image-dialog.component';
 import {
   AddPartialContentDialogComponent,
   AddPartialContentDialogResult
@@ -37,7 +32,6 @@ import {
   Grid,
   Row,
   PageAttrs,
-  ImageBlock,
   ChartBlock, BarcodeBlock
 } from '../../../models/interfaces';
 import { DisplayLogicGroup } from '../../../models/display-logic.models';
@@ -48,6 +42,8 @@ import {
   AddBarCodeDialogComponent,
   AddBarCodeDialogPayload
 } from "../../../dialogs/add-bar-code-dialog/add-bar-code-dialog.component";
+import {OpenCellEditorEvent} from "./grid-editor.interfaces";
+import {CellEditorType} from "../cell-editor-viewer/cell-editor-viewer.interfaces";
 
 @Component({
   selector: 'app-grid-editor',
@@ -69,7 +65,8 @@ export class GridEditorComponent implements OnInit, OnDestroy, OnChanges {
   @Input() public colorPalettes: string[] | undefined = [];
   @Input() public grid!: Grid;
 
-  @Output() public gridChange = new EventEmitter<Grid>();
+  @Output() public gridChange: EventEmitter<Grid> = new EventEmitter<Grid>();
+  @Output() public cellChange: EventEmitter<OpenCellEditorEvent> = new EventEmitter<OpenCellEditorEvent>();
 
   public selectedPartialId: string | null = null;
   public isResizing = false;
@@ -240,60 +237,18 @@ export class GridEditorComponent implements OnInit, OnDestroy, OnChanges {
     this.openEditorForCell(this.currentRow, this.currentCol);
   }
 
-  public openCellStyleEditorDialog(): void {
-    const selected = this.currentCell;
-    if (!selected) { console.warn('No cell selected.'); return; }
-
-    const data = this.clone(selected.attrs);
-
-    const ref = this.openDialogOnce(() =>
-      this.dialog.open<CellAttributesDialogComponent, CellAttrs, CellAttrs | undefined>(
-        CellAttributesDialogComponent,
-        { width: '1200px', height: '600px', panelClass: 'app-dialog', data }
-      )
-    );
-    if (!ref) return;
-
-    ref.afterClosed().pipe(take(1), takeUntil(this.destroy$))
-      .subscribe((updated: CellAttrs | undefined) => {
-        if (!updated) return;
-        if (!this.grid?.rows?.[this.currentRow]?.cells?.[this.currentCol]) return;
-
-        Object.assign(this.grid.rows[this.currentRow].cells[this.currentCol].attrs, updated);
-        if (!(this.cdr as any)?.destroyed) this.cdr.detectChanges();
-        this.emitChange();
-      });
-  }
-
   public openAddImageDialog(): void {
     const selected: Cell = this.currentCell;
     if (!selected) { console.warn('No cell selected.'); return; }
 
-    const imageBlockCopy: ImageBlock = this.clone(selected.imageBlock);
-
-    const ref = this.openDialogOnce(() =>
-      this.dialog.open<AddImageDialogComponent, AddImageDialogPayload>(
-        AddImageDialogComponent,
-        { width: '1000px', height: '600px', panelClass: 'app-dialog', data: {imageBlock: imageBlockCopy, tokenAttrs: this.tokenAttrs} }
-      )
-    );
-    if (!ref) return;
-
-    ref.afterClosed().pipe(take(1), takeUntil(this.destroy$))
-      .subscribe((result: ImageBlock | undefined) => {
-        if (!result) return;
-        if (!this.grid?.rows?.[this.currentRow]?.cells?.[this.currentCol]) return;
-
-        const oldCell = this.grid.rows[this.currentRow].cells[this.currentCol];
-        this.grid.rows[this.currentRow].cells[this.currentCol] = {
-          ...oldCell,
-          imageBlock: this.clone(result),
-          type: 'image'
-        };
-
-        if (!(this.cdr as any)?.destroyed) this.cdr.detectChanges();
-        this.emitChange();
-      });
+    // call parent fucntion here
+    this.cellChange.emit({
+      cell: selected,
+      row: this.currentRow,
+      column: this.currentCol,
+      area: 'content',
+      type: CellEditorType.IMAGE
+    })
   }
 
   public openAddChartDialog(): void {

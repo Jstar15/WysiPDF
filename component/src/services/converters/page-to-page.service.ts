@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Page, Row } from '../../models/interfaces';
-import { PartialContentExpanderService } from '../partial-content-expander.service';
+import { PartialContentExpanderService } from './partial-content-expander.service';
 import { HtmlToStructuredContentService } from './html-to-structured-content.service';
 import { TokenAttribute } from '../../models/TokenAttribute';
 import {TokenReplacerService} from "../replacers/token-replacer.service";

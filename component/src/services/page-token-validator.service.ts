@@ -49,7 +49,7 @@ export class PageTokenValidator {
         if (cell.type == 'barcode') {
           key = cell.barcodeBlock.HtmlTokenElement.key;
         } else if (cell.type == 'image') {
-          key = cell.imageBlock.HtmlTokenElement.key;
+          //key = cell.imageBlock.HtmlTokenElement.key;
         } else if (cell.type == 'chart') {
           // key = cell.chartBlock.HtmlTokenElement.key;
         }
