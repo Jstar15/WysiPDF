@@ -16,7 +16,7 @@ import { MatButtonToggle, MatButtonToggleGroup } from '@angular/material/button-
 import { MatSelect } from '@angular/material/select';
 import { MatOption } from '@angular/material/core';
 
-import { BarcodeService, BarcodeFormat } from '../../services/barcode.service';
+import { BarcodeService, BarcodeFormat } from '../../services/external/barcode.service';
 import { TokenAttribute } from '../../models/TokenAttribute';
 import { TokenAttributeTypeEnum } from '../../models/TokenAttributeTypeEnum';
 import { BarcodeBlock } from '../../models/interfaces';

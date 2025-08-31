@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Row, HtmlBasicElement, HtmlTableBlock } from '../models/interfaces';
-import { TokenAttribute } from '../models/TokenAttribute';
+import { Row, HtmlBasicElement, HtmlTableBlock } from '../../models/interfaces';
+import { TokenAttribute } from '../../models/TokenAttribute';
 
 @Injectable({ providedIn: 'root' })
 export class TokenReplacerService {

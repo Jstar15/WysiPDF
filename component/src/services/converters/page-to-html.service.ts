@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import {Page, Grid, Row, Cell, CellAttrs, ImageBlock, ChartBlock, BarcodeBlock} from '../../models/interfaces';
 import {TokenAttribute} from "../../models/TokenAttribute";
-import {PageService} from "./page.service";
-import {JsonTokenParserService} from "../json-token-parser.service";
-import {TokenHtmlReplacerService} from "../token-html-cell-replacer.service";
+import {PageToPageService} from "./page-to-page.service";
+import {JsonTokenParserService} from "../../utils/json-token-parser.service";
+import {TokenHtmlReplacerService} from "../replacers/token-html-cell-replacer.service";
 
 export interface PageToHtmlOptions {
   includeBaseStyles?: boolean;
@@ -19,7 +19,7 @@ export interface HtmlGenerationResult {
 @Injectable({ providedIn: 'root' })
 export class PageToHtmlService {
   constructor(
-    private pageService: PageService,
+    private pageService: PageToPageService,
     private jsonTokenParserService: JsonTokenParserService,
     private tokenHtmlCellReplacerService : TokenHtmlReplacerService
   ) {}

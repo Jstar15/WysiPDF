@@ -6,7 +6,7 @@ import {
   MatDialogActions
 } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
-import { JsonTokenParserService } from '../../services/json-token-parser.service';
+import { JsonTokenParserService } from '../../utils/json-token-parser.service';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { NgForOf, NgIf } from '@angular/common';
 import { MatFormField, MatInput, MatLabel } from '@angular/material/input';

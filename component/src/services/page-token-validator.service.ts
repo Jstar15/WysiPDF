@@ -9,7 +9,7 @@ import {
 } from '../models/interfaces';
 import { TokenAttribute } from '../models/TokenAttribute';
 import { HtmlToStructuredContentService } from './converters/html-to-structured-content.service';
-import { JsonTokenParserService } from './json-token-parser.service';
+import { JsonTokenParserService } from '../utils/json-token-parser.service';
 import {TokenAttributeTypeEnum} from "../models/TokenAttributeTypeEnum";
 
 @Injectable({ providedIn: 'root' })

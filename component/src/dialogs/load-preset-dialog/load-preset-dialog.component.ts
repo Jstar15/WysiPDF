@@ -9,7 +9,7 @@ import {
 import { MatButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { JsonPipe, NgFor, NgIf } from '@angular/common';
-import { PresetsService } from '../../services/presets.service';
+import { PresetsService } from '../../utils/presets.service';
 import { Page } from '../../models/interfaces';
 import {MatOption} from "@angular/material/core";
 import {MatFormField, MatLabel} from "@angular/material/input";

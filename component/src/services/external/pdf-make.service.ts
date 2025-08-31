@@ -1,6 +1,6 @@
 // src/services/pdf-make.service.ts
 import { Injectable } from '@angular/core';
-import { vfsFonts } from '../assets/vfs-fonts';
+import { vfsFonts } from '../../assets/vfs-fonts';
 
 type PdfMakeType = any;
 

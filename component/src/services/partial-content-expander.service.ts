@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Grid, Page, Row } from '../models/interfaces';
 import { TokenAttribute } from '../models/TokenAttribute';
-import { TokenReplacerService } from './token-replacer.service';
-import { JsonTokenParserService } from './json-token-parser.service';
-import {TokenHtmlReplacerService} from "./token-html-cell-replacer.service";
+import { TokenReplacerService } from './replacers/token-replacer.service';
+import { JsonTokenParserService } from '../utils/json-token-parser.service';
+import {TokenHtmlReplacerService} from "./replacers/token-html-cell-replacer.service";
 
 @Injectable({ providedIn: 'root' })
 export class PartialContentExpanderService {

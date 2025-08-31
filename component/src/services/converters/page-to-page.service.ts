@@ -3,11 +3,11 @@ import { Page, Row } from '../../models/interfaces';
 import { PartialContentExpanderService } from '../partial-content-expander.service';
 import { HtmlToStructuredContentService } from './html-to-structured-content.service';
 import { TokenAttribute } from '../../models/TokenAttribute';
-import {TokenReplacerService} from "../token-replacer.service";
-import {DisplayLogicService} from "../display-logic.service";
+import {TokenReplacerService} from "../replacers/token-replacer.service";
+import {DisplayLogicService} from "../../utils/display-logic.service";
 
 @Injectable({ providedIn: 'root' })
-export class PageService {
+export class PageToPageService {
   constructor(
     private partialContentExpander: PartialContentExpanderService,
     private htmlToStructuredContentService: HtmlToStructuredContentService,

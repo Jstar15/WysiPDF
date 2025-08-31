@@ -7,15 +7,15 @@ import { Page } from '../models/interfaces';
 
 import {TokenAttribute} from "../models/TokenAttribute";
 import {PageToStructuredContentService} from "./converters/page-to-structured-content.service";
-import {PdfMakeService} from "./pdf-make.service";
-import {JsonTokenParserService} from "./json-token-parser.service";
-import {PageService} from "./converters/page.service";
+import {PdfMakeService} from "./external/pdf-make.service";
+import {JsonTokenParserService} from "../utils/json-token-parser.service";
+import {PageToPageService} from "./converters/page-to-page.service";
 
 @Injectable({ providedIn: 'root' })
 export class PdfGenerateService {
     constructor(
         private structuredContentToPdfmakeService: PageToStructuredContentService,
-        private pageService: PageService,
+        private pageService: PageToPageService,
         private pdfMakeService : PdfMakeService,
         private jsonTokenParserService: JsonTokenParserService
 

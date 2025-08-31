@@ -26,7 +26,7 @@ import {
   DisplayCondition,
   DisplayLogicGroup,
 } from '../../models/display-logic.models';
-import { DisplayLogicService } from '../../services/display-logic.service';
+import { DisplayLogicService } from '../../utils/display-logic.service';
 import { TokenAttribute } from '../../models/TokenAttribute';
 import { TokenAttributeTypeEnum } from '../../models/TokenAttributeTypeEnum';
 import {MatTabsModule} from "@angular/material/tabs";
