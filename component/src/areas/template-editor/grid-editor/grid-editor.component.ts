@@ -165,42 +165,69 @@ export class GridEditorComponent implements OnInit, OnDestroy, OnChanges {
   // ---------------- resizing ----------------
 
   public onColResizeMouseDown(e: MouseEvent, rowIndex: number, colIndex: number): void {
-    this.isResizing = true;
     e.preventDefault();
+    e.stopPropagation();
+
+    if (!this.grid?.rows?.[rowIndex] || this.grid.rows[rowIndex].widths?.[colIndex + 1] == null) return;
+
+    this.isResizing = true;
+
+    // prevent text selection while dragging
+    const prevUserSelect = document.body.style.userSelect;
+    document.body.style.userSelect = 'none';
 
     const startX = e.clientX;
     const row = this.grid.rows[rowIndex];
     const initialWidths = [...row.widths];
-    const containerWidth = Math.max(1, this.gridContainer.nativeElement.clientWidth);
+    const containerWidth = Math.max(1, this.gridContainer?.nativeElement?.clientWidth ?? 1);
+    const minPercent = 5; // keep columns usable
+    let didDrag = false;
 
     const mouseMove = (moveEvent: MouseEvent) => {
       const dx = moveEvent.clientX - startX;
+      if (dx !== 0) didDrag = true;
+
       const delta = (dx / containerWidth) * 100;
-
-      let a = initialWidths[colIndex] + delta;
-      let b = initialWidths[colIndex + 1] - delta;
-
       const sum = initialWidths[colIndex] + initialWidths[colIndex + 1];
-      if (a < 5) { a = 5; b = sum - 5; }
-      if (b < 5) { b = 5; a = sum - 5; }
 
-      row.widths[colIndex] = a;
-      row.widths[colIndex + 1] = b;
+      // candidate new sizes
+      let a = initialWidths[colIndex] + delta;
+      let b = sum - a;
 
-      if (this.resizeEmitRAF) cancelAnimationFrame(this.resizeEmitRAF);
-      this.resizeEmitRAF = requestAnimationFrame(() => this.emitChange());
+      // clamp to min bounds while preserving the pair sum
+      if (a < minPercent) { a = minPercent; b = sum - minPercent; }
+      if (b < minPercent) { b = minPercent; a = sum - minPercent; }
+
+      // optional: round for stability
+      row.widths[colIndex]     = Math.max(minPercent, Math.min(sum - minPercent, +a.toFixed(2)));
+      row.widths[colIndex + 1] = Math.max(minPercent, Math.min(sum - minPercent, +b.toFixed(2)));
+    };
+
+    const cleanup = () => {
+      document.removeEventListener('mousemove', mouseMove);
+      document.removeEventListener('mouseup', mouseUp);
+      this.isResizing = false;
+
+      // restore selection
+      document.body.style.userSelect = prevUserSelect;
+
+      // cancel any pending RAF from older code paths
+      if (this.resizeEmitRAF) {
+        cancelAnimationFrame(this.resizeEmitRAF);
+        this.resizeEmitRAF = 0 as any;
+      }
     };
 
     const mouseUp = () => {
-      this.isResizing = false;
-      document.removeEventListener('mousemove', mouseMove);
-      document.removeEventListener('mouseup', mouseUp);
-      this.emitChange();
+      cleanup();
+      // emit only if there was an actual drag
+      if (didDrag) this.emitChange();
     };
 
     document.addEventListener('mousemove', mouseMove);
     document.addEventListener('mouseup', mouseUp);
   }
+
 
   // ---------------- selection & actions ----------------
 
