@@ -1,0 +1,90 @@
+<div class="editor-dialog-content chart-editor">
+
+  <!-- Type -->
+  <p class="section-title">Type</p>
+  <div class="row-grid-1fr">
+    <mat-form-field appearance="fill" class="w-100">
+      <mat-label>Chart type</mat-label>
+      <mat-select [(ngModel)]="kind" (selectionChange)="onChartTypeChange($event.value)">
+        <mat-option value="pie">Pie</mat-option>
+        <mat-option value="doughnut">Doughnut</mat-option>
+        <mat-option value="bar">Bar</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <!-- Data -->
+  <p class="section-title">Data</p>
+  <div class="row-grid-1fr">
+    <mat-form-field appearance="fill" class="w-100">
+      <mat-label>Select numeric tokens</mat-label>
+      <mat-select multiple [(ngModel)]="selectedNames"
+                  (selectionChange)="onAttributesChange($event.value)">
+        <mat-option *ngFor="let t of numericTokens" [value]="t.name">
+          {{ t.name }} ({{ t.value }})
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <!-- Labels -->
+  <div *ngIf="slices.length" class="labels-editor">
+    <p class="section-title small">Labels</p>
+    <div class="label-row" *ngFor="let s of slices">
+      <div class="label-attr">{{ s.attributeName }}</div>
+      <mat-form-field appearance="fill" class="label-input">
+        <mat-label>Label</mat-label>
+        <input matInput [(ngModel)]="s.label" (ngModelChange)="onSliceLabelChanged()" />
+      </mat-form-field>
+    </div>
+  </div>
+
+  <!-- Preview -->
+  <p class="section-title">Preview</p>
+  <div class="preview-block">
+    <div class="preview-frame" [ngClass]="align">
+      <!-- Scale the renderer by widthPct to mirror final output width -->
+      <div class="chart-scale" [style.width.%]="widthPct">
+        <!-- Renderer: two-way binding + export capture -->
+        <app-chart-image-renderer
+          class="chart-preview"
+          [(chartBlock)]="rendererBlock"
+          (chartBlockChange)="onRendererBlockChange($event)">
+        </app-chart-image-renderer>
+      </div>
+    </div>
+    <div class="preview-meta">{{ widthPct }}% of frame width</div>
+  </div>
+
+  <!-- Controls -->
+  <div class="row-grid-controls">
+    <mat-form-field appearance="fill" class="w-100">
+      <mat-label>Width (%)</mat-label>
+      <input
+        matInput
+        type="number"
+        min="1"
+        max="100"
+        [(ngModel)]="widthPct"
+        (ngModelChange)="onWidthChanged($event)" />
+    </mat-form-field>
+
+    <div class="align-group">
+      <span class="align-label">Alignment</span>
+      <mat-button-toggle-group
+        [(ngModel)]="align"
+        (ngModelChange)="onAlignmentChanged($event)">
+        <mat-button-toggle value="left" aria-label="Align left">
+          <mat-icon svgIcon="format_align_left"></mat-icon>
+        </mat-button-toggle>
+        <mat-button-toggle value="center" aria-label="Align center">
+          <mat-icon svgIcon="format_align_center"></mat-icon>
+        </mat-button-toggle>
+        <mat-button-toggle value="right" aria-label="Align right">
+          <mat-icon svgIcon="format_align_right"></mat-icon>
+        </mat-button-toggle>
+      </mat-button-toggle-group>
+    </div>
+  </div>
+
+</div>

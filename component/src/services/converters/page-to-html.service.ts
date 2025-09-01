@@ -9,7 +9,6 @@ export interface PageToHtmlOptions {
   includeBaseStyles?: boolean;
   rootClass?: string; // default: 'p2h-root'
   pageView?: boolean
-
 }
 
 export interface HtmlGenerationResult {
@@ -245,13 +244,10 @@ ${body}
       }
 
       const style = this.inlineStyle(styleObj);
-      const alt = this.escapeHtml(cb?.title || 'chart');
 
       // Figure + optional caption for title
-      const caption = cb?.title ? `<figcaption class="p2h-chart-caption">${this.escapeHtml(cb.title)}</figcaption>` : '';
       return `<figure class="p2h-chart">
-  <img src="${src}" alt="${alt}" style="${style}">
-  ${caption}
+  <img src="${src}"  style="${style}">
 </figure>`;
     }
 

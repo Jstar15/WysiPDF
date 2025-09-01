@@ -13,7 +13,7 @@ import {
 
 import { MatDialog } from "@angular/material/dialog";
 import { TokenAttribute } from "../../models/TokenAttribute";
-import { AddTokenDialogComponent } from "../../dialogs/attribute-select-dialog/add-token-dialog.component";
+import { AddTokenDialogComponent } from "../../dialogs/add-token-dialog/add-token-dialog.component";
 import { CustomElementBlot } from "./CustomElementBlot";
 import Quill from 'quill';
 import { HtmlBlockContainer } from "../../models/interfaces";

@@ -146,7 +146,6 @@ export class ChartImageRendererComponent implements AfterViewInit, OnDestroy, On
     const block = this.chartBlock;
     if (!block) return;
 
-    const title = block.title ?? '';
     const chartType: SupportedChartType =
       (block as any).chartType ?? block.chartType ?? 'pie';
 
@@ -171,7 +170,7 @@ export class ChartImageRendererComponent implements AfterViewInit, OnDestroy, On
 
     const data = labels.map((name, i) => ({ name, value: values[i] ?? 0 }));
 
-    const option = this.buildOption(chartType, title, data, labels);
+    const option = this.buildOption(chartType, data, labels);
 
     this.ensureChart();
     this.chart!.setOption(option as ECOption, { notMerge: true, lazyUpdate: true });
@@ -200,7 +199,6 @@ export class ChartImageRendererComponent implements AfterViewInit, OnDestroy, On
 
   private buildOption(
     chartType: SupportedChartType,
-    title: string,
     data: Array<{ name: string; value: number }>,
     labels: string[],
   ): ECOption {
@@ -213,7 +211,6 @@ export class ChartImageRendererComponent implements AfterViewInit, OnDestroy, On
       return {
         animation: false,
         color: palette,
-        title: { show: !!title, text: title, left: 'center', top: 8 },
         tooltip: { trigger: 'axis' },
         grid: { top: 48, bottom: 24, left: 80, right: 24 },
         xAxis: { type: 'value' },
@@ -232,7 +229,6 @@ export class ChartImageRendererComponent implements AfterViewInit, OnDestroy, On
     return {
       animation: false,
       color: palette,
-      title: { show: !!title, text: title, left: 'center', top: 4 },
       tooltip: { trigger: 'item', formatter: '{b}: {c} ({d}%)' },
       legend: { top: '3%', left: 'center' },
       series: [

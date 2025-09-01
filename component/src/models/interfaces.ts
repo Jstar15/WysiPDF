@@ -89,7 +89,6 @@ export interface ChartBlock {
   imageBase64: string;
   width: number;
   alignment: 'left' | 'center' | 'right';
-  title?: string;
   slices: ChartSlice[];
   tokenSourceHint?: string;
 }

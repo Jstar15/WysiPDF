@@ -5,7 +5,7 @@ export enum CellEditorType {
   BARCODE           = 'BARCODE',
   CHART             = 'CHART',
   HTML              = 'HTML',
-
+  DISPLAY_RULES              = 'DISPLAY_RULES',
 }
 
 export enum CellEditorAction {

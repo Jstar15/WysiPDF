@@ -1,19 +1,26 @@
-<div class="editor-dialog-content">
-  <p class="section-title">Upload</p>
-  <div>
-    <label>
-      <span class="file-button">Choose Image</span>
-      <input type="file" accept="image/*" (change)="onFileChange($event)" hidden />
-    </label>
+<div class="editor-dialog-content image-editor">
 
-    <div class="file-info" *ngIf="filename">
-      {{ filename }}
-    </div>
+  <p class="section-title">Upload</p>
+  <div class="upload-row">
+    <button mat-stroked-button type="button" (click)="openFilePicker()">
+      <mat-icon svgIcon="upload"></mat-icon>
+      <span>Choose Image</span>
+    </button>
+
+    <input
+      #fileInput
+      type="file"
+      accept="image/*"
+      (change)="onFileChange($event)"
+      hidden
+    />
+
+    <div class="file-info" *ngIf="filename">{{ filename }}</div>
   </div>
 
   <!-- Token-based image selection (IMAGE tokens only) -->
   <p class="section-title" *ngIf="imageTokens.length">Or select image token</p>
-  <div *ngIf="imageTokens.length">
+  <div *ngIf="imageTokens.length" class="token-picker">
     <mat-form-field appearance="fill">
       <mat-label>Image Token</mat-label>
       <mat-select [(ngModel)]="selectedTokenKey" (selectionChange)="onTokenChanged()">
@@ -25,21 +32,29 @@
     </mat-form-field>
   </div>
 
-  <div *ngIf="imageBase64" class="preview-container">
+  <!-- Preview block -->
+  <div class="preview-block" *ngIf="imageBase64 || selectedTokenKey">
     <p class="section-title">Preview</p>
-    <img
-      [src]="imageBase64"
-      alt="preview"
-      class="image-preview"
-      [style.width.%]="width"
-    />
-  </div>
-  <div *ngIf="selectedTokenKey && !imageBase64" class="file-info">
-    Preview not available for this token value, but it will render at runtime.
+
+    <div class="preview-frame" [ngClass]="alignment">
+      <img
+        *ngIf="imageBase64"
+        [src]="imageBase64"
+        alt="preview"
+        class="image-preview"
+        [style.width.%]="width"
+      />
+      <div *ngIf="selectedTokenKey && !imageBase64" class="no-preview">
+        Preview not available for this token value.<br />
+        It will render at runtime.
+      </div>
+    </div>
+
+    <div class="preview-meta">{{ width }}% of frame width</div>
   </div>
 
   <p class="section-title">Image Width (%)</p>
-  <div>
+  <div class="width-row">
     <mat-form-field appearance="fill">
       <mat-label>Width (%)</mat-label>
       <input
@@ -58,15 +73,16 @@
   <p class="section-title">Alignment</p>
   <div class="align-group">
     <mat-button-toggle-group [(ngModel)]="alignment" (change)="onAlignmentChanged()">
-      <mat-button-toggle value="left">
+      <mat-button-toggle value="left" aria-label="Align left">
         <mat-icon svgIcon="format_align_left"></mat-icon>
       </mat-button-toggle>
-      <mat-button-toggle value="center">
+      <mat-button-toggle value="center" aria-label="Align center">
         <mat-icon svgIcon="format_align_center"></mat-icon>
       </mat-button-toggle>
-      <mat-button-toggle value="right">
+      <mat-button-toggle value="right" aria-label="Align right">
         <mat-icon svgIcon="format_align_right"></mat-icon>
       </mat-button-toggle>
     </mat-button-toggle-group>
   </div>
+
 </div>

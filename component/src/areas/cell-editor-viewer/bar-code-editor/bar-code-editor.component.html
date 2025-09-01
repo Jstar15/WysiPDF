@@ -1,7 +1,8 @@
-<div class="editor-dialog-content">
-  <!-- Manual text -->
-  <p class="section-title">Barcode Text</p>
-  <div class="row-grid-3-3-3-auto">
+<div class="editor-dialog-content barcode-editor">
+
+  <!-- Text + Type + Generate on one row -->
+  <p class="section-title">Barcode</p>
+  <div class="row-grid-1fr-1fr-auto">
     <mat-form-field appearance="fill" class="w-100">
       <mat-label>Text</mat-label>
       <input
@@ -11,11 +12,25 @@
         placeholder="Enter text for barcode"
       />
     </mat-form-field>
+
+    <mat-form-field appearance="fill" class="w-100">
+      <mat-label>Type</mat-label>
+      <mat-select [(ngModel)]="selectedFormat">
+        <mat-option *ngFor="let f of availableFormats" [value]="f.value">
+          {{ f.label }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <button mat-stroked-button color="primary" (click)="tryGenerate()" [disabled]="isGenerating">
+      <mat-icon svgIcon="upload"></mat-icon>
+      <span>{{ isGenerating ? 'Generating…' : 'Generate' }}</span>
+    </button>
   </div>
 
   <!-- Token selection -->
   <p class="section-title" *ngIf="barcodeTokens.length">Or select token</p>
-  <div class="row-grid-3-3-3-auto" *ngIf="barcodeTokens.length">
+  <div class="row-grid-1fr">
     <mat-form-field appearance="fill" class="w-100">
       <mat-label>Token</mat-label>
       <mat-select [(ngModel)]="selectedTokenKey" (selectionChange)="onTokenChanged()">
@@ -27,49 +42,40 @@
     </mat-form-field>
   </div>
 
-  <!-- Type selection + Generate -->
-  <p class="section-title">Barcode Type</p>
-  <div class="row-grid-3-3-3-auto">
-    <mat-form-field appearance="fill" class="w-100">
-      <mat-label>Type</mat-label>
-      <mat-select [(ngModel)]="selectedFormat">
-        <mat-option *ngFor="let f of availableFormats" [value]="f.value">
-          {{ f.label }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
+  <!-- Errors -->
+  <div *ngIf="errorMsg" class="file-info error-msg">{{ errorMsg }}</div>
 
-    <button mat-raised-button color="primary" (click)="tryGenerate()" [disabled]="isGenerating">
-      Generate
-    </button>
-  </div>
-
-  <!-- Preview / errors -->
-  <div *ngIf="errorMsg" class="file-info" style="color:#b00020">{{ errorMsg }}</div>
-
-  <div *ngIf="imageBase64" class="preview-container">
+  <!-- Preview (fixed frame like image editor) -->
+  <div class="preview-block" *ngIf="imageBase64 || selectedTokenKey">
     <p class="section-title">Preview</p>
-    <img
-      [src]="imageBase64"
-      alt="barcode preview"
-      class="image-preview"
-      [style.width.%]="width"
-    />
-  </div>
 
-  <div *ngIf="selectedTokenKey && !imageBase64 && !errorMsg" class="file-info">
-    Preview not available for this token value yet, but it will render at runtime.
+    <div class="preview-frame" [ngClass]="alignment">
+      <img
+        *ngIf="imageBase64"
+        [src]="imageBase64"
+        alt="barcode preview"
+        class="image-preview"
+        [style.width.%]="width"
+      />
+      <div *ngIf="selectedTokenKey && !imageBase64 && !errorMsg" class="no-preview">
+        Preview not available for this token value.<br />
+        It will render at runtime.
+      </div>
+    </div>
+
+    <div class="preview-meta">{{ width }}% of frame width</div>
   </div>
 
   <!-- Display width -->
   <p class="section-title">Display Width (%)</p>
-  <div class="row-grid-3-3-3-auto">
+  <div class="row-grid-1fr">
     <mat-form-field appearance="fill" class="w-100">
       <mat-label>Width (%)</mat-label>
       <input
         matInput
         type="number"
         [(ngModel)]="width"
+        (ngModelChange)="onWidthChanged($event)"
         min="1"
         max="100"
         placeholder="100"
@@ -80,16 +86,17 @@
   <!-- Alignment -->
   <p class="section-title">Alignment</p>
   <div class="align-group">
-    <mat-button-toggle-group [(ngModel)]="alignment">
-      <mat-button-toggle value="left">
+    <mat-button-toggle-group [(ngModel)]="alignment" (change)="onAlignmentChanged()">
+      <mat-button-toggle value="left" aria-label="Align left">
         <mat-icon svgIcon="format_align_left"></mat-icon>
       </mat-button-toggle>
-      <mat-button-toggle value="center">
+      <mat-button-toggle value="center" aria-label="Align center">
         <mat-icon svgIcon="format_align_center"></mat-icon>
       </mat-button-toggle>
-      <mat-button-toggle value="right">
+      <mat-button-toggle value="right" aria-label="Align right">
         <mat-icon svgIcon="format_align_right"></mat-icon>
       </mat-button-toggle>
     </mat-button-toggle-group>
   </div>
+
 </div>

@@ -1,0 +1,110 @@
+.chart-editor {
+  .section-title {
+    margin: 12px 0 6px;
+    font-weight: 600;
+
+    &.small {
+      font-size: 0.9rem;
+      font-weight: 600;
+      opacity: 0.9;
+    }
+  }
+
+  .w-100 { width: 100%; }
+
+  /* Grids to match other editors */
+  .row-grid-1fr {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+    align-items: center;
+  }
+
+  .row-grid-controls {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 12px;
+    align-items: center;
+
+    .align-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+
+      .align-label {
+        font-size: 0.9rem;
+        opacity: 0.85;
+      }
+    }
+  }
+
+  /* Labels editor */
+  .labels-editor {
+    margin-top: 4px;
+
+    .label-row {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .label-attr {
+      font-family: monospace;
+      font-size: 12px;
+      padding: 4px 8px;
+      background: #f4f5f7;
+      border: 1px solid #e2e5ea;
+      border-radius: 6px;
+      white-space: nowrap;
+    }
+
+    .label-input {
+      width: 100%;
+    }
+  }
+
+  /* Preview block: consistent with image/barcode editors */
+  .preview-block {
+    margin: 12px 0;
+    text-align: center;
+  }
+
+  .preview-frame {
+    width: 500px;
+    margin: 0 auto;
+    border: 1px solid #000;  /* black border for consistency */
+    border-radius: 6px;
+    background: #fafafa;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.12);
+
+    display: flex;
+    align-items: center;
+    justify-content: flex-start; /* default left */
+    padding: 8px;
+    overflow: hidden;
+
+    &.center { justify-content: center; }
+    &.right  { justify-content: flex-end; }
+  }
+
+  /* scale wrapper controlled by widthPct */
+  .chart-scale {
+    max-height: 100%;
+  }
+
+  /* renderer should be block-level and responsive */
+  .chart-preview {
+    display: block;
+    max-width: 100%;
+    max-height: 100%;
+  }
+
+  .preview-meta {
+    margin-top: 6px;
+    font-size: 12px;
+    opacity: 0.8;
+  }
+}
+

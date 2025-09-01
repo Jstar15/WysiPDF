@@ -22,18 +22,14 @@ import {
   AddPartialContentDialogComponent,
   AddPartialContentDialogResult
 } from '../../../dialogs/add-partial-content-dialog/add-partial-content-dialog.component';
-import { DisplayLogicDialogComponent } from '../../../dialogs/display-logic-dialog/display-logic-dialog.component';
 import { IconService } from '../../../services/icon.service';
-import { AddPieChartDialogComponent } from '../../../dialogs/add-pie-chart/add-pie-chart-dialog.component';
 import {
   Cell,
   CellAttrs,
   Grid,
   Row,
   PageAttrs,
-  ChartBlock
 } from '../../../models/interfaces';
-import { DisplayLogicGroup } from '../../../models/display-logic.models';
 import {
   CellStyleToolbarComponent,
 } from './cell-style-toolbar/cell-style-toolbar.component';
@@ -258,38 +254,13 @@ export class GridEditorComponent implements OnInit, OnDestroy, OnChanges {
     const selected = this.currentCell;
     if (!selected) { console.warn('No cell selected.'); return; }
 
-    const data = {
-      tokens: Array.isArray(this.tokenAttrs) ? [...this.tokenAttrs] : [],
-      existing: this.clone(selected.chartBlock)
-    };
-
-    const ref = this.openDialogOnce(() =>
-      this.dialog.open<
-        AddPieChartDialogComponent,
-        { tokens: TokenAttribute[]; existing?: ChartBlock },
-        ChartBlock | undefined
-      >(
-        AddPieChartDialogComponent,
-        { width: '1000px', height: '700px', panelClass: 'app-dialog', data }
-      )
-    );
-    if (!ref) return;
-
-    ref.afterClosed().pipe(take(1), takeUntil(this.destroy$))
-      .subscribe((result: ChartBlock | undefined) => {
-        if (!result) return;
-        if (!this.grid?.rows?.[this.currentRow]?.cells?.[this.currentCol]) return;
-
-        const oldCell = this.grid.rows[this.currentRow].cells[this.currentCol];
-        this.grid.rows[this.currentRow].cells[this.currentCol] = {
-          ...oldCell,
-          type: 'chart',
-          chartBlock: this.clone(result)
-        };
-
-        if (!(this.cdr as any)?.destroyed) this.cdr.detectChanges();
-        this.emitChange();
-      });
+    this.cellChange.emit({
+      cell: selected,
+      row: this.currentRow,
+      column: this.currentCol,
+      area: 'content',
+      type: CellEditorType.CHART
+    })
   }
 
   public openAddBarcodeDialog(): void {
@@ -304,7 +275,18 @@ export class GridEditorComponent implements OnInit, OnDestroy, OnChanges {
       type: CellEditorType.BARCODE
     })
   }
+  public displayRulesDialog(): void {
+    const selected = this.currentCell;
+    if (!selected) { console.warn('No cell selected.'); return; }
 
+    this.cellChange.emit({
+      cell: selected,
+      row: this.currentRow,
+      column: this.currentCol,
+      area: 'content',
+      type: CellEditorType.DISPLAY_RULES
+    })
+  }
 
 
 
@@ -346,34 +328,7 @@ export class GridEditorComponent implements OnInit, OnDestroy, OnChanges {
       });
   }
 
-  public displayRulesDialog(): void {
-    const selected = this.currentCell;
-    if (!selected) { console.warn('No cell selected.'); return; }
 
-    const ref = this.openDialogOnce(() =>
-      this.dialog.open<
-        DisplayLogicDialogComponent,
-        { tokenAttrs: TokenAttribute[]; initialConfig?: DisplayLogicGroup },
-        DisplayLogicGroup | undefined
-      >(
-        DisplayLogicDialogComponent,
-        {
-          width: '1000px',
-          height: '600px',
-          panelClass: 'app-dialog',
-          data: { tokenAttrs: this.tokenAttrs, initialConfig: selected.displayLogic }
-        }
-      )
-    );
-    if (!ref) return;
-
-    ref.afterClosed().pipe(take(1), takeUntil(this.destroy$))
-      .subscribe((result: DisplayLogicGroup | undefined) => {
-        if (!result) return;
-        selected.displayLogic = result;
-        this.emitChange();
-      });
-  }
 
   public onPartialRowClick(rowIndex: number): void {
     this.currentRow = rowIndex;

@@ -87,6 +87,9 @@ export class QuillEditorComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   private emitPayload(): void {
+    this.cell.imageBlock = null;
+    this.cell.displayLogic = null;
+    this.cell.chartBlock = null;
     const updated: Cell = { ...this.cell, value: this.html };
     this.change.emit(updated);
   }

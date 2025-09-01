@@ -2,8 +2,6 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import {Cell, Grid, Page} from '../models/interfaces';
 
-type PageArea = 'header' | 'content' | 'footer';
-
 @Injectable({ providedIn: 'root' })
 export class PageStateService {
   private history: Page[] = [];
@@ -88,31 +86,42 @@ export class PageStateService {
   updateCell(row: number, column: number, area: string, cell: Cell): void {
     const current = this.getCurrentPage();
     if (!current) return;
+    debugger;
 
     // Defensive bounds checks
     const grid = current[area];
     if (!grid?.rows?.[row]?.cells?.[column]) return;
 
-    // Ensure type remains 'image' if imageBlock is present
+    grid.rows[row].cells[column].barcodeBlock = null;
+    grid.rows[row].cells[column].imageBlock = null;
+    grid.rows[row].cells[column].chartBlock = null;
+    grid.rows[row].cells[column].value = '';
+
+
+    if (cell?.value) {
+      grid.rows[row].cells[column].type = 'html';
+      grid.rows[row].cells[column].value = cell.value;
+    }
+
     if (cell?.imageBlock) {
       grid.rows[row].cells[column].type = 'image';
       grid.rows[row].cells[column].imageBlock = cell.imageBlock;
-      grid.rows[row].cells[column].barcodeBlock = null;
       grid.rows[row].cells[column].value = '';
     }
 
     if (cell?.barcodeBlock) {
       grid.rows[row].cells[column].type = 'barcode';
       grid.rows[row].cells[column].barcodeBlock = cell.barcodeBlock;
-      grid.rows[row].cells[column].imageBlock = null;
       grid.rows[row].cells[column].value = '';
     }
 
-    if (cell?.value) {
-      grid.rows[row].cells[column].type = 'html';
-      grid.rows[row].cells[column].value = cell.value;
-      grid.rows[row].cells[column].barcodeBlock = null;
-      grid.rows[row].cells[column].imageBlock = null;
+    if (cell?.chartBlock) {
+      grid.rows[row].cells[column].type = 'chart';
+      grid.rows[row].cells[column].chartBlock = cell.chartBlock;
+    }
+
+    if (cell?.displayLogic) {
+      grid.rows[row].cells[column].displayLogic = cell.displayLogic;
     }
 
     this.pushSnapshot(current);

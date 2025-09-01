@@ -9,11 +9,13 @@ import {TokenAttribute} from "../../models/TokenAttribute";
 import {PageStateService} from "../../services/page-state.service";
 import {BarCodeEditorComponent} from "./bar-code-editor/bar-code-editor.component";
 import {QuillEditorComponent} from "./quill-editor/quill-editor.component";
+import {ChartEditorComponent} from "./chart-editor/chart-editor.component";
+import {DisplayLogicEditorComponent} from "./display-logic-editor/display-logic-editor.component";
 
 @Component({
   selector: 'app-cell-editor-viewer',
   standalone: true,
-  imports: [CommonModule, MatButton, MatIcon, AddImageEditorComponent, BarCodeEditorComponent, QuillEditorComponent],
+  imports: [CommonModule, MatButton, MatIcon, AddImageEditorComponent, BarCodeEditorComponent, QuillEditorComponent, ChartEditorComponent, DisplayLogicEditorComponent],
   templateUrl: './cell-editor-viewer.component.html',
   styleUrls: ['./cell-editor-viewer.component.scss']
 })

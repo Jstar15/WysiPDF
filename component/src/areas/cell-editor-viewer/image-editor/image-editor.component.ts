@@ -5,16 +5,21 @@ import {
   EventEmitter,
   OnInit,
   OnChanges,
-  SimpleChanges
+  SimpleChanges,
+  ViewChild,
+  ElementRef
 } from '@angular/core';
 import { CommonModule, NgFor, NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+
 import { MatFormField } from '@angular/material/form-field';
 import { MatInput, MatLabel } from '@angular/material/input';
 import { MatIcon } from '@angular/material/icon';
+import { MatButton } from '@angular/material/button';
 import { MatButtonToggleGroup, MatButtonToggle } from '@angular/material/button-toggle';
 import { MatSelect } from '@angular/material/select';
 import { MatOption } from '@angular/material/core';
+
 import { Cell, ImageBlock } from '../../../models/interfaces';
 import { TokenAttribute } from '../../../models/TokenAttribute';
 import { TokenAttributeTypeEnum } from '../../../models/TokenAttributeTypeEnum';
@@ -29,7 +34,7 @@ type Align = 'left' | 'center' | 'right';
   imports: [
     CommonModule, FormsModule, NgIf, NgFor,
     MatFormField, MatInput, MatLabel,
-    MatIcon,
+    MatIcon, MatButton,
     MatButtonToggleGroup, MatButtonToggle,
     MatSelect, MatOption
   ]
@@ -37,8 +42,10 @@ type Align = 'left' | 'center' | 'right';
 export class AddImageEditorComponent implements OnInit, OnChanges {
   @Input() public cell!: Cell;
   @Input() public tokenAttrs: TokenAttribute[] = [];
-
   @Output() public change = new EventEmitter<Cell>();
+
+  /** hidden file input ref */
+  @ViewChild('fileInput', { static: false }) fileInput!: ElementRef<HTMLInputElement>;
 
   // Local state (kept independent so preview stays stable)
   public imageBase64 = '';
@@ -60,6 +67,10 @@ export class AddImageEditorComponent implements OnInit, OnChanges {
   }
 
   // ── UI Actions ──────────────────────────────────────────────────
+  openFilePicker(): void {
+    this.fileInput?.nativeElement?.click();
+  }
+
   onFileChange(event: Event): void {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0];
@@ -102,7 +113,6 @@ export class AddImageEditorComponent implements OnInit, OnChanges {
 
     const ib: ImageBlock | undefined = this.cell?.imageBlock;
 
-    // Only set image fields from inputs if provided (avoid wiping preview)
     if (ib?.imageBase64) this.imageBase64 = ib.imageBase64;
     if (ib?.filename)    this.filename    = ib.filename;
 
@@ -123,9 +133,9 @@ export class AddImageEditorComponent implements OnInit, OnChanges {
 
     const value = String(token.value ?? '').trim();
     if (this.isDataUrl(value) || this.isHttpUrl(value)) {
-      this.imageBase64 = value; // show preview if token is a URL/data URL
+      this.imageBase64 = value; // show preview if token is URL/data URL
     }
-    // not previewable → keep current preview as-is
+    // If not previewable, leave current preview as-is
   }
 
   private emitPayload(): void {

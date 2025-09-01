@@ -23,6 +23,7 @@ import { TokenAttributeTypeEnum } from '../../../models/TokenAttributeTypeEnum';
 import { BarcodeFormat, BarcodeService } from '../../../services/external/barcode.service';
 
 type Align = 'left' | 'center' | 'right';
+type ExtendedBarcodeFormat = BarcodeFormat | 'QR';
 
 @Component({
   selector: 'app-bar-code-editor',
@@ -49,11 +50,11 @@ export class BarCodeEditorComponent implements OnInit, OnChanges {
   public width: number = 100;
   public alignment: Align = 'left';
 
-  public textValue: string = '';                    // manual text
-  public selectedTokenKey: string | null = null;    // token providing text
-  public selectedFormat: BarcodeFormat = 'CODE128'; // preview-only
+  public textValue: string = '';                         // manual text
+  public selectedTokenKey: string | null = null;         // token providing text
+  public selectedFormat: ExtendedBarcodeFormat = 'CODE128'; // preview-only
 
-  public availableFormats: { value: BarcodeFormat; label: string }[] = [
+  public availableFormats: { value: ExtendedBarcodeFormat; label: string }[] = [
     { value: 'CODE128',   label: 'CODE128 (robust, recommended)' },
     { value: 'EAN13',     label: 'EAN-13 (12 digits + check)' },
     { value: 'EAN8',      label: 'EAN-8 (7 digits + check)' },
@@ -64,6 +65,8 @@ export class BarCodeEditorComponent implements OnInit, OnChanges {
     { value: 'MSI',       label: 'MSI' },
     { value: 'pharmacode',label: 'Pharmacode' },
     { value: 'codabar',   label: 'Codabar' },
+    // NEW (no service change needed)
+    { value: 'QR',        label: 'QR Code' },
   ];
 
   public barcodeTokens: TokenAttribute[] = [];
@@ -106,12 +109,6 @@ export class BarCodeEditorComponent implements OnInit, OnChanges {
     }
   }
 
-  public onManualTextChanged(v: string): void {
-    this.textValue = v ?? '';
-    // If manual, clear token
-    if (this.textValue) this.selectedTokenKey = null;
-    this.tryGenerate();
-  }
   // ── Internal helpers ───────────────────────────────────────────
   private hydrateFromInputs(): void {
     // Accept TEXT, NUMBER, BARCODE as sources for barcode content
@@ -159,13 +156,28 @@ export class BarCodeEditorComponent implements OnInit, OnChanges {
 
     this.isGenerating = true;
     try {
-      const dataUrl = await this.barcodeSvc.generate(text, {
-        format: this.selectedFormat,
-        width: 2,
-        height: 90,
-        displayValue: false,
-        margin: 10
-      });
+      let dataUrl: string;
+
+      if (this.selectedFormat === 'QR') {
+        // Generate QR without touching your service
+        const { toDataURL } = await import('qrcode');
+        dataUrl = await toDataURL(text, {
+          errorCorrectionLevel: 'M',
+          margin: 2,
+          width: 256,
+          color: { dark: '#000000', light: '#ffffff' }
+        });
+      } else {
+        // 1D path (unchanged)
+        dataUrl = await this.barcodeSvc.generate(text, {
+          format: this.selectedFormat as BarcodeFormat,
+          width: 2,
+          height: 90,
+          displayValue: false,
+          margin: 10
+        });
+      }
+
       this.imageBase64 = dataUrl;
 
       // If manual text, give a friendly filename
@@ -201,5 +213,15 @@ export class BarCodeEditorComponent implements OnInit, OnChanges {
 
   private clampWidth(n: number): number {
     return Math.min(100, Math.max(1, Math.round(n)));
+  }
+
+  onWidthChanged(v: number | string): void {
+    const n = Number(v);
+    if (Number.isFinite(n)) this.width = this.clampWidth(n);
+    this.emitPayload();
+  }
+
+  onAlignmentChanged(): void {
+    this.emitPayload();
   }
 }

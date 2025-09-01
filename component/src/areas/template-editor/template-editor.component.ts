@@ -99,9 +99,10 @@ export class TemplateEditorComponent implements OnInit,AfterViewInit {
 
     this.iconService.registerIcons();
 
-    this.gridStateService.page$.subscribe(page => {
-      if(page){
+    this.gridStateService.page$.pipe(
 
+    ).subscribe(page => {
+      if(page){
         this.page = page;
         this._onPageChange();
       }
@@ -121,10 +122,6 @@ export class TemplateEditorComponent implements OnInit,AfterViewInit {
     this.page = this.pageTokenValidator.validatePage(this.page, this.page.tokenAttrs);
     this.jsonList = this.buildJsonViewerList(this.page, this.pdfGenerationResult);
     this.cdr.detectChanges();
-  }
-
-  emitPageChange(): void {
-    this.emitChange$.next(true);
   }
 
   toggleRightPane(): void {

@@ -22,6 +22,11 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   height: 500px !important;
 }
 
+.ql-editor{
+  min-height: 300px;
+}
+
+
 
 .ql-editor .ql-size[value="8px"]  { font-size: 8px; }
 .ql-editor .ql-size[value="10px"] { font-size: 10px; }

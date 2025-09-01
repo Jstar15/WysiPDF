@@ -1,13 +1,82 @@
+.barcode-editor {
+  .section-title {
+    margin: 12px 0 6px;
+    font-weight: 600;
+  }
 
+  .row-grid-1fr-1fr-auto {
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
+    gap: 12px;
+    align-items: center;
 
-.preview-container {
-  margin: 1rem 0;
-  text-align: center;
-}
+    button mat-icon {
+      margin-right: 6px;
+    }
+  }
 
-.image-preview {
-  height: 100%;
-  max-width: 100%;
-  border-radius: 4px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+  .row-grid-1fr {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+    align-items: center;
+  }
+
+  .w-100 { width: 100%; }
+
+  .file-info {
+    font-size: 12px;
+    opacity: 0.85;
+  }
+  .error-msg {
+    color: #b00020;
+  }
+
+  /* Fixed preview frame like image editor (300px wide, black border) */
+  .preview-block {
+    margin: 12px 0;
+    text-align: center;
+  }
+
+  .preview-frame {
+    width: 300px;
+    height: 150px;               /* barcode-friendly height */
+    margin: 0 auto;
+    border: 1px solid #000;      /* black border */
+    border-radius: 6px;
+    background: #fafafa;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+
+    display: flex;
+    align-items: center;
+    justify-content: flex-start; /* default left */
+    padding: 8px;
+    overflow: hidden;
+
+    &.center { justify-content: center; }
+    &.right  { justify-content: flex-end; }
+  }
+
+  .image-preview {
+    height: auto;
+    max-height: 100%;
+    display: block;
+    border-radius: 4px;
+  }
+
+  .no-preview {
+    font-size: 12px;
+    opacity: 0.75;
+    text-align: center;
+  }
+
+  .preview-meta {
+    margin-top: 6px;
+    font-size: 12px;
+    opacity: 0.8;
+  }
+
+  .align-group {
+    margin-top: 6px;
+  }
 }
