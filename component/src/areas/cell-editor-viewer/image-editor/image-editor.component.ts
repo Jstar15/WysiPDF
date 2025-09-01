@@ -15,9 +15,9 @@ import { MatIcon } from '@angular/material/icon';
 import { MatButtonToggleGroup, MatButtonToggle } from '@angular/material/button-toggle';
 import { MatSelect } from '@angular/material/select';
 import { MatOption } from '@angular/material/core';
-import { Cell, ImageBlock } from '../../../../models/interfaces';
-import { TokenAttribute } from '../../../../models/TokenAttribute';
-import { TokenAttributeTypeEnum } from '../../../../models/TokenAttributeTypeEnum';
+import { Cell, ImageBlock } from '../../../models/interfaces';
+import { TokenAttribute } from '../../../models/TokenAttribute';
+import { TokenAttributeTypeEnum } from '../../../models/TokenAttributeTypeEnum';
 
 type Align = 'left' | 'center' | 'right';
 

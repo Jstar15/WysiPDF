@@ -13,18 +13,3 @@ export enum EditorAction {
   OK            = 'OK',
   CANCEL            = 'CANCEL'
 }
-
-/** Shape of the outbound event */
-export interface EditorEvent {
-  type: EditorType;
-  action: EditorAction
-  page: Page;
-}
-
-
-/** Shape of the outbound event */
-export interface EditorEvent {
-  type: EditorType;
-  action: EditorAction
-  page: Page;
-}

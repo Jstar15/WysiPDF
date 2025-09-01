@@ -122,8 +122,8 @@
                                 </mat-panel-title>
                             </mat-expansion-panel-header>
                             <app-grid-editor
-                                    (gridChange)="emitGridChange()"
-                                    [(grid)]="page.header"
+                                    [area]="'header'"
+                                    [grid]="page.header"
                                     [tokenAttrs]="page.tokenAttrs"
                                     [pageAttrs]="page.pageAttrs"
                                     [partialContentAvailableList]="page.partialContent"
@@ -145,8 +145,8 @@
                                 </mat-panel-title>
                             </mat-expansion-panel-header>
                             <app-grid-editor
-                                    (gridChange)="emitGridChange()"
-                                    [(grid)]="page.content"
+                                    [area]="'content'"
+                                    [grid]="page.content"
                                     [tokenAttrs]="page.tokenAttrs"
                                     [pageAttrs]="page.pageAttrs"
                                     [partialContentAvailableList]="page.partialContent"
@@ -164,8 +164,8 @@
                                 </mat-panel-title>
                             </mat-expansion-panel-header>
                             <app-grid-editor
-                                    (gridChange)="emitGridChange()"
-                                    [(grid)]="page.footer"
+                                    [area]="'footer'"
+                                    [grid]="page.footer"
                                     [tokenAttrs]="page.tokenAttrs"
                                     [pageAttrs]="page.pageAttrs"
                                     [partialContentAvailableList]="page.partialContent"
@@ -216,8 +216,7 @@
                                     </mat-expansion-panel-header>
 
                                     <app-grid-editor
-                                            (gridChange)="emitGridChange()"
-                                            [(grid)]="page.partialContent[i]"
+                                            [grid]="page.partialContent[i]"
                                             [tokenAttrs]="partial.tokenAttributeList"
                                             [pageAttrs]="page.pageAttrs"
                                             [hidePartialContent]="true"
@@ -243,14 +242,17 @@
         <app-editor-viewer  *ngIf="iEditOpen"
                             [type]="editorType"
                             [page]="page"
-                            (editorEvent)="handleEditorEvent($event)">
+                            (editorActionEvent)="closeEditors()">
         </app-editor-viewer>
 
         <app-cell-editor-viewer *ngIf="isCellEditorOpen"
                                 [type]="lastCellEditorEvent.type"
                                 [cell]="lastCellEditorEvent.cell"
+                                [row]="lastCellEditorEvent.row"
+                                [area]="lastCellEditorEvent.area"
+                                [column]="lastCellEditorEvent.column"
                                 [tokens]="page.tokenAttrs"
-                                (editorEvent)="handleCellEditorEvent($event)">
+                                (editorActionEvent)="closeEditors()">
         </app-cell-editor-viewer>
       </as-split-area>
 

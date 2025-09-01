@@ -18,7 +18,6 @@ import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { Subject, take, takeUntil } from 'rxjs';
 import { TokenAttribute } from '../../../models/TokenAttribute';
-import { QuillEditorDialogComponent } from '../../../dialogs/quill-editor-dialog/quill-editor.dialog.component';
 import {
   AddPartialContentDialogComponent,
   AddPartialContentDialogResult
@@ -32,18 +31,15 @@ import {
   Grid,
   Row,
   PageAttrs,
-  ChartBlock, BarcodeBlock
+  ChartBlock
 } from '../../../models/interfaces';
 import { DisplayLogicGroup } from '../../../models/display-logic.models';
 import {
   CellStyleToolbarComponent,
 } from './cell-style-toolbar/cell-style-toolbar.component';
-import {
-  AddBarCodeDialogComponent,
-  AddBarCodeDialogPayload
-} from "../../../dialogs/add-bar-code-dialog/add-bar-code-dialog.component";
 import {OpenCellEditorEvent} from "./grid-editor.interfaces";
-import {CellEditorType} from "../cell-editor-viewer/cell-editor-viewer.interfaces";
+import {CellEditorType} from "../../cell-editor-viewer/cell-editor-viewer.interfaces";
+import {PageStateService} from "../../../services/page-state.service";
 
 @Component({
   selector: 'app-grid-editor',
@@ -64,8 +60,8 @@ export class GridEditorComponent implements OnInit, OnDestroy, OnChanges {
   @Input() public pageAttrs: PageAttrs = {};
   @Input() public colorPalettes: string[] | undefined = [];
   @Input() public grid!: Grid;
+  @Input() public area!: string;
 
-  @Output() public gridChange: EventEmitter<Grid> = new EventEmitter<Grid>();
   @Output() public cellChange: EventEmitter<OpenCellEditorEvent> = new EventEmitter<OpenCellEditorEvent>();
 
   public selectedPartialId: string | null = null;
@@ -83,7 +79,8 @@ export class GridEditorComponent implements OnInit, OnDestroy, OnChanges {
     private readonly dialog: MatDialog,
     private readonly sanitizer: DomSanitizer,
     private readonly cdr: ChangeDetectorRef,
-    private readonly iconService: IconService
+    private readonly iconService: IconService,
+    private  readonly pageStateService : PageStateService
   ) {
     this.iconService.registerIcons();
   }
@@ -234,7 +231,13 @@ export class GridEditorComponent implements OnInit, OnDestroy, OnChanges {
   public openCellEditorDialog(): void {
     const selected = this.currentCell;
     if (!selected) { console.warn('No cell selected.'); return; }
-    this.openEditorForCell(this.currentRow, this.currentCol);
+    this.cellChange.emit({
+      cell: selected,
+      row: this.currentRow,
+      column: this.currentCol,
+      area: 'content',
+      type: CellEditorType.HTML
+    })
   }
 
   public openAddImageDialog(): void {
@@ -293,51 +296,17 @@ export class GridEditorComponent implements OnInit, OnDestroy, OnChanges {
     const selected = this.currentCell;
     if (!selected) { console.warn('No cell selected.'); return; }
 
-    // Prepare dialog data (clone existing or provide a clean default)
-    const existing: BarcodeBlock | undefined = selected.barcodeBlock ? this.clone(selected.barcodeBlock) : undefined;
-    const data: AddBarCodeDialogPayload = {
-      barcodeBlock: existing ?? {
-        imageBase64: '',
-        filename: '',
-        width: 100,
-        alignment: 'left'
-        // HtmlTokenElement will be set by the dialog if a token is chosen
-      },
-      tokenAttrs: Array.isArray(this.tokenAttrs) ? [...this.tokenAttrs] : []
-    };
-
-    const ref = this.openDialogOnce(() =>
-      this.dialog.open<
-        AddBarCodeDialogComponent,
-        AddBarCodeDialogPayload,
-        BarcodeBlock | undefined
-      >(
-        AddBarCodeDialogComponent,
-        { width: '900px', height: '700px', panelClass: 'app-dialog', data }
-      )
-    );
-    if (!ref) return;
-
-    ref.afterClosed().pipe(take(1), takeUntil(this.destroy$))
-      .subscribe((result: BarcodeBlock | undefined) => {
-        if (!result) return;
-        if (!this.grid?.rows?.[this.currentRow]?.cells?.[this.currentCol]) return;
-
-        const oldCell = this.grid.rows[this.currentRow].cells[this.currentCol];
-
-        // Store as an "image" type cell carrying a barcodeBlock payload (minimal change)
-        this.grid.rows[this.currentRow].cells[this.currentCol] = {
-          ...oldCell,
-          type: 'barcode',
-          barcodeBlock: this.clone(result),
-          // (optional) clear a conflicting imageBlock to avoid ambiguity
-          imageBlock: undefined
-        };
-
-        if (!(this.cdr as any)?.destroyed) this.cdr.detectChanges();
-        this.emitChange();
-      });
+    this.cellChange.emit({
+      cell: selected,
+      row: this.currentRow,
+      column: this.currentCol,
+      area: 'content',
+      type: CellEditorType.BARCODE
+    })
   }
+
+
+
 
 
   public addPartialRow(): void {
@@ -465,30 +434,7 @@ export class GridEditorComponent implements OnInit, OnDestroy, OnChanges {
     if (!cell) { console.warn('Cell not found at', r, c); return; }
 
     if (cell.type === 'html') {
-      const ref = this.openDialogOnce(() =>
-        this.dialog.open<
-          QuillEditorDialogComponent,
-          { html: string; attributes?: TokenAttribute[]; colorPalettes?: string[] },
-          string | undefined
-        >(
-          QuillEditorDialogComponent,
-          {
-            width: '1000px',
-            minHeight: '500px',
-            panelClass: 'app-dialog',
-            data: { html: cell.value, attributes: this.tokenAttrs, colorPalettes: this.colorPalettes }
-          }
-        )
-      );
-      if (!ref) return;
-
-      ref.afterClosed().pipe(take(1), takeUntil(this.destroy$))
-        .subscribe((result: string | undefined) => {
-          if (result === undefined) return;
-          this.grid.rows[r].cells[c].value = result;
-          this.emitChange();
-        });
-
+      this.openCellEditorDialog();
     } else if (cell.type === 'image') {
       this.openAddImageDialog();
     } else if (cell.type === 'chart') {
@@ -558,12 +504,12 @@ export class GridEditorComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   public emitChange(): void {
-    this.gridChange.emit(this.grid);
+    this.pageStateService.updateGrid(this.area, this.grid)
   }
 
   public setCellAttribute(cellAttrs: CellAttrs): void {
     this.currentCell.attrs = cellAttrs;
-    this.gridChange.emit(this.grid);
+    this.pageStateService.updateGrid(this.area, this.grid)
   }
 
   private clone<T>(obj: T): T {

@@ -8,8 +8,8 @@ import {ColorPaletteEditorComponent} from "./color-palette-editor/color-palette-
 import {PresetLoaderComponent} from "./preset-loader/preset-loader.component";
 import {TokenEditorComponent} from "./token-editor/token-editor.component";
 import {MatIcon} from "@angular/material/icon";
-import {EditorAction, EditorEvent, EditorType} from "./editor-viewer.interfaces";
-
+import {EditorAction, EditorType} from "./editor-viewer.interfaces";
+import {PageStateService} from "../../../services/page-state.service";
 
 @Component({
   selector: 'app-editor-viewer',
@@ -25,25 +25,23 @@ export class EditorViewerComponent {
   @Input() okLabel = 'OK';
   @Input() cancelLabel = 'Cancel';
 
-  @Output() editorEvent = new EventEmitter<EditorEvent>();
+  @Output() editorActionEvent: EventEmitter<EditorAction> = new EventEmitter<EditorAction>();
 
-
-  emit(action: EditorAction): void {
-    const editorEvent: EditorEvent = {
-      type: this.type,
-      page: this.page,
-      action: action
-    }
-    this.editorEvent.emit(editorEvent);
+  constructor(private gridStateService: PageStateService) {
   }
 
   updatePage(page:Page){
     this.page = page;
   }
 
-  /** Footer actions */
-  onCancel(): void { this.emit(EditorAction.CANCEL); }
-  onOk(): void     { this.emit(EditorAction.OK); }
+  onCancel(): void {
+    this.editorActionEvent.emit(EditorAction.CANCEL);
+
+  }
+  onOk(): void     {
+    this.gridStateService.pushSnapshot(this.page)
+    this.editorActionEvent.emit(EditorAction.OK);
+  }
 
   protected readonly EditorType = EditorType;
 }

@@ -2,11 +2,13 @@
   <!-- Header -->
   <header class="editor-header">
     <mat-icon *ngIf="type == CellEditorType.IMAGE && cell" svgIcon="add_photo_alternate"></mat-icon>
-    <mat-icon *ngIf="type == CellEditorType.PARTIAL_CONTENT && cell" svgIcon="call_split"></mat-icon>
+    <mat-icon *ngIf="type == CellEditorType.BARCODE && cell" svgIcon="barcode"></mat-icon>
+    <mat-icon *ngIf="type == CellEditorType.HTML && cell" svgIcon="edit"></mat-icon>
 
 
     <h2 id="editorTitle" *ngIf="type == CellEditorType.IMAGE && cell">Cell Image Editor</h2>
-    <h2 id="editorTitle" *ngIf="type == CellEditorType.PARTIAL_CONTENT && cell">Partial Content Editor</h2>
+    <h2 id="editorTitle" *ngIf="type == CellEditorType.BARCODE && cell">Bar Code Editor</h2>
+    <h2 id="editorTitle" *ngIf="type == CellEditorType.HTML && cell">Content Editor</h2>
 
 
   </header>
@@ -18,8 +20,12 @@
       <app-image-editor [cell]="cell" [tokenAttrs]="tokens" (change)="cell = $event"></app-image-editor>
     </ng-content>
 
-    <ng-content *ngIf="type == CellEditorType.PARTIAL_CONTENT && cell">
+    <ng-content *ngIf="type == CellEditorType.BARCODE && cell">
+      <app-bar-code-editor [cell]="cell" [tokenAttrs]="tokens" (change)="cell = $event"></app-bar-code-editor>
+    </ng-content>
 
+    <ng-content *ngIf="type == CellEditorType.HTML && cell">
+      <app-quill-editor [cell]="cell" [tokenAttrs]="tokens" (change)="cell = $event"></app-quill-editor>
     </ng-content>
 
   </section>

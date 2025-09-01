@@ -1,11 +1,10 @@
-import {Cell} from "../../../models/interfaces";
+import {Cell} from "../../models/interfaces";
 
 export enum CellEditorType {
-  PARTIAL_CONTENT   = 'PARTIAL_CONTENT',
   IMAGE             = 'IMAGE',
   BARCODE           = 'BARCODE',
   CHART             = 'CHART',
-
+  HTML              = 'HTML',
 
 }
 

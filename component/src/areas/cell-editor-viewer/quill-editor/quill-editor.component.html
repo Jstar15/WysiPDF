@@ -1,0 +1,9 @@
+<div class="editor-dialog-content" *ngIf="editorVisible">
+  <app-quill-wrapper
+    (htmlChange)="onHtmlChange($event)"
+    [html]="html"
+    [attributeArray]="tokenAttrs"
+    [colorPalettes]="colorPalettes"
+    [disableUndoRedo]="true">
+  </app-quill-wrapper>
+</div>

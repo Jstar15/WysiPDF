@@ -1,7 +1,7 @@
 <div class="editor-dialog-content">
   <p class="section-title">Upload</p>
-  <div class="row-grid-3-3-3-auto">
-    <label class="file-label w-100">
+  <div>
+    <label>
       <span class="file-button">Choose Image</span>
       <input type="file" accept="image/*" (change)="onFileChange($event)" hidden />
     </label>
@@ -13,8 +13,8 @@
 
   <!-- Token-based image selection (IMAGE tokens only) -->
   <p class="section-title" *ngIf="imageTokens.length">Or select image token</p>
-  <div class="row-grid-3-3-3-auto" *ngIf="imageTokens.length">
-    <mat-form-field appearance="fill" class="w-100">
+  <div *ngIf="imageTokens.length">
+    <mat-form-field appearance="fill">
       <mat-label>Image Token</mat-label>
       <mat-select [(ngModel)]="selectedTokenKey" (selectionChange)="onTokenChanged()">
         <mat-option [value]="null">None</mat-option>
@@ -39,8 +39,8 @@
   </div>
 
   <p class="section-title">Image Width (%)</p>
-  <div class="row-grid-3-3-3-auto">
-    <mat-form-field appearance="fill" class="w-100">
+  <div>
+    <mat-form-field appearance="fill">
       <mat-label>Width (%)</mat-label>
       <input
         matInput
