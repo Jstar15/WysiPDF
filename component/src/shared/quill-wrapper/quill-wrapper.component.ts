@@ -18,18 +18,16 @@ import { CustomElementBlot } from "./CustomElementBlot";
 import Quill from 'quill';
 import { HtmlBlockContainer } from "../../models/interfaces";
 import { HtmlToStructuredContentService } from "../../services/converters/html-to-structured-content.service";
-import {NgForOf} from "@angular/common";
+import { NgForOf } from "@angular/common";
 
 @Component({
   standalone: true,
   selector: 'app-quill-wrapper',
   templateUrl: './quill-wrapper.component.html',
-  imports: [
-    NgForOf
-  ],
+  imports: [NgForOf],
   styleUrls: ['./quill-wrapper.component.scss']
 })
-export class QuillWrapperComponent implements OnInit, AfterViewInit, OnDestroy {
+export class QuillWrapperComponent implements OnInit, AfterViewInit, OnDestroy, OnChanges {
   @Input() html: string = '';
   @Input() attributeArray: TokenAttribute[];
   @Input() colorPalettes: string[] = [];
@@ -133,6 +131,35 @@ export class QuillWrapperComponent implements OnInit, AfterViewInit, OnDestroy {
     );
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if (this.quill && changes['html']) {
+      const nextHtml: string = changes['html'].currentValue ?? '';
+      // Avoid redundant work
+      if (nextHtml !== this.quill.root.innerHTML) {
+        const sel = this.quill.getSelection(); // try to preserve caret
+
+        // 🔑 Load HTML exactly as-is (keeps your custom blot markup intact)
+        this.quill.root.innerHTML = nextHtml;
+
+        // 🔑 Ask Quill to re-parse the DOM into its blot tree/delta
+        this.quill.update('api');
+
+        // Optional: clear history so undo doesn't jump back to pre-load state
+        const history = this.quill.getModule('history');
+        try { history?.clear?.(); } catch {}
+
+        if (sel) {
+          try { this.quill.setSelection(sel); } catch {}
+        }
+      }
+    }
+
+    if (this.quill && changes['disableUndoRedo']) {
+      this.applyUndoRedoDisabling();
+    }
+  }
+
+
   ngOnDestroy(): void {
     this.destroy();
   }
@@ -163,7 +190,6 @@ export class QuillWrapperComponent implements OnInit, AfterViewInit, OnDestroy {
       if (history) {
         try {
           history.clear?.();
-          // hard reset stack if available
           if ((history as any).stack) {
             (history as any).stack.undo = [];
             (history as any).stack.redo = [];
@@ -198,5 +224,4 @@ export class QuillWrapperComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     });
   }
-
 }
