@@ -124,6 +124,13 @@ export class TemplateEditorComponent implements OnInit,AfterViewInit {
     this.cdr.detectChanges();
   }
 
+  onCellChange(event: OpenCellEditorEvent){
+    this.lastCellEditorEvent = event;
+    this.iEditOpen = false;
+    this.isCellEditorOpen = false;
+    this.isCellEditorOpen = true;
+  }
+
   toggleRightPane(): void {
     this.showRightPane = !this.showRightPane;
   }
@@ -135,14 +142,6 @@ export class TemplateEditorComponent implements OnInit,AfterViewInit {
     this.editorType = editorType;
     this.iEditOpen = true;
     this.isCellEditorOpen = false;
-  }
-
-  onCellChange(event: OpenCellEditorEvent){
-    this.lastCellEditorEvent = event;
-    this.iEditOpen = false;
-    this.isCellEditorOpen = false;
-
-    this.isCellEditorOpen = true;
   }
 
   closeEditors(){

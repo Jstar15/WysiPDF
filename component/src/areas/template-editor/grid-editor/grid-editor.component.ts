@@ -231,7 +231,7 @@ export class GridEditorComponent implements OnInit, OnDestroy, OnChanges {
       cell: selected,
       row: this.currentRow,
       column: this.currentCol,
-      area: 'content',
+      area: (this.area) as 'content' | 'footer' | 'header',
       type: CellEditorType.HTML
     })
   }
@@ -245,8 +245,7 @@ export class GridEditorComponent implements OnInit, OnDestroy, OnChanges {
       cell: selected,
       row: this.currentRow,
       column: this.currentCol,
-      area: 'content',
-      type: CellEditorType.IMAGE
+      area: (this.area) as 'content' | 'footer' | 'header',      type: CellEditorType.IMAGE
     })
   }
 
@@ -258,8 +257,7 @@ export class GridEditorComponent implements OnInit, OnDestroy, OnChanges {
       cell: selected,
       row: this.currentRow,
       column: this.currentCol,
-      area: 'content',
-      type: CellEditorType.CHART
+      area: (this.area) as 'content' | 'footer' | 'header',      type: CellEditorType.CHART
     })
   }
 
