@@ -488,7 +488,7 @@ export class GridEditorComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   public setCellAttribute(cellAttrs: CellAttrs): void {
-    this.currentCell.attrs = cellAttrs;
+    this.grid.rows[this.currentRow].cells[this.currentCol].attrs = cellAttrs;
     this.pageStateService.updateGrid(this.area, this.grid)
   }
 

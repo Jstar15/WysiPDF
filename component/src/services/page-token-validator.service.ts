@@ -46,11 +46,11 @@ export class PageTokenValidator {
       for (let cell of row.cells) {
         key = null;
         errors = [];
-        if (cell.type == 'barcode') {
+        if (cell.type == 'barcode' && cell.barcodeBlock?.HtmlTokenElement?.key) {
           key = cell.barcodeBlock.HtmlTokenElement.key;
-        } else if (cell.type == 'image') {
-          //key = cell.imageBlock.HtmlTokenElement.key;
-        } else if (cell.type == 'chart') {
+        } else if (cell.type == 'image' && cell.barcodeBlock?.HtmlTokenElement?.key) {
+          key = cell.barcodeBlock.HtmlTokenElement.key;
+        } else if (cell.type == 'chart' && cell.barcodeBlock?.HtmlTokenElement?.key) {
           // key = cell.chartBlock.HtmlTokenElement.key;
         }
 
