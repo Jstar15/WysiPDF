@@ -248,9 +248,9 @@
         <app-cell-editor-viewer *ngIf="isCellEditorOpen"
                                 [type]="lastCellEditorEvent.type"
                                 [cell]="lastCellEditorEvent.cell"
-                                [row]="lastCellEditorEvent.row"
+                                [rowIndex]="lastCellEditorEvent.rowIndex"
                                 [area]="lastCellEditorEvent.area"
-                                [column]="lastCellEditorEvent.column"
+                                [columnIndex]="lastCellEditorEvent.columnIndex"
                                 [tokens]="page.tokenAttrs"
                                 (editorActionEvent)="closeEditors()">
         </app-cell-editor-viewer>

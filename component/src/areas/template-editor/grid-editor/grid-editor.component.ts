@@ -256,8 +256,8 @@ export class GridEditorComponent implements OnInit, OnDestroy, OnChanges {
     if (!selected) { console.warn('No cell selected.'); return; }
     this.cellChange.emit({
       cell: selected,
-      row: this.currentRow,
-      column: this.currentCol,
+      rowIndex: this.currentRow,
+      columnIndex: this.currentCol,
       area: (this.area) as 'content' | 'footer' | 'header',
       type: CellEditorType.HTML
     })
@@ -270,8 +270,8 @@ export class GridEditorComponent implements OnInit, OnDestroy, OnChanges {
     // call parent fucntion here
     this.cellChange.emit({
       cell: selected,
-      row: this.currentRow,
-      column: this.currentCol,
+      rowIndex: this.currentRow,
+      columnIndex: this.currentCol,
       area: (this.area) as 'content' | 'footer' | 'header',      type: CellEditorType.IMAGE
     })
   }
@@ -282,8 +282,8 @@ export class GridEditorComponent implements OnInit, OnDestroy, OnChanges {
 
     this.cellChange.emit({
       cell: selected,
-      row: this.currentRow,
-      column: this.currentCol,
+      rowIndex: this.currentRow,
+      columnIndex: this.currentCol,
       area: (this.area) as 'content' | 'footer' | 'header',      type: CellEditorType.CHART
     })
   }
@@ -294,8 +294,8 @@ export class GridEditorComponent implements OnInit, OnDestroy, OnChanges {
 
     this.cellChange.emit({
       cell: selected,
-      row: this.currentRow,
-      column: this.currentCol,
+      rowIndex: this.currentRow,
+      columnIndex: this.currentCol,
       area: 'content',
       type: CellEditorType.BARCODE
     })
@@ -306,8 +306,8 @@ export class GridEditorComponent implements OnInit, OnDestroy, OnChanges {
 
     this.cellChange.emit({
       cell: selected,
-      row: this.currentRow,
-      column: this.currentCol,
+      rowIndex: this.currentRow,
+      columnIndex: this.currentCol,
       area: 'content',
       type: CellEditorType.DISPLAY_RULES
     })

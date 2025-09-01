@@ -82,6 +82,14 @@ export class PageStateService {
     this._pageSubject.next(null);
   }
 
+
+  getDisplayLogicForRow(row: number, area: string): DisplayLogicGroup{
+    const current = this.getCurrentPage();
+    if (!current) return null;
+    debugger;
+
+    return current[area].rows[row].displayLogic;
+  }
   /** Safely replace a single cell and record it as a new snapshot */
   updateCell(row: number, column: number, area: string, cell: Cell): void {
     const current = this.getCurrentPage();
