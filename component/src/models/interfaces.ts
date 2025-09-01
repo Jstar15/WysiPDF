@@ -128,6 +128,7 @@ export interface Row {
     backgroundColor?: string;
     cells: Cell[];
     partialContent?: Grid;
+    displayLogic?: DisplayLogicGroup
 }
 
 export interface Grid {

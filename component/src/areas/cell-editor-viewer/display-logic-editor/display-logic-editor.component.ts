@@ -13,12 +13,21 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatCardModule } from '@angular/material/card';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatDialogModule } from '@angular/material/dialog';
-import {TokenAttributeTypeEnum} from "../../../models/TokenAttributeTypeEnum";
-import {TokenAttribute} from "../../../models/TokenAttribute";
-import {DisplayCondition, DisplayLogicGroup} from "../../../models/display-logic.models";
-import {Cell} from "../../../models/interfaces";
-import {DisplayLogicService} from "../../../utils/display-logic.service"; // kept for template styling if used
 
+import { TokenAttributeTypeEnum } from '../../../models/TokenAttributeTypeEnum';
+import { TokenAttribute } from '../../../models/TokenAttribute';
+import { DisplayCondition, DisplayLogicGroup } from '../../../models/display-logic.models';
+import { DisplayLogicService } from '../../../utils/display-logic.service';
+
+type ChainType = 'AND' | 'OR';
+type Operator =
+  | 'EQUALS'
+  | 'NOT_EQUALS'
+  | 'GREATER'
+  | 'LESS'
+  | 'CONTAINS'
+  | 'NOT_NULL'
+  | 'IS_EMPTY';
 
 @Component({
   standalone: true,
@@ -43,16 +52,21 @@ import {DisplayLogicService} from "../../../utils/display-logic.service"; // kep
 })
 export class DisplayLogicEditorComponent implements OnInit, OnChanges {
   /** Inputs */
-  @Input() public cell!: Cell;
+  @Input() public displayLogicGroup: DisplayLogicGroup | null = null;
   @Input() public tokenAttrs: TokenAttribute[] = [];
 
-  /** Output */
-  @Output() public change = new EventEmitter<Cell>();
+  /** Output: emits DisplayLogicGroup or null (no rules) on user change */
+  @Output() public displayLogicChange = new EventEmitter<DisplayLogicGroup | null>();
 
   form!: FormGroup;
   conditionOutcomes: boolean[] = [];
   overallPass = false;
   displayTokenAttrs: TokenAttribute[] = [];
+
+  // guards to avoid circular resets
+  private isHydrating = false;
+  private lastIncomingJson = ''; // last value received via @Input (JSON)
+  private lastEmittedJson = '';  // last value we emitted (JSON)
 
   constructor(
     private fb: FormBuilder,
@@ -63,43 +77,120 @@ export class DisplayLogicEditorComponent implements OnInit, OnChanges {
   // Lifecycle
   // ───────────────────────────────────────────────────────────────
   ngOnInit(): void {
-    this.hydrate();
+    this.buildForm();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['cell'] || changes['tokenAttrs']) {
-      this.hydrate();
+    if (!this.form) {
+      this.buildForm();
+      return;
+    }
+
+    // tokens changed => refresh evaluation only
+    if (changes['tokenAttrs'] && !changes['displayLogicGroup']) {
+      this.refreshTokensOnly();
+    }
+
+    // external logic changed => patch (no rebuild, no wipe)
+    if (changes['displayLogicGroup']) {
+      const incoming = this.normalizeOrNull(this.displayLogicGroup);
+      const incomingJson = JSON.stringify(incoming);
+
+      // If this is exactly what we just emitted, ignore to prevent echo loop
+      if (incomingJson === this.lastEmittedJson) {
+        this.lastIncomingJson = incomingJson;
+        return;
+      }
+
+      // Skip if logically identical to current form state
+      const current = this.toDisplayLogicOrNull();
+      if (this.sameLogic(incoming, current)) {
+        this.lastIncomingJson = incomingJson;
+        return;
+      }
+
+      this.lastIncomingJson = incomingJson;
+      this.patchFromLogic(incoming);
     }
   }
 
   // ───────────────────────────────────────────────────────────────
-  // Hydration
+  // Build / Patch
   // ───────────────────────────────────────────────────────────────
-  private hydrate(): void {
-    // Build display tokens from incoming tokenAttrs (use TEXT for evaluation)
+  private buildForm(): void {
+    // tokens used for evaluation
     this.displayTokenAttrs = (this.tokenAttrs || []).map(
       t => new TokenAttribute(t.name, (t as any).value ?? '', TokenAttributeTypeEnum.TEXT)
     );
 
-    const initial: DisplayLogicGroup | undefined = this.cell?.displayLogic;
+    const initial = this.normalizeOrNull(this.displayLogicGroup);
+    this.lastIncomingJson = JSON.stringify(initial);
 
-    // Build form
+    this.isHydrating = true;
     this.form = this.fb.group({
-      chainType: this.fb.control(initial?.chainType || 'AND'),
+      chainType: this.fb.control<ChainType>((initial?.chainType ?? 'AND') as ChainType),
       conditions: this.fb.array([]),
     });
 
-    if (initial?.conditions?.length) {
-      initial.conditions.forEach(cond => this.addCondition(cond));
-    } else {
-      this.addCondition();
+    // seed the array to the exact initial length (can be zero)
+    const initialConds = initial?.conditions ?? [];
+    initialConds.forEach(cond => this.conditions.push(this.makeConditionGroup(cond)));
+    this.isHydrating = false;
+
+    // evaluate + emit on user edits
+    this.form.valueChanges.subscribe(() => {
+      if (this.isHydrating) return;
+
+      const logic = this.toDisplayLogicOrNull();
+      const json = JSON.stringify(logic);
+
+      // avoid churn/echo
+      if (json === this.lastIncomingJson || json === this.lastEmittedJson) {
+        this.runTest(logic);
+        return;
+      }
+
+      this.lastEmittedJson = json;
+      this.runTest(logic);
+      this.displayLogicChange.emit(logic);
+    });
+
+    this.runTest(initial); // initial evaluation (no emit)
+  }
+
+  /** Patch existing form to match incoming logic (no rebuild) */
+  private patchFromLogic(logic: DisplayLogicGroup | null): void {
+    this.isHydrating = true;
+
+    // chainType (default AND when null)
+    const desiredChain = (logic?.chainType ?? 'AND') as ChainType;
+    if (this.form.get('chainType')?.value !== desiredChain) {
+      this.form.get('chainType')?.setValue(desiredChain, { emitEvent: false });
     }
 
-    // Re-run test on edits
-    this.form.valueChanges.subscribe(() => this.runTest());
+    // ensure array length EXACT (allow zero)
+    const arr = this.conditions;
+    const want = logic?.conditions?.length ?? 0;
+    while (arr.length < want) arr.push(this.makeConditionGroup(), { emitEvent: false } as any);
+    while (arr.length > want) arr.removeAt(arr.length - 1, { emitEvent: false });
 
-    // Initial evaluation
-    this.runTest();
+    // set values (only if changed)
+    (logic?.conditions ?? []).forEach((c, i) => {
+      const g = arr.at(i) as FormGroup;
+      if (g.get('tokenName')?.value !== (c.tokenName ?? '')) {
+        g.get('tokenName')?.setValue(c.tokenName ?? '', { emitEvent: false });
+      }
+      if (g.get('operator')?.value !== (c.operator ?? 'EQUALS')) {
+        g.get('operator')?.setValue((c.operator ?? 'EQUALS') as Operator, { emitEvent: false });
+      }
+      const wantVal = c.operator === 'NOT_NULL' || c.operator === 'IS_EMPTY' ? '' : (c.value ?? '');
+      if (g.get('value')?.value !== wantVal) {
+        g.get('value')?.setValue(wantVal, { emitEvent: false });
+      }
+    });
+
+    this.isHydrating = false;
+    this.runTest(logic); // re-evaluate; no emit
   }
 
   // ───────────────────────────────────────────────────────────────
@@ -114,76 +205,148 @@ export class DisplayLogicEditorComponent implements OnInit, OnChanges {
   private makeConditionGroup(initial?: Partial<DisplayCondition>) {
     const group = this.fb.group({
       tokenName: [initial?.tokenName || ''],
-      operator:  [initial?.operator  || 'EQUALS'],
-      value:     [initial?.value     || ''],
+      operator:  [((initial?.operator as Operator) || 'EQUALS') as Operator],
+      value:     [initial?.value ?? ''],
     });
 
+    // clear value for unary ops (muted)
     group.get('operator')?.valueChanges.subscribe((op) => {
+      if (this.isHydrating) return;
       if (op === 'NOT_NULL' || op === 'IS_EMPTY') {
-        group.get('value')?.setValue('');
+        const ctrl = group.get('value');
+        if (ctrl?.value) {
+          this.isHydrating = true;
+          ctrl.setValue('', { emitEvent: false });
+          this.isHydrating = false;
+        }
       }
       this.runTest();
     });
 
-    group.valueChanges.subscribe(() => this.runTest());
+    // local re-eval; parent emit handled by form.valueChanges
+    group.valueChanges.subscribe(() => {
+      if (this.isHydrating) return;
+      this.runTest();
+    });
 
     return group;
   }
 
   addCondition(initial?: Partial<DisplayCondition>) {
+    this.isHydrating = true;
     this.conditions.push(this.makeConditionGroup(initial));
+    this.isHydrating = false;
+    // emit happens after user edits
   }
 
   removeCondition(index: number): void {
-    this.conditions.removeAt(index);
-    this.runTest();
+    this.isHydrating = true;
+    this.conditions.removeAt(index); // <-- delete the requested index, not the last
+    // DO NOT add a blank row anymore; allow zero rows
+    this.isHydrating = false;
+
+    const logic = this.toDisplayLogicOrNull();
+    this.runTest(logic);
+    this.lastEmittedJson = JSON.stringify(logic);
+    this.displayLogicChange.emit(logic); // emits null when no rules remain
   }
 
   // ───────────────────────────────────────────────────────────────
   // Evaluation
   // ───────────────────────────────────────────────────────────────
-  runTest(): void {
-    const logic: DisplayLogicGroup = this.form.value as DisplayLogicGroup;
+  public runTest(logic?: DisplayLogicGroup | null): void {
+    const l = logic ?? this.toDisplayLogicOrNull();
 
-    this.conditionOutcomes = (logic.conditions || []).map((cond: DisplayCondition) =>
+    if (!l || !l.conditions.length) {
+      // No rules => visible by default; no per-condition outcomes
+      this.conditionOutcomes = [];
+      this.overallPass = true;
+      return;
+    }
+
+    this.conditionOutcomes = l.conditions.map((cond: DisplayCondition) =>
       this.evaluator.evaluate(this.displayTokenAttrs, {
         chainType: 'AND',
         conditions: [cond],
       })
     );
 
-    this.overallPass = this.evaluator.evaluate(this.displayTokenAttrs, logic);
+    this.overallPass = this.evaluator.evaluate(this.displayTokenAttrs, l);
   }
 
-  // ───────────────────────────────────────────────────────────────
-  // Actions (component style)
-  // ───────────────────────────────────────────────────────────────
-  /** Emit updated Cell with displayLogic from the form */
-  save(): void {
-    if (!this.form.valid) return;
-    const nextLogic = this.form.value as DisplayLogicGroup;
-    const nextCell: Cell = { ...this.cell, displayLogic: nextLogic };
-    this.cell = nextCell;
-    this.change.emit(nextCell);
-  }
-
-  /** Optional: keep no-op for templates that still call cancel() */
-  cancel(): void {
-    // No-op in component mode; leave state unchanged.
-  }
-
-  /** Update token name used for testing/evaluation only */
-  updateTokenName(index: number, newName: string) {
-    const existing = this.displayTokenAttrs[index];
-    if (!existing) return;
-    existing.name = newName;
+  private refreshTokensOnly(): void {
+    this.displayTokenAttrs = (this.tokenAttrs || []).map(
+      t => new TokenAttribute(t.name, (t as any).value ?? '', TokenAttributeTypeEnum.TEXT)
+    );
     this.runTest();
   }
 
-  /** Update token value used for testing/evaluation only */
-  updateTokenValue(index: number, newValue: string) {
-    if (!this.displayTokenAttrs[index]) return;
-    this.displayTokenAttrs[index].value = newValue;
+  // ───────────────────────────────────────────────────────────────
+  // Test tab helpers (local only)
+  // ───────────────────────────────────────────────────────────────
+  public updateTokenName(index: number, newName: string): void {
+    const row = this.displayTokenAttrs[index];
+    if (!row) return;
+    row.name = newName;
+    const src = this.tokenAttrs.find(t => t.name === newName);
+    if (src && src.value != null) row.value = String(src.value);
     this.runTest();
+  }
+
+  public updateTokenValue(index: number, newValue: string): void {
+    const row = this.displayTokenAttrs[index];
+    if (!row) return;
+    row.value = newValue;
+    this.runTest();
+  }
+
+  // ───────────────────────────────────────────────────────────────
+  // Mapping & utils
+  // ───────────────────────────────────────────────────────────────
+  /** Map the current form state to a proper DisplayLogicGroup, or null if there are no rules. */
+  private toDisplayLogicOrNull(): DisplayLogicGroup | null {
+    const raw = this.form?.getRawValue() as {
+      chainType: ChainType | string;
+      conditions: Array<{ tokenName?: string; operator?: Operator | string; value?: string }>;
+    };
+
+    const conds = (raw?.conditions ?? []);
+    if (!conds.length) return null; // ← emit null when there are no rules
+
+    const chainType: ChainType = (raw?.chainType === 'OR' ? 'OR' : 'AND');
+
+    const conditions: DisplayCondition[] = conds.map((c) => {
+      const operator = (c?.operator as Operator) ?? 'EQUALS';
+      const isUnary = operator === 'NOT_NULL' || operator === 'IS_EMPTY';
+      const base: DisplayCondition = {
+        tokenName: c?.tokenName ?? '',
+        operator
+      } as DisplayCondition;
+      if (!isUnary) (base as any).value = c?.value ?? '';
+      return base;
+    });
+
+    return { chainType, conditions };
+  }
+
+  /** Normalize incoming object, or return null when there are no rules. */
+  private normalizeOrNull(l?: DisplayLogicGroup | null): DisplayLogicGroup | null {
+    if (!l || !Array.isArray(l.conditions) || l.conditions.length === 0) return null;
+    const chainType: ChainType = (l.chainType === 'OR') ? 'OR' : 'AND';
+    const conditions: DisplayCondition[] = l.conditions.map((c) => {
+      const operator = (c?.operator as Operator) ?? 'EQUALS';
+      const isUnary = operator === 'NOT_NULL' || operator === 'IS_EMPTY';
+      const base: DisplayCondition = {
+        tokenName: c?.tokenName ?? '',
+        operator
+      } as DisplayCondition;
+      if (!isUnary) (base as any).value = (c as any)?.value ?? '';
+      return base;
+    });
+    return { chainType, conditions };
+  }
+
+  private sameLogic(a?: DisplayLogicGroup | null, b?: DisplayLogicGroup | null): boolean {
+    return JSON.stringify(this.normalizeOrNull(a)) === JSON.stringify(this.normalizeOrNull(b));
   }
 }

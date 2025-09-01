@@ -36,7 +36,7 @@
     </ng-content>
 
     <ng-content *ngIf="type == CellEditorType.DISPLAY_RULES && cell">
-      <app-display-logic-editor [cell]="cell" [tokenAttrs]="tokens" (change)="cell = $event"></app-display-logic-editor>
+      <app-display-logic-editor [displayLogicGroup]="cell.displayLogic" [tokenAttrs]="tokens" (displayLogicChange)="cell.displayLogic = $event"></app-display-logic-editor>
     </ng-content>
 
   </section>

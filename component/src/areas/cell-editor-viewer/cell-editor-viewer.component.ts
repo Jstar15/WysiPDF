@@ -40,6 +40,7 @@ export class CellEditorViewerComponent {
   }
   onOk(): void     {
     this.gridStateService.updateCell(this.row, this.column, this.area, this.cell)
+
     debugger;
     this.editorActionEvent.emit(CellEditorAction.OK);
   }

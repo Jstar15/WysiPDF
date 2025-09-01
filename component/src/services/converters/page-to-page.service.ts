@@ -40,9 +40,9 @@ export class PageToPageService {
     page.content.rows = this.tokenReplacerService.replaceTokensInRow(page.content.rows, tokenAttributeList);
 
     // 6) Evaluate display logic show / hide
-    page.header.rows = this.displayLogicService.evaulateCells(page.header.rows, tokenAttributeList);
-    page.footer.rows = this.displayLogicService.evaulateCells(page.footer.rows, tokenAttributeList);
-    page.content.rows = this.displayLogicService.evaulateCells(page.content.rows, tokenAttributeList);
+    page.header.rows = this.displayLogicService.evaluateAllRows(page.header.rows, tokenAttributeList);
+    page.footer.rows = this.displayLogicService.evaluateAllRows(page.footer.rows, tokenAttributeList);
+    page.content.rows = this.displayLogicService.evaluateAllRows(page.content.rows, tokenAttributeList);
 
     return page;
   }

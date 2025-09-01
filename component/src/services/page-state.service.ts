@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import {Cell, Grid, Page} from '../models/interfaces';
+import {DisplayLogicGroup} from "../models/display-logic.models";
 
 @Injectable({ providedIn: 'root' })
 export class PageStateService {
@@ -81,7 +82,6 @@ export class PageStateService {
     this._pageSubject.next(null);
   }
 
-
   /** Safely replace a single cell and record it as a new snapshot */
   updateCell(row: number, column: number, area: string, cell: Cell): void {
     const current = this.getCurrentPage();
@@ -92,11 +92,8 @@ export class PageStateService {
     const grid = current[area];
     if (!grid?.rows?.[row]?.cells?.[column]) return;
 
-    grid.rows[row].cells[column].barcodeBlock = null;
-    grid.rows[row].cells[column].imageBlock = null;
-    grid.rows[row].cells[column].chartBlock = null;
-    grid.rows[row].cells[column].value = '';
-
+    grid.rows[row].cells[column].displayLogic = cell.displayLogic;
+    grid.rows[row].displayLogic = cell.displayLogic;
 
     if (cell?.value) {
       grid.rows[row].cells[column].type = 'html';
@@ -118,11 +115,10 @@ export class PageStateService {
     if (cell?.chartBlock) {
       grid.rows[row].cells[column].type = 'chart';
       grid.rows[row].cells[column].chartBlock = cell.chartBlock;
+      grid.rows[row].cells[column].value = '';
     }
 
-    if (cell?.displayLogic) {
-      grid.rows[row].cells[column].displayLogic = cell.displayLogic;
-    }
+
 
     this.pushSnapshot(current);
   }

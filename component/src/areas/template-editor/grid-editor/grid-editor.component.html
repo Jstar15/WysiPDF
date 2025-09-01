@@ -98,6 +98,18 @@
         <!-- Normal row rendering -->
         <ng-template #normalRow>
             <div class="row" [style.background-color]="pageAttrs.backgroundColor">
+              <button
+                *ngIf="row.displayLogic"
+                mat-icon-button
+                class="display-badge"
+                [matTooltip]="'Display Rules Active On This Row'"
+                matTooltipPosition="left"
+                [attr.aria-label]="'Display Rules Active On This Row'"
+                type="button"
+              >
+                <mat-icon svgIcon="view_list"></mat-icon>
+              </button>
+
                 <ng-container *ngFor="let cell of row.cells; let c = index">
 
                     <div class="cell-container" [class.has-error]="cell.hasError" [style.flex-basis.%]="row.widths[c]">
