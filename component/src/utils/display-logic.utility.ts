@@ -1,12 +1,12 @@
 // display-logic.utility.ts
 import { Injectable } from '@angular/core';
-import { TokenAttribute } from '../models/TokenAttribute';
+import { TokenAttribute } from '../models/token-attribute';
 import {
   DisplayCondition,
   DisplayLogicGroup,
   Operator,
 } from '../models/display-logic.models';
-import { Row, Cell } from '../models/page';
+import {Row, Cell, Page, Grid} from '../models/page';
 
 @Injectable({ providedIn: 'root' })
 export class DisplayLogicUtility {
@@ -78,4 +78,55 @@ export class DisplayLogicUtility {
         return true;
     }
   }
+
+
+  /** Extract all non-empty display rules from a Page */
+  public collectDisplayRules(page: Page): DisplayRuleItem[] {
+    const results: DisplayRuleItem[] = [];
+
+    const scanGrid = (grid: Grid | undefined, location: DisplayRuleLocation, gridName?: string) => {
+      if (!grid?.rows?.length) return;
+      grid.rows.forEach((row: Row, rowIndex: number) => {
+        row.cells.forEach((cell: Cell, cellIndex: number) => {
+          const logic = cell.displayLogic;
+          if (logic && !this.isEmptyLogic(logic)) {
+            results.push({
+              location,
+              gridName,
+              rowIndex,
+              cellIndex,
+              displayLogic: logic
+            });
+          }
+        });
+      });
+    };
+
+    scanGrid(page.header,  'header',  page.header?.name);
+    scanGrid(page.content, 'content', page.content?.name);
+    scanGrid(page.footer,  'footer',  page.footer?.name);
+
+    // partialContent: array of Grid
+    (page.partialContent ?? []).forEach((g) => scanGrid(g, 'partial', g?.name));
+
+    return results;
+  }
+
+  /** Treat a logic group with no conditions (or empty ones) as empty */
+  private isEmptyLogic(logic: DisplayLogicGroup | null | undefined): boolean {
+    if (!logic) return true;
+    const conds = logic.conditions ?? [];
+    return conds.length === 0;
+  }
+
+}
+
+export type DisplayRuleLocation = 'header' | 'content' | 'footer' | 'partial';
+
+export interface DisplayRuleItem {
+  location: DisplayRuleLocation;
+  gridName?: string;
+  rowIndex: number;
+  cellIndex: number;
+  displayLogic: DisplayLogicGroup;
 }

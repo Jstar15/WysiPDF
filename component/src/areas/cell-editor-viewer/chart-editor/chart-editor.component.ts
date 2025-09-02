@@ -19,8 +19,8 @@ import { MatSelect } from '@angular/material/select';
 import { MatOption } from '@angular/material/core';
 
 import { Cell, ChartBlock, ChartSlice } from '../../../models/page';
-import { TokenAttribute } from '../../../models/TokenAttribute';
-import { TokenAttributeType } from '../../../models/TokenAttributeType';
+import { TokenAttribute } from '../../../models/token-attribute';
+import { TokenAttributeType } from '../../../models/token-attribute-type';
 import { ChartImageRendererComponent } from '../../../shared/chart/chart-image-renderer.component';
 
 type Align = 'left' | 'center' | 'right';

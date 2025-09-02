@@ -7,7 +7,7 @@ import { MatTooltip } from '@angular/material/tooltip';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { Subject, take, takeUntil } from 'rxjs';
-import { TokenAttribute } from '../../../models/TokenAttribute';
+import { TokenAttribute } from '../../../models/token-attribute';
 import {AddPartialContentDialogComponent, AddPartialContentDialogResult} from '../../../dialogs/add-partial-content-dialog/add-partial-content-dialog.component';
 import { IconService } from '../../../services/external/icon.service';
 import {Cell, CellAttrs, Grid, Row, PageAttrs,} from '../../../models/page';

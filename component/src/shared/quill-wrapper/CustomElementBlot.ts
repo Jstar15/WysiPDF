@@ -1,7 +1,7 @@
 import Quill from 'quill/core';
 // @ts-ignore
 import EmbedBlot from 'quill/blots/embed';
-import { TokenAttribute } from '../../models/TokenAttribute';
+import { TokenAttribute } from '../../models/token-attribute';
 
 export class CustomElementBlot extends EmbedBlot {
   static override blotName = 'custom-element';

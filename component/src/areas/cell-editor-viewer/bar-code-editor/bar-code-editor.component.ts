@@ -18,8 +18,8 @@ import { MatOption } from '@angular/material/core';
 import { MatButton } from '@angular/material/button';
 
 import { Cell, BarcodeBlock } from '../../../models/page';
-import { TokenAttribute } from '../../../models/TokenAttribute';
-import { TokenAttributeType } from '../../../models/TokenAttributeType';
+import { TokenAttribute } from '../../../models/token-attribute';
+import { TokenAttributeType } from '../../../models/token-attribute-type';
 import {
   ExtendedBarcodeFormat,
   BarcodeService

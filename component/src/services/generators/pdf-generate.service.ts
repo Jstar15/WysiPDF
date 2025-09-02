@@ -5,7 +5,7 @@ import type {
 } from 'pdfmake/interfaces';
 import { Page } from '../../models/page';
 
-import {TokenAttribute} from "../../models/TokenAttribute";
+import {TokenAttribute} from "../../models/token-attribute";
 import {PageToStructuredContentConverter} from "../../converters/page-to-structured-content.converter";
 import {PdfMakeService} from "../external/pdf-make.service";
 import {JsonTokenParserUtility} from "../../utils/json-token-parser.utility";

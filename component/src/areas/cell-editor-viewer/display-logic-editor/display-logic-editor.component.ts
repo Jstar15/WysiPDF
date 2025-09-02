@@ -14,8 +14,8 @@ import { MatCardModule } from '@angular/material/card';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatDialogModule } from '@angular/material/dialog';
 
-import { TokenAttributeType } from '../../../models/TokenAttributeType';
-import { TokenAttribute } from '../../../models/TokenAttribute';
+import { TokenAttributeType } from '../../../models/token-attribute-type';
+import { TokenAttribute } from '../../../models/token-attribute';
 import { DisplayCondition, DisplayLogicGroup } from '../../../models/display-logic.models';
 import { DisplayLogicUtility } from '../../../utils/display-logic.utility';
 

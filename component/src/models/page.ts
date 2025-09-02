@@ -1,4 +1,4 @@
-import {TokenAttribute} from "./TokenAttribute";
+import {TokenAttribute} from "./token-attribute";
 import {DisplayLogicGroup} from "./display-logic.models";
 
 export interface HtmlAttributes {

@@ -6,7 +6,7 @@ import {
   MatDialogContent,
   MatDialogTitle
 } from "@angular/material/dialog";
-import {TokenAttribute} from "../../models/TokenAttribute";
+import {TokenAttribute} from "../../models/token-attribute";
 import {FormsModule} from "@angular/forms";
 import {NgForOf} from "@angular/common";
 import {MatButton} from "@angular/material/button";

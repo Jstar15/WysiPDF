@@ -21,8 +21,8 @@ import { MatSelect } from '@angular/material/select';
 import { MatOption } from '@angular/material/core';
 
 import { Cell, ImageBlock } from '../../../models/page';
-import { TokenAttribute } from '../../../models/TokenAttribute';
-import { TokenAttributeType } from '../../../models/TokenAttributeType';
+import { TokenAttribute } from '../../../models/token-attribute';
+import { TokenAttributeType } from '../../../models/token-attribute-type';
 
 type Align = 'left' | 'center' | 'right';
 

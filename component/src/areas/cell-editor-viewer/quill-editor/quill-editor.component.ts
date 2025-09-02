@@ -19,7 +19,7 @@ import { MatSelect } from '@angular/material/select';
 import { MatOption } from '@angular/material/core';
 
 import { Cell } from '../../../models/page';
-import { TokenAttribute } from '../../../models/TokenAttribute';
+import { TokenAttribute } from '../../../models/token-attribute';
 import { QuillWrapperComponent } from '../../../shared/quill-wrapper/quill-wrapper.component';
 
 type Align = 'left' | 'center' | 'right'; // if your template needs it

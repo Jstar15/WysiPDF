@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {Page, Grid, Row, Cell, CellAttrs, ImageBlock, ChartBlock, BarcodeBlock} from '../../models/page';
-import {TokenAttribute} from "../../models/TokenAttribute";
+import {TokenAttribute} from "../../models/token-attribute";
 import {PageToPageConverter} from "../../converters/page-to-page.converter";
 import {JsonTokenParserUtility} from "../../utils/json-token-parser.utility";
 import {TokenHtmlReplacerService} from "../../utils/token-html-cell-replacer.utility";

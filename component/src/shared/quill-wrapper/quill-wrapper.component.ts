@@ -12,7 +12,7 @@ import {
 } from '@angular/core';
 
 import { MatDialog } from "@angular/material/dialog";
-import { TokenAttribute } from "../../models/TokenAttribute";
+import { TokenAttribute } from "../../models/token-attribute";
 import { AddTokenDialogComponent } from "../../dialogs/add-token-dialog/add-token-dialog.component";
 import { CustomElementBlot } from "./CustomElementBlot";
 import Quill from 'quill';

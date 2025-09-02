@@ -1,4 +1,4 @@
-import {TokenAttributeType} from "./TokenAttributeType";
+import {TokenAttributeType} from "./token-attribute-type";
 
 export class TokenAttribute {
   constructor(name: string,value: string,type: TokenAttributeType) {

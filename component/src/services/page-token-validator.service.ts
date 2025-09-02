@@ -7,10 +7,10 @@ import {
   Page,
   Row,
 } from '../models/page';
-import { TokenAttribute } from '../models/TokenAttribute';
+import { TokenAttribute } from '../models/token-attribute';
 import { HtmlToStructuredContentConverter } from '../converters/html-to-structured-content.converter';
 import { JsonTokenParserUtility } from '../utils/json-token-parser.utility';
-import {TokenAttributeType} from "../models/TokenAttributeType";
+import {TokenAttributeType} from "../models/token-attribute-type";
 
 @Injectable({ providedIn: 'root' })
 export class PageTokenValidator {

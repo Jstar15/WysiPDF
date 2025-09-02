@@ -1,6 +1,6 @@
 // src/app/presets/invoice.preset.ts
 import { Page } from '../models/page';
-import {TokenAttributeType} from "../models/TokenAttributeType";
+import {TokenAttributeType} from "../models/token-attribute-type";
 
 export const Preset5: any = {
   "header": {

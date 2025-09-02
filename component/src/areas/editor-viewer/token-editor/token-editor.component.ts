@@ -14,8 +14,8 @@ import { MatDialogContent } from '@angular/material/dialog'; // kept only if you
 
 import { MatTableDataSource } from '@angular/material/table';
 
-import { TokenAttributeType } from '../../../models/TokenAttributeType';
-import { TokenAttribute } from '../../../models/TokenAttribute';
+import { TokenAttributeType } from '../../../models/token-attribute-type';
+import { TokenAttribute } from '../../../models/token-attribute';
 import { JsonTokenParserUtility } from '../../../utils/json-token-parser.utility';
 
 @Component({

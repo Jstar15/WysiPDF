@@ -11,8 +11,8 @@ import { FormsModule } from "@angular/forms";
 import { MatButton } from "@angular/material/button";
 import {MatInput} from "@angular/material/input";
 import {NgForOf} from "@angular/common";
-import {TokenAttribute} from "../../models/TokenAttribute";
-import {TokenAttributeType} from "../../models/TokenAttributeType";
+import {TokenAttribute} from "../../models/token-attribute";
+import {TokenAttributeType} from "../../models/token-attribute-type";
 
 export interface EditPartialContentData {
   name: string;

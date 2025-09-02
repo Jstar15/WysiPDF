@@ -5,7 +5,7 @@ import {Cell, Row} from '../../models/page';
 import {MatIcon} from "@angular/material/icon";
 import {CellEditorAction, CellEditorType} from "./cell-editor-viewer.interfaces";
 import {AddImageEditorComponent} from "./image-editor/image-editor.component";
-import {TokenAttribute} from "../../models/TokenAttribute";
+import {TokenAttribute} from "../../models/token-attribute";
 import {PageStateService} from "../../services/page-state.service";
 import {BarCodeEditorComponent} from "./bar-code-editor/bar-code-editor.component";
 import {QuillEditorComponent} from "./quill-editor/quill-editor.component";

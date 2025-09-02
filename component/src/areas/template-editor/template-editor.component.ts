@@ -13,9 +13,9 @@ import {MatExpansionModule} from '@angular/material/expansion';
 import {AngularSplitModule} from 'angular-split';
 import {GridEditorComponent} from './grid-editor/grid-editor.component';
 import {PdfGenerateService, PdfGenerationResult} from '../../services/generators/pdf-generate.service';
-import {TokenAttribute} from '../../models/TokenAttribute';
-import {TokenAttributeType} from '../../models/TokenAttributeType';
-import {Cell, Grid, Page} from '../../models/page';
+import {TokenAttribute} from '../../models/token-attribute';
+import {TokenAttributeType} from '../../models/token-attribute-type';
+import {Grid, Page} from '../../models/page';
 import {NgForOf, NgIf, NgStyle} from "@angular/common";
 import {PdfViewerComponent} from "../../shared/pdf-viewer/pdf-viewer.component";
 import {MatCard, MatCardActions, MatCardContent, MatCardHeader,} from "@angular/material/card";
@@ -24,17 +24,17 @@ import {MatIconButton, MatMiniFabButton} from "@angular/material/button";
 import {MatTooltip} from "@angular/material/tooltip";
 import {EditPartialContentData, EditPartialContentDialogComponent} from "../../dialogs/edit-partial-content-dialog/edit-partial-content-dialog.component";
 import {PageStateService} from "../../services/page-state.service";
-import {debounceTime, Subject} from "rxjs";
+import {Subject} from "rxjs";
 import {JsonListItem, JsonViewerComponent} from "../../shared/json-viewer/json-viewer.component";
 import {IconService} from "../../services/external/icon.service";
 import {DEFAULT_PAGE} from "../../presets/default-page.preset";
-import {collectDisplayRules} from "../../utils/displayLogic.utiltiy";
 import {PageTokenValidator} from "../../services/page-token-validator.service";
 import {JsonTokenParserUtility} from "../../utils/json-token-parser.utility";
 import {EditorViewerComponent} from "../editor-viewer/editor-viewer.component";
 import {EditorType} from "../editor-viewer/editor-viewer.interfaces";
 import {CellEditorViewerComponent} from "../cell-editor-viewer/cell-editor-viewer.component";
 import {OpenCellEditorEvent} from "./grid-editor/grid-editor.interfaces";
+import {DisplayLogicUtility} from "../../utils/display-logic.utility";
 
 @Component({
   standalone: true,
@@ -84,8 +84,6 @@ export class TemplateEditorComponent implements OnInit,AfterViewInit {
     page: this.page
   };
 
-  private emitChange$ = new Subject<boolean>();
-
   constructor(
       public dialog: MatDialog,
       private pdfService: PdfGenerateService,
@@ -93,7 +91,8 @@ export class TemplateEditorComponent implements OnInit,AfterViewInit {
       private iconService: IconService,
       private pageTokenValidator : PageTokenValidator,
       private jsonTokenParserService: JsonTokenParserUtility,
-      private gridStateService : PageStateService
+      private gridStateService : PageStateService,
+      private displayLogicUtility : DisplayLogicUtility
   ) {
     this.iconService.registerIcons();
 
@@ -197,7 +196,7 @@ export class TemplateEditorComponent implements OnInit,AfterViewInit {
       {
         name: 'Display Rules',
         description: 'Display Rules USed inside the template.',
-        data: collectDisplayRules(page)
+        data: this.displayLogicUtility.collectDisplayRules(page)
       }
     ];
   }

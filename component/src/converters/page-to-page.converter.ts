@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Page, Row } from '../models/page';
 import { PartialContentExpanderService } from '../services/partial-content-expander.service';
 import { HtmlToStructuredContentConverter } from './html-to-structured-content.converter';
-import { TokenAttribute } from '../models/TokenAttribute';
+import { TokenAttribute } from '../models/token-attribute';
 import {TokenReplacerUtility} from "../utils/token-replacer.utility";
 import {DisplayLogicUtility} from "../utils/display-logic.utility";
 import {Converter} from "./converter";

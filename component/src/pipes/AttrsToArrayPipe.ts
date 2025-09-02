@@ -1,7 +1,7 @@
 // attrs-to-array.pipe.ts
 import { Pipe, PipeTransform } from '@angular/core';
-import {TokenAttribute} from "../models/TokenAttribute";
-import {TokenAttributeType} from "../models/TokenAttributeType";
+import {TokenAttribute} from "../models/token-attribute";
+import {TokenAttributeType} from "../models/token-attribute-type";
 
 
 @Pipe({
