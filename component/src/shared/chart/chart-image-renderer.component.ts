@@ -37,7 +37,7 @@ import {
 
 import { CanvasRenderer } from 'echarts/renderers';
 
-import type { ChartBlock } from '../../models/interfaces';
+import type { ChartBlock } from '../../models/page';
 
 echarts.use([
   TitleComponent,

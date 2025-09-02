@@ -1,7 +1,7 @@
 // attrs-to-array.pipe.ts
 import { Pipe, PipeTransform } from '@angular/core';
 import {TokenAttribute} from "../models/TokenAttribute";
-import {TokenAttributeTypeEnum} from "../models/TokenAttributeTypeEnum";
+import {TokenAttributeType} from "../models/TokenAttributeType";
 
 
 @Pipe({
@@ -13,7 +13,7 @@ export class AttrsToArrayPipe implements PipeTransform {
         // You can customize the type mapping per key if you like.
         return Object.entries(attrs).map(
             ([name, value]) =>
-                new TokenAttribute(name, value, TokenAttributeTypeEnum.TEXT)
+                new TokenAttribute(name, value, TokenAttributeType.TEXT)
         );
     }
 }

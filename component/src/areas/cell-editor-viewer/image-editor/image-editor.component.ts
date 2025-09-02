@@ -20,9 +20,9 @@ import { MatButtonToggleGroup, MatButtonToggle } from '@angular/material/button-
 import { MatSelect } from '@angular/material/select';
 import { MatOption } from '@angular/material/core';
 
-import { Cell, ImageBlock } from '../../../models/interfaces';
+import { Cell, ImageBlock } from '../../../models/page';
 import { TokenAttribute } from '../../../models/TokenAttribute';
-import { TokenAttributeTypeEnum } from '../../../models/TokenAttributeTypeEnum';
+import { TokenAttributeType } from '../../../models/TokenAttributeType';
 
 type Align = 'left' | 'center' | 'right';
 
@@ -108,7 +108,7 @@ export class AddImageEditorComponent implements OnInit, OnChanges {
   private hydrateFromInputs(): void {
     // Refresh selectable tokens (IMAGE only)
     this.imageTokens = (this.tokenAttrs ?? []).filter(
-      t => t.type === TokenAttributeTypeEnum.IMAGE
+      t => t.type === TokenAttributeType.IMAGE
     );
 
     const ib: ImageBlock | undefined = this.cell?.imageBlock;

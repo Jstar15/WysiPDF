@@ -1,5 +1,4 @@
 <div class="cell-style-toolbar" role="toolbar" aria-label="Cell styling toolbar">
-  <!-- Spacing (Padding) split button -->
   <div class="tool group split">
     <button
       mat-button
@@ -20,7 +19,6 @@
     </button>
   </div>
 
-  <!-- Keep this menu open while interacting inside -->
   <mat-menu
     #borderFullMenu="matMenu"
     class="box-menu"
@@ -39,17 +37,16 @@
         [right]="cellAttributes?.borderRight ?? 0"
         [bottom]="cellAttributes?.borderBottom ?? 0"
         [left]="cellAttributes?.borderLeft ?? 0"
-        (confirm)="applyBorder2($event); borderTrigger.closeMenu()"
+        (confirm)="applyBorder($event); borderTrigger.closeMenu()"
         (cancel)="borderTrigger.closeMenu()">
       </app-spacing-picker>
     </div>
   </mat-menu>
 
-  <!-- 👇 manual separator -->
+
   <div class="space" aria-hidden="true"></div>
 
 
-  <!-- Spacing (Padding) split button -->
   <div class="tool group split">
     <button
       mat-button
@@ -70,7 +67,7 @@
     </button>
   </div>
 
-  <!-- Keep this menu open while interacting inside -->
+
   <mat-menu
     #spacingMenu="matMenu"
     class="box-menu"
@@ -95,7 +92,7 @@
     </div>
   </mat-menu>
 
-  <!-- 👇 manual separator -->
+
   <div class="space" aria-hidden="true"></div>
 
   <!-- Fill (background) : Split Button -->
@@ -120,10 +117,10 @@
     </mat-menu>
   </div>
 
-  <!-- 👇 manual separator -->
+
   <div class="space" aria-hidden="true"></div>
 
-  <!-- Border COLOR : Split Button -->
+
   <div class="tool group split">
     <button mat-button class="btn-tight main"
             matTooltip="Apply border color"

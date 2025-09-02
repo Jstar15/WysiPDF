@@ -1,4 +1,4 @@
-import {Cell} from "../../models/interfaces";
+import {Cell} from "../../models/page";
 
 export enum CellEditorType {
   IMAGE             = 'IMAGE',

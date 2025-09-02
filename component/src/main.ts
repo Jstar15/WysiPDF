@@ -5,8 +5,8 @@ import { createCustomElement } from '@angular/elements';
 import 'zone.js';
 import { TemplateEditorComponent } from './areas/template-editor/template-editor.component';
 import { MatIconModule } from '@angular/material/icon';
-import { PdfGenerateService } from './services/pdf-generate.service';
-import {HtmlGenerationResult, PageToHtmlOptions, PageToHtmlService} from './services/converters/page-to-html.service';
+import { PdfGenerateService } from './services/generators/pdf-generate.service';
+import {HtmlGenerationResult, PageToHtmlOptions, HtmlGenerateService} from './services/generators/html-generate.service';
 
 // 👇 NEW: import the validator service
 import { PageTokenValidator } from './services/page-token-validator.service';
@@ -46,11 +46,11 @@ async function getPdfService(): Promise<PdfGenerateService> {
   return pdfServiceInstance!;
 }
 
-let pageToHtmlServiceInstance: PageToHtmlService | null = null;
-async function getHtmlService(): Promise<PageToHtmlService> {
+let pageToHtmlServiceInstance: HtmlGenerateService | null = null;
+async function getHtmlService(): Promise<HtmlGenerateService> {
   const app = await appPromise;
   if (!pageToHtmlServiceInstance) {
-    pageToHtmlServiceInstance = app.injector.get(PageToHtmlService);
+    pageToHtmlServiceInstance = app.injector.get(HtmlGenerateService);
   }
   return pageToHtmlServiceInstance!;
 }

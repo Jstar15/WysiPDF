@@ -1,16 +1,6 @@
-import {
-  Component,
-  OnInit,
-  OnDestroy,
-  ViewChild,
-  ElementRef,
-  ChangeDetectorRef,
-  Output,
-  EventEmitter,
-  Input, OnChanges, SimpleChanges
-} from '@angular/core';
+import {Component, OnInit, OnDestroy, ViewChild, ElementRef, Output, EventEmitter, Input, OnChanges, SimpleChanges} from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
@@ -18,24 +8,14 @@ import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { Subject, take, takeUntil } from 'rxjs';
 import { TokenAttribute } from '../../../models/TokenAttribute';
-import {
-  AddPartialContentDialogComponent,
-  AddPartialContentDialogResult
-} from '../../../dialogs/add-partial-content-dialog/add-partial-content-dialog.component';
-import { IconService } from '../../../services/icon.service';
-import {
-  Cell,
-  CellAttrs,
-  Grid,
-  Row,
-  PageAttrs,
-} from '../../../models/interfaces';
-import {
-  CellStyleToolbarComponent,
-} from './cell-style-toolbar/cell-style-toolbar.component';
+import {AddPartialContentDialogComponent, AddPartialContentDialogResult} from '../../../dialogs/add-partial-content-dialog/add-partial-content-dialog.component';
+import { IconService } from '../../../services/external/icon.service';
+import {Cell, CellAttrs, Grid, Row, PageAttrs,} from '../../../models/page';
+import {CellStyleToolbarComponent,} from './cell-style-toolbar/cell-style-toolbar.component';
 import {OpenCellEditorEvent} from "./grid-editor.interfaces";
 import {CellEditorType} from "../../cell-editor-viewer/cell-editor-viewer.interfaces";
 import {PageStateService} from "../../../services/page-state.service";
+import {createEmptyCell, createEmptyRow} from "../../../presets/default-page.preset";
 
 @Component({
   selector: 'app-grid-editor',
@@ -64,17 +44,14 @@ export class GridEditorComponent implements OnInit, OnDestroy, OnChanges {
   public isResizing = false;
 
   public currentCell: Cell | null = null;
-  public currentRow = 0;
-  public currentCol = -1;
-  private activeDialog: MatDialogRef<any, any> | null = null;
-  private lastDialogOpenAt = 0;
-  private destroy$ = new Subject<void>();
+  public currentRow: number = 0;
+  public currentCol: number = -1;
+  private destroy$: Subject<void> = new Subject<void>();
   private resizeEmitRAF?: number;
 
   public constructor(
     private readonly dialog: MatDialog,
     private readonly sanitizer: DomSanitizer,
-    private readonly cdr: ChangeDetectorRef,
     private readonly iconService: IconService,
     private  readonly pageStateService : PageStateService
   ) {
@@ -84,8 +61,6 @@ export class GridEditorComponent implements OnInit, OnDestroy, OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     this.addRowIfNone();
   }
-  // ---------------- lifecycle ----------------
-
 
   public ngOnInit(): void {
     this.addRowIfNone();
@@ -96,7 +71,7 @@ export class GridEditorComponent implements OnInit, OnDestroy, OnChanges {
 
   private addRowIfNone(){
     if (!this.grid?.rows || this.grid.rows.length === 0) {
-      this.grid.rows = [this.createEmptyRow()];
+      this.grid.rows = [createEmptyRow()];
     }
     this.selectFirstRowIfNoneSelected();
   }
@@ -105,23 +80,32 @@ export class GridEditorComponent implements OnInit, OnDestroy, OnChanges {
     if(!this.currentRow){
       this.currentRow = 0;
       this.currentCol = 0;
-      this.currentCell = this.grid.rows[this.currentRow].cells[this.currentCol];
+      this.updateCurrentCell();
     }
   }
+
+  public updateCurrentCell(): void{
+    if (
+      this.currentRow >= 0 &&
+      this.currentCol >= 0 &&
+      this.grid?.rows?.[this.currentRow]?.cells?.[this.currentCol]
+    ) {
+      this.currentCell = this.grid?.rows?.[this.currentRow]?.cells?.[this.currentCol];
+    }else{
+      this.currentCell = null;
+    }
+  }
+
   public ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
-    try { this.activeDialog?.close(); } catch {}
-    this.activeDialog = null;
     if (this.resizeEmitRAF) cancelAnimationFrame(this.resizeEmitRAF);
   }
 
-  // ---------------- add/remove rows/cols ----------------
-
   public addRow(): void {
-    this.grid.rows.splice(this.currentRow + 1, 0, this.createEmptyRow());
+    this.grid.rows.splice(this.currentRow + 1, 0, createEmptyRow());
     this.currentRow++;
-    this.currentCell = this.grid.rows[this.currentRow].cells[this.currentCol];
+    this.updateCurrentCell();
     this.emitChange();
   }
 
@@ -131,17 +115,17 @@ export class GridEditorComponent implements OnInit, OnDestroy, OnChanges {
       this.currentRow = Math.max(0, this.currentRow - 1);
     }
     if (this.grid.rows.length === 0) {
-      this.grid.rows.push(this.createEmptyRow());
+      this.grid.rows.push(createEmptyRow());
       this.currentRow = 0;
     }
-    this.currentCell = this.grid.rows[this.currentRow].cells[this.currentCol];
+    this.updateCurrentCell();
     this.emitChange();
   }
 
   public addColumn(): void {
-    const row = this.grid.rows[this.currentRow];
-    const insertAt = this.currentCol >= 0 ? this.currentCol + 1 : row.cells.length;
-    row.cells.splice(insertAt, 0, this.createEmptyCell());
+    const row: Row = this.grid.rows[this.currentRow];
+    const insertAt: number = this.currentCol >= 0 ? this.currentCol + 1 : row.cells.length;
+    row.cells.splice(insertAt, 0, createEmptyCell());
     this.redistributeWidths(row);
     this.emitChange();
   }
@@ -153,7 +137,7 @@ export class GridEditorComponent implements OnInit, OnDestroy, OnChanges {
       row.widths.splice(this.currentCol, 1);
       this.currentCol = -1;
       if (row.cells.length === 0) {
-        row.cells = [this.createEmptyCell()];
+        row.cells = [createEmptyCell()];
         row.widths = [100];
       } else {
         this.redistributeWidths(row);
@@ -161,8 +145,6 @@ export class GridEditorComponent implements OnInit, OnDestroy, OnChanges {
       this.emitChange();
     }
   }
-
-  // ---------------- resizing ----------------
 
   public onColResizeMouseDown(e: MouseEvent, rowIndex: number, colIndex: number): void {
     e.preventDefault();
@@ -228,34 +210,22 @@ export class GridEditorComponent implements OnInit, OnDestroy, OnChanges {
     document.addEventListener('mouseup', mouseUp);
   }
 
-
-  // ---------------- selection & actions ----------------
-
   public onCellClick(rowIndex: number, colIndex: number): void {
     this.currentRow = rowIndex;
     this.currentCol = colIndex;
-    if (
-      this.currentRow >= 0 &&
-      this.currentCol >= 0 &&
-      this.grid?.rows?.[this.currentRow]?.cells?.[this.currentCol]
-    ) {
-      this.currentCell =  this.grid?.rows?.[this.currentRow]?.cells?.[this.currentCol];
-    }else{
-      this.currentCell = null;
-    }
+    this.updateCurrentCell();
   }
 
-  public onCellDoubleClick(r: number, c: number): void {
-    this.currentRow = r;
-    this.currentCol = c;
-    this.openEditorForCell(r, c);
+  public onCellDoubleClick(rowIndex: number, colIndex: number): void {
+    this.currentRow = rowIndex;
+    this.currentCol = colIndex;
+    this.currentCell =  this.grid?.rows?.[this.currentRow]?.cells?.[this.currentCol];
+    this.openEditorForCell(rowIndex, colIndex);
   }
 
   public openCellEditorDialog(): void {
-    const selected = this.currentCell;
-    if (!selected) { console.warn('No cell selected.'); return; }
     this.cellChange.emit({
-      cell: selected,
+      cell: this.currentCell,
       rowIndex: this.currentRow,
       columnIndex: this.currentCol,
       area: (this.area) as 'content' | 'footer' | 'header',
@@ -264,104 +234,58 @@ export class GridEditorComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   public openAddImageDialog(): void {
-    const selected: Cell = this.currentCell;
-    if (!selected) { console.warn('No cell selected.'); return; }
-
-    // call parent fucntion here
     this.cellChange.emit({
-      cell: selected,
+      cell: this.currentCell,
       rowIndex: this.currentRow,
       columnIndex: this.currentCol,
-      area: (this.area) as 'content' | 'footer' | 'header',      type: CellEditorType.IMAGE
+      area: (this.area) as 'content' | 'footer' | 'header',
+      type: CellEditorType.IMAGE
     })
   }
 
   public openAddChartDialog(): void {
-    const selected = this.currentCell;
-    if (!selected) { console.warn('No cell selected.'); return; }
-
     this.cellChange.emit({
-      cell: selected,
+      cell: this.currentCell,
       rowIndex: this.currentRow,
       columnIndex: this.currentCol,
-      area: (this.area) as 'content' | 'footer' | 'header',      type: CellEditorType.CHART
+      area: (this.area) as 'content' | 'footer' | 'header',
+      type: CellEditorType.CHART
     })
   }
 
   public openAddBarcodeDialog(): void {
-    const selected = this.currentCell;
-    if (!selected) { console.warn('No cell selected.'); return; }
-
     this.cellChange.emit({
-      cell: selected,
+      cell: this.currentCell,
       rowIndex: this.currentRow,
       columnIndex: this.currentCol,
-      area: 'content',
+      area: (this.area) as 'content' | 'footer' | 'header',
       type: CellEditorType.BARCODE
     })
   }
-  public displayRulesDialog(): void {
-    const selected = this.currentCell;
-    if (!selected) { console.warn('No cell selected.'); return; }
 
+  public displayRulesDialog(): void {
     this.cellChange.emit({
-      cell: selected,
+      cell: this.currentCell,
       rowIndex: this.currentRow,
       columnIndex: this.currentCol,
-      area: 'content',
+      area: (this.area) as 'content' | 'footer' | 'header',
       type: CellEditorType.DISPLAY_RULES
     })
   }
 
+  private openEditorForCell(r: number, c: number): void {
+    const selected = this.currentCell;
+    if (!selected) { console.warn('No cell selected.'); return; }
 
-
-
-  public addPartialRow(): void {
-    if (!this.partialContentAvailableList?.length) {
-      console.warn('No partial content available');
-      return;
+    if (this.currentCell.type === 'html') {
+      this.openCellEditorDialog();
+    } else if (this.currentCell.type === 'image') {
+      this.openAddImageDialog();
+    } else if (this.currentCell.type === 'chart') {
+      this.openAddChartDialog();
+    }else if (this.currentCell.type === 'barcode') {
+      this.openAddBarcodeDialog();
     }
-
-    const ref = this.openDialogOnce(() =>
-      this.dialog.open<
-        AddPartialContentDialogComponent,
-        { partials: Grid[] },
-        AddPartialContentDialogResult | undefined
-      >(
-        AddPartialContentDialogComponent,
-        { width: '700px', data: { partials: this.partialContentAvailableList! } }
-      )
-    );
-    if (!ref) return;
-
-    ref.afterClosed().pipe(take(1), takeUntil(this.destroy$))
-      .subscribe((result: AddPartialContentDialogResult | undefined) => {
-        if (!result?.selectedPartial) return;
-
-        const row: Row = {
-          type: 'partial-content',
-          height: 50,
-          widths: [],
-          cells: [],
-          backgroundColor: this.pageAttrs?.backgroundColor || 'transparent',
-          partialContent: result.selectedPartial
-        };
-
-        this.grid.rows.splice(this.currentRow + 1, 0, row);
-        this.currentRow++;
-        this.emitChange();
-      });
-  }
-
-
-
-  public onPartialRowClick(rowIndex: number): void {
-    this.currentRow = rowIndex;
-    this.currentCol = -1;
-  }
-
-  public getPartialTemplateName(rowIndex: number): string {
-    return this.grid.rows[rowIndex]?.partialContent?.name ?? '';
   }
 
   public addPageBreakRow(): void {
@@ -386,96 +310,10 @@ export class GridEditorComponent implements OnInit, OnDestroy, OnChanges {
   public duplicateCurrentRow(): void {
     if (this.currentRow < 0 || this.currentRow >= this.grid.rows.length) return;
     const originalRow = this.grid.rows[this.currentRow];
-    const clonedRow: Row = (typeof structuredClone === 'function')
-      ? structuredClone(originalRow)
-      : this.clone(originalRow);
+    const clonedRow: Row = structuredClone(originalRow)
     this.grid.rows.splice(this.currentRow + 1, 0, clonedRow);
     this.currentRow++;
     this.emitChange();
-  }
-
-
-
-  // ---------------- private helpers ----------------
-
-  private sanitizeHtmlInternal(html: string): SafeHtml {
-    return this.sanitizer.bypassSecurityTrustHtml(html);
-  }
-  public sanitizeHtml(html: string): SafeHtml {
-    return this.sanitizeHtmlInternal(html);
-  }
-
-  private openEditorForCell(r: number, c: number): void {
-    const row = this.grid.rows[r];
-    const cell = row?.cells?.[c];
-    this.currentRow = r;
-    this.currentCol = c;
-
-    if (!cell) { console.warn('Cell not found at', r, c); return; }
-
-    if (cell.type === 'html') {
-      this.openCellEditorDialog();
-    } else if (cell.type === 'image') {
-      this.openAddImageDialog();
-    } else if (cell.type === 'chart') {
-      this.openAddChartDialog();
-    }else if (cell.type === 'barcode') {
-      this.openAddBarcodeDialog();
-    }
-  }
-
-  private openDialogOnce<T, R>(
-    makeDialog: () => MatDialogRef<T, R>,
-    debounceMs: number = 250
-  ): MatDialogRef<T, R> | null {
-    const now = Date.now();
-    if (this.activeDialog) return null;
-    if (now - this.lastDialogOpenAt < debounceMs) return null;
-    this.lastDialogOpenAt = now;
-
-    const ref = makeDialog();
-    this.activeDialog = ref;
-
-    // Ensure proper teardown and re-entry safety
-    ref.beforeClosed().pipe(takeUntil(this.destroy$)).subscribe({ next: () => {} });
-
-    ref.afterClosed().pipe(take(1), takeUntil(this.destroy$))
-      .subscribe({
-        next: () => (this.activeDialog = null),
-        error: () => (this.activeDialog = null),
-        complete: () => (this.activeDialog = null)
-      });
-
-    return ref;
-  }
-
-
-  private createEmptyCell(): Cell {
-    return {
-      type: 'html',
-      value: '',
-      attrs: {
-        paddingTop: 5,
-        paddingRight: 5,
-        paddingBottom: 5,
-        paddingLeft: 5,
-        borderTop: 0,
-        borderRight: 0,
-        borderBottom: 0,
-        borderLeft: 0,
-        borderColor: 'white',
-        backgroundColor: 'transparent'
-      }
-    };
-  }
-
-  private createEmptyRow(): Row {
-    return {
-      height: 50,
-      widths: [100],
-      cells: [this.createEmptyCell()],
-      backgroundColor: this.pageAttrs?.backgroundColor
-    };
   }
 
   private redistributeWidths(row: Row): void {
@@ -492,18 +330,47 @@ export class GridEditorComponent implements OnInit, OnDestroy, OnChanges {
     this.pageStateService.updateGrid(this.area, this.grid)
   }
 
-  private clone<T>(obj: T): T {
-    if (obj == null) return obj as T;
-    try {
-      // @ts-ignore runtime only
-      if (typeof structuredClone === 'function') return structuredClone(obj);
-    } catch {}
-    try {
-      return JSON.parse(JSON.stringify(obj));
-    } catch {
-      if (Array.isArray(obj)) return ([...obj] as unknown) as T;
-      if (typeof obj === 'object') return ({ ...(obj as any) } as unknown) as T;
-      return obj;
+  private sanitizeHtmlInternal(html: string): SafeHtml {
+    return this.sanitizer.bypassSecurityTrustHtml(html);
+  }
+  public sanitizeHtml(html: string): SafeHtml {
+    return this.sanitizeHtmlInternal(html);
+  }
+
+  public addPartialRow(): void {
+    if (!this.partialContentAvailableList?.length) {
+      console.warn('No partial content available');
+      return;
     }
+
+    this.dialog.open<AddPartialContentDialogComponent, { partials: Grid[] }, AddPartialContentDialogResult | undefined>(
+        AddPartialContentDialogComponent,
+        { width: '700px', data: { partials: this.partialContentAvailableList! } }
+      ).afterClosed().pipe(take(1), takeUntil(this.destroy$))
+      .subscribe((result: AddPartialContentDialogResult | undefined) => {
+        if (!result?.selectedPartial) return;
+
+        const row: Row = {
+          type: 'partial-content',
+          height: 50,
+          widths: [],
+          cells: [],
+          backgroundColor: this.pageAttrs?.backgroundColor || 'transparent',
+          partialContent: result.selectedPartial
+        };
+
+        this.grid.rows.splice(this.currentRow + 1, 0, row);
+        this.currentRow++;
+        this.emitChange();
+      });
+  }
+
+  public onPartialRowClick(rowIndex: number): void {
+    this.currentRow = rowIndex;
+    this.currentCol = -1;
+  }
+
+  public getPartialTemplateName(rowIndex: number): string {
+    return this.grid.rows[rowIndex]?.partialContent?.name ?? '';
   }
 }

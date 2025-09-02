@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import JsBarcode from 'jsbarcode';
 
-// Your existing 1D formats stay the same:
+/** 1D formats (unchanged) */
 export type BarcodeFormat =
   | 'CODE128'
   | 'EAN13'
@@ -14,19 +14,22 @@ export type BarcodeFormat =
   | 'pharmacode'
   | 'codabar';
 
-export interface BarcodeOptions {
-  format: BarcodeFormat;
-  width?: number;        // bar width (px)
-  height?: number;       // bar height (px)
-  displayValue?: boolean;
-  margin?: number;       // quiet zone (px)
-}
-
-/** New: QR options (2D) */
+/** 2D */
 export type QRLevel = 'L' | 'M' | 'Q' | 'H';
-export interface QROptions {
+export type ExtendedBarcodeFormat = BarcodeFormat | 'QR';
+
+export interface GenerateBarcodeOptions {
+  /** Required: which symbology to render */
+  format: ExtendedBarcodeFormat;
+
+  /** 1D options */
+  width?: number;         // bar width (px)
+  height?: number;        // bar height (px)
+  displayValue?: boolean;
+  margin?: number;        // quiet zone (px)
+
+  /** QR options */
   size?: number;                 // final pixel size (square)
-  margin?: number;               // quiet zone
   errorCorrectionLevel?: QRLevel;
   dark?: string;                 // CSS color for dark modules
   light?: string;                // CSS color for light modules
@@ -34,38 +37,48 @@ export interface QROptions {
 
 @Injectable({ providedIn: 'root' })
 export class BarcodeService {
-  /** 1D barcodes via JsBarcode (unchanged) */
-  async generate(text: string, opts: BarcodeOptions): Promise<string> {
+  /**
+   * Unified generator for both 1D (JsBarcode) and 2D (QR) barcodes.
+   * Returns a PNG data URL.
+   */
+  async generateDataUrl(text: string, opts: GenerateBarcodeOptions): Promise<string> {
+    const clean = (text ?? '').trim();
+    if (!clean) throw new Error('No text provided for barcode generation.');
+
+    if (opts.format === 'QR') {
+      const { toDataURL } = await import('qrcode'); // lazy load to keep bundle slim
+      return await toDataURL(clean, {
+        errorCorrectionLevel: opts.errorCorrectionLevel ?? 'M',
+        margin: opts.margin ?? 2,
+        width: opts.size ?? 256,
+        color: {
+          dark: opts.dark ?? '#000000',
+          light: opts.light ?? '#ffffff',
+        },
+      });
+    }
+
+    // 1D branch
     return new Promise((resolve, reject) => {
       try {
         const canvas = document.createElement('canvas');
-        JsBarcode(canvas, text, {
-          format: opts.format,
+        JsBarcode(canvas, clean, {
+          format: opts.format as BarcodeFormat,
           width: opts.width ?? 2,
-          height: opts.height ?? 80,
+          height: opts.height ?? 90,
           displayValue: opts.displayValue ?? false,
           margin: opts.margin ?? 10,
         });
         resolve(canvas.toDataURL('image/png'));
       } catch (err: any) {
-        reject(err?.message || 'Barcode generation failed.');
+        reject(new Error(err?.message || 'Barcode generation failed.'));
       }
     });
   }
 
-  /** NEW: QR codes via the 'qrcode' package (browser-friendly) */
-  async generateQR(text: string, opts: QROptions = {}): Promise<string> {
-    // Lazy-load to keep your main bundle lean
-    const { toDataURL } = await import('qrcode');
-    const dataUrl = await toDataURL(text, {
-      errorCorrectionLevel: opts.errorCorrectionLevel ?? 'M',
-      margin: opts.margin ?? 2,
-      width: opts.size ?? 256,
-      color: {
-        dark:  opts.dark  ?? '#000000',
-        light: opts.light ?? '#ffffff',
-      },
-    });
-    return dataUrl;
+  /** Helper: propose a friendly filename for manually-entered values */
+  suggestFilename(format: ExtendedBarcodeFormat, text: string): string {
+    const safe = (text ?? '').slice(0, 16).replace(/[^a-z0-9\-_.]+/gi, '_');
+    return `barcode-${format}-${safe || 'value'}.png`;
   }
 }

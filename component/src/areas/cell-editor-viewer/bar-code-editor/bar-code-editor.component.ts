@@ -17,13 +17,15 @@ import { MatSelect } from '@angular/material/select';
 import { MatOption } from '@angular/material/core';
 import { MatButton } from '@angular/material/button';
 
-import { Cell, BarcodeBlock } from '../../../models/interfaces';
+import { Cell, BarcodeBlock } from '../../../models/page';
 import { TokenAttribute } from '../../../models/TokenAttribute';
-import { TokenAttributeTypeEnum } from '../../../models/TokenAttributeTypeEnum';
-import { BarcodeFormat, BarcodeService } from '../../../services/external/barcode.service';
+import { TokenAttributeType } from '../../../models/TokenAttributeType';
+import {
+  ExtendedBarcodeFormat,
+  BarcodeService
+} from '../../../services/external/barcode.service';
 
 type Align = 'left' | 'center' | 'right';
-type ExtendedBarcodeFormat = BarcodeFormat | 'QR';
 
 @Component({
   selector: 'app-bar-code-editor',
@@ -39,12 +41,12 @@ type ExtendedBarcodeFormat = BarcodeFormat | 'QR';
   ]
 })
 export class BarCodeEditorComponent implements OnInit, OnChanges {
-  // ── Inputs/Outputs (mirror Image editor) ────────────────────────
+  // ── Inputs/Outputs ──────────────────────────────────────────────
   @Input() public cell!: Cell;
   @Input() public tokenAttrs: TokenAttribute[] = [];
   @Output() public change = new EventEmitter<Cell>();
 
-  // ── Local state for UI/preview ──────────────────────────────────
+  // ── Local state ────────────────────────────────────────────────
   public imageBase64: string = '';
   public filename: string = '';
   public width: number = 100;
@@ -52,7 +54,7 @@ export class BarCodeEditorComponent implements OnInit, OnChanges {
 
   public textValue: string = '';                         // manual text
   public selectedTokenKey: string | null = null;         // token providing text
-  public selectedFormat: ExtendedBarcodeFormat = 'CODE128'; // preview-only
+  public selectedFormat: ExtendedBarcodeFormat = 'CODE128'; // now typed from service
 
   public availableFormats: { value: ExtendedBarcodeFormat; label: string }[] = [
     { value: 'CODE128',   label: 'CODE128 (robust, recommended)' },
@@ -65,7 +67,6 @@ export class BarCodeEditorComponent implements OnInit, OnChanges {
     { value: 'MSI',       label: 'MSI' },
     { value: 'pharmacode',label: 'Pharmacode' },
     { value: 'codabar',   label: 'Codabar' },
-    // NEW (no service change needed)
     { value: 'QR',        label: 'QR Code' },
   ];
 
@@ -112,10 +113,10 @@ export class BarCodeEditorComponent implements OnInit, OnChanges {
   // ── Internal helpers ───────────────────────────────────────────
   private hydrateFromInputs(): void {
     // Accept TEXT, NUMBER, BARCODE as sources for barcode content
-    const allowed = new Set<TokenAttributeTypeEnum | string>([
-      TokenAttributeTypeEnum.TEXT,
-      TokenAttributeTypeEnum.NUMBER,
-      TokenAttributeTypeEnum.BARCODE
+    const allowed = new Set<TokenAttributeType | string>([
+      TokenAttributeType.TEXT,
+      TokenAttributeType.NUMBER,
+      TokenAttributeType.BARCODE
     ]);
     this.barcodeTokens = (this.tokenAttrs ?? []).filter(t => allowed.has(t.type));
 
@@ -139,7 +140,7 @@ export class BarCodeEditorComponent implements OnInit, OnChanges {
       }
     }
 
-    // If no token preview, still emit current state so parent stays in sync
+    // keep parent in sync
     this.emitPayload();
   }
 
@@ -156,34 +157,26 @@ export class BarCodeEditorComponent implements OnInit, OnChanges {
 
     this.isGenerating = true;
     try {
-      let dataUrl: string;
-
-      if (this.selectedFormat === 'QR') {
-        // Generate QR without touching your service
-        const { toDataURL } = await import('qrcode');
-        dataUrl = await toDataURL(text, {
-          errorCorrectionLevel: 'M',
-          margin: 2,
-          width: 256,
-          color: { dark: '#000000', light: '#ffffff' }
-        });
-      } else {
-        // 1D path (unchanged)
-        dataUrl = await this.barcodeSvc.generate(text, {
-          format: this.selectedFormat as BarcodeFormat,
-          width: 2,
-          height: 90,
-          displayValue: false,
-          margin: 10
-        });
-      }
+      // Delegate entirely to the service (1D and QR)
+      const dataUrl: string = await this.barcodeSvc.generateDataUrl(text, {
+        format: this.selectedFormat,
+        // 1D defaults (ignored by QR)
+        width: 2,
+        height: 90,
+        displayValue: false,
+        margin: 3,
+        // QR defaults (ignored by 1D)
+        size: 256,
+        errorCorrectionLevel: 'M',
+        dark: '#000000',
+        light: '#ffffff'
+      });
 
       this.imageBase64 = dataUrl;
 
-      // If manual text, give a friendly filename
+      // If manual text, suggest a friendly filename via the service
       if (!this.selectedTokenKey) {
-        const safe = text.slice(0, 16).replace(/[^a-z0-9\-_.]+/gi, '_');
-        this.filename = `barcode-${this.selectedFormat}-${safe}.png`;
+        this.filename = this.barcodeSvc.suggestFilename(this.selectedFormat, text);
       }
     } catch (e: any) {
       this.imageBase64 = '';

@@ -9,7 +9,7 @@ import {
 import {MatFormField, MatLabel, MatOption, MatSelect} from "@angular/material/select";
 import {FormsModule} from "@angular/forms";
 import {MatButton} from "@angular/material/button";
-import {Grid} from "../../models/interfaces";
+import {Grid} from "../../models/page";
 import {NgForOf, NgIf} from "@angular/common";
 
 export interface AddPartialContentDialogData {

@@ -18,9 +18,9 @@ import { MatButtonToggleGroup, MatButtonToggle } from '@angular/material/button-
 import { MatSelect } from '@angular/material/select';
 import { MatOption } from '@angular/material/core';
 
-import { Cell, ChartBlock, ChartSlice } from '../../../models/interfaces';
+import { Cell, ChartBlock, ChartSlice } from '../../../models/page';
 import { TokenAttribute } from '../../../models/TokenAttribute';
-import { TokenAttributeTypeEnum } from '../../../models/TokenAttributeTypeEnum';
+import { TokenAttributeType } from '../../../models/TokenAttributeType';
 import { ChartImageRendererComponent } from '../../../shared/chart/chart-image-renderer.component';
 
 type Align = 'left' | 'center' | 'right';
@@ -146,7 +146,7 @@ export class ChartEditorComponent implements OnInit, OnChanges {
 
     // 1) tokens
     this.numericTokens = (this.tokenAttrs ?? []).filter(
-      t => t?.type === TokenAttributeTypeEnum.NUMBER && !!t?.name
+      t => t?.type === TokenAttributeType.NUMBER && !!t?.name
     );
 
     // 2) adopt persisted block (if any)

@@ -18,7 +18,7 @@ import { MatButtonToggleGroup, MatButtonToggle } from '@angular/material/button-
 import { MatSelect } from '@angular/material/select';
 import { MatOption } from '@angular/material/core';
 
-import { Cell } from '../../../models/interfaces';
+import { Cell } from '../../../models/page';
 import { TokenAttribute } from '../../../models/TokenAttribute';
 import { QuillWrapperComponent } from '../../../shared/quill-wrapper/quill-wrapper.component';
 

@@ -116,7 +116,7 @@ const wysi = new WysiPDF();
 const html  = await wysi.generateHtml(page, tokens);
 const pdf64 = await wysi.generatePdfBase64(page, tokens);
 
-// Angular services also available (e.g., PageToHtmlService, PdfGenerateService)
+// Angular services also available (e.g., HtmlGenerateService, PdfGenerateService)
 ```
 
 ---

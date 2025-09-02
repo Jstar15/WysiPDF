@@ -6,23 +6,23 @@ import {
   HtmlTableBlock,
   Page,
   Row,
-} from '../models/interfaces';
+} from '../models/page';
 import { TokenAttribute } from '../models/TokenAttribute';
-import { HtmlToStructuredContentService } from './converters/html-to-structured-content.service';
-import { JsonTokenParserService } from '../utils/json-token-parser.service';
-import {TokenAttributeTypeEnum} from "../models/TokenAttributeTypeEnum";
+import { HtmlToStructuredContentConverter } from '../converters/html-to-structured-content.converter';
+import { JsonTokenParserUtility } from '../utils/json-token-parser.utility';
+import {TokenAttributeType} from "../models/TokenAttributeType";
 
 @Injectable({ providedIn: 'root' })
 export class PageTokenValidator {
   constructor(
-    private htmlToStructuredContentService: HtmlToStructuredContentService,
-    private jsonTokenParser: JsonTokenParserService
+    private htmlToStructuredContentService: HtmlToStructuredContentConverter,
+    private jsonTokenParser: JsonTokenParserUtility
   ) {}
 
   public validatePage(page: Page, tokens: TokenAttribute[]): Page {
     if (!page) return page;
 
-    page = this.htmlToStructuredContentService.updatePageHtmlToObject(page);
+    page = this.htmlToStructuredContentService.convert(page);
 
     page.content.rows = this.validateRow(page.content.rows, tokens);
     page.header.rows = this.validateRow(page.header.rows, tokens);
@@ -156,14 +156,14 @@ export class PageTokenValidator {
       try {
         // parse JSON into subset of tokens
         let partialTokens: TokenAttribute[] = [];
-        if (sourceToken.type == TokenAttributeTypeEnum.JSON_ARRAY) {
+        if (sourceToken.type == TokenAttributeType.JSON_ARRAY) {
           const object: any[] = JSON.parse(sourceToken.value);
           const keys: string[] = this.jsonTokenParser.getAllKeysFromJsonArray(object);
 
           for (let key of keys) {
             partialTokens.push({
               name: `${sourceToken.name}.${key}`,
-              type: TokenAttributeTypeEnum.TEXT,
+              type: TokenAttributeType.TEXT,
               value: ''
             });
           }

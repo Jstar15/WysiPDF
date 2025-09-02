@@ -16,8 +16,6 @@ import { TokenAttribute } from "../../models/TokenAttribute";
 import { AddTokenDialogComponent } from "../../dialogs/add-token-dialog/add-token-dialog.component";
 import { CustomElementBlot } from "./CustomElementBlot";
 import Quill from 'quill';
-import { HtmlBlockContainer } from "../../models/interfaces";
-import { HtmlToStructuredContentService } from "../../services/converters/html-to-structured-content.service";
 import { NgForOf } from "@angular/common";
 
 @Component({
@@ -36,7 +34,6 @@ export class QuillWrapperComponent implements OnInit, AfterViewInit, OnDestroy, 
   @Input() disableUndoRedo: boolean = false;
 
   @Output() htmlChange = new EventEmitter<string>();
-  @Output() htmlBlockContainerChange = new EventEmitter<HtmlBlockContainer>();
 
   zone: NgZone;
   delta: any;
@@ -73,7 +70,6 @@ export class QuillWrapperComponent implements OnInit, AfterViewInit, OnDestroy, 
   ];
 
   constructor(
-    private htmlToStructuredContentService: HtmlToStructuredContentService,
     public dialog: MatDialog
   ) {}
 
@@ -122,10 +118,7 @@ export class QuillWrapperComponent implements OnInit, AfterViewInit, OnDestroy, 
       (delta: any, oldDelta: any, source: string): void => {
         this.delta = oldDelta;
         const html: string = this.quill.root.innerHTML;
-        const htmlBlockContainer: HtmlBlockContainer =
-          this.htmlToStructuredContentService.convertHTmlToObject(html);
         this.htmlChange.emit(html);
-        this.htmlBlockContainerChange.emit(htmlBlockContainer);
         this.currentRange = this.quill.getSelection(true);
       }
     );

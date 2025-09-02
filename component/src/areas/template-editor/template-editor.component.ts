@@ -12,10 +12,10 @@ import {MatDialog} from '@angular/material/dialog';
 import {MatExpansionModule} from '@angular/material/expansion';
 import {AngularSplitModule} from 'angular-split';
 import {GridEditorComponent} from './grid-editor/grid-editor.component';
-import {PdfGenerateService, PdfGenerationResult} from '../../services/pdf-generate.service';
+import {PdfGenerateService, PdfGenerationResult} from '../../services/generators/pdf-generate.service';
 import {TokenAttribute} from '../../models/TokenAttribute';
-import {TokenAttributeTypeEnum} from '../../models/TokenAttributeTypeEnum';
-import {Cell, Grid, Page} from '../../models/interfaces';
+import {TokenAttributeType} from '../../models/TokenAttributeType';
+import {Cell, Grid, Page} from '../../models/page';
 import {NgForOf, NgIf, NgStyle} from "@angular/common";
 import {PdfViewerComponent} from "../../shared/pdf-viewer/pdf-viewer.component";
 import {MatCard, MatCardActions, MatCardContent, MatCardHeader,} from "@angular/material/card";
@@ -26,13 +26,13 @@ import {EditPartialContentData, EditPartialContentDialogComponent} from "../../d
 import {PageStateService} from "../../services/page-state.service";
 import {debounceTime, Subject} from "rxjs";
 import {JsonListItem, JsonViewerComponent} from "../../shared/json-viewer/json-viewer.component";
-import {IconService} from "../../services/icon.service";
-import {DEFAULT_PAGE} from "../../presets/default-page";
+import {IconService} from "../../services/external/icon.service";
+import {DEFAULT_PAGE} from "../../presets/default-page.preset";
 import {collectDisplayRules} from "../../utils/displayLogic.utiltiy";
 import {PageTokenValidator} from "../../services/page-token-validator.service";
-import {JsonTokenParserService} from "../../utils/json-token-parser.service";
-import {EditorViewerComponent} from "./editor-viewer/editor-viewer.component";
-import {EditorType} from "./editor-viewer/editor-viewer.interfaces";
+import {JsonTokenParserUtility} from "../../utils/json-token-parser.utility";
+import {EditorViewerComponent} from "../editor-viewer/editor-viewer.component";
+import {EditorType} from "../editor-viewer/editor-viewer.interfaces";
 import {CellEditorViewerComponent} from "../cell-editor-viewer/cell-editor-viewer.component";
 import {OpenCellEditorEvent} from "./grid-editor/grid-editor.interfaces";
 
@@ -92,15 +92,12 @@ export class TemplateEditorComponent implements OnInit,AfterViewInit {
       private cdr: ChangeDetectorRef,
       private iconService: IconService,
       private pageTokenValidator : PageTokenValidator,
-      private jsonTokenParserService: JsonTokenParserService,
+      private jsonTokenParserService: JsonTokenParserUtility,
       private gridStateService : PageStateService
   ) {
-
-
     this.iconService.registerIcons();
 
     this.gridStateService.page$.pipe(
-
     ).subscribe(page => {
       if(page){
         this.page = page;
@@ -206,11 +203,6 @@ export class TemplateEditorComponent implements OnInit,AfterViewInit {
   }
 
 
-
-
-
-
-
   addPartialContent(): void {
     const newGrid: Grid = {
       id: 'partial_' + Date.now(),
@@ -232,9 +224,9 @@ export class TemplateEditorComponent implements OnInit,AfterViewInit {
 
   editPartialContent(index: number): void {
     const allowedTypes = [
-      TokenAttributeTypeEnum.OBJECT,
-      TokenAttributeTypeEnum.STRING_ARRAY,
-      TokenAttributeTypeEnum.JSON_ARRAY,
+      TokenAttributeType.OBJECT,
+      TokenAttributeType.STRING_ARRAY,
+      TokenAttributeType.JSON_ARRAY,
     ];
 
     const tokenOptions: TokenAttribute[] = this.page.tokenAttrs

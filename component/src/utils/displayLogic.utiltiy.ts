@@ -1,5 +1,5 @@
 // types used below (import yours instead if they already exist)
-import { Page, Grid, Row, Cell } from '../models/interfaces';
+import { Page, Grid, Row, Cell } from '../models/page';
 import { DisplayLogicGroup } from '../models/display-logic.models';
 
 export type DisplayRuleLocation = 'header' | 'content' | 'footer' | 'partial';

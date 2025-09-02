@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import {Cell, Grid, Page} from '../models/interfaces';
+import {Cell, Grid, Page} from '../models/page';
 import {DisplayLogicGroup} from "../models/display-logic.models";
 
 @Injectable({ providedIn: 'root' })

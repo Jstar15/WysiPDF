@@ -1,5 +1,5 @@
 // src/app/presets/invoice.preset.ts
-import { Page } from '../models/interfaces';
+import { Page } from '../models/page';
 
 export const Preset3: Page = {
   "header": {

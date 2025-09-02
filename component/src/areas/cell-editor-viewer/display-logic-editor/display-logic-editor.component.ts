@@ -14,10 +14,10 @@ import { MatCardModule } from '@angular/material/card';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatDialogModule } from '@angular/material/dialog';
 
-import { TokenAttributeTypeEnum } from '../../../models/TokenAttributeTypeEnum';
+import { TokenAttributeType } from '../../../models/TokenAttributeType';
 import { TokenAttribute } from '../../../models/TokenAttribute';
 import { DisplayCondition, DisplayLogicGroup } from '../../../models/display-logic.models';
-import { DisplayLogicService } from '../../../utils/display-logic.service';
+import { DisplayLogicUtility } from '../../../utils/display-logic.utility';
 
 type ChainType = 'AND' | 'OR';
 type Operator =
@@ -70,7 +70,7 @@ export class DisplayLogicEditorComponent implements OnInit, OnChanges {
 
   constructor(
     private fb: FormBuilder,
-    private evaluator: DisplayLogicService
+    private evaluator: DisplayLogicUtility
   ) {}
 
   // ───────────────────────────────────────────────────────────────
@@ -120,7 +120,7 @@ export class DisplayLogicEditorComponent implements OnInit, OnChanges {
   private buildForm(): void {
     // tokens used for evaluation
     this.displayTokenAttrs = (this.tokenAttrs || []).map(
-      t => new TokenAttribute(t.name, (t as any).value ?? '', TokenAttributeTypeEnum.TEXT)
+      t => new TokenAttribute(t.name, (t as any).value ?? '', TokenAttributeType.TEXT)
     );
 
     const initial = this.normalizeOrNull(this.displayLogicGroup);
@@ -276,7 +276,7 @@ export class DisplayLogicEditorComponent implements OnInit, OnChanges {
 
   private refreshTokensOnly(): void {
     this.displayTokenAttrs = (this.tokenAttrs || []).map(
-      t => new TokenAttribute(t.name, (t as any).value ?? '', TokenAttributeTypeEnum.TEXT)
+      t => new TokenAttribute(t.name, (t as any).value ?? '', TokenAttributeType.TEXT)
     );
     this.runTest();
   }
