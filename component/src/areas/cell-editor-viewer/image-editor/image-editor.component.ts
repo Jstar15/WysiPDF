@@ -152,6 +152,7 @@ export class AddImageEditorComponent implements OnInit, OnChanges {
     } as ImageBlock;
 
     const updated: Cell = { ...this.cell, imageBlock };
+    updated.type = 'image';
     this.change.emit(updated);
   }
 

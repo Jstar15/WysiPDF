@@ -1,7 +1,7 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButton } from '@angular/material/button';
-import {Cell, Row} from '../../models/page';
+import {Cell} from '../../models/page';
 import {MatIcon} from "@angular/material/icon";
 import {CellEditorAction, CellEditorType} from "./cell-editor-viewer.interfaces";
 import {AddImageEditorComponent} from "./image-editor/image-editor.component";

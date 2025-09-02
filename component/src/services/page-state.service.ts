@@ -86,10 +86,9 @@ export class PageStateService {
   getDisplayLogicForRow(row: number, area: string): DisplayLogicGroup{
     const current = this.getCurrentPage();
     if (!current) return null;
-    debugger;
-
     return current[area].rows[row].displayLogic;
   }
+
   /** Safely replace a single cell and record it as a new snapshot */
   updateCell(row: number, column: number, area: string, cell: Cell): void {
     const current = this.getCurrentPage();
@@ -103,27 +102,36 @@ export class PageStateService {
     grid.rows[row].cells[column].displayLogic = cell.displayLogic;
     grid.rows[row].displayLogic = cell.displayLogic;
 
-    if (cell?.value) {
+    if (cell?.type == 'html') {
       grid.rows[row].cells[column].type = 'html';
       grid.rows[row].cells[column].value = cell.value;
+      grid.rows[row].cells[column].barcodeBlock = null;
+      grid.rows[row].cells[column].chartBlock = null;
+      grid.rows[row].cells[column].imageBlock = null;
     }
 
-    if (cell?.imageBlock) {
+    if (cell?.type == 'image') {
       grid.rows[row].cells[column].type = 'image';
       grid.rows[row].cells[column].imageBlock = cell.imageBlock;
       grid.rows[row].cells[column].value = '';
+      grid.rows[row].cells[column].barcodeBlock = null;
+      grid.rows[row].cells[column].chartBlock = null;
     }
 
-    if (cell?.barcodeBlock) {
+    if (cell?.type == 'barcode') {
       grid.rows[row].cells[column].type = 'barcode';
       grid.rows[row].cells[column].barcodeBlock = cell.barcodeBlock;
       grid.rows[row].cells[column].value = '';
+      grid.rows[row].cells[column].imageBlock = null;
+      grid.rows[row].cells[column].chartBlock = null;
     }
 
-    if (cell?.chartBlock) {
+    if (cell?.type == 'chart') {
       grid.rows[row].cells[column].type = 'chart';
       grid.rows[row].cells[column].chartBlock = cell.chartBlock;
       grid.rows[row].cells[column].value = '';
+      grid.rows[row].cells[column].imageBlock = null;
+      grid.rows[row].cells[column].barcodeBlock = null;
     }
 
 

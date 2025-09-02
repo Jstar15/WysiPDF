@@ -9,20 +9,11 @@ import {
   ViewChild,
   OnDestroy
 } from '@angular/core';
-import { CommonModule, NgFor, NgIf } from '@angular/common';
+import { CommonModule, NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { MatFormField } from '@angular/material/form-field';
-import { MatInput, MatLabel } from '@angular/material/input';
-import { MatIcon } from '@angular/material/icon';
-import { MatButtonToggleGroup, MatButtonToggle } from '@angular/material/button-toggle';
-import { MatSelect } from '@angular/material/select';
-import { MatOption } from '@angular/material/core';
-
 import { Cell } from '../../../models/page';
 import { TokenAttribute } from '../../../models/token-attribute';
 import { QuillWrapperComponent } from '../../../shared/quill-wrapper/quill-wrapper.component';
-
-type Align = 'left' | 'center' | 'right'; // if your template needs it
 
 @Component({
   selector: 'app-quill-editor',
@@ -87,10 +78,8 @@ export class QuillEditorComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   private emitPayload(): void {
-    this.cell.imageBlock = null;
-    this.cell.displayLogic = null;
-    this.cell.chartBlock = null;
     const updated: Cell = { ...this.cell, value: this.html };
+    updated.type = 'html';
     this.change.emit(updated);
   }
 }

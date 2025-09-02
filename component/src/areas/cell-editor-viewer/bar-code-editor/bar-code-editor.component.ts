@@ -201,6 +201,7 @@ export class BarCodeEditorComponent implements OnInit, OnChanges {
     } as BarcodeBlock;
 
     const updated: Cell = { ...this.cell, barcodeBlock };
+    updated.type = 'barcode';
     this.change.emit(updated);
   }
 

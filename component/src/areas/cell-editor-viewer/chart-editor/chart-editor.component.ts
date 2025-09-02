@@ -134,6 +134,7 @@ export class ChartEditorComponent implements OnInit, OnChanges {
       };
       const nextCell: Cell = { ...this.cell, chartBlock: merged };
       this.cell = nextCell;
+      nextCell.type = 'chart';
       this.change.emit(nextCell);
     }
   }
