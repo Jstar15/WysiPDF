@@ -1,0 +1,18 @@
+/* Uses your existing dialog section styles; minimal extras */
+:host {
+  display: block;
+}
+
+.btn-pill {
+  border-radius: 999px;
+}
+
+.editor-dialog-content.simple { padding-top: 4px; }
+.section-title { margin: 12px 0 6px; font-weight: 600; opacity: 0.85; }
+.row-grid-3-3-3-auto {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr auto;
+  gap: 12px;
+  align-items: center;
+}
+.btn-pill { border-radius: 999px; }

@@ -216,11 +216,14 @@
                                     </mat-expansion-panel-header>
 
                                     <app-grid-editor
+                                            [area]="'partialContent'"
+                                            [gridIndex]="i"
                                             [grid]="page.partialContent[i]"
                                             [tokenAttrs]="partial.tokenAttributeList"
                                             [pageAttrs]="page.pageAttrs"
                                             [hidePartialContent]="true"
                                             [colorPalettes]="page.colorPalettes"
+                                            (cellChange)="onCellChange($event)"
                                     ></app-grid-editor>
                                 </mat-expansion-panel>
 
@@ -246,12 +249,14 @@
         </app-editor-viewer>
 
         <app-cell-editor-viewer *ngIf="isCellEditorOpen"
+                                [gridIndex]="lastCellEditorEvent.gridIndex"
                                 [type]="lastCellEditorEvent.type"
                                 [cell]="lastCellEditorEvent.cell"
                                 [rowIndex]="lastCellEditorEvent.rowIndex"
                                 [area]="lastCellEditorEvent.area"
                                 [columnIndex]="lastCellEditorEvent.columnIndex"
                                 [tokens]="page.tokenAttrs"
+                                [colorPalettes]="page.colorPalettes"
                                 (editorActionEvent)="closeEditors()">
         </app-cell-editor-viewer>
       </as-split-area>

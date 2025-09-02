@@ -211,6 +211,8 @@ export class TemplateEditorComponent implements OnInit,AfterViewInit {
       tokenAttributeList: this.page.tokenAttrs
     };
     this.page.partialContent = [...(this.page.partialContent || []), newGrid];
+    this._onPageChange();
+
   }
 
   removePartialContent(index: number): void {
@@ -218,6 +220,7 @@ export class TemplateEditorComponent implements OnInit,AfterViewInit {
       const updated = [...this.page.partialContent];
       updated.splice(index, 1);
       this.page.partialContent = updated;
+      this._onPageChange();
     }
   }
 

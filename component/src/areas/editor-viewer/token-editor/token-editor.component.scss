@@ -37,3 +37,11 @@
   color: #b00020;
   font-size: 13px;
 }
+
+
+.json-array-inline{
+  display: grid;
+  grid-auto-columns: 1fr auto;
+  grid-auto-flow: column;
+  align-items: center;
+}

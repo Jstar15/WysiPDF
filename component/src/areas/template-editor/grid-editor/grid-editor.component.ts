@@ -36,6 +36,7 @@ export class GridEditorComponent implements OnInit, OnDestroy, OnChanges {
   @Input() public pageAttrs: PageAttrs = {};
   @Input() public colorPalettes: string[] | undefined = [];
   @Input() public grid!: Grid;
+  @Input() public gridIndex!: number;
   @Input() public area!: string;
 
   @Output() public cellChange: EventEmitter<OpenCellEditorEvent> = new EventEmitter<OpenCellEditorEvent>();
@@ -225,6 +226,7 @@ export class GridEditorComponent implements OnInit, OnDestroy, OnChanges {
 
   public openCellEditorDialog(): void {
     this.cellChange.emit({
+      gridIndex: this.gridIndex,
       cell: this.currentCell,
       rowIndex: this.currentRow,
       columnIndex: this.currentCol,
@@ -235,6 +237,7 @@ export class GridEditorComponent implements OnInit, OnDestroy, OnChanges {
 
   public openAddImageDialog(): void {
     this.cellChange.emit({
+      gridIndex: this.gridIndex,
       cell: this.currentCell,
       rowIndex: this.currentRow,
       columnIndex: this.currentCol,
@@ -245,6 +248,7 @@ export class GridEditorComponent implements OnInit, OnDestroy, OnChanges {
 
   public openAddChartDialog(): void {
     this.cellChange.emit({
+      gridIndex: this.gridIndex,
       cell: this.currentCell,
       rowIndex: this.currentRow,
       columnIndex: this.currentCol,
@@ -255,6 +259,7 @@ export class GridEditorComponent implements OnInit, OnDestroy, OnChanges {
 
   public openAddBarcodeDialog(): void {
     this.cellChange.emit({
+      gridIndex: this.gridIndex,
       cell: this.currentCell,
       rowIndex: this.currentRow,
       columnIndex: this.currentCol,
@@ -265,6 +270,7 @@ export class GridEditorComponent implements OnInit, OnDestroy, OnChanges {
 
   public displayRulesDialog(): void {
     this.cellChange.emit({
+      gridIndex: this.gridIndex,
       cell: this.currentCell,
       rowIndex: this.currentRow,
       columnIndex: this.currentCol,
@@ -322,7 +328,7 @@ export class GridEditorComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   public emitChange(): void {
-    this.pageStateService.updateGrid(this.area, this.grid)
+    this.pageStateService.updateGrid(this.area, this.grid, this.gridIndex)
   }
 
   public setCellAttribute(cellAttrs: CellAttrs): void {

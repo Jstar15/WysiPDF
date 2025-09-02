@@ -1,154 +1,149 @@
 import { Injectable } from '@angular/core';
-import { TokenAttribute } from "../models/token-attribute";
-import { TokenAttributeType } from "../models/token-attribute-type";
+import { TokenAttribute } from '../models/token-attribute';
+import { TokenAttributeType } from '../models/token-attribute-type';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class JsonTokenParserUtility {
-  /**
-   * Parses a JSON string and returns an array of TokenAttribute
-   * @param jsonText The JSON string to parse
-   * @throws SyntaxError if jsonText is invalid JSON
-   */
-  parse(jsonText: string): TokenAttribute[] {
-    const parsed = JSON.parse(jsonText);
-    const results: TokenAttribute[] = [];
 
-    const walk = (obj: any, path = ''): void => {
-      if (Array.isArray(obj)) {
-        if (obj.length === 0) return;
-        const first = obj[0];
+  /** Back-compat: return a flat list with dot paths */
+  public parse(jsonText: string, newKey = ""): TokenAttribute[] {
 
-        if (typeof first === 'string') {
-          results.push({
-            name: path,
-            type: TokenAttributeType.STRING_ARRAY,
-            value: JSON.stringify(obj)
-          });
-        } else if (typeof first === 'number') {
-          results.push({
-            name: path,
-            type: TokenAttributeType.NUMBER,
-            value: JSON.stringify(obj)
-          });
-        } else if (typeof first === 'boolean') {
-          results.push({
-            name: path,
-            type: TokenAttributeType.BOOLEAN,
-            value: JSON.stringify(obj)
-          });
-        } else if (typeof first === 'object' && first !== null) {
-          results.push({
-            name: path,
-            type: TokenAttributeType.JSON_ARRAY,
-            value: JSON.stringify(obj)
-          });
-        }
-      } else if (obj !== null && typeof obj === 'object') {
-        for (const key of Object.keys(obj)) {
-          const fullPath = path ? `${path}.${key}` : key;
-          walk(obj[key], fullPath);
+    const newTokens : TokenAttribute[] = []
+    const obj: any = JSON.parse(jsonText);
+    const keys: string[] = this.getAllKeysForObject(obj);
+
+    for (let key of keys) {
+      const name: string = key;
+      const value = this.resolvePath(obj, key);
+
+      const type: TokenAttributeType = this.deferType(value);
+      let token: TokenAttribute;
+      if ((type == TokenAttributeType.JSON_ARRAY || type == TokenAttributeType.OBJECT) && value && value.length > 0) {
+        const first: string = JSON.stringify(value[0]);
+        token = {
+          tokenAttributes: this.parse(first, name),
+          type: type,
+          value: value,
+          name: name
         }
       } else {
-        let attrType: TokenAttributeType;
-        switch (typeof obj) {
-          case 'string':
-            attrType = TokenAttributeType.TEXT;
-            break;
-          case 'number':
-            attrType = TokenAttributeType.NUMBER;
-            break;
-          case 'boolean':
-            attrType = TokenAttributeType.BOOLEAN;
-            break;
-          default:
-            attrType = TokenAttributeType.TEXT;
+        token = {
+          type: type,
+          value: value,
+          name: name
         }
-        results.push({
-          name: path,
-          type: attrType,
-          value: obj === null ? 'null' : obj.toString()
-        });
       }
-    };
-
-    walk(parsed);
-    return results;
+      newTokens.push(token);
+    }
+    return newTokens;
   }
 
-  // ------------------------------
-  // 🔥 JSONB-style helper methods
-  // ------------------------------
-
-  /** Get raw value from JSON object by dot-separated path (like jsonb -> '#>') */
-  public getValueByPath(obj: any, path: string): any {
-    if (!obj || !path) return null;
-    return path.split('.').reduce((acc, key) => {
-      if (acc && typeof acc === 'object' && key in acc) {
-        return acc[key];
-      }
-      return null;
-    }, obj);
+  /** Resolve nested "a.b.c" path safely */
+  private resolvePath(obj: any, path: string): any {
+    return path.split('.').reduce((acc, part) => (acc ? acc[part] : undefined), obj);
   }
 
-  /** 🔍 Extract all unique keys from a JSON array of objects */
-  public getAllKeysFromJsonArray(arr: any[]): string[] {
-    const keys = new Set<string>();
+  /** Decide TokenAttributeType based on JS value */
+  private deferType(value: any): TokenAttributeType {
+    if (value === null || value === undefined) {
+      return TokenAttributeType.TEXT;
+    }
 
-    if (!Array.isArray(arr)) return [];
-
-    arr.forEach(item => {
-      if (item && typeof item === 'object' && !Array.isArray(item)) {
-        Object.keys(item).forEach(k => keys.add(k));
-      }
-    });
-
-    return Array.from(keys);
-  }
-
-  getAvailableTokensFromJsonList(sourceName: string, tokenAttrs: TokenAttribute[]): TokenAttribute[] {
-    const root: TokenAttribute = tokenAttrs.find(attr =>
-      attr.name === sourceName && attr.type === TokenAttributeType.JSON_ARRAY
-    );
-
-    if (!root) return [];
-
-    try {
-      const parsed = JSON.parse(root.value);
-      if (!Array.isArray(parsed) || parsed.length === 0 || typeof parsed[0] !== 'object') {
-        return [];
+    if (Array.isArray(value)) {
+      if (value.length === 0) {
+        return TokenAttributeType.JSON_ARRAY;
       }
 
-      const firstItem = parsed[0];
-      return Object.keys(firstItem).map(key => {
-        const value = firstItem[key];
-        let type: TokenAttributeType;
+      const first = value[0];
 
-        switch (typeof value) {
-          case 'string':
-            type = TokenAttributeType.TEXT;
-            break;
-          case 'number':
-            type = TokenAttributeType.NUMBER;
-            break;
-          case 'boolean':
-            type = TokenAttributeType.BOOLEAN;
-            break;
-          case 'object':
-            type = Array.isArray(value)
-              ? TokenAttributeType.STRING_ARRAY
-              : TokenAttributeType.OBJECT;
-            break;
-          default:
-            type = TokenAttributeType.TEXT;
-        }
+      if (typeof first === 'string' && value.every(v => typeof v === 'string')) {
+        return TokenAttributeType.STRING_ARRAY;
+      }
+      if (typeof first === 'number' && value.every(v => typeof v === 'number')) {
+        return TokenAttributeType.JSON_ARRAY;
+      }
+      if (typeof first === 'boolean' && value.every(v => typeof v === 'boolean')) {
+        return TokenAttributeType.JSON_ARRAY;
+      }
+      if (typeof first === 'object' && value.every(v => v !== null && typeof v === 'object')) {
+        return TokenAttributeType.JSON_ARRAY;
+      }
 
-        return new TokenAttribute(`${sourceName}.${key}`, '', type);
-      });
-    } catch (err) {
-      console.warn('Failed to parse json[] value:', root?.value);
-      return [];
+      return TokenAttributeType.JSON_ARRAY;
+    }
+
+    switch (typeof value) {
+      case 'string': return TokenAttributeType.TEXT;
+      case 'number': return TokenAttributeType.NUMBER;
+      case 'boolean': return TokenAttributeType.BOOLEAN;
+      case 'object': return TokenAttributeType.OBJECT;
+      default: return TokenAttributeType.TEXT;
     }
   }
+
+  private getAllKeysForObject(obj: any, parentKey: string = ''): string[] {
+    let keys: string[] = [];
+
+    if (obj === null || obj === undefined) {
+      return keys;
+    }
+
+    if (Array.isArray(obj)) {
+      if (parentKey) {
+        keys.push(parentKey);
+      }
+      return keys;
+    } else if (typeof obj === 'object') {
+      for (const k of Object.keys(obj)) {
+        const newKey = parentKey ? `${parentKey}.${k}` : k;
+        keys = keys.concat(this.getAllKeysForObject(obj[k], newKey));
+      }
+    } else {
+      keys.push(parentKey);
+    }
+
+    return keys;
+  }
+
+  // ─────────────────────────────────────────────────────────────
+  public getAllKeysFromJsonArray(arr: any[]): string[] {
+    if (!Array.isArray(arr) || arr.length === 0) {
+      return [];
+    }
+
+    const keySet = new Set<string>();
+
+    for (const item of arr) {
+      if (item && typeof item === 'object' && !Array.isArray(item)) {
+        for (const key of Object.keys(item)) {
+          keySet.add(key);
+        }
+      }
+    }
+
+    return Array.from(keySet);
+  }
+
+
+  public getAvailableTokensFromJsonList(sourceName: string, tokenAttrs: TokenAttribute[]): TokenAttribute[] {
+    if (!sourceName || sourceName === 'root') {
+      return tokenAttrs;
+    }
+
+    const parts = sourceName.split('.');
+
+    let current: TokenAttribute[] | undefined = tokenAttrs;
+
+    for (const part of parts) {
+      if (!current) return [];
+
+      const match = current.find(t => t.name === part || t.name.endsWith('.' + part));
+      if (!match) return [];
+
+      current = match.tokenAttributes;
+    }
+
+    return current ?? [];
+  }
+
 }

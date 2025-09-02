@@ -9,4 +9,5 @@ export class TokenAttribute {
   name:string;
   value:string;
   type:TokenAttributeType;
+  tokenAttributes?:TokenAttribute[];
 }

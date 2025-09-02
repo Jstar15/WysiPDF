@@ -86,17 +86,27 @@ export class PageStateService {
   getDisplayLogicForRow(row: number, area: string): DisplayLogicGroup{
     const current = this.getCurrentPage();
     if (!current) return null;
+
+    if(area == 'partialContent'){
+      return null
+    }
     return current[area].rows[row].displayLogic;
   }
 
   /** Safely replace a single cell and record it as a new snapshot */
-  updateCell(row: number, column: number, area: string, cell: Cell): void {
+  updateCell(row: number, column: number, area: string, cell: Cell, gridIndex?: number): void {
     const current = this.getCurrentPage();
     if (!current) return;
     debugger;
 
     // Defensive bounds checks
-    const grid = current[area];
+    let grid: Grid;
+    if(area == 'partialContent'){
+      grid = current[area][gridIndex]
+      debugger;
+    }else{
+      grid = current[area];
+    }
     if (!grid?.rows?.[row]?.cells?.[column]) return;
 
     grid.rows[row].cells[column].displayLogic = cell.displayLogic;
@@ -140,12 +150,16 @@ export class PageStateService {
   }
 
 
-  updateGrid(area: string, grid: Grid): void {
+  updateGrid(area: string, grid: Grid, gridIndex?: number): void {
     console.log("Update Grid")
     const current = this.getCurrentPage();
     if (!current) return;
 
-    current[area] = grid;
+    if(area == 'partialContent'){
+      current[area][gridIndex]= grid;
+    }else{
+      current[area] = grid;
+    }
 
     this.pushSnapshot(current);
   }

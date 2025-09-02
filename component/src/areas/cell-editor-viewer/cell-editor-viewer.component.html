@@ -32,7 +32,7 @@
     </ng-content>
 
     <ng-content *ngIf="type == CellEditorType.HTML && cell">
-      <app-quill-editor [cell]="cell" [tokenAttrs]="tokens" (change)="cell = $event"></app-quill-editor>
+      <app-quill-editor [colorPalettes]="colorPalettes" [cell]="cell" [tokenAttrs]="tokens" (change)="cell = $event"></app-quill-editor>
     </ng-content>
 
     <ng-content *ngIf="type == CellEditorType.DISPLAY_RULES && cell">

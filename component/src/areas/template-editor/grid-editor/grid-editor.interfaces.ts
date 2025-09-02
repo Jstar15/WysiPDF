@@ -7,4 +7,5 @@ export interface OpenCellEditorEvent {
   columnIndex: number;
   area?: 'content' | 'footer' | 'header';
   type: CellEditorType;
+  gridIndex?: number
 }

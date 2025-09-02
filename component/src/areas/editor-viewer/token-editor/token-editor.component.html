@@ -31,8 +31,7 @@
             color="primary"
             class="btn-pill"
             [disabled]="canAdd()"
-            (click)="addAttribute()"
-          >
+            (click)="addAttribute()">
             <mat-icon svgIcon="add"></mat-icon>
           </button>
         </div>
@@ -40,23 +39,57 @@
         <p class="section-title">Current Tokens</p>
 
         <div>
-          <div class="row-grid-3-3-3-auto" *ngFor="let element of attributes">
+          <div class="row-grid-3-3-3-auto" *ngFor="let element of attributes; let i = index">
+            <!-- Name -->
             <mat-form-field appearance="fill">
-              <input matInput [(ngModel)]="element.name" placeholder="Name" />
+              <input
+                matInput
+                [(ngModel)]="element.name"
+                (ngModelChange)="emitAttributes()"
+                placeholder="Name" />
             </mat-form-field>
 
+            <!-- Type -->
             <mat-form-field appearance="fill">
-              <mat-select [(ngModel)]="element.type">
+              <mat-label>Type</mat-label>
+              <mat-select
+                [(ngModel)]="element.type"
+                (ngModelChange)="onTypeChange(element)">
                 <mat-option *ngFor="let type of typeSelections" [value]="type.value">
                   {{ type.viewValue }}
                 </mat-option>
               </mat-select>
             </mat-form-field>
 
-            <mat-form-field appearance="fill">
-              <input matInput [(ngModel)]="element.value" placeholder="Value" />
-            </mat-form-field>
+            <!-- Value OR JSON_ARRAY editor trigger -->
+            <ng-container *ngIf="element.type !== TokenAttributeType.JSON_ARRAY && element.type !==  TokenAttributeType.OBJECT; else jsonArrayValue">
+              <mat-form-field appearance="fill">
+                <mat-label>Value</mat-label>
+                <input
+                  matInput
+                  [(ngModel)]="element.value"
+                  (ngModelChange)="emitAttributes()"
+                  placeholder="Value" />
+              </mat-form-field>
+            </ng-container>
 
+            <ng-template #jsonArrayValue>
+              <div class="json-array-inline">
+                <mat-form-field appearance="fill" class="w-100">
+                  <mat-label>JSON Array</mat-label>
+                  <input matInput [value]="jsonArrayPreview(element)" readonly />
+                </mat-form-field>
+
+                <button
+                  mat-icon-button
+                  aria-label="Edit JSON array"
+                  (click)="openJsonArrayEditor(element)">
+                  <mat-icon svgIcon="edit"></mat-icon>
+                </button>
+              </div>
+            </ng-template>
+
+            <!-- Delete -->
             <button
               mat-icon-button
               color="warn"
@@ -81,8 +114,8 @@
             [(ngModel)]="jsonText"
             (ngModelChange)="validateJson()"
             rows="10"
-            class="code-textarea"
-          ></textarea>
+            class="code-textarea">
+          </textarea>
         </mat-form-field>
 
         <p *ngIf="!isJsonValid" class="error">⚠ Invalid JSON</p>
@@ -98,6 +131,4 @@
       </div>
     </mat-tab>
   </mat-tab-group>
-
-
 </div>

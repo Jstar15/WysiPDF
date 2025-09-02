@@ -24,10 +24,12 @@ export class CellEditorViewerComponent implements OnInit{
   [x: string]: any;
   @Input() type: CellEditorType = CellEditorType.IMAGE;
   @Input() cell!: Cell;
+  @Input() gridIndex!: number;
   @Input() rowIndex!: number;
   @Input() columnIndex!: number;
   @Input() area!: string;
   @Input() tokens!: TokenAttribute[];
+  @Input() colorPalettes: string[] = [];
 
   @Output() editorActionEvent = new EventEmitter<CellEditorAction>();
 
@@ -46,7 +48,7 @@ export class CellEditorViewerComponent implements OnInit{
     this.editorActionEvent.emit(CellEditorAction.CANCEL);
   }
   onOk(): void     {
-    this.gridStateService.updateCell(this.rowIndex, this.columnIndex, this.area, this.cell)
+    this.gridStateService.updateCell(this.rowIndex, this.columnIndex, this.area, this.cell, this.gridIndex)
     this.editorActionEvent.emit(CellEditorAction.OK);
   }
 

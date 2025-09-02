@@ -1,22 +1,23 @@
 import {
-  Component,
-  OnInit,
-  Input,
-  Output,
-  EventEmitter,
-  NgZone,
   AfterViewInit,
-  OnDestroy,
+  Component,
+  EventEmitter,
+  Input,
+  NgZone,
   OnChanges,
+  OnDestroy,
+  OnInit,
+  Output,
   SimpleChanges
 } from '@angular/core';
 
-import { MatDialog } from "@angular/material/dialog";
-import { TokenAttribute } from "../../models/token-attribute";
-import { AddTokenDialogComponent } from "../../dialogs/add-token-dialog/add-token-dialog.component";
-import { CustomElementBlot } from "./CustomElementBlot";
+import {MatDialog} from "@angular/material/dialog";
+import {TokenAttribute} from "../../models/token-attribute";
+import {AddTokenDialogComponent} from "../../dialogs/add-token-dialog/add-token-dialog.component";
+import {CustomElementBlot} from "./CustomElementBlot";
 import Quill from 'quill';
-import { NgForOf } from "@angular/common";
+import {NgForOf} from "@angular/common";
+import {TokenAttributeType} from "../../models/token-attribute-type";
 
 @Component({
   standalone: true,
@@ -208,7 +209,11 @@ export class QuillWrapperComponent implements OnInit, AfterViewInit, OnDestroy, 
     this.currentRange = this.quill.getSelection(true);
     const dialogRef = this.dialog.open(AddTokenDialogComponent, {
       width: '300px',
-      data: { data: this.attributeArray }
+      data: { data: this.attributeArray.filter(a =>
+          (a.type == TokenAttributeType.TEXT) ||
+          (a.type == TokenAttributeType.NUMBER) ||
+          (a.type == TokenAttributeType.BOOLEAN)
+        ) }
     });
 
     dialogRef.afterClosed().subscribe((result: TokenAttribute) => {
