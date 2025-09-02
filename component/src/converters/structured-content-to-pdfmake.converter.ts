@@ -185,14 +185,13 @@ export class StructuredContentToPdfmakeConverter implements Converter<HtmlBlockC
   private convertElement(el: HtmlBasicElement): ContentText {
     const a = el.attributes;
 
-    // ✅ If value is missing but token key exists, show token name as placeholder
     let finalValue = el.value;
     if (!finalValue && el.token?.key) {
       finalValue = `{{${el.token.key}}}`;  // e.g., {{batters.batter.id}}
     }
 
     const style: any = {
-      text: this.insertSoftBreaks(finalValue || '​'),
+      text: finalValue,
       noWrap: false
     };
 
@@ -205,12 +204,6 @@ export class StructuredContentToPdfmakeConverter implements Converter<HtmlBlockC
     if (a.background) style.background = a.background;
 
     return style;
-  }
-
-
-  // hacky workaround for table break
-  private insertSoftBreaks(text: string, every = 10): string {
-    return text.replace(new RegExp(`(.{${every}})`, 'g'), '$1​');
   }
 
   private getDefaultLayout(): TableLayout {
