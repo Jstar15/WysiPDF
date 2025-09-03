@@ -166,21 +166,21 @@ export class TemplateEditorComponent implements OnInit,AfterViewInit {
     page: Page,
     pdfGenerationResult1: PdfGenerationResult
   ): { name: string; description: string; data: any }[] {
+
+    // Already a clean JS string with inline functions
+    let payloadStr: string = this.pdfService.convertToStringPayload(page);
+    console.log(payloadStr); // looks clean in console
+
     return [
       {
         name: 'WYSI Page Model',
-        description: 'Raw editable layout page with partials and blocks',
-        data: page
-      },
-      {
-        name: 'WYSI Page Model (HTML expanded)',
-        description: 'Raw editable layout page with partials and blocks',
+        description: 'Raw editable layout page',
         data: pdfGenerationResult1.page
       },
       {
         name: 'PDFMake Definition',
         description: 'Converted document definition used to render the PDF',
-        data: pdfGenerationResult1.docDefinition
+        data: payloadStr
       },
       {
         name: 'Tokens',
@@ -189,7 +189,7 @@ export class TemplateEditorComponent implements OnInit,AfterViewInit {
       },
       {
         name: 'Display Rules',
-        description: 'Display Rules USed inside the template.',
+        description: 'Display Rules used inside the template',
         data: this.displayLogicUtility.collectDisplayRules(page)
       }
     ];

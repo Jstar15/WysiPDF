@@ -41,6 +41,10 @@ export class PdfGenerateService {
     return this.generatePdfBase64(page, tokenAttributeList);
   }
 
+  public convertToStringPayload(page: Page):string{
+      return this.structuredContentToPdfmakeService.convertToStringPayload(page);
+  }
+
 
 }
 
