@@ -13,18 +13,14 @@ import {MatExpansionModule} from '@angular/material/expansion';
 import {AngularSplitModule} from 'angular-split';
 import {GridEditorComponent} from './grid-editor/grid-editor.component';
 import {PdfGenerateService, PdfGenerationResult} from '../../services/generators/pdf-generate.service';
-import {TokenAttribute} from '../../models/token-attribute';
-import {TokenAttributeType} from '../../models/token-attribute-type';
-import {Grid, Page} from '../../models/page';
+import {Page} from '../../models/page';
 import {NgForOf, NgIf, NgStyle} from "@angular/common";
 import {PdfViewerComponent} from "../../shared/pdf-viewer/pdf-viewer.component";
 import {MatCard, MatCardActions, MatCardContent, MatCardHeader,} from "@angular/material/card";
 import {MatIcon} from "@angular/material/icon";
 import {MatIconButton, MatMiniFabButton} from "@angular/material/button";
 import {MatTooltip} from "@angular/material/tooltip";
-import {EditPartialContentData, EditPartialContentDialogComponent} from "../../dialogs/edit-partial-content-dialog/edit-partial-content-dialog.component";
 import {PageStateService} from "../../services/page-state.service";
-import {Subject} from "rxjs";
 import {JsonListItem, JsonViewerComponent} from "../../shared/json-viewer/json-viewer.component";
 import {IconService} from "../../services/external/icon.service";
 import {DEFAULT_PAGE} from "../../presets/default-page.preset";
@@ -55,8 +51,6 @@ import {DisplayLogicUtility} from "../../utils/display-logic.utility";
     MatMiniFabButton,
     MatCardHeader,
     MatTooltip,
-    NgForOf,
-    MatIconButton,
     MatCardActions,
     NgStyle,
     JsonViewerComponent,
@@ -201,66 +195,6 @@ export class TemplateEditorComponent implements OnInit,AfterViewInit {
     ];
   }
 
-
-  addPartialContent(): void {
-    const newGrid: Grid = {
-      id: 'partial_' + Date.now(),
-      name: 'Partial Content',
-      tokenSource: 'root',
-      rows: [],
-      tokenAttributeList: this.page.tokenAttrs
-    };
-    this.page.partialContent = [...(this.page.partialContent || []), newGrid];
-    this._onPageChange();
-
-  }
-
-  removePartialContent(index: number): void {
-    if (this.page.partialContent && index >= 0) {
-      const updated = [...this.page.partialContent];
-      updated.splice(index, 1);
-      this.page.partialContent = updated;
-      this._onPageChange();
-    }
-  }
-
-  editPartialContent(index: number): void {
-    const allowedTypes = [
-      TokenAttributeType.OBJECT,
-      TokenAttributeType.STRING_ARRAY,
-      TokenAttributeType.JSON_ARRAY,
-    ];
-
-    const tokenOptions: TokenAttribute[] = this.page.tokenAttrs
-      .filter(t => allowedTypes.includes(t.type));
-
-    const dialogRef = this.dialog.open(EditPartialContentDialogComponent, {
-      width: '700px',
-      data: {
-        name: this.page.partialContent[index].name,
-        tokenOptions: tokenOptions,
-        selectedToken: this.page.partialContent[index].tokenSource || 'root'
-      }
-    });
-
-    dialogRef.afterClosed().subscribe((result: EditPartialContentData) => {
-      if (result !== undefined) {
-        debugger;
-        this.page.partialContent[index].tokenSource = result.selectedToken.name;
-        this.page.partialContent[index].name = result.name;
-
-        if(result.selectedToken.name == 'root'){
-          this.page.partialContent[index].tokenAttributeList = this.page.tokenAttrs;
-        }else{
-          const availableTokens: TokenAttribute[] = this.jsonTokenParserService.getAvailableTokensFromJsonList(result.selectedToken.name, this.page.tokenAttrs);
-          this.page.partialContent[index].tokenAttributeList = availableTokens;
-          console.log('Available tokens from json[]:', availableTokens);
-        }
-        this._onPageChange();
-
-      }
-    });
-  }
 
   protected readonly EditorType = EditorType;
 }

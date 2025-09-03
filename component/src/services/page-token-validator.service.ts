@@ -9,15 +9,11 @@ import {
 } from '../models/page';
 import { TokenAttribute } from '../models/token-attribute';
 import { HtmlToStructuredContentConverter } from '../converters/html-to-structured-content.converter';
-import { JsonTokenParserUtility } from '../utils/json-token-parser.utility';
-import {TokenAttributeType} from "../models/token-attribute-type";
 
 @Injectable({ providedIn: 'root' })
 export class PageTokenValidator {
   constructor(
-    private htmlToStructuredContentService: HtmlToStructuredContentConverter,
-    private jsonTokenParser: JsonTokenParserUtility
-  ) {}
+    private htmlToStructuredContentService: HtmlToStructuredContentConverter) {}
 
   public validatePage(page: Page, tokens: TokenAttribute[]): Page {
     if (!page) return page;
@@ -27,9 +23,6 @@ export class PageTokenValidator {
     page.content.rows = this.validateRow(page.content.rows, tokens);
     page.header.rows = this.validateRow(page.header.rows, tokens);
     page.footer.rows = this.validateRow(page.footer.rows, tokens);
-
-    // ✅ handle partial content
-    this.processPartialContent(page, tokens);
 
     return page;
   }
@@ -126,70 +119,6 @@ export class PageTokenValidator {
 
     return errors;
   }
-  /** Partial content validator */
-  private processPartialContent(page: Page, tokens: TokenAttribute[]): void {
-    for (let content of page.partialContent) {
-      if (!content.tokenSource) continue;
-
-      // ✅ Case 1: tokenSource = "root" → use regular tokens
-      if (content.tokenSource.toLowerCase() === 'root') {
-        content.rows = this.validateRow(content.rows, tokens);
-        continue;
-      }
-
-      const sourceToken: TokenAttribute = tokens.find(
-        (t: TokenAttribute) =>
-          t.name?.toLowerCase() === content.tokenSource.toLowerCase()
-      );
-
-      // ✅ Case 2: no matching token found → mark all cells with error
-      if (!sourceToken) {
-        this.setErrorOnAllCells(
-          content.rows,
-          `Partial content source '${content.tokenSource}' not found`
-        );
-        continue;
-      }
-
-      if (!sourceToken.value) continue;
-
-      try {
-        // parse JSON into subset of tokens
-        let partialTokens: TokenAttribute[] = [];
-        if (sourceToken.type == TokenAttributeType.JSON_ARRAY) {
-          const object: any[] = JSON.parse(sourceToken.value);
-          const keys: string[] = this.jsonTokenParser.getAllKeysFromJsonArray(object);
-
-          for (let key of keys) {
-            partialTokens.push({
-              name: `${sourceToken.name}.${key}`,
-              type: TokenAttributeType.TEXT,
-              value: ''
-            });
-          }
-        }
-
-        // validate partial content rows with subset
-        content.rows = this.validateRow(content.rows, partialTokens);
-      } catch (err) {
-        console.warn(
-          `PartialContent parse failed for "${content.tokenSource}"`,
-          err
-        );
-      }
-    }
-  }
-
-  /** 🚨 Mark all cells in given rows with an error */
-  private setErrorOnAllCells(rows: Row[], message: string): void {
-    for (let row of rows) {
-      for (let cell of row.cells) {
-        cell.hasError = true;
-        cell.errorMessage = message;
-      }
-    }
-  }
-
 
   private isTokenAvailable(tokenKey: string, tokens: TokenAttribute[]): boolean {
     if (!tokenKey || !tokens) return false;
@@ -230,10 +159,6 @@ export class PageTokenValidator {
     addFromRows(working.header?.rows);
     addFromRows(working.content?.rows);
     addFromRows(working.footer?.rows);
-
-    for (const pc of working.partialContent ?? []) {
-      addFromRows(pc?.rows);
-    }
 
     return Array.from(messages);
   }

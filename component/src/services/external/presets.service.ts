@@ -7,6 +7,7 @@ import { Preset2 } from '../../presets/2.preset';
 import { Preset3 } from '../../presets/3.preset';
 import { Preset4 } from '../../presets/4.preset';
 import { Preset5 } from '../../presets/5.preset';
+import { Preset6 } from '../../presets/6.preset';
 
 // keep adding as you create them…
 
@@ -19,7 +20,8 @@ export class PresetsService {
     Preset2,
     Preset3,
     Preset4,
-    Preset5
+    Preset5,
+    Preset6
     // add new ones here in order
   ];
 

@@ -39,13 +39,7 @@ export class HtmlToStructuredContentConverter implements Converter<Page, Page> {
         cell.block = this.convertHTmlToObject(cell.value);
       }
     }
-    for (let partial of page.partialContent) {
-      for (let row of partial.rows) {
-        for (let cell of row.cells) {
-          cell.block = this.convertHTmlToObject(cell.value);
-        }
-      }
-    }
+
     return page;
   }
 

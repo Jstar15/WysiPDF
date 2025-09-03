@@ -443,47 +443,7 @@ export const Preset3: Page = {
           }
         ],
         "backgroundColor": "#f0fdfa"
-      },
-      {
-        "type": "partial-content",
-        "height": 50,
-        "widths": [],
-        "cells": [],
-        "backgroundColor": "white",
-        "partialContent": {
-          "id": "partial_1755898280993",
-          "name": "Partial Content",
-          "tokenSource": "root",
-          "rows": [
-            {
-              "height": 50,
-              "widths": [
-                100
-              ],
-              "cells": [
-                {
-                  "type": "html",
-                  "value": "<table><tbody><tr><td data-row=\"row-893n\"><strong style=\"background-color: rgb(204, 224, 245);\">Medication</strong></td><td data-row=\"row-893n\"><strong style=\"background-color: rgb(204, 224, 245);\">Dose </strong></td><td data-row=\"row-893n\"><strong style=\"background-color: rgb(204, 224, 245);\">Route </strong></td><td data-row=\"row-893n\"><strong style=\"background-color: rgb(204, 224, 245);\">Frequency</strong></td></tr><tr><td data-row=\"row-ly12\">Metformin </td><td data-row=\"row-ly12\">1,000 mg</td><td data-row=\"row-ly12\">PO  </td><td data-row=\"row-ly12\">BD</td></tr><tr><td data-row=\"row-4ngn\">Empagliflo </td><td data-row=\"row-4ngn\">10 mg</td><td data-row=\"row-4ngn\">PO </td><td data-row=\"row-4ngn\">BD</td></tr><tr><td data-row=\"row-893n\">zin </td><td data-row=\"row-893n\">10 mg</td><td data-row=\"row-893n\">PO </td><td data-row=\"row-893n\">BD</td></tr></tbody></table><p><br></p>",
-                  "attrs": {
-                    "paddingTop": 5,
-                    "paddingRight": 5,
-                    "paddingBottom": 5,
-                    "paddingLeft": 5,
-                    "borderTop": 0,
-                    "borderRight": 0,
-                    "borderBottom": 0,
-                    "borderLeft": 0,
-                    "borderColor": "white",
-                    "backgroundColor": "transparent"
-                  }
-                }
-              ],
-              "backgroundColor": "white"
-            }
-          ],
-          "tokenAttributeList": []
-        }
-      },
+      }, ,
       {
         "type": "page-break",
         "height": 0,
@@ -894,41 +854,6 @@ export const Preset3: Page = {
     "defaultFont": "Roboto"
   },
   "tokenAttrs": [],
-  "partialContent": [
-    {
-      "id": "partial_1755898280993",
-      "name": "Partial Content",
-      "tokenSource": "root",
-      "rows": [
-        {
-          "height": 50,
-          "widths": [
-            100
-          ],
-          "cells": [
-            {
-              "type": "html",
-              "value": "<table><tbody><tr><td data-row=\"row-893n\"><strong style=\"background-color: rgb(204, 224, 245);\">Medication</strong></td><td data-row=\"row-893n\"><strong style=\"background-color: rgb(204, 224, 245);\">Dose </strong></td><td data-row=\"row-893n\"><strong style=\"background-color: rgb(204, 224, 245);\">Route </strong></td><td data-row=\"row-893n\"><strong style=\"background-color: rgb(204, 224, 245);\">Frequency</strong></td></tr><tr><td data-row=\"row-ly12\">Metformin </td><td data-row=\"row-ly12\">1,000 mg</td><td data-row=\"row-ly12\">PO  </td><td data-row=\"row-ly12\">BD</td></tr><tr><td data-row=\"row-4ngn\">Empagliflo </td><td data-row=\"row-4ngn\">10 mg</td><td data-row=\"row-4ngn\">PO </td><td data-row=\"row-4ngn\">BD</td></tr><tr><td data-row=\"row-893n\">zin </td><td data-row=\"row-893n\">10 mg</td><td data-row=\"row-893n\">PO </td><td data-row=\"row-893n\">BD</td></tr></tbody></table><p><br></p>",
-              "attrs": {
-                "paddingTop": 5,
-                "paddingRight": 5,
-                "paddingBottom": 5,
-                "paddingLeft": 5,
-                "borderTop": 0,
-                "borderRight": 0,
-                "borderBottom": 0,
-                "borderLeft": 0,
-                "borderColor": "white",
-                "backgroundColor": "transparent"
-              }
-            }
-          ],
-          "backgroundColor": "white"
-        }
-      ],
-      "tokenAttributeList": []
-    }
-  ],
   "colorPalettes": [
     '#000000', '#111827', '#1F2937', '#374151', '#4B5563',
     '#6B7280', '#9CA3AF', '#D1D5DB', '#E5E7EB', '#FFFFFF',

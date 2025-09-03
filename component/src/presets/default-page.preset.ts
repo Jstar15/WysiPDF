@@ -23,7 +23,6 @@ export const DEFAULT_PAGE: Page = {
     defaultFont: 'Roboto'
   },
   tokenAttrs: [],
-  partialContent: [],
   colorPalettes: [
     '#000000', '#111827', '#1F2937', '#374151', '#4B5563',
     '#6B7280', '#9CA3AF', '#D1D5DB', '#E5E7EB', '#FFFFFF',

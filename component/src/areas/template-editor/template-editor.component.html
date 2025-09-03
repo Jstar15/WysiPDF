@@ -126,11 +126,9 @@
                                     [grid]="page.header"
                                     [tokenAttrs]="page.tokenAttrs"
                                     [pageAttrs]="page.pageAttrs"
-                                    [partialContentAvailableList]="page.partialContent"
                                     [hidePageBreak]="true"
                                     [hideChart]="true"
                                     [hideBarcode]="true"
-                                    [hidePartialContent]="true"
                                     [colorPalettes]="page.colorPalettes"
                                     (cellChange)="onCellChange($event)"
                             ></app-grid-editor>
@@ -149,7 +147,6 @@
                                     [grid]="page.content"
                                     [tokenAttrs]="page.tokenAttrs"
                                     [pageAttrs]="page.pageAttrs"
-                                    [partialContentAvailableList]="page.partialContent"
                                     [colorPalettes]="page.colorPalettes"
                                     (cellChange)="onCellChange($event)"
                             ></app-grid-editor>
@@ -168,67 +165,13 @@
                                     [grid]="page.footer"
                                     [tokenAttrs]="page.tokenAttrs"
                                     [pageAttrs]="page.pageAttrs"
-                                    [partialContentAvailableList]="page.partialContent"
                                     [hidePageBreak]="true"
                                     [hideChart]="true"
                                     [hideBarcode]="true"
-                                    [hidePartialContent]="true"
                                     [colorPalettes]="page.colorPalettes"
                                     (cellChange)="onCellChange($event)"
                             ></app-grid-editor>
                         </mat-expansion-panel>
-
-                        <!-- PARTIAL CONTENT -->
-                        <div class="partial-section">
-                            <h3 style="margin: 16px 0 8px; display: flex; align-items: center;">
-                                <mat-icon style="margin-right: 4px;" svgIcon="layers"></mat-icon> Partial Content
-                                <button mat-mini-fab color="primary" style="margin-left: auto;" (click)="addPartialContent()">
-                                    <mat-icon svgIcon="add"></mat-icon>
-                                </button>
-                            </h3>
-
-                            <ng-container *ngFor="let partial of page.partialContent; let i = index">
-                                <mat-expansion-panel>
-                                    <mat-expansion-panel-header>
-                                        <div class="partial-header-grid">
-                                            <mat-panel-title class="partial-title">
-                                                {{ partial.name }} - {{partial.tokenSource}}
-                                            </mat-panel-title>
-                                            <div class="partial-header-actions">
-                                                <button
-                                                        mat-icon-button
-                                                        color="primary"
-                                                        (click)="editPartialContent(i); $event.stopPropagation();"
-                                                        [matTooltip]="'Edit Partial Content'"
-                                                >
-                                                    <mat-icon svgIcon="edit"></mat-icon>
-                                                </button>
-                                                <button
-                                                        mat-icon-button
-                                                        color="warn"
-                                                        (click)="removePartialContent(i); $event.stopPropagation();"
-                                                        [matTooltip]="'Remove Partial'"
-                                                >
-                                                    <mat-icon svgIcon="delete"></mat-icon>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </mat-expansion-panel-header>
-
-                                    <app-grid-editor
-                                            [area]="'partialContent'"
-                                            [gridIndex]="i"
-                                            [grid]="page.partialContent[i]"
-                                            [tokenAttrs]="partial.tokenAttributeList"
-                                            [pageAttrs]="page.pageAttrs"
-                                            [hidePartialContent]="true"
-                                            [colorPalettes]="page.colorPalettes"
-                                            (cellChange)="onCellChange($event)"
-                                    ></app-grid-editor>
-                                </mat-expansion-panel>
-
-                            </ng-container>
-                        </div>
                     </mat-accordion>
                 </mat-card-content>
                 <mat-card-actions class="history-toolbar-wrapper">

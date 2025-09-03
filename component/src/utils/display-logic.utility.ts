@@ -106,8 +106,6 @@ export class DisplayLogicUtility {
     scanGrid(page.content, 'content', page.content?.name);
     scanGrid(page.footer,  'footer',  page.footer?.name);
 
-    // partialContent: array of Grid
-    (page.partialContent ?? []).forEach((g) => scanGrid(g, 'partial', g?.name));
 
     return results;
   }
@@ -121,7 +119,7 @@ export class DisplayLogicUtility {
 
 }
 
-export type DisplayRuleLocation = 'header' | 'content' | 'footer' | 'partial';
+export type DisplayRuleLocation = 'header' | 'content' | 'footer';
 
 export interface DisplayRuleItem {
   location: DisplayRuleLocation;

@@ -122,12 +122,11 @@ export interface Cell {
 }
 
 export interface Row {
-    type?: 'content' | 'partial-content' | 'page-break';
+    type?: 'content' | 'page-break';
     widths: number[];
     height: number;
     backgroundColor?: string;
     cells: Cell[];
-    partialContent?: Grid;
     displayLogic?: DisplayLogicGroup
 }
 
@@ -145,7 +144,6 @@ export interface Page {
     content?: Grid;
     pageAttrs?: PageAttrs;
     tokenAttrs?: TokenAttribute[];
-    partialContent?: Grid[];
     colorPalettes?: string[]
 }
 

@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { Page, Row } from '../models/page';
-import { PartialContentExpanderService } from '../services/partial-content-expander.service';
 import { HtmlToStructuredContentConverter } from './html-to-structured-content.converter';
 import { TokenAttribute } from '../models/token-attribute';
 import {TokenReplacerUtility} from "../utils/token-replacer.utility";
@@ -10,7 +9,6 @@ import {Converter} from "./converter";
 @Injectable({ providedIn: 'root' })
 export class PageToPageConverter  implements Converter<Page, Page, TokenAttribute[]> {
   constructor(
-    private partialContentExpander: PartialContentExpanderService,
     private htmlToStructuredContentService: HtmlToStructuredContentConverter,
     private tokenReplacerUtility: TokenReplacerUtility,
     private displayLogicUtility : DisplayLogicUtility
@@ -27,7 +25,7 @@ export class PageToPageConverter  implements Converter<Page, Page, TokenAttribut
     page = this.htmlToStructuredContentService.convert(page);
 
     // 2) expand tokenized/partial sections
-    page = this.partialContentExpander.insertPartialContent(page, tokenAttributeList);
+  //  page = this.partialContentExpander.insertPartialContent(page, tokenAttributeList);
 
     // 3) normalize row background colors to match page background
     page = this.updateRowColorToMatchPageBackgroundColor(page);

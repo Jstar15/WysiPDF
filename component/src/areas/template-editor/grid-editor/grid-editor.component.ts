@@ -8,7 +8,6 @@ import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { Subject, take, takeUntil } from 'rxjs';
 import { TokenAttribute } from '../../../models/token-attribute';
-import {AddPartialContentDialogComponent, AddPartialContentDialogResult} from '../../../dialogs/add-partial-content-dialog/add-partial-content-dialog.component';
 import { IconService } from '../../../services/external/icon.service';
 import {Cell, CellAttrs, Grid, Row, PageAttrs,} from '../../../models/page';
 import {CellStyleToolbarComponent,} from './cell-style-toolbar/cell-style-toolbar.component';
@@ -28,9 +27,7 @@ export class GridEditorComponent implements OnInit, OnDestroy, OnChanges {
   @ViewChild('gridContainer', { static: true }) public gridContainer!: ElementRef<HTMLDivElement>;
 
   @Input() public tokenAttrs: TokenAttribute[] = [];
-  @Input() public partialContentAvailableList?: Grid[];
   @Input() public hidePageBreak: boolean = false;
-  @Input() public hidePartialContent: boolean = false;
   @Input() public hideChart: boolean = false;
   @Input() public hideBarcode: boolean = false;
   @Input() public pageAttrs: PageAttrs = {};
@@ -65,9 +62,6 @@ export class GridEditorComponent implements OnInit, OnDestroy, OnChanges {
 
   public ngOnInit(): void {
     this.addRowIfNone();
-    if (this.partialContentAvailableList?.length && !this.selectedPartialId) {
-      this.selectedPartialId = this.partialContentAvailableList[0]?.id ?? null;
-    }
   }
 
   private addRowIfNone(){
@@ -343,40 +337,9 @@ export class GridEditorComponent implements OnInit, OnDestroy, OnChanges {
     return this.sanitizeHtmlInternal(html);
   }
 
-  public addPartialRow(): void {
-    if (!this.partialContentAvailableList?.length) {
-      console.warn('No partial content available');
-      return;
-    }
-
-    this.dialog.open<AddPartialContentDialogComponent, { partials: Grid[] }, AddPartialContentDialogResult | undefined>(
-        AddPartialContentDialogComponent,
-        { width: '700px', data: { partials: this.partialContentAvailableList! } }
-      ).afterClosed().pipe(take(1), takeUntil(this.destroy$))
-      .subscribe((result: AddPartialContentDialogResult | undefined) => {
-        if (!result?.selectedPartial) return;
-
-        const row: Row = {
-          type: 'partial-content',
-          height: 50,
-          widths: [],
-          cells: [],
-          backgroundColor: this.pageAttrs?.backgroundColor || 'transparent',
-          partialContent: result.selectedPartial
-        };
-
-        this.grid.rows.splice(this.currentRow + 1, 0, row);
-        this.currentRow++;
-        this.emitChange();
-      });
-  }
-
-  public onPartialRowClick(rowIndex: number): void {
+  public onRowClick(rowIndex: number): void {
     this.currentRow = rowIndex;
     this.currentCol = -1;
   }
 
-  public getPartialTemplateName(rowIndex: number): string {
-    return this.grid.rows[rowIndex]?.partialContent?.name ?? '';
-  }
 }

@@ -40,6 +40,8 @@ export class PdfGenerateService {
     const tokenAttributeList: TokenAttribute[] = this.jsonTokenParserService.parse(json);
     return this.generatePdfBase64(page, tokenAttributeList);
   }
+
+
 }
 
 export interface PdfGenerationResult {

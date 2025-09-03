@@ -710,7 +710,6 @@ export const Preset2: Page = {
     "defaultFont": "Roboto"
   },
   "tokenAttrs": [],
-  "partialContent": [],
   "colorPalettes": [
     "#000000",
     "#111827",

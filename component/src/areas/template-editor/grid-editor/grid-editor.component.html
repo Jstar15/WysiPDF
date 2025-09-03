@@ -26,9 +26,6 @@
     <mat-icon svgIcon="line_weight"></mat-icon>
   </button>
 
-  <button *ngIf="!hidePartialContent"  mat-icon-button matTooltip="Add Partial Content" (click)="addPartialRow()">
-    <mat-icon svgIcon="call_split"></mat-icon>
-  </button>
 
   <button mat-icon-button color="accent" matTooltip="Display Rules" aria-label="Display Rules" (click)="displayRulesDialog()">
     <mat-icon svgIcon="view_list"></mat-icon>
@@ -67,9 +64,9 @@
   <div cdkDropList (cdkDropListDropped)="dropRow($event)" [cdkDropListDisabled]="isResizing">
     <div *ngFor="let row of grid.rows; let r = index" cdkDrag>
       <!-- 🧾 Page Break -->
-      <div *ngIf="row.type === 'page-break'" class="row"
+      <div *ngIf="row.type === 'page-break'; else normalRow" class="row"
            [ngClass]="{ 'selected-partial': r === currentRow && currentCol === -1 }"
-           (click)="onPartialRowClick(r)">
+           (click)="onRowClick(r)">
         <div class="cell-container" style="flex: 1;">
           <div class="cell ql-editor"
                style="text-align: center; color: gray; font-style: italic; padding: 8px;">
@@ -78,18 +75,6 @@
         </div>
       </div>
 
-      <!-- Render partial content row -->
-      <div *ngIf="row.type === 'partial-content'; else normalRow" class="row"
-           [style.background-color]="pageAttrs.backgroundColor"
-           [ngClass]="{ 'selected-partial': r === currentRow && currentCol === -1 }"
-           (click)="onPartialRowClick(r)">
-        <div class="cell-container" style="flex: 1;">
-          <div class="cell ql-editor" style="text-align: center; color: gray; font-style: italic; padding: 8px;">
-            <p>[Partial Content] - {{getPartialTemplateName(r)}}</p>
-
-          </div>
-        </div>
-      </div>
 
       <!-- Normal row rendering -->
       <ng-template #normalRow>

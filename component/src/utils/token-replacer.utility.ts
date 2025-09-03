@@ -37,10 +37,6 @@ export class TokenReplacerUtility {
         }
       }
 
-      // keep your partial behavior untouched
-      if (row.partialContent) {
-        this.replaceTokensInRow(row.partialContent.rows, tokens);
-      }
     }
 
     return rows;
