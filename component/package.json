@@ -33,6 +33,7 @@
     "jsbarcode": "^3.12.1",
     "ngx-color": "^10.0.0",
     "ngx-color-picker": "^20.0.0",
+    "ngx-image-compress": "^18.1.5",
     "pdfmake": "^0.2.20",
     "qrcode": "^1.5.4",
     "quill": "~2.0.3",

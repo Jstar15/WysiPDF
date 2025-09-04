@@ -23,6 +23,8 @@ import { MatOption } from '@angular/material/core';
 import { Cell, ImageBlock } from '../../../models/page';
 import { TokenAttribute } from '../../../models/token-attribute';
 import { TokenAttributeType } from '../../../models/token-attribute-type';
+import {ImageCompressionService} from "../../../services/external/image-compression.service";
+import {NgxImageCompressService, UploadResponse} from "ngx-image-compress";
 
 type Align = 'left' | 'center' | 'right';
 
@@ -56,6 +58,28 @@ export class AddImageEditorComponent implements OnInit, OnChanges {
   public imageTokens: TokenAttribute[] = [];
   public selectedTokenKey: string | null = null;
 
+  constructor(private imageCompressService: NgxImageCompressService) {
+  }
+
+  async pickAndCompress(maxMb = 0.5): Promise<string> {
+    try {
+      // Lets user pick a file, then compress to <= maxMb
+      const selected: UploadResponse = await this.imageCompressService.uploadFileOrReject();
+      const result: UploadResponse = await this.imageCompressService.getImageWithMaxSizeAndMetas(
+        { image: selected.image, orientation: selected.orientation, fileName: selected.fileName },
+        maxMb,
+        true
+      );
+
+      // Log before returning
+      console.log('final bytes:', this.imageCompressService.byteCount(result.image));
+      return result.image; // base64 data URL
+    } catch (err: any) {
+      // User canceled picker or compression failed
+      console.warn('Image pick/compress aborted:', err?.message ?? err);
+      throw err; // or `return ''` if you prefer a soft failure
+    }
+  }
   ngOnInit(): void {
     this.hydrateFromInputs();
   }
@@ -67,8 +91,29 @@ export class AddImageEditorComponent implements OnInit, OnChanges {
   }
 
   // ── UI Actions ──────────────────────────────────────────────────
-  openFilePicker(): void {
-    this.fileInput?.nativeElement?.click();
+  async openFilePicker(maxMb = 0.5): Promise<void> {
+    try {
+      // 1) Let user pick a file via the library (no hidden <input> needed)
+      const selected: UploadResponse = await this.imageCompressService.uploadFileOrReject();
+
+      // 2) Compress until <= maxMb
+      const result: UploadResponse = await this.imageCompressService.getImageWithMaxSizeAndMetas(
+        { image: selected.image, orientation: selected.orientation, fileName: selected.fileName },
+        maxMb,
+        true
+      );
+
+      // 3) Update your component state
+      this.imageBase64 = result.image;                         // base64 data URL
+      this.filename = result.fileName ?? selected.fileName ?? '';
+      this.selectedTokenKey = null;                            // file overrides token
+
+      console.log('final bytes:', this.imageCompressService.byteCount(result.image));
+      this.emitPayload();
+    } catch (err: any) {
+      // User canceled or compression failed
+      console.warn('Image pick/compress aborted:', err?.message ?? err);
+    }
   }
 
   onFileChange(event: Event): void {

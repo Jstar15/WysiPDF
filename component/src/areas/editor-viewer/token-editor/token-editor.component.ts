@@ -56,7 +56,7 @@ export class TokenEditorComponent implements OnInit, OnChanges {
     { value: TokenAttributeType.NUMBER,       viewValue: 'Number' },
     { value: TokenAttributeType.JSON_ARRAY,   viewValue: 'JSON Array' },
     { value: TokenAttributeType.STRING_ARRAY, viewValue: 'STRING Array' },
-    { value: TokenAttributeType.OBJECT,       viewValue: 'Object' },
+ //   { value: TokenAttributeType.OBJECT,       viewValue: 'Object' },
     { value: TokenAttributeType.IMAGE,        viewValue: 'Image' },
     { value: TokenAttributeType.BARCODE,      viewValue: 'Barcode' }
   ];

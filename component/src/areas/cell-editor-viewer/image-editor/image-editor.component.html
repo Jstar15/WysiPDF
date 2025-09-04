@@ -7,15 +7,10 @@
       <span>Choose Image</span>
     </button>
 
-    <input
-      #fileInput
-      type="file"
-      accept="image/*"
-      (change)="onFileChange($event)"
-      hidden
-    />
+
 
     <div class="file-info" *ngIf="filename">{{ filename }}</div>
+
   </div>
 
   <!-- Token-based image selection (IMAGE tokens only) -->

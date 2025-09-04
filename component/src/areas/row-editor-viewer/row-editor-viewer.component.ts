@@ -7,8 +7,8 @@ import {TokenAttribute} from "../../models/token-attribute";
 import {PageStateService} from "../../services/page-state.service";
 import {DisplayLogicGroup} from "../../models/display-logic.models";
 import {Row} from "../../models/page";
-import {DisplayLogicEditorComponent} from "../cell-editor-viewer/display-logic-editor/display-logic-editor.component";
 import {CellEditorType} from "../cell-editor-viewer/cell-editor-viewer.interfaces";
+import {DisplayLogicEditorComponent} from "./display-logic-editor/display-logic-editor.component";
 
 @Component({
   selector: 'app-row-editor-viewer',
