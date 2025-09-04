@@ -4,7 +4,7 @@ import {
   HtmlGridBlock,
   Row,
   Cell,
-  CellAttrs
+  CellAttrs, PageAttrs
 } from '../models/page';
 import {Injectable} from "@angular/core";
 import {Converter} from "./converter";
@@ -25,7 +25,7 @@ import {Converter} from "./converter";
 export class GridToStructuredContentConverter implements Converter<Row[], HtmlBlockContainer>{
   constructor() {}
 
-  public convert(gridData: Row[]): HtmlBlockContainer {
+  public convert(gridData: Row[],PageAttrs): HtmlBlockContainer {
     const blocks: (HtmlGridBlock | HtmlBlock)[] = [];
     const gridBlock: HtmlGridBlock = {
       blockType: 'grid',

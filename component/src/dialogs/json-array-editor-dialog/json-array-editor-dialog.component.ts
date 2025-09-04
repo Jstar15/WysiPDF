@@ -47,7 +47,6 @@ export class JsonArrayEditorDialogComponent {
     { value: TokenAttributeType.BOOLEAN,      viewValue: 'Boolean' },
     { value: TokenAttributeType.NUMBER,       viewValue: 'Number' },
     { value: TokenAttributeType.STRING_ARRAY, viewValue: 'STRING Array' },
-    { value: TokenAttributeType.OBJECT,       viewValue: 'Object' },
     { value: TokenAttributeType.IMAGE,        viewValue: 'Image' },
     { value: TokenAttributeType.BARCODE,      viewValue: 'Barcode' }
   ];

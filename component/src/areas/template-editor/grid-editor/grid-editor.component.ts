@@ -1,20 +1,19 @@
 import {Component, OnInit, OnDestroy, ViewChild, ElementRef, Output, EventEmitter, Input, OnChanges, SimpleChanges} from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatDialog } from '@angular/material/dialog';
 import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { Subject, take, takeUntil } from 'rxjs';
+import { Subject } from 'rxjs';
 import { TokenAttribute } from '../../../models/token-attribute';
 import { IconService } from '../../../services/external/icon.service';
-import {Cell, CellAttrs, Grid, Row, PageAttrs,} from '../../../models/page';
+import {  Grid, Row, PageAttrs, Cell,} from '../../../models/page';
 import {CellStyleToolbarComponent,} from './cell-style-toolbar/cell-style-toolbar.component';
-import {OpenCellEditorEvent} from "./grid-editor.interfaces";
 import {CellEditorType} from "../../cell-editor-viewer/cell-editor-viewer.interfaces";
 import {PageStateService} from "../../../services/page-state.service";
 import {createEmptyCell, createEmptyRow} from "../../../presets/default-page.preset";
+import {RowEditorType} from "../../row-editor-viewer/row-editor-viewer.interfaces";
 
 @Component({
   selector: 'app-grid-editor',
@@ -23,7 +22,7 @@ import {createEmptyCell, createEmptyRow} from "../../../presets/default-page.pre
   templateUrl: './grid-editor.component.html',
   styleUrls: ['./grid-editor.component.scss']
 })
-export class GridEditorComponent implements OnInit, OnDestroy, OnChanges {
+export class GridEditorComponent implements OnInit, OnDestroy {
   @ViewChild('gridContainer', { static: true }) public gridContainer!: ElementRef<HTMLDivElement>;
 
   @Input() public tokenAttrs: TokenAttribute[] = [];
@@ -33,22 +32,21 @@ export class GridEditorComponent implements OnInit, OnDestroy, OnChanges {
   @Input() public pageAttrs: PageAttrs = {};
   @Input() public colorPalettes: string[] | undefined = [];
   @Input() public grid!: Grid;
-  @Input() public gridIndex!: number;
   @Input() public area!: string;
 
-  @Output() public cellChange: EventEmitter<OpenCellEditorEvent> = new EventEmitter<OpenCellEditorEvent>();
+  @Output() public cellChange: EventEmitter<CellEditorType> = new EventEmitter<CellEditorType>();
+  @Output() public rowChange: EventEmitter<RowEditorType> = new EventEmitter<RowEditorType>();
 
-  public selectedPartialId: string | null = null;
   public isResizing = false;
 
-  public currentCell: Cell | null = null;
   public currentRow: number = 0;
-  public currentCol: number = -1;
+  public currentCol: number = 0;
+
+  public currentCell: Cell;
   private destroy$: Subject<void> = new Subject<void>();
   private resizeEmitRAF?: number;
 
   public constructor(
-    private readonly dialog: MatDialog,
     private readonly sanitizer: DomSanitizer,
     private readonly iconService: IconService,
     private  readonly pageStateService : PageStateService
@@ -56,40 +54,11 @@ export class GridEditorComponent implements OnInit, OnDestroy, OnChanges {
     this.iconService.registerIcons();
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    this.addRowIfNone();
-  }
 
   public ngOnInit(): void {
-    this.addRowIfNone();
+    this.onCellClick(0, 0);
   }
 
-  private addRowIfNone(){
-    if (!this.grid?.rows || this.grid.rows.length === 0) {
-      this.grid.rows = [createEmptyRow()];
-    }
-    this.selectFirstRowIfNoneSelected();
-  }
-
-  private selectFirstRowIfNoneSelected(){
-    if(!this.currentRow){
-      this.currentRow = 0;
-      this.currentCol = 0;
-      this.updateCurrentCell();
-    }
-  }
-
-  public updateCurrentCell(): void{
-    if (
-      this.currentRow >= 0 &&
-      this.currentCol >= 0 &&
-      this.grid?.rows?.[this.currentRow]?.cells?.[this.currentCol]
-    ) {
-      this.currentCell = this.grid?.rows?.[this.currentRow]?.cells?.[this.currentCol];
-    }else{
-      this.currentCell = null;
-    }
-  }
 
   public ngOnDestroy(): void {
     this.destroy$.next();
@@ -100,8 +69,7 @@ export class GridEditorComponent implements OnInit, OnDestroy, OnChanges {
   public addRow(): void {
     this.grid.rows.splice(this.currentRow + 1, 0, createEmptyRow());
     this.currentRow++;
-    this.updateCurrentCell();
-    this.emitChange();
+    this.updateGrid();
   }
 
   public removeRow(): void {
@@ -113,33 +81,58 @@ export class GridEditorComponent implements OnInit, OnDestroy, OnChanges {
       this.grid.rows.push(createEmptyRow());
       this.currentRow = 0;
     }
-    this.updateCurrentCell();
-    this.emitChange();
+    this.updateGrid();
   }
+
+  private updateGrid(){
+    this.emitCellLocation()
+    this.pageStateService.updateGrid(this.grid);
+  }
+
 
   public addColumn(): void {
     const row: Row = this.grid.rows[this.currentRow];
     const insertAt: number = this.currentCol >= 0 ? this.currentCol + 1 : row.cells.length;
     row.cells.splice(insertAt, 0, createEmptyCell());
     this.redistributeWidths(row);
-    this.emitChange();
+    this.updateGrid();
   }
 
   public removeColumn(): void {
     const row = this.grid.rows[this.currentRow];
-    if (this.currentCol >= 0) {
-      row.cells.splice(this.currentCol, 1);
-      row.widths.splice(this.currentCol, 1);
-      this.currentCol = -1;
-      if (row.cells.length === 0) {
-        row.cells = [createEmptyCell()];
-        row.widths = [100];
-      } else {
-        this.redistributeWidths(row);
+    if (!row || row.cells.length === 0) return;
+
+    // Clamp currentCol just in case
+    this.currentCol = Math.max(0, Math.min(this.currentCol, row.cells.length - 1));
+
+    const removedIndex = this.currentCol;
+
+    // Remove the column + width
+    row.cells.splice(removedIndex, 1);
+    row.widths.splice(removedIndex, 1);
+
+    if (row.cells.length === 0) {
+      // Always keep at least one cell
+      row.cells = [createEmptyCell()];
+      row.widths = [100];
+      this.currentCol = 0;
+    } else {
+      // Prefer the column that slid into the removed position (the "next" one)
+      let nextIndex = removedIndex; // after splice, this is the right/next column
+      if (nextIndex >= row.cells.length) {
+        // if we removed the last column, go left
+        nextIndex = row.cells.length - 1;
       }
-      this.emitChange();
+      if (nextIndex < 0) nextIndex = 0; // safety clamp
+      this.currentCol = nextIndex;
+
+      this.redistributeWidths(row);
     }
+
+    this.updateGrid(); // emits & persists
   }
+
+
 
   public onColResizeMouseDown(e: MouseEvent, rowIndex: number, colIndex: number): void {
     e.preventDefault();
@@ -197,95 +190,74 @@ export class GridEditorComponent implements OnInit, OnDestroy, OnChanges {
 
     const mouseUp = () => {
       cleanup();
-      // emit only if there was an actual drag
-      if (didDrag) this.emitChange();
+      if (didDrag) {
+        this.updateGrid();
+      }
     };
 
     document.addEventListener('mousemove', mouseMove);
     document.addEventListener('mouseup', mouseUp);
   }
 
+  emitCellLocation(){
+    this.pageStateService.updateCurrentCell(this.area, this.currentRow, this.currentCol);
+  }
+
   public onCellClick(rowIndex: number, colIndex: number): void {
     this.currentRow = rowIndex;
     this.currentCol = colIndex;
-    this.updateCurrentCell();
+    this.emitCellLocation();
+    this.currentCell = this.grid.rows[this.currentRow].cells[this.currentCol];
   }
 
   public onCellDoubleClick(rowIndex: number, colIndex: number): void {
     this.currentRow = rowIndex;
     this.currentCol = colIndex;
-    this.currentCell =  this.grid?.rows?.[this.currentRow]?.cells?.[this.currentCol];
     this.openEditorForCell(rowIndex, colIndex);
   }
 
   public openCellEditorDialog(): void {
-    this.cellChange.emit({
-      gridIndex: this.gridIndex,
-      cell: this.currentCell,
-      rowIndex: this.currentRow,
-      columnIndex: this.currentCol,
-      area: (this.area) as 'content' | 'footer' | 'header',
-      type: CellEditorType.HTML
-    })
+    this.emitCellLocation();
+    this.cellChange.emit(CellEditorType.HTML);
   }
 
   public openAddImageDialog(): void {
-    this.cellChange.emit({
-      gridIndex: this.gridIndex,
-      cell: this.currentCell,
-      rowIndex: this.currentRow,
-      columnIndex: this.currentCol,
-      area: (this.area) as 'content' | 'footer' | 'header',
-      type: CellEditorType.IMAGE
-    })
+    this.emitCellLocation();
+    this.cellChange.emit(CellEditorType.IMAGE);
   }
 
   public openAddChartDialog(): void {
-    this.cellChange.emit({
-      gridIndex: this.gridIndex,
-      cell: this.currentCell,
-      rowIndex: this.currentRow,
-      columnIndex: this.currentCol,
-      area: (this.area) as 'content' | 'footer' | 'header',
-      type: CellEditorType.CHART
-    })
+    this.emitCellLocation();
+    this.cellChange.emit(CellEditorType.CHART);
   }
 
   public openAddBarcodeDialog(): void {
-    this.cellChange.emit({
-      gridIndex: this.gridIndex,
-      cell: this.currentCell,
-      rowIndex: this.currentRow,
-      columnIndex: this.currentCol,
-      area: (this.area) as 'content' | 'footer' | 'header',
-      type: CellEditorType.BARCODE
-    })
+    this.emitCellLocation();
+    this.cellChange.emit(CellEditorType.BARCODE);
   }
 
   public displayRulesDialog(): void {
-    this.cellChange.emit({
-      gridIndex: this.gridIndex,
-      cell: this.currentCell,
-      rowIndex: this.currentRow,
-      columnIndex: this.currentCol,
-      area: (this.area) as 'content' | 'footer' | 'header',
-      type: CellEditorType.DISPLAY_RULES
-    })
+    this.emitCellLocation();
+    this.rowChange.emit(RowEditorType.DISPLAY_RULES);
   }
 
   private openEditorForCell(r: number, c: number): void {
-    const selected = this.currentCell;
+    const selected = this.pageStateService.getCurrentCell();
     if (!selected) { console.warn('No cell selected.'); return; }
 
-    if (this.currentCell.type === 'html') {
+    if (selected.type === 'html') {
       this.openCellEditorDialog();
-    } else if (this.currentCell.type === 'image') {
+    } else if (selected.type === 'image') {
       this.openAddImageDialog();
-    } else if (this.currentCell.type === 'chart') {
+    } else if (selected.type === 'chart') {
       this.openAddChartDialog();
-    }else if (this.currentCell.type === 'barcode') {
+    }else if (selected.type === 'barcode') {
       this.openAddBarcodeDialog();
     }
+  }
+
+  update(){
+    this.emitCellLocation();
   }
 
   public addPageBreakRow(): void {
@@ -298,13 +270,13 @@ export class GridEditorComponent implements OnInit, OnDestroy, OnChanges {
     };
     this.grid.rows.splice(this.currentRow + 1, 0, row);
     this.currentRow++;
-    this.emitChange();
+    this.updateGrid();
   }
 
   public dropRow(event: CdkDragDrop<any[]>): void {
     moveItemInArray(this.grid.rows, event.previousIndex, event.currentIndex);
     this.currentRow = event.currentIndex;
-    this.emitChange();
+    this.updateGrid();
   }
 
   public duplicateCurrentRow(): void {
@@ -313,21 +285,12 @@ export class GridEditorComponent implements OnInit, OnDestroy, OnChanges {
     const clonedRow: Row = structuredClone(originalRow)
     this.grid.rows.splice(this.currentRow + 1, 0, clonedRow);
     this.currentRow++;
-    this.emitChange();
+    this.updateGrid();
   }
 
   private redistributeWidths(row: Row): void {
     const colCount = Math.max(1, row.cells.length);
     row.widths = Array(colCount).fill(100 / colCount);
-  }
-
-  public emitChange(): void {
-    this.pageStateService.updateGrid(this.area, this.grid, this.gridIndex)
-  }
-
-  public setCellAttribute(cellAttrs: CellAttrs): void {
-    this.grid.rows[this.currentRow].cells[this.currentCol].attrs = cellAttrs;
-    this.pageStateService.updateGrid(this.area, this.grid)
   }
 
   private sanitizeHtmlInternal(html: string): SafeHtml {

@@ -17,20 +17,15 @@ export class PageToStructuredContentConverter implements Converter<Page, TDocume
 
 
   public convert(page: Page): TDocumentDefinitions {
-    const contentContainer = this.gridToPdfmakeConverter.convert(page.content.rows);
-    const headerContainer  = this.gridToPdfmakeConverter.convert(page.header.rows);
-    const footerContainer  = this.gridToPdfmakeConverter.convert(page.footer.rows);
+    const contentContainer = this.gridToPdfmakeConverter.convert(page.content.rows, page.pageAttrs);
+    const headerContainer  = this.gridToPdfmakeConverter.convert(page.header.rows, page.pageAttrs);
+    const footerContainer  = this.gridToPdfmakeConverter.convert(page.footer.rows, page.pageAttrs);
 
-    const headerContent = this.structuredContentToPdfmakeService.convert(headerContainer);
-    const bodyContent   = this.structuredContentToPdfmakeService.convert(contentContainer);
-    const footerContent = this.structuredContentToPdfmakeService.convert(footerContainer);
+    const headerContent = this.structuredContentToPdfmakeService.convert(headerContainer, page.pageAttrs);
+    const bodyContent   = this.structuredContentToPdfmakeService.convert(contentContainer, page.pageAttrs);
+    const footerContent = this.structuredContentToPdfmakeService.convert(footerContainer, page.pageAttrs);
 
     const p: PageAttrs = page.pageAttrs || {};
-
-    const bodyLeft   = p.marginLeft   ?? 0;
-    const bodyTop    = p.marginTop    ?? 0;
-    const bodyRight  = p.marginRight  ?? 0;
-    const bodyBottom = p.marginBottom ?? 0;
 
     const headerBase = (p.headerHeight ?? (headerContent?.length ? 60 : 0));
     const footerBase = (p.footerHeight ?? (footerContent?.length ? 60 : 0));
@@ -42,7 +37,7 @@ export class PageToStructuredContentConverter implements Converter<Page, TDocume
       content: [
         {
           stack: bodyContent,
-          margin: [bodyLeft, bodyTop, bodyRight, bodyBottom]
+          margin: [0, 0, 0, 0]
         }
       ],
       header: () => this.buildHeaderPayload(headerContent, p),
@@ -55,7 +50,7 @@ export class PageToStructuredContentConverter implements Converter<Page, TDocume
       background: p.backgroundColor ? () => this.buildBackgroundPayload(p)! : undefined,
       defaultStyle: { font: p.defaultFont },
       pageSize: 'A4',
-      pageMargins: [0, headerBand, 0, footerBand]
+      pageMargins: [p.marginLeft, headerBand, p.marginRight, footerBand]
     };
   }
 
@@ -63,20 +58,15 @@ export class PageToStructuredContentConverter implements Converter<Page, TDocume
    * Export version: builds a JS string payload with inline functions.
    */
   public convertToStringPayload(page: Page): string {
-    const contentContainer = this.gridToPdfmakeConverter.convert(page.content.rows);
-    const headerContainer  = this.gridToPdfmakeConverter.convert(page.header.rows);
-    const footerContainer  = this.gridToPdfmakeConverter.convert(page.footer.rows);
+    const contentContainer = this.gridToPdfmakeConverter.convert(page.content.rows, page.pageAttrs);
+    const headerContainer  = this.gridToPdfmakeConverter.convert(page.header.rows, page.pageAttrs);
+    const footerContainer  = this.gridToPdfmakeConverter.convert(page.footer.rows, page.pageAttrs);
 
-    const headerContent = this.structuredContentToPdfmakeService.convert(headerContainer);
-    const bodyContent   = this.structuredContentToPdfmakeService.convert(contentContainer);
-    const footerContent = this.structuredContentToPdfmakeService.convert(footerContainer);
+    const headerContent = this.structuredContentToPdfmakeService.convert(headerContainer, page.pageAttrs);
+    const bodyContent   = this.structuredContentToPdfmakeService.convert(contentContainer, page.pageAttrs);
+    const footerContent = this.structuredContentToPdfmakeService.convert(footerContainer, page.pageAttrs);
 
     const p: PageAttrs = page.pageAttrs || {};
-
-    const bodyLeft   = p.marginLeft   ?? 0;
-    const bodyTop    = p.marginTop    ?? 0;
-    const bodyRight  = p.marginRight  ?? 0;
-    const bodyBottom = p.marginBottom ?? 0;
 
     const headerBase = (p.headerHeight ?? (headerContent?.length ? 60 : 0));
     const footerBase = (p.footerHeight ?? (footerContent?.length ? 60 : 0));
@@ -96,8 +86,8 @@ export class PageToStructuredContentConverter implements Converter<Page, TDocume
   {
   "content": [
     {
-      "stack": ${stringify(bodyContent)},
-      "margin": [${bodyLeft}, ${bodyTop}, ${bodyRight}, ${bodyBottom}]
+      "stack": ${this.formatBody(bodyContent)},
+      "margin": [0, 0, 0, 0]
     }
   ],
   "header": function(currentPage, pageCount) {
@@ -111,13 +101,21 @@ export class PageToStructuredContentConverter implements Converter<Page, TDocume
   "background": ${backgroundPayload ? `function() { return ${stringify(backgroundPayload)}; }` : "undefined"},
   "defaultStyle": ${stringify({ font: p.defaultFont })},
   "pageSize": "A4",
-  "pageMargins": [0, ${headerBand}, 0, ${footerBand}]
+  "pageMargins": [${p.marginLeft}, ${headerBand}, ${p.marginRight}, ${footerBand}]
+
 }`;
 
     console.log(js);
     return js;
   }
 
+
+  private formatBody(v: unknown, indent = 0): string {
+    return JSON.stringify(v, null, 2)
+      .split('\n')
+      .map((l, i) => (i ? ' '.repeat(indent) + l : l))
+      .join('\n');
+  }
 
   private buildHeaderPayload(headerContent: Content[], p: PageAttrs): Content {
     const bodyLeft   = p.marginLeft   ?? 0;

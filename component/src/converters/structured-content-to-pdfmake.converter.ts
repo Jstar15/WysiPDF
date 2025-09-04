@@ -5,7 +5,7 @@ import {
   HtmlBlock,
   HtmlBlockContainer,
   HtmlGridBlock,
-  HtmlTableBlock, Page,
+  HtmlTableBlock, Page, PageAttrs,
   Row
 } from '../models/page';
 
@@ -22,7 +22,7 @@ import {Converter} from "./converter";
 
 @Injectable({ providedIn: 'root' })
 export class StructuredContentToPdfmakeConverter implements Converter<HtmlBlockContainer, Content[]>{
-  public convert(c: HtmlBlockContainer): Content[] {
+  public convert(c: HtmlBlockContainer, pageAttrs: PageAttrs): Content[] {
     try { return this.convertToPdfDefinition(c).content as Content[]; }
     catch { return []; }
   }

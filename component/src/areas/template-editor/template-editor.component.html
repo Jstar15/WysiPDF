@@ -110,11 +110,11 @@
 
                 <mat-card-content>
                     <h3 style="margin: 16px 0 8px; display: flex; align-items: center;">
-                        <mat-icon style="margin-right: 4px;" svgIcon="layers"></mat-icon> Main Content
+                        <mat-icon style="margin-right: 4px;" svgIcon="layers"></mat-icon> Page Content
                     </h3>
-                    <mat-accordion multi>
+                    <mat-accordion>
                         <!-- HEADER -->
-                        <mat-expansion-panel>
+                        <mat-expansion-panel (opened)="onPanelOpened('header')">
                             <mat-expansion-panel-header>
                                 <mat-panel-title>
                                     <mat-icon class="panel-icon" svgIcon="view_headline"></mat-icon>
@@ -122,6 +122,7 @@
                                 </mat-panel-title>
                             </mat-expansion-panel-header>
                             <app-grid-editor
+                                    *ngIf="this.area == 'header'"
                                     [area]="'header'"
                                     [grid]="page.header"
                                     [tokenAttrs]="page.tokenAttrs"
@@ -131,11 +132,12 @@
                                     [hideBarcode]="true"
                                     [colorPalettes]="page.colorPalettes"
                                     (cellChange)="onCellChange($event)"
+                                    (rowChange)="onRowChange($event)"
                             ></app-grid-editor>
                         </mat-expansion-panel>
 
                         <!-- CONTENT -->
-                        <mat-expansion-panel>
+                        <mat-expansion-panel (opened)="onPanelOpened('content')">
                             <mat-expansion-panel-header>
                                 <mat-panel-title>
                                     <mat-icon class="panel-icon" svgIcon="subject"></mat-icon>
@@ -143,17 +145,19 @@
                                 </mat-panel-title>
                             </mat-expansion-panel-header>
                             <app-grid-editor
+                                    *ngIf="this.area == 'content'"
                                     [area]="'content'"
                                     [grid]="page.content"
                                     [tokenAttrs]="page.tokenAttrs"
                                     [pageAttrs]="page.pageAttrs"
                                     [colorPalettes]="page.colorPalettes"
                                     (cellChange)="onCellChange($event)"
+                                    (rowChange)="onRowChange($event)"
                             ></app-grid-editor>
                         </mat-expansion-panel>
 
                         <!-- FOOTER -->
-                        <mat-expansion-panel>
+                        <mat-expansion-panel (opened)="onPanelOpened('footer')">
                             <mat-expansion-panel-header>
                                 <mat-panel-title>
                                     <mat-icon class="panel-icon" svgIcon="text_snippet"></mat-icon>
@@ -161,6 +165,7 @@
                                 </mat-panel-title>
                             </mat-expansion-panel-header>
                             <app-grid-editor
+                                    *ngIf="this.area == 'footer'"
                                     [area]="'footer'"
                                     [grid]="page.footer"
                                     [tokenAttrs]="page.tokenAttrs"
@@ -170,6 +175,7 @@
                                     [hideBarcode]="true"
                                     [colorPalettes]="page.colorPalettes"
                                     (cellChange)="onCellChange($event)"
+                                    (rowChange)="onRowChange($event)"
                             ></app-grid-editor>
                         </mat-expansion-panel>
                     </mat-accordion>
@@ -181,27 +187,35 @@
         </as-split-area>
 
         <!-- RIGHT PANE -->
-      <as-split-area [size]="50" [minSize]="25" *ngIf="showRightPane || iEditOpen" class="right-pane">
-        <app-pdf-viewer *ngIf="showPdfViewPane && !iEditOpen && !isCellEditorOpen" class="pdf-viewer" [base64]="this.pdfGenerationResult.base64"></app-pdf-viewer>
-        <app-json-viewer *ngIf="!showPdfViewPane && !iEditOpen && !isCellEditorOpen"  class="json-viewer" [jsonList]="jsonList"></app-json-viewer>
+      <as-split-area [size]="50" [minSize]="25" *ngIf="showRightPane" class="right-pane">
+        <app-pdf-viewer *ngIf="currentView == PanelTypes.PDF_VIEW"
+                        class="pdf-viewer"
+                        [base64]="this.pdfGenerationResult.base64">
+        </app-pdf-viewer>
 
-        <app-editor-viewer  *ngIf="iEditOpen"
+        <app-json-viewer *ngIf="currentView == PanelTypes.JSON_VIEW"
+                         class="json-viewer"
+                         [jsonList]="jsonList">
+        </app-json-viewer>
+
+        <app-editor-viewer  *ngIf="currentView == PanelTypes.PAGE_EDITOR"
                             [type]="editorType"
                             [page]="page"
                             (editorActionEvent)="closeEditors()">
         </app-editor-viewer>
 
-        <app-cell-editor-viewer *ngIf="isCellEditorOpen"
-                                [gridIndex]="lastCellEditorEvent.gridIndex"
-                                [type]="lastCellEditorEvent.type"
-                                [cell]="lastCellEditorEvent.cell"
-                                [rowIndex]="lastCellEditorEvent.rowIndex"
-                                [area]="lastCellEditorEvent.area"
-                                [columnIndex]="lastCellEditorEvent.columnIndex"
+        <app-cell-editor-viewer *ngIf="currentView == PanelTypes.CELL_EDITOR"
+                                [type]="cellEditorType"
                                 [tokens]="page.tokenAttrs"
                                 [colorPalettes]="page.colorPalettes"
                                 (editorActionEvent)="closeEditors()">
         </app-cell-editor-viewer>
+
+        <app-row-editor-viewer *ngIf="currentView == PanelTypes.ROW_EDITOR"
+          [type]="rowEditorType"
+          [tokens]="page.tokenAttrs"
+          (editorActionEvent)="closeEditors()">
+        </app-row-editor-viewer>
       </as-split-area>
 
     </as-split>

@@ -1,0 +1,30 @@
+<div class="editor-shell" role="dialog" aria-labelledby="editorTitle">
+  <!-- Header -->
+  <header class="editor-header">
+    <mat-icon *ngIf="type == RowEditorType.DISPLAY_RULES" svgIcon="view_list"></mat-icon>
+    <mat-icon *ngIf="type == RowEditorType.REPEATABLE" svgIcon="view_list"></mat-icon>
+
+    <h2 id="editorTitle" *ngIf="type == RowEditorType.DISPLAY_RULES">Display Logic Editor</h2>
+    <h2 id="editorTitle" *ngIf="type == RowEditorType.REPEATABLE">Repeatable Editor</h2>
+
+  </header>
+
+  <!-- Content (scrollable) -->
+  <section class="editor-content">
+    <ng-content *ngIf="type == RowEditorType.DISPLAY_RULES">
+      <app-display-logic-editor [displayLogicGroup]="displayLogic" [tokenAttrs]="tokens" (displayLogicChange)="row.displayLogic = $event"></app-display-logic-editor>
+    </ng-content>
+
+
+
+    <ng-content *ngIf="type == RowEditorType.REPEATABLE">
+    </ng-content>
+  </section>
+
+  <!-- Footer (buttons right-aligned) -->
+  <footer class="editor-footer">
+    <div class="spacer"></div>
+    <button mat-button type="button" (click)="onCancel()">{{ cancelLabel }}</button>
+    <button mat-flat-button color="primary" type="button" (click)="onOk()">{{ okLabel }}</button>
+  </footer>
+</div>

@@ -1,0 +1,63 @@
+:host {
+  display: block;
+  height: 100%;
+  /* Ensures the shell can stretch in dialogs/panels */
+  min-height: 0;
+}
+
+.editor-shell {
+  display: grid;
+  grid-template-rows: auto 1fr auto; /* header, content, footer */
+  height: 100%;
+  min-height: 0; /* allow the middle section to shrink and scroll */
+  background: #fff;
+}
+
+/* Header */
+.editor-header {
+  padding: 12px 20px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  position: sticky; /* keeps the title visible if the whole panel scrolls */
+  top: 0;
+  background: inherit;
+  z-index: 1;
+  display:grid;
+  grid-template-columns: auto 1fr;
+  grid-gap:10px;
+}
+
+.editor-header h2 {
+  margin: 2px 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+}
+
+/* Content */
+.editor-content {
+  padding: 12px 16px;
+  overflow-y: auto;
+  min-height: 0; /* critical for proper scrolling inside grid */
+}
+
+/* Footer */
+.editor-footer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  border-top: 1px solid rgba(0, 0, 0, 0.12);
+  background: inherit;
+}
+
+.editor-footer .spacer {
+  flex: 1 1 auto; /* pushes buttons to the right */
+}
+
+/* Optional: compact screens */
+@media (max-width: 480px) {
+  .editor-header, .editor-content, .editor-footer {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+}

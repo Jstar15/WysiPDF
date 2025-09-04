@@ -10,30 +10,22 @@ import {PageStateService} from "../../services/page-state.service";
 import {BarCodeEditorComponent} from "./bar-code-editor/bar-code-editor.component";
 import {QuillEditorComponent} from "./quill-editor/quill-editor.component";
 import {ChartEditorComponent} from "./chart-editor/chart-editor.component";
-import {DisplayLogicEditorComponent} from "./display-logic-editor/display-logic-editor.component";
-import {DisplayLogicGroup} from "../../models/display-logic.models";
 
 @Component({
   selector: 'app-cell-editor-viewer',
   standalone: true,
-  imports: [CommonModule, MatButton, MatIcon, AddImageEditorComponent, BarCodeEditorComponent, QuillEditorComponent, ChartEditorComponent, DisplayLogicEditorComponent],
+  imports: [CommonModule, MatButton, MatIcon, AddImageEditorComponent, BarCodeEditorComponent, QuillEditorComponent, ChartEditorComponent],
   templateUrl: './cell-editor-viewer.component.html',
   styleUrls: ['./cell-editor-viewer.component.scss']
 })
 export class CellEditorViewerComponent implements OnInit{
-  [x: string]: any;
   @Input() type: CellEditorType = CellEditorType.IMAGE;
-  @Input() cell!: Cell;
-  @Input() gridIndex!: number;
-  @Input() rowIndex!: number;
-  @Input() columnIndex!: number;
-  @Input() area!: string;
   @Input() tokens!: TokenAttribute[];
   @Input() colorPalettes: string[] = [];
 
   @Output() editorActionEvent = new EventEmitter<CellEditorAction>();
 
-  displayLogic!: DisplayLogicGroup;
+  cell: Cell
   okLabel = 'OK';
   cancelLabel = 'Cancel';
 
@@ -41,19 +33,20 @@ export class CellEditorViewerComponent implements OnInit{
   }
 
   ngOnInit(): void {
-    this.loadDisplayLogic();
+    this.loadCurrentCell();
   }
 
   onCancel(): void {
     this.editorActionEvent.emit(CellEditorAction.CANCEL);
   }
   onOk(): void     {
-    this.gridStateService.updateCell(this.rowIndex, this.columnIndex, this.area, this.cell, this.gridIndex)
+    this.gridStateService.updateCell(this.cell);
     this.editorActionEvent.emit(CellEditorAction.OK);
   }
 
-  loadDisplayLogic(): void{
-    this.displayLogic = this.gridStateService.getDisplayLogicForRow(this.rowIndex, this.area);
+  loadCurrentCell(): void{
+    this.cell = this.gridStateService.getCurrentCell();
   }
+
   protected readonly CellEditorType = CellEditorType;
 }

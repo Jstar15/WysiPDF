@@ -1,5 +1,5 @@
 import {
-  Component, Input, Output, EventEmitter, ChangeDetectionStrategy
+  Component, Input, Output, EventEmitter, ChangeDetectionStrategy, OnInit
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -12,9 +12,10 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { CellAttrs } from '../../../../models/page';
+import {Cell, CellAttrs} from '../../../../models/page';
 import {ColorSwatchPickerComponent} from "../../../../shared/color-swatch-picker/color-swatch-picker.component";
 import {SpacingPickerComponent} from "../../../../shared/spacing-picker/spacing-picker.component";
+import {PageStateService} from "../../../../services/page-state.service";
 
 export type BorderPreset =
   | 'none'
@@ -41,9 +42,12 @@ export type BorderPreset =
   ],
 })
 export class CellStyleToolbarComponent {
-  @Input() cellAttributes: CellAttrs | undefined;
+  @Input( )cell: Cell;
   @Input() colorPalettes: string[] | undefined;
-  @Output() cellAttributesChange = new EventEmitter<CellAttrs>();
+
+  constructor(private pageStateService: PageStateService) {
+  }
+
 
   /** Persistent brush (Excel-like painter) */
   private brush: {
@@ -58,18 +62,22 @@ export class CellStyleToolbarComponent {
     fillColor: 'transparent'
   };
 
+  onChange(){
+    this.pageStateService.updateCellAttributes(this.cell.attrs)
+  }
+
   public setFill(color: string): void {
     this.brush.fillColor = color ?? 'transparent';
     const cell = this.ensureCell();
     cell.backgroundColor = this.brush.fillColor;
-    this.cellAttributesChange.emit(cell);
+    this.onChange();
   }
 
   public setBorderColor(color: string): void {
     this.brush.borderColor = color ?? '#94a3b8';
     const cell = this.ensureCell();
     cell.borderColor = this.brush.borderColor;
-    this.cellAttributesChange.emit(cell);
+    this.onChange();
   }
 
 
@@ -81,8 +89,8 @@ export class CellStyleToolbarComponent {
   }
 
   private ensureCell(): CellAttrs {
-    if (!this.cellAttributes) this.cellAttributes = {};
-    return this.cellAttributes;
+    if (!this.cell.attrs) this.cell.attrs = {};
+    return this.cell.attrs;
   }
 
   public applyPadding(v: { top: number; right: number; bottom: number; left: number }): void {
@@ -99,7 +107,7 @@ export class CellStyleToolbarComponent {
     cell.paddingBottom = clamp(v?.bottom);
     cell.paddingLeft = clamp(v?.left);
 
-    this.cellAttributesChange.emit(cell);
+    this.onChange();
   }
 
   public applyBorder(v: { top: number; right: number; bottom: number; left: number }): void {
@@ -117,6 +125,6 @@ export class CellStyleToolbarComponent {
     cell.borderBottom = clamp(v?.bottom);
     cell.borderLeft = clamp(v?.left);
 
-    this.cellAttributesChange.emit(cell);
+    this.onChange();
   }
 }

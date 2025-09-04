@@ -8,6 +8,7 @@ export class TokenAttribute {
   }
   name:string;
   value:string;
+  valueArray?:string[];
   type:TokenAttributeType;
   tokenAttributes?:TokenAttribute[];
 }

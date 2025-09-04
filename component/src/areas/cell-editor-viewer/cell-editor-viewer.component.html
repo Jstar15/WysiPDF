@@ -5,14 +5,12 @@
     <mat-icon *ngIf="type == CellEditorType.BARCODE && cell" svgIcon="barcode"></mat-icon>
     <mat-icon *ngIf="type == CellEditorType.CHART && cell" svgIcon="pie_chart"></mat-icon>
     <mat-icon *ngIf="type == CellEditorType.HTML && cell" svgIcon="edit"></mat-icon>
-    <mat-icon *ngIf="type == CellEditorType.DISPLAY_RULES && cell" svgIcon="view_list"></mat-icon>
 
 
     <h2 id="editorTitle" *ngIf="type == CellEditorType.IMAGE && cell">Cell Image Editor</h2>
     <h2 id="editorTitle" *ngIf="type == CellEditorType.BARCODE && cell">Bar Code Editor</h2>
     <h2 id="editorTitle" *ngIf="type == CellEditorType.CHART && cell">Chart Editor</h2>
     <h2 id="editorTitle" *ngIf="type == CellEditorType.HTML && cell">Content Editor</h2>
-    <h2 id="editorTitle" *ngIf="type == CellEditorType.DISPLAY_RULES && cell">Display Logic Editor</h2>
 
   </header>
 
@@ -33,10 +31,6 @@
 
     <ng-content *ngIf="type == CellEditorType.HTML && cell">
       <app-quill-editor [colorPalettes]="colorPalettes" [cell]="cell" [tokenAttrs]="tokens" (change)="cell = $event"></app-quill-editor>
-    </ng-content>
-
-    <ng-content *ngIf="type == CellEditorType.DISPLAY_RULES && cell">
-      <app-display-logic-editor [displayLogicGroup]="displayLogic" [tokenAttrs]="tokens" (displayLogicChange)="cell.displayLogic = $event"></app-display-logic-editor>
     </ng-content>
 
   </section>

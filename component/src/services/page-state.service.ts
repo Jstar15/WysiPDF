@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import {Cell, Grid, Page} from '../models/page';
+import {Cell, CellAttrs, Grid, Page, Row} from '../models/page';
 import {DisplayLogicGroup} from "../models/display-logic.models";
 
 @Injectable({ providedIn: 'root' })
@@ -11,6 +11,17 @@ export class PageStateService {
 
   private readonly _pageSubject = new BehaviorSubject<Page | null>(null);
   public readonly page$ = this._pageSubject.asObservable();
+
+  private currentArea: string = null
+  private currentRow: number = null
+  private currentCol: number = null
+
+
+  public updateCurrentCell(area: string, row: number, col: number){
+    this.currentArea = area;
+    this.currentRow = row;
+    this.currentCol = col;
+  }
 
   /** Emit current page (clone so subscribers can’t mutate history) */
   private emitCurrent(): void {
@@ -83,86 +94,123 @@ export class PageStateService {
   }
 
 
-  getDisplayLogicForRow(row: number, area: string): DisplayLogicGroup{
+  getDisplayLogicForRow(): DisplayLogicGroup{
     const current = this.getCurrentPage();
     if (!current) return null;
 
-    if(area == 'partialContent'){
-      return null
-    }
-    return current[area].rows[row].displayLogic;
+    return current[this.currentArea]?.rows[this.currentRow]?.displayLogic;
+  }
+
+  getCurrentCell(): Cell{
+    const current = this.getCurrentPage();
+    if (!current) return null;
+
+    let grid: Grid = current[this.currentArea];
+    return grid?.rows[this.currentRow]?.cells[this.currentCol];
+  }
+
+  getCurrentRow(): Row{
+    const current = this.getCurrentPage();
+    if (!current) return null;
+
+    let grid: Grid = current[this.currentArea];
+    return grid.rows[this.currentRow];
   }
 
   /** Safely replace a single cell and record it as a new snapshot */
-  updateCell(row: number, column: number, area: string, cell: Cell, gridIndex?: number): void {
+  updateCell(cell: Cell): void {
     const current = this.getCurrentPage();
     if (!current) return;
     debugger;
 
     // Defensive bounds checks
-    let grid: Grid;
-    if(area == 'partialContent'){
-      grid = current[area][gridIndex]
-      debugger;
-    }else{
-      grid = current[area];
-    }
-    if (!grid?.rows?.[row]?.cells?.[column]) return;
+    let grid: Grid = current[this.currentArea];
 
-    grid.rows[row].cells[column].displayLogic = cell.displayLogic;
-    grid.rows[row].displayLogic = cell.displayLogic;
+    if (!grid?.rows?.[this.currentRow]?.cells?.[this.currentCol]) return;
+
+    grid.rows[this.currentRow].cells[this.currentCol].displayLogic = cell.displayLogic;
+    grid.rows[this.currentRow].displayLogic = cell.displayLogic;
 
     if (cell?.type == 'html') {
-      grid.rows[row].cells[column].type = 'html';
-      grid.rows[row].cells[column].value = cell.value;
-      grid.rows[row].cells[column].barcodeBlock = null;
-      grid.rows[row].cells[column].chartBlock = null;
-      grid.rows[row].cells[column].imageBlock = null;
+      grid.rows[this.currentRow].cells[this.currentCol].type = 'html';
+      grid.rows[this.currentRow].cells[this.currentCol].value = cell.value;
+      grid.rows[this.currentRow].cells[this.currentCol].barcodeBlock = null;
+      grid.rows[this.currentRow].cells[this.currentCol].chartBlock = null;
+      grid.rows[this.currentRow].cells[this.currentCol].imageBlock = null;
     }
 
     if (cell?.type == 'image') {
-      grid.rows[row].cells[column].type = 'image';
-      grid.rows[row].cells[column].imageBlock = cell.imageBlock;
-      grid.rows[row].cells[column].value = '';
-      grid.rows[row].cells[column].barcodeBlock = null;
-      grid.rows[row].cells[column].chartBlock = null;
+      grid.rows[this.currentRow].cells[this.currentCol].type = 'image';
+      grid.rows[this.currentRow].cells[this.currentCol].imageBlock = cell.imageBlock;
+      grid.rows[this.currentRow].cells[this.currentCol].value = '';
+      grid.rows[this.currentRow].cells[this.currentCol].barcodeBlock = null;
+      grid.rows[this.currentRow].cells[this.currentCol].chartBlock = null;
     }
 
     if (cell?.type == 'barcode') {
-      grid.rows[row].cells[column].type = 'barcode';
-      grid.rows[row].cells[column].barcodeBlock = cell.barcodeBlock;
-      grid.rows[row].cells[column].value = '';
-      grid.rows[row].cells[column].imageBlock = null;
-      grid.rows[row].cells[column].chartBlock = null;
+      grid.rows[this.currentRow].cells[this.currentCol].type = 'barcode';
+      grid.rows[this.currentRow].cells[this.currentCol].barcodeBlock = cell.barcodeBlock;
+      grid.rows[this.currentRow].cells[this.currentCol].value = '';
+      grid.rows[this.currentRow].cells[this.currentCol].imageBlock = null;
+      grid.rows[this.currentRow].cells[this.currentCol].chartBlock = null;
     }
 
     if (cell?.type == 'chart') {
-      grid.rows[row].cells[column].type = 'chart';
-      grid.rows[row].cells[column].chartBlock = cell.chartBlock;
-      grid.rows[row].cells[column].value = '';
-      grid.rows[row].cells[column].imageBlock = null;
-      grid.rows[row].cells[column].barcodeBlock = null;
+      grid.rows[this.currentRow].cells[this.currentCol].type = 'chart';
+      grid.rows[this.currentRow].cells[this.currentCol].chartBlock = cell.chartBlock;
+      grid.rows[this.currentRow].cells[this.currentCol].value = '';
+      grid.rows[this.currentRow].cells[this.currentCol].imageBlock = null;
+      grid.rows[this.currentRow].cells[this.currentCol].barcodeBlock = null;
     }
-
-
 
     this.pushSnapshot(current);
   }
 
 
-  updateGrid(area: string, grid: Grid, gridIndex?: number): void {
+  updateRow(row: Row): void {
+    const current = this.getCurrentPage();
+    if (!current) return;
+
+    // Defensive bounds checks
+    let grid: Grid = current[this.currentArea];
+
+    if (!grid?.rows?.[this.currentRow]?.cells?.[this.currentCol]) return;
+
+    grid.rows[this.currentRow].displayLogic = row.displayLogic;
+
+    this.pushSnapshot(current);
+  }
+
+  updateArea(area: string): void {
+    this.currentArea = area;
+    this.currentRow = 0;
+    this.currentCol = 0;
+  }
+
+
+  updateCellAttributes(cellAttrs: CellAttrs): void {
+    const current = this.getCurrentPage();
+    if (!current) return;
+
+    let grid: Grid = current[this.currentArea];
+
+    if (!grid?.rows?.[this.currentRow]?.cells?.[this.currentCol]) return;
+
+    grid.rows[this.currentRow].cells[this.currentCol].attrs = cellAttrs;
+
+    this.pushSnapshot(current);
+  }
+
+  updateGrid(grid: Grid): void {
     console.log("Update Grid")
     const current = this.getCurrentPage();
     if (!current) return;
 
-    if(area == 'partialContent'){
-      current[area][gridIndex]= grid;
-    }else{
-      current[area] = grid;
-    }
+    current[this.currentArea] = grid;
 
     this.pushSnapshot(current);
   }
+
 
   /** Get a clone of the current page */
   getCurrentPage(): Page | null {

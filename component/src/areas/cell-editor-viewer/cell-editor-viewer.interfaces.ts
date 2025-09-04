@@ -4,8 +4,7 @@ export enum CellEditorType {
   IMAGE             = 'IMAGE',
   BARCODE           = 'BARCODE',
   CHART             = 'CHART',
-  HTML              = 'HTML',
-  DISPLAY_RULES              = 'DISPLAY_RULES',
+  HTML              = 'HTML'
 }
 
 export enum CellEditorAction {

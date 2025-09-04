@@ -14,23 +14,26 @@ import {AngularSplitModule} from 'angular-split';
 import {GridEditorComponent} from './grid-editor/grid-editor.component';
 import {PdfGenerateService, PdfGenerationResult} from '../../services/generators/pdf-generate.service';
 import {Page} from '../../models/page';
-import {NgForOf, NgIf, NgStyle} from "@angular/common";
+import {NgIf, NgStyle} from "@angular/common";
 import {PdfViewerComponent} from "../../shared/pdf-viewer/pdf-viewer.component";
 import {MatCard, MatCardActions, MatCardContent, MatCardHeader,} from "@angular/material/card";
 import {MatIcon} from "@angular/material/icon";
-import {MatIconButton, MatMiniFabButton} from "@angular/material/button";
+import {MatMiniFabButton} from "@angular/material/button";
 import {MatTooltip} from "@angular/material/tooltip";
 import {PageStateService} from "../../services/page-state.service";
 import {JsonListItem, JsonViewerComponent} from "../../shared/json-viewer/json-viewer.component";
 import {IconService} from "../../services/external/icon.service";
 import {DEFAULT_PAGE} from "../../presets/default-page.preset";
 import {PageTokenValidator} from "../../services/page-token-validator.service";
-import {JsonTokenParserUtility} from "../../utils/json-token-parser.utility";
 import {EditorViewerComponent} from "../editor-viewer/editor-viewer.component";
 import {EditorType} from "../editor-viewer/editor-viewer.interfaces";
 import {CellEditorViewerComponent} from "../cell-editor-viewer/cell-editor-viewer.component";
 import {OpenCellEditorEvent} from "./grid-editor/grid-editor.interfaces";
 import {DisplayLogicUtility} from "../../utils/display-logic.utility";
+import {PanelTypes} from "./template-editor.interfaces";
+import {RowEditorViewerComponent} from "../row-editor-viewer/row-editor-viewer.component";
+import {CellEditorType} from "../cell-editor-viewer/cell-editor-viewer.interfaces";
+import {RowEditorType} from "../row-editor-viewer/row-editor-viewer.interfaces";
 
 @Component({
   standalone: true,
@@ -56,6 +59,7 @@ import {DisplayLogicUtility} from "../../utils/display-logic.utility";
     JsonViewerComponent,
     EditorViewerComponent,
     CellEditorViewerComponent,
+    RowEditorViewerComponent,
 
   ]
 })
@@ -63,13 +67,20 @@ export class TemplateEditorComponent implements OnInit,AfterViewInit {
   @Input('page') page: Page = DEFAULT_PAGE;    // ← default value
   @Output('page-change') pageChange = new EventEmitter<Page>();
 
+  currentView: PanelTypes = PanelTypes.PDF_VIEW;
+
   showRightPane: boolean = true;
   showPdfViewPane: boolean = true;
   jsonList: JsonListItem[] = [];
 
-  iEditOpen: boolean = false;
-  isCellEditorOpen: boolean = false;
+
   editorType: EditorType;
+  cellEditorType: CellEditorType;
+  rowEditorType: RowEditorType;
+
+  area: string = null;
+
+
   lastCellEditorEvent: OpenCellEditorEvent;
 
   pdfGenerationResult: PdfGenerationResult = {
@@ -84,7 +95,6 @@ export class TemplateEditorComponent implements OnInit,AfterViewInit {
       private cdr: ChangeDetectorRef,
       private iconService: IconService,
       private pageTokenValidator : PageTokenValidator,
-      private jsonTokenParserService: JsonTokenParserUtility,
       private gridStateService : PageStateService,
       private displayLogicUtility : DisplayLogicUtility
   ) {
@@ -114,29 +124,39 @@ export class TemplateEditorComponent implements OnInit,AfterViewInit {
     this.cdr.detectChanges();
   }
 
-  onCellChange(event: OpenCellEditorEvent){
-    this.lastCellEditorEvent = event;
-    this.iEditOpen = false;
-    this.isCellEditorOpen = false;
-    this.isCellEditorOpen = true;
+  openEditorViewer(editorType: EditorType){
+    this.editorType = editorType;
+    this.currentView = PanelTypes.PAGE_EDITOR;
+  }
+
+  onCellChange(type: CellEditorType){
+    this.cellEditorType = type;
+    this.currentView = PanelTypes.CELL_EDITOR;
+  }
+
+  onRowChange(type: RowEditorType){
+    this.rowEditorType = type;
+    this.currentView = PanelTypes.ROW_EDITOR;
   }
 
   toggleRightPane(): void {
     this.showRightPane = !this.showRightPane;
   }
   togglePdfPane(): void {
-    this.showPdfViewPane = !this.showPdfViewPane;
+    if(this.currentView == PanelTypes.PDF_VIEW){
+      this.currentView = PanelTypes.JSON_VIEW;
+    }else{
+      this.currentView = PanelTypes.PDF_VIEW;
+    }
   }
 
-  openEditorViewer(editorType: EditorType){
-    this.editorType = editorType;
-    this.iEditOpen = true;
-    this.isCellEditorOpen = false;
+  onPanelOpened(area: string){
+    this.area = area;
   }
+
 
   closeEditors(){
-    this.iEditOpen = false;
-    this.isCellEditorOpen = false;
+    this.currentView = PanelTypes.PDF_VIEW;
   }
 
   undo(): void {
@@ -169,7 +189,6 @@ export class TemplateEditorComponent implements OnInit,AfterViewInit {
 
     // Already a clean JS string with inline functions
     let payloadStr: string = this.pdfService.convertToStringPayload(page);
-    console.log(payloadStr); // looks clean in console
 
     return [
       {
@@ -197,4 +216,5 @@ export class TemplateEditorComponent implements OnInit,AfterViewInit {
 
 
   protected readonly EditorType = EditorType;
+  protected readonly PanelTypes = PanelTypes;
 }

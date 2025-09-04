@@ -117,6 +117,7 @@ export interface Cell {
     barcodeBlock?: BarcodeBlock
     attrs: CellAttrs;
     displayLogic?: DisplayLogicGroup
+    repeatableTokens?: TokenAttribute[],
     hasError?:boolean;
     errorMessage?: string;
 }
@@ -127,7 +128,8 @@ export interface Row {
     height: number;
     backgroundColor?: string;
     cells: Cell[];
-    displayLogic?: DisplayLogicGroup
+    displayLogic?: DisplayLogicGroup,
+    repeatableTokens?: TokenAttribute[],
 }
 
 export interface Grid {
@@ -164,7 +166,6 @@ export interface PageAttrs {
     footerMarginRight?: number;
     footerMarginBottom?: number;
     footerMarginLeft?: number;
-
 
     backgroundColor?: string;
     defaultFont?: string;

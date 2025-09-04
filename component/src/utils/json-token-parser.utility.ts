@@ -6,7 +6,7 @@ import { TokenAttributeType } from '../models/token-attribute-type';
 export class JsonTokenParserUtility {
 
   /** Back-compat: return a flat list with dot paths */
-  public parse(jsonText: string, newKey = ""): TokenAttribute[] {
+  public parse(jsonText: string): TokenAttribute[] {
 
     const newTokens : TokenAttribute[] = []
     const obj: any = JSON.parse(jsonText);
@@ -18,10 +18,23 @@ export class JsonTokenParserUtility {
 
       const type: TokenAttributeType = this.deferType(value);
       let token: TokenAttribute;
-      if ((type == TokenAttributeType.JSON_ARRAY || type == TokenAttributeType.OBJECT) && value && value.length > 0) {
+      if ((type == TokenAttributeType.JSON_ARRAY) && value && value.length > 0) {
         const first: string = JSON.stringify(value[0]);
+        const innerTokenAttributes: TokenAttribute[] = this.parse(first)
+        for(let token of innerTokenAttributes){
+          const tokenName: string = token.name;
+          token.valueArray = this.parseValues(tokenName, value);
+        }
+        debugger;
         token = {
-          tokenAttributes: this.parse(first, name),
+          tokenAttributes: innerTokenAttributes,
+          type: type,
+          value: value,
+          name: name
+        }
+      }else if ((type == TokenAttributeType.OBJECT) && value) {
+        token = {
+          tokenAttributes: this.parse(value),
           type: type,
           value: value,
           name: name
@@ -105,45 +118,39 @@ export class JsonTokenParserUtility {
     return keys;
   }
 
-  // ─────────────────────────────────────────────────────────────
-  public getAllKeysFromJsonArray(arr: any[]): string[] {
-    if (!Array.isArray(arr) || arr.length === 0) {
-      return [];
-    }
 
-    const keySet = new Set<string>();
+  private parseValues(
+    tokenName: string,
+    values: any[]
+  ): string[] {
+    if (!Array.isArray(values)) return [];
 
-    for (const item of arr) {
-      if (item && typeof item === 'object' && !Array.isArray(item)) {
-        for (const key of Object.keys(item)) {
-          keySet.add(key);
-        }
+    const toStr = (v: any): string =>
+      v == null
+        ? ''
+        : typeof v === 'string'
+          ? v
+          : typeof v === 'number' || typeof v === 'boolean'
+            ? String(v)
+            : JSON.stringify(v);
+
+    const out: string[] = [];
+
+    const pushFlattened = (v: any) => {
+      if (Array.isArray(v)) {
+        for (const item of v) pushFlattened(item); // deep-flatten arrays
+      } else {
+        out.push(toStr(v));
       }
+    };
+
+    for (const el of values) {
+      const v = tokenName ? this.resolvePath(el, tokenName) : el;
+      pushFlattened(v);
     }
 
-    return Array.from(keySet);
+    return out;
   }
 
-
-  public getAvailableTokensFromJsonList(sourceName: string, tokenAttrs: TokenAttribute[]): TokenAttribute[] {
-    if (!sourceName || sourceName === 'root') {
-      return tokenAttrs;
-    }
-
-    const parts = sourceName.split('.');
-
-    let current: TokenAttribute[] | undefined = tokenAttrs;
-
-    for (const part of parts) {
-      if (!current) return [];
-
-      const match = current.find(t => t.name === part || t.name.endsWith('.' + part));
-      if (!match) return [];
-
-      current = match.tokenAttributes;
-    }
-
-    return current ?? [];
-  }
 
 }

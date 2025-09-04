@@ -1,10 +1,10 @@
 <div class="grid-toolbar toolbar-bottom-row">
 
-  <button mat-icon-button matTooltip="Add Row" (click)="addRow();emitChange();">
+  <button mat-icon-button matTooltip="Add Row" (click)="addRow();">
     <mat-icon svgIcon="table_rows"></mat-icon>
   </button>
 
-  <button mat-icon-button matTooltip="Remove Row"  (click)="removeRow();emitChange();">
+  <button mat-icon-button matTooltip="Remove Row"  (click)="removeRow();">
     <mat-icon svgIcon="horizontal_rule"></mat-icon>
   </button>
 
@@ -12,11 +12,11 @@
     <mat-icon svgIcon="control_point_duplicate"></mat-icon>
   </button>
 
-  <button mat-icon-button matTooltip="Add Column" (click)="addColumn();emitChange();">
+  <button mat-icon-button matTooltip="Add Column" (click)="addColumn();">
     <mat-icon svgIcon="view_column"></mat-icon>
   </button>
 
-  <button mat-icon-button matTooltip="Remove Column" (click)="removeColumn();emitChange();">
+  <button mat-icon-button matTooltip="Remove Column" (click)="removeColumn();">
     <mat-icon svgIcon="vertical_align_center"></mat-icon>
   </button>
 
@@ -50,11 +50,7 @@
 
 
 <div class="grid-toolbar toolbar-top-row">
-  <app-cell-style-toolbar
-    *ngIf="this.currentCell"
-    [cellAttributes]="this.currentCell.attrs"
-    [colorPalettes]="colorPalettes"
-    (cellAttributesChange)="this.setCellAttribute($event)">
+  <app-cell-style-toolbar [colorPalettes]="colorPalettes"  [cell]="this.currentCell">
   </app-cell-style-toolbar>
 </div>
 

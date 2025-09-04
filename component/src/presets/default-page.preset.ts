@@ -1,9 +1,9 @@
 import { Cell, Page, Row } from '../models/page';
 
 export const DEFAULT_PAGE: Page = {
-  header: { rows: [] },
-  content: { rows: [] },
-  footer: { rows: [] },
+  header: { rows: [createEmptyRow()] },
+  content: { rows: [createEmptyRow()] },
+  footer: { rows: [createEmptyRow()] },
   pageAttrs: {
     backgroundColor: 'white',
     marginTop: 0,
@@ -63,7 +63,7 @@ export function createEmptyCell(): Cell {
 export function createEmptyRow(
   widths: number[] = [100],
   height: number = 50,
-  backgroundColor: string = DEFAULT_PAGE.pageAttrs.backgroundColor
+  backgroundColor: string = 'white'
 ): Row {
   return {
     height,

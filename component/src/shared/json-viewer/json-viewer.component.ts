@@ -146,7 +146,7 @@ export class JsonViewerComponent implements OnChanges {
 
     // Remove any leftover escapes that only precede quotes
     s = s.replace(/\\(?=["'])/g, '');
-
+    s = s.replaceAll('"",', '"\n"');
     return s;
   }
 

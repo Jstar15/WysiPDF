@@ -33,10 +33,10 @@
       (keydown)="$event.stopPropagation()">
       <app-spacing-picker
         title="Cell Border"
-        [top]="cellAttributes?.borderTop ?? 0"
-        [right]="cellAttributes?.borderRight ?? 0"
-        [bottom]="cellAttributes?.borderBottom ?? 0"
-        [left]="cellAttributes?.borderLeft ?? 0"
+        [top]="cell?.attrs?.borderTop ?? 0"
+        [right]="cell?.attrs?.borderRight ?? 0"
+        [bottom]="cell?.attrs?.borderBottom ?? 0"
+        [left]="cell?.attrs?.borderLeft ?? 0"
         (confirm)="applyBorder($event); borderTrigger.closeMenu()"
         (cancel)="borderTrigger.closeMenu()">
       </app-spacing-picker>
@@ -82,10 +82,10 @@
       (keydown)="$event.stopPropagation()">
       <app-spacing-picker
         title="Cell Padding"
-        [top]="cellAttributes?.paddingTop ?? 0"
-        [right]="cellAttributes?.paddingRight ?? 0"
-        [bottom]="cellAttributes?.paddingBottom ?? 0"
-        [left]="cellAttributes?.paddingLeft ?? 0"
+        [top]="cell?.attrs?.paddingTop ?? 0"
+        [right]="cell?.attrs?.paddingRight ?? 0"
+        [bottom]="cell?.attrs?.paddingBottom ?? 0"
+        [left]="cell?.attrs?.paddingLeft ?? 0"
         (confirm)="applyPadding($event); spacingTrigger.closeMenu()"
         (cancel)="spacingTrigger.closeMenu()">
       </app-spacing-picker>
