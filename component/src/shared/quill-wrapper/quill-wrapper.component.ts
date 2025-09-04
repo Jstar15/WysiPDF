@@ -18,6 +18,10 @@ import {CustomElementBlot} from "./CustomElementBlot";
 import Quill from 'quill';
 import {NgForOf} from "@angular/common";
 import {TokenAttributeType} from "../../models/token-attribute-type";
+import {
+  HyperLinkDialogPayload,
+  HyperlinkInputDialogComponent
+} from "../../dialogs/hyperlink-input-dialog/hyperlink-input-dialog.component";
 
 @Component({
   standalone: true,
@@ -221,5 +225,17 @@ export class QuillWrapperComponent implements OnInit, AfterViewInit, OnDestroy, 
         this.quill.insertEmbed(this.currentRange.index, 'mathjax', result);
       }
     });
+  }
+
+  addLink(){
+    let selection = this.quill.getSelection();
+    if(selection != null){
+      const dialogRef = this.dialog.open(HyperlinkInputDialogComponent);
+      dialogRef.afterClosed().subscribe((hyperLinkDialogPayload : HyperLinkDialogPayload) => {
+        if (hyperLinkDialogPayload) {
+          this.quill.insertText(selection.index, hyperLinkDialogPayload.text, 'link', hyperLinkDialogPayload.url);
+        }
+      });
+    }
   }
 }
