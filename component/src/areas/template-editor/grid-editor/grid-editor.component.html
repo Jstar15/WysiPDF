@@ -26,6 +26,9 @@
     <mat-icon svgIcon="line_weight"></mat-icon>
   </button>
 
+  <button mat-icon-button color="accent" matTooltip="Repeatable Row" aria-label="Repeatable Row" (click)="repeatableDialog()">
+    <mat-icon svgIcon="repeat"></mat-icon>
+  </button>
 
   <button mat-icon-button color="accent" matTooltip="Display Rules" aria-label="Display Rules" (click)="displayRulesDialog()">
     <mat-icon svgIcon="view_list"></mat-icon>
@@ -75,33 +78,49 @@
       <!-- Normal row rendering -->
       <ng-template #normalRow>
         <div class="row" [style.background-color]="pageAttrs.backgroundColor">
-          <button
-            *ngIf="row.displayLogic"
-            mat-icon-button
-            class="display-badge"
-            [matTooltip]="'Display Rules Active On This Row'"
-            matTooltipPosition="left"
-            [attr.aria-label]="'Display Rules Active On This Row'"
-            type="button"
-          >
-            <mat-icon svgIcon="view_list"></mat-icon>
-          </button>
 
           <ng-container *ngFor="let cell of row.cells; let c = index">
 
             <div class="cell-container" [class.has-error]="cell.hasError" [style.flex-basis.%]="row.widths[c]">
               <!--  Corner error badge (only if error) -->
-              <button
-                *ngIf="cell.hasError"
-                mat-icon-button
-                class="error-badge"
-                [matTooltip]="cell.errorMessage"
-                matTooltipPosition="left"
-                [attr.aria-label]="cell.errorMessage"
-                type="button"
-              >
-                <mat-icon svgIcon="error"></mat-icon>
-              </button>
+              <div class="badge-wrapper">
+                <button
+                  *ngIf="row.displayLogic"
+                  mat-icon-button
+                  class="display-badge"
+                  [matTooltip]="'Display Rules Active On This Row'"
+                  matTooltipPosition="left"
+                  [attr.aria-label]="'Display Rules Active On This Row'"
+                  type="button"
+                >
+                  <mat-icon svgIcon="view_list"></mat-icon>
+                </button>
+
+                <button
+                  *ngIf="row.repeatableToken"
+                  mat-icon-button
+                  class="repeatable-badge"
+                  [matTooltip]="'Repeatable Active On This Row'"
+                  matTooltipPosition="left"
+                  [attr.aria-label]="'Repeatable Active On This Row'"
+                  type="button"
+                >
+                  <mat-icon svgIcon="repeat"></mat-icon>
+                </button>
+
+                <button
+                  *ngIf="cell.hasError"
+                  mat-icon-button
+                  class="error-badge"
+                  [matTooltip]="cell.errorMessage"
+                  matTooltipPosition="left"
+                  [attr.aria-label]="cell.errorMessage"
+                  type="button"
+                >
+                  <mat-icon svgIcon="error"></mat-icon>
+                </button>
+              </div>
+
               <div
                 class="cell ql-editor"
                 [ngClass]="{ 'selected': r === currentRow && c === currentCol }"

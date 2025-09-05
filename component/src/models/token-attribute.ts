@@ -10,5 +10,5 @@ export class TokenAttribute {
   value:string;
   valueArray?:string[];
   type:TokenAttributeType;
-  tokenAttributes?:TokenAttribute[];
+  tokenAttributes?:TokenAttribute[]; //this is what i want to show
 }

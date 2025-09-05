@@ -1,175 +1,46 @@
-<div *ngIf="form" class="app-dialog">
-  <form [formGroup]="form" class="dialog-body">
-    <mat-tab-group>
-      <!-- Logic Tab -->
-      <mat-tab label="Logic">
-        <div class="editor-dialog-content">
-          <p class="section-title">Logic Configuration</p>
+<mat-form-field
+  appearance="outline"
+  class="basicInput"
+  style="width: 100%; margin-bottom: 16px; padding-top: 10px;"
+>
+  <mat-label>Json Array Tokens</mat-label>
+  <mat-select
+    [(ngModel)]="repeatableToken"
+    name="attribute"
+    required
+    (selectionChange)="onTokenChange()"
+    [compareWith]="compareByName"
+  >
+    <mat-option [value]="null">None</mat-option>
 
-          <mat-card class="mb-4">
-            <mat-card-content>
-              <mat-form-field appearance="outline" class="w-100">
-                <mat-label>Chain Conditions With</mat-label>
-                <mat-select formControlName="chainType">
-                  <mat-option value="AND">AND</mat-option>
-                  <mat-option value="OR">OR</mat-option>
-                </mat-select>
-              </mat-form-field>
+    <mat-option
+      *ngFor="let attribute of jsonArrayAttrs"
+      [value]="attribute"
+    >
+      {{ attribute.name }}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
 
-              <div formArrayName="conditions" class="conditions-wrapper">
-                <!-- header labels -->
-                <div class="condition-header">
-                  <div class="hdr token">Token</div>
-                  <div class="hdr operator">Operator</div>
-                  <div class="hdr value">Value</div>
-                  <div class="hdr action"></div>
-                </div>
+<!-- List of child attributes -->
+<div *ngIf="repeatableToken?.tokenAttributes?.length" class="token-list">
+  <h3 class="list-title">Child Token Attributes</h3>
+  <mat-card
+    *ngFor="let attr of repeatableToken.tokenAttributes"
+    class="token-card"
+  >
+    <div class="token-info">
+      <mat-icon class="token-icon" svgIcon="label"></mat-icon>
+      <div class="token-details">
+        <div class="token-name">{{ attr.name }}</div>
+        <div class="token-type">{{ attr.type }}</div>
+      </div>
+    </div>
+  </mat-card>
+</div>
 
-                <div
-                  *ngFor="let group of conditions.controls; let i = index; trackBy: trackByIndex"
-                  [formGroupName]="i"
-                  class="condition-row"
-                >
-                  <mat-form-field appearance="fill" class="flex-item token">
-                    <mat-label>Token</mat-label>
-                    <mat-select formControlName="tokenName">
-                      <mat-option *ngFor="let token of tokenAttrs" [value]="token.name">
-                        {{ token.name }}
-                      </mat-option>
-                    </mat-select>
-                  </mat-form-field>
-
-                  <mat-form-field appearance="fill" class="flex-item operator">
-                    <mat-label>Operator</mat-label>
-                    <mat-select formControlName="operator">
-                      <mat-option value="EQUALS">EQUALS</mat-option>
-                      <mat-option value="NOT_EQUALS">NOT_EQUALS</mat-option>
-                      <mat-option value="GREATER">GREATER</mat-option>
-                      <mat-option value="LESS">LESS</mat-option>
-                      <mat-option value="CONTAINS">CONTAINS</mat-option>
-                      <mat-option value="NOT_NULL">NOT_NULL</mat-option>
-                      <mat-option value="IS_EMPTY">IS_EMPTY</mat-option>
-                    </mat-select>
-                  </mat-form-field>
-
-                  <mat-form-field
-                    appearance="fill"
-                    class="flex-item value"
-                    *ngIf="
-                      group.get('operator')?.value !== 'NOT_NULL' &&
-                      group.get('operator')?.value !== 'IS_EMPTY'
-                    "
-                  >
-                    <mat-label>Value</mat-label>
-                    <input matInput formControlName="value" />
-                  </mat-form-field>
-
-                  <div class="action">
-                    <button
-                      mat-icon-button
-                      color="warn"
-                      (click)="removeCondition(i)"
-                      aria-label="Remove condition"
-                    >
-                      <mat-icon svgIcon="delete"></mat-icon>
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              <div class="mt-2">
-                <button mat-stroked-button color="primary" (click)="addCondition()">
-                  <mat-icon svgIcon="add"></mat-icon>
-                  Add Condition
-                </button>
-              </div>
-            </mat-card-content>
-          </mat-card>
-        </div>
-      </mat-tab>
-
-      <!-- Test Tab -->
-      <mat-tab label="Test">
-        <div class="editor-dialog-content">
-          <p class="section-title">Test Against Token Values</p>
-
-          <mat-card class="mb-4">
-            <mat-card-content>
-              <div class="token-values">
-                <div style="margin-bottom:8px;">
-                  <strong>Current Token Attributes (editable):</strong>
-                </div>
-                <div class="token-list">
-                  <div *ngFor="let t of displayTokenAttrs; let ti = index" class="token-edit-row">
-                    <mat-form-field appearance="fill" class="token-select">
-                      <mat-label>Token</mat-label>
-                      <mat-select [value]="t.name" (selectionChange)="updateTokenName(ti, $event.value)">
-                        <mat-option *ngFor="let opt of tokenAttrs" [value]="opt.name">
-                          {{ opt.name }}
-                        </mat-option>
-                      </mat-select>
-                    </mat-form-field>
-
-                    <mat-form-field appearance="fill" class="token-input">
-                      <mat-label>Value</mat-label>
-                      <input
-                        matInput
-                        [value]="t.value"
-                        (input)="updateTokenValue(ti, $any($event.target).value)"
-                      />
-                    </mat-form-field>
-                  </div>
-                </div>
-              </div>
-
-              <div class="condition-results" *ngIf="conditions.controls.length">
-                <div class="results-header">
-                  <div><strong>Condition Results</strong></div>
-                  <button mat-flat-button (click)="runTest()">Run Test</button>
-                </div>
-
-                <div *ngFor="let group of conditions.controls; let i = index" class="single-result">
-                  <div class="result-row">
-                    <div class="cond-desc">
-                      <code>
-                        {{ group.value.tokenName || '‹token›' }}
-                        {{ group.value.operator }}
-                        <span *ngIf="group.value.value">"{{ group.value.value }}"</span>
-                      </code>
-                    </div>
-                    <mat-icon
-                      svgIcon="{{ conditionOutcomes[i] ? 'check_circle' : 'cancel' }}"
-                      [ngClass]="{
-                        passed: conditionOutcomes[i],
-                        failed: !conditionOutcomes[i]
-                      }"
-                      class="result-icon"
-                    >
-                    </mat-icon>
-                  </div>
-                </div>
-              </div>
-
-              <mat-divider class="my-2"></mat-divider>
-
-              <div class="overall-result">
-                <div><strong>Overall:</strong></div>
-                <div class="badge" [class.pass]="overallPass" [class.fail]="!overallPass">
-                  {{ overallPass ? 'PASS' : 'FAIL' }}
-                </div>
-                <div *ngIf="overallPass; else failText" style="color:green;">
-                  Logic evaluates to <strong>true</strong>
-                </div>
-                <ng-template #failText>
-                  <div style="color:#b71c1c;">
-                    Logic evaluates to <strong>false</strong>
-                  </div>
-                </ng-template>
-              </div>
-            </mat-card-content>
-          </mat-card>
-        </div>
-      </mat-tab>
-    </mat-tab-group>
-  </form>
+<!-- No attributes fallback -->
+<div *ngIf="repeatableToken && !repeatableToken.tokenAttributes?.length" class="no-attributes">
+  <mat-icon svgIcon="info"></mat-icon>
+  <span>No child attributes available for this token.</span>
 </div>

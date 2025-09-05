@@ -9,11 +9,12 @@ import {DisplayLogicGroup} from "../../models/display-logic.models";
 import {Row} from "../../models/page";
 import {CellEditorType} from "../cell-editor-viewer/cell-editor-viewer.interfaces";
 import {DisplayLogicEditorComponent} from "./display-logic-editor/display-logic-editor.component";
+import {RepeatableRowEditorComponent} from "./repeatable-row-editor/repeatable-row-editor.component";
 
 @Component({
   selector: 'app-row-editor-viewer',
   standalone: true,
-  imports: [CommonModule, MatButton, MatIcon, DisplayLogicEditorComponent],
+  imports: [CommonModule, MatButton, MatIcon, DisplayLogicEditorComponent, RepeatableRowEditorComponent],
   templateUrl: './row-editor-viewer.component.html',
   styleUrls: ['./row-editor-viewer.component.scss']
 })
@@ -26,6 +27,8 @@ export class RowEditorViewerComponent implements OnInit{
   row:Row;
 
   displayLogic!: DisplayLogicGroup;
+  repeatableToken!: TokenAttribute;
+
   okLabel = 'OK';
   cancelLabel = 'Cancel';
 
@@ -35,6 +38,7 @@ export class RowEditorViewerComponent implements OnInit{
   ngOnInit(): void {
     this.loadCurrentRow();
     this.loadDisplayLogic();
+    this.loadRepeatableToken();
   }
 
   onCancel(): void {
@@ -47,6 +51,11 @@ export class RowEditorViewerComponent implements OnInit{
 
   loadDisplayLogic(): void{
     this.displayLogic = this.gridStateService.getDisplayLogicForRow();
+  }
+
+  loadRepeatableToken(): void{
+    this.repeatableToken = this.gridStateService.getRepeatableTokenForRow();
+    debugger;
   }
 
 

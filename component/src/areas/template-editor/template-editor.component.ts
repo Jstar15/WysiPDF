@@ -68,20 +68,15 @@ export class TemplateEditorComponent implements OnInit,AfterViewInit {
   @Output('page-change') pageChange = new EventEmitter<Page>();
 
   currentView: PanelTypes = PanelTypes.PDF_VIEW;
+  area: string = null;
 
   showRightPane: boolean = true;
   showPdfViewPane: boolean = true;
   jsonList: JsonListItem[] = [];
 
-
   editorType: EditorType;
   cellEditorType: CellEditorType;
   rowEditorType: RowEditorType;
-
-  area: string = null;
-
-
-  lastCellEditorEvent: OpenCellEditorEvent;
 
   pdfGenerationResult: PdfGenerationResult = {
     base64 : '',
@@ -142,6 +137,7 @@ export class TemplateEditorComponent implements OnInit,AfterViewInit {
   toggleRightPane(): void {
     this.showRightPane = !this.showRightPane;
   }
+
   togglePdfPane(): void {
     if(this.currentView == PanelTypes.PDF_VIEW){
       this.currentView = PanelTypes.JSON_VIEW;
@@ -153,7 +149,6 @@ export class TemplateEditorComponent implements OnInit,AfterViewInit {
   onPanelOpened(area: string){
     this.area = area;
   }
-
 
   closeEditors(){
     this.currentView = PanelTypes.PDF_VIEW;

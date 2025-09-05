@@ -2,7 +2,7 @@
   <!-- Header -->
   <header class="editor-header">
     <mat-icon *ngIf="type == RowEditorType.DISPLAY_RULES" svgIcon="view_list"></mat-icon>
-    <mat-icon *ngIf="type == RowEditorType.REPEATABLE" svgIcon="view_list"></mat-icon>
+    <mat-icon *ngIf="type == RowEditorType.REPEATABLE" svgIcon="repeat"></mat-icon>
 
     <h2 id="editorTitle" *ngIf="type == RowEditorType.DISPLAY_RULES">Display Logic Editor</h2>
     <h2 id="editorTitle" *ngIf="type == RowEditorType.REPEATABLE">Repeatable Editor</h2>
@@ -15,9 +15,8 @@
       <app-display-logic-editor [displayLogicGroup]="displayLogic" [tokenAttrs]="tokens" (displayLogicChange)="row.displayLogic = $event"></app-display-logic-editor>
     </ng-content>
 
-
-
     <ng-content *ngIf="type == RowEditorType.REPEATABLE">
+      <app-repeatable-editor [repeatableToken]="repeatableToken" [tokenAttrs]="tokens" (repeatableTokenChange)="row.repeatableToken = $event"></app-repeatable-editor>
     </ng-content>
   </section>
 

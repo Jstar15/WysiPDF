@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import {Cell, CellAttrs, Grid, Page, Row} from '../models/page';
 import {DisplayLogicGroup} from "../models/display-logic.models";
+import {TokenAttribute} from "../models/token-attribute";
 
 @Injectable({ providedIn: 'root' })
 export class PageStateService {
@@ -101,6 +102,13 @@ export class PageStateService {
     return current[this.currentArea]?.rows[this.currentRow]?.displayLogic;
   }
 
+  getRepeatableTokenForRow(): TokenAttribute{
+    const current = this.getCurrentPage();
+    if (!current) return null;
+
+    return current[this.currentArea]?.rows[this.currentRow]?.repeatableToken;
+  }
+
   getCurrentCell(): Cell{
     const current = this.getCurrentPage();
     if (!current) return null;
@@ -121,15 +129,11 @@ export class PageStateService {
   updateCell(cell: Cell): void {
     const current = this.getCurrentPage();
     if (!current) return;
-    debugger;
 
     // Defensive bounds checks
     let grid: Grid = current[this.currentArea];
 
     if (!grid?.rows?.[this.currentRow]?.cells?.[this.currentCol]) return;
-
-    grid.rows[this.currentRow].cells[this.currentCol].displayLogic = cell.displayLogic;
-    grid.rows[this.currentRow].displayLogic = cell.displayLogic;
 
     if (cell?.type == 'html') {
       grid.rows[this.currentRow].cells[this.currentCol].type = 'html';
@@ -176,7 +180,9 @@ export class PageStateService {
 
     if (!grid?.rows?.[this.currentRow]?.cells?.[this.currentCol]) return;
 
+    debugger;
     grid.rows[this.currentRow].displayLogic = row.displayLogic;
+    grid.rows[this.currentRow].repeatableToken = row.repeatableToken;
 
     this.pushSnapshot(current);
   }

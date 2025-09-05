@@ -129,7 +129,7 @@ export interface Row {
     backgroundColor?: string;
     cells: Cell[];
     displayLogic?: DisplayLogicGroup,
-    repeatableTokens?: TokenAttribute[],
+    repeatableToken?: TokenAttribute,
 }
 
 export interface Grid {

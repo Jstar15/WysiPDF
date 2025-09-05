@@ -241,6 +241,11 @@ export class GridEditorComponent implements OnInit, OnDestroy {
     this.rowChange.emit(RowEditorType.DISPLAY_RULES);
   }
 
+  public repeatableDialog(): void {
+    this.emitCellLocation();
+    this.rowChange.emit(RowEditorType.REPEATABLE);
+  }
+
   private openEditorForCell(r: number, c: number): void {
     const selected = this.pageStateService.getCurrentCell();
     if (!selected) { console.warn('No cell selected.'); return; }
