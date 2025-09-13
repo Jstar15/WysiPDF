@@ -3,108 +3,23 @@
             [direction]="'horizontal'"
             [gutterSize]="6"
             [unit]="'percent'"
-            [disabled]="!showRightPane"
             class="split-container"
     >
         <!-- LEFT PANE -->
-        <as-split-area [size]="50" [minSize]="25" class="left-pane">
+        <as-split-area [size]="50" [minSize]="30" class="left-pane">
             <mat-card class="editor-card mat-elevation-z4">
-              <mat-card-header class="editor-toolbar">
-                <div class="toolbar-row">
-
-                  <!-- Left: history -->
-                  <div class="history-panel btn-group">
-                    <button
-                      mat-mini-fab
-                      (click)="undo()"
-                      [disabled]="!canUndo()"
-                      class="icon-btn"
-                      aria-label="Undo"
-                      matTooltip="Undo">
-                      <mat-icon [ngStyle]="{ color: canUndo() ? 'inherit' : '#bdbdbd' }" svgIcon="undo"></mat-icon>
-                    </button>
-                    <button
-                      mat-mini-fab
-                      (click)="redo()"
-                      [disabled]="!canRedo()"
-                      class="icon-btn"
-                      aria-label="Redo"
-                      matTooltip="Redo">
-                      <mat-icon [ngStyle]="{ color: canRedo() ? 'inherit' : '#bdbdbd' }" svgIcon="redo"></mat-icon>
-                    </button>
-                  </div>
-
-                  <!-- Center: features -->
-                  <div class="features-panel btn-group">
-                    <button
-                      mat-mini-fab
-                      color="primary"
-                      (click)="openEditorViewer(EditorType.IMPORT)"
-                      class="icon-btn"
-                      aria-label="Import / Export page"
-                      matTooltip="Import / Export page">
-                      <mat-icon svgIcon="file_open"></mat-icon>
-                    </button>
-                    <button
-                      mat-mini-fab
-                      color="primary"
-                      (click)="openEditorViewer(EditorType.PAGE_LAYOUT)"
-                      class="icon-btn"
-                      aria-label="Edit page layout"
-                      matTooltip="Edit page layout">
-                      <mat-icon svgIcon="border_color"></mat-icon>
-                    </button>
-                    <button
-                      mat-mini-fab
-                      color="primary"
-                      (click)="openEditorViewer(EditorType.COLOR_PALETTE)"
-                      class="icon-btn"
-                      aria-label="Edit color Palettes"
-                      matTooltip="Edit color Palettes">
-                      <mat-icon svgIcon="colors"></mat-icon>
-                    </button>
-                    <button
-                      mat-mini-fab
-                      color="primary"
-                      (click)="openEditorViewer(EditorType.TOKEN)"
-                      class="icon-btn"
-                      aria-label="Manage tokens"
-                      matTooltip="Manage tokens">
-                      <mat-icon svgIcon="download"></mat-icon>
-                    </button>
-                    <button
-                      mat-mini-fab
-                      color="primary"
-                      class="icon-btn"
-                      (click)="openEditorViewer(EditorType.PRESET)"
-                      [matTooltip]="'Load Preset'">
-                      <mat-icon svgIcon="inventory_2"></mat-icon>
-                    </button>
-                  </div>
-
-
-                  <!-- Right: view toggles -->
-                  <div class="change-view-panel btn-group">
-                    <button
-                      mat-mini-fab
-                      color="primary"
-                      class="icon-btn"
-                      (click)="togglePdfPane()"
-                      [matTooltip]="showPdfViewPane ? 'Show JSON View' : 'Show PDF View'">
-                      <mat-icon [svgIcon]="showPdfViewPane ? 'code' : 'picture_as_pdf'"></mat-icon>
-                    </button>
-                    <button
-                      mat-mini-fab
-                      color="primary"
-                      class="icon-btn"
-                      (click)="toggleRightPane()"
-                      [matTooltip]="showRightPane ? 'Hide Preview' : 'Show Preview'">
-                      <mat-icon [svgIcon]="showRightPane ? 'visibility_off' : 'visibility'"></mat-icon>
-                    </button>
-
-                  </div>
-
-                </div>
+              <mat-card-header  class="toolbar-wrapper">
+                <app-toolbar
+                    class="toolbar"
+                    [page]="page"
+                    [hide-editors]="area == null"
+                    [panel-type]="currentView"
+                    [editor-type]="editorType"
+                    (panel-type-change)="this.currentView = $event"
+                    (editor-type-change)="openEditorViewer($event)"
+                    (cell-editor-type-change)="onCellChange($event)"
+                    (row-editor-type-change)="onRowChange($event)">
+                </app-toolbar>
               </mat-card-header>
 
 
@@ -187,7 +102,7 @@
         </as-split-area>
 
         <!-- RIGHT PANE -->
-      <as-split-area [size]="50" [minSize]="25" *ngIf="showRightPane" class="right-pane">
+      <as-split-area [size]="50" [minSize]="25" class="right-pane">
         <app-pdf-viewer *ngIf="currentView == PanelTypes.PDF_VIEW"
                         class="pdf-viewer"
                         [base64]="this.pdfGenerationResult.base64">

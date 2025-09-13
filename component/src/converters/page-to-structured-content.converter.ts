@@ -105,7 +105,7 @@ export class PageToStructuredContentConverter implements Converter<Page, TDocume
 
 }`;
 
-    console.log(js);
+    //console.log(js);
     return js;
   }
 

@@ -1,0 +1,155 @@
+<div class="editor-toolbar">
+
+  <div class="toolbar-row-1">
+    <!-- Left: history -->
+    <div class="history-panel btn-group">
+      <button
+        mat-mini-fab
+        (click)="undo()"
+        [disabled]="!canUndo()"
+        class="icon-btn"
+        aria-label="Undo"
+        matTooltip="Undo">
+        <mat-icon [ngStyle]="{ color: canUndo() ? 'inherit' : '#bdbdbd' }" svgIcon="undo"></mat-icon>
+      </button>
+      <button
+        mat-mini-fab
+        (click)="redo()"
+        [disabled]="!canRedo()"
+        class="icon-btn"
+        aria-label="Redo"
+        matTooltip="Redo">
+        <mat-icon [ngStyle]="{ color: canRedo() ? 'inherit' : '#bdbdbd' }" svgIcon="redo"></mat-icon>
+      </button>
+    </div>
+
+    <!-- Center: features -->
+    <div class="features-panel btn-group">
+      <button
+        mat-mini-fab
+        color="primary"
+        (click)="onEditorTypeChange(EditorType.IMPORT)"
+        class="icon-btn"
+        aria-label="Import / Export page"
+        matTooltip="Import / Export page">
+        <mat-icon svgIcon="file_open"></mat-icon>
+      </button>
+      <button
+        mat-mini-fab
+        color="primary"
+        (click)="onEditorTypeChange(EditorType.PAGE_LAYOUT)"
+        class="icon-btn"
+        aria-label="Edit page layout"
+        matTooltip="Edit page layout">
+        <mat-icon svgIcon="border_color"></mat-icon>
+      </button>
+      <button
+        mat-mini-fab
+        color="primary"
+        (click)="onEditorTypeChange(EditorType.COLOR_PALETTE)"
+        class="icon-btn"
+        aria-label="Edit color Palettes"
+        matTooltip="Edit color Palettes">
+        <mat-icon svgIcon="colors"></mat-icon>
+      </button>
+      <button
+        mat-mini-fab
+        color="primary"
+        (click)="onEditorTypeChange(EditorType.TOKEN)"
+        class="icon-btn"
+        aria-label="Manage tokens"
+        matTooltip="Manage tokens">
+        <mat-icon svgIcon="download"></mat-icon>
+      </button>
+      <button
+        mat-mini-fab
+        color="primary"
+        class="icon-btn"
+        (click)="onEditorTypeChange(EditorType.PRESET)"
+        [matTooltip]="'Load Preset'">
+        <mat-icon svgIcon="inventory_2"></mat-icon>
+      </button>
+    </div>
+
+
+    <!-- Right: view toggles -->
+    <div class="change-view-panel btn-group">
+      <button
+        mat-mini-fab
+        color="primary"
+        class="icon-btn"
+        (click)="togglePdfPane()"
+        [matTooltip]="panelType == PanelTypes.PDF_VIEW ? 'Show JSON View' : 'Show PDF View'">
+        <mat-icon [svgIcon]="panelType == PanelTypes.PDF_VIEW ? 'code' : 'picture_as_pdf'"></mat-icon>
+      </button>
+    </div>
+
+  </div>
+
+
+  <div class="toolbar-row-2" *ngIf="!hideEditors">
+
+    <div class="grid-change">
+      <button mat-icon-button matTooltip="Add Row" (click)="onGridEvent(GridEventType.ADD_ROW)">
+        <mat-icon svgIcon="table_rows"></mat-icon>
+      </button>
+
+      <button mat-icon-button matTooltip="Remove Row"  (click)="onGridEvent(GridEventType.REMOVE_ROW)">
+        <mat-icon svgIcon="horizontal_rule"></mat-icon>
+      </button>
+
+      <button mat-icon-button color="accent" matTooltip="Duplicate Row" aria-label="Duplicate Row" (click)="onGridEvent(GridEventType.DUPLICATE_ROW)">
+        <mat-icon svgIcon="control_point_duplicate"></mat-icon>
+      </button>
+
+      <button mat-icon-button matTooltip="Add Column" (click)="onGridEvent(GridEventType.ADD_COLUMN)">
+        <mat-icon svgIcon="view_column"></mat-icon>
+      </button>
+
+      <button mat-icon-button matTooltip="Remove Column" (click)="onGridEvent(GridEventType.REMOVE_COLUMN)">
+        <mat-icon svgIcon="vertical_align_center"></mat-icon>
+      </button>
+
+      <button mat-icon-button matTooltip="Add Page Break" (click)="onGridEvent(GridEventType.ADD_PAGE_BREAK)">
+        <mat-icon svgIcon="line_weight"></mat-icon>
+      </button>
+    </div>
+
+    <div class="row-change">
+      <button mat-icon-button color="accent" matTooltip="Repeatable Row" aria-label="Repeatable Row" (click)="onRowTypeChange(RowEditorType.REPEATABLE)">
+        <mat-icon svgIcon="repeat"></mat-icon>
+      </button>
+
+      <button mat-icon-button color="accent" matTooltip="Display Rules" aria-label="Display Rules" (click)="onRowTypeChange(RowEditorType.DISPLAY_RULES)">
+        <mat-icon svgIcon="view_list"></mat-icon>
+      </button>
+    </div>
+
+
+    <div class="cell-change">
+      <button  mat-icon-button matTooltip="Insert Chart" (click)="onCellTypeChange(CellEditorType.CHART)">
+        <mat-icon svgIcon="pie_chart"></mat-icon>
+      </button>
+
+      <button mat-icon-button color="accent" matTooltip="Insert Barcode" aria-label="Insert Barcode" (click)="onCellTypeChange(CellEditorType.BARCODE)">
+        <mat-icon svgIcon="barcode"></mat-icon>
+      </button>
+
+      <button mat-icon-button matTooltip="Insert Image" (click)="onCellTypeChange(CellEditorType.IMAGE)" >
+        <mat-icon svgIcon="add_photo_alternate"></mat-icon>
+      </button>
+
+      <button mat-icon-button color="accent" matTooltip="Edit Cell Content"  (click)="onCellTypeChange(CellEditorType.HTML)" >
+        <mat-icon svgIcon="edit"></mat-icon>
+      </button>
+    </div>
+
+  </div>
+
+  <div class="toolbar-row-3" *ngIf="!hideEditors">
+    <app-cell-style-toolbar class="cell-change" [colorPalettes]="page.colorPalettes">
+    </app-cell-style-toolbar>
+  </div>
+
+
+</div>

@@ -1,70 +1,10 @@
-<div class="grid-toolbar toolbar-bottom-row">
-
-  <button mat-icon-button matTooltip="Add Row" (click)="addRow();">
-    <mat-icon svgIcon="table_rows"></mat-icon>
-  </button>
-
-  <button mat-icon-button matTooltip="Remove Row"  (click)="removeRow();">
-    <mat-icon svgIcon="horizontal_rule"></mat-icon>
-  </button>
-
-  <button mat-icon-button color="accent" matTooltip="Duplicate Row" aria-label="Duplicate Row" (click)="duplicateCurrentRow()">
-    <mat-icon svgIcon="control_point_duplicate"></mat-icon>
-  </button>
-
-  <button mat-icon-button matTooltip="Add Column" (click)="addColumn();">
-    <mat-icon svgIcon="view_column"></mat-icon>
-  </button>
-
-  <button mat-icon-button matTooltip="Remove Column" (click)="removeColumn();">
-    <mat-icon svgIcon="vertical_align_center"></mat-icon>
-  </button>
-
-  <span class="spacer"></span>
-
-  <button *ngIf="!hidePageBreak" mat-icon-button matTooltip="Add Page Break" (click)="addPageBreakRow()">
-    <mat-icon svgIcon="line_weight"></mat-icon>
-  </button>
-
-  <button mat-icon-button color="accent" matTooltip="Repeatable Row" aria-label="Repeatable Row" (click)="repeatableDialog()">
-    <mat-icon svgIcon="repeat"></mat-icon>
-  </button>
-
-  <button mat-icon-button color="accent" matTooltip="Display Rules" aria-label="Display Rules" (click)="displayRulesDialog()">
-    <mat-icon svgIcon="view_list"></mat-icon>
-  </button>
-
-  <button *ngIf="!hideChart" mat-icon-button matTooltip="Insert Chart" (click)="openAddChartDialog()">
-    <mat-icon svgIcon="pie_chart"></mat-icon>
-  </button>
-
-  <button *ngIf="!hideBarcode" mat-icon-button color="accent" matTooltip="Insert Barcode" aria-label="Insert Barcode" (click)="openAddBarcodeDialog()">
-    <mat-icon svgIcon="barcode"></mat-icon>
-  </button>
-
-  <button mat-icon-button matTooltip="Insert Image" (click)="openAddImageDialog()">
-    <mat-icon svgIcon="add_photo_alternate"></mat-icon>
-  </button>
-
-  <button mat-icon-button color="accent" matTooltip="Edit Cell Content"  (click)="openCellEditorDialog()">
-    <mat-icon svgIcon="edit"></mat-icon>
-  </button>
-</div>
-
-
-<div class="grid-toolbar toolbar-top-row">
-  <app-cell-style-toolbar [colorPalettes]="colorPalettes"  [cell]="this.currentCell">
-  </app-cell-style-toolbar>
-</div>
-
-
 
 <div #gridContainer class="grid-container">
   <div cdkDropList (cdkDropListDropped)="dropRow($event)" [cdkDropListDisabled]="isResizing">
     <div *ngFor="let row of grid.rows; let r = index" cdkDrag>
       <!-- 🧾 Page Break -->
       <div *ngIf="row.type === 'page-break'; else normalRow" class="row"
-           [ngClass]="{ 'selected-partial': r === currentRow && currentCol === -1 }"
+           [ngClass]="{ 'selected-partial': r === currentRow }"
            (click)="onRowClick(r)">
         <div class="cell-container" style="flex: 1;">
           <div class="cell ql-editor"

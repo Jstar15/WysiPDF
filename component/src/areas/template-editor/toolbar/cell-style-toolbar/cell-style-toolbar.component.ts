@@ -42,10 +42,16 @@ export type BorderPreset =
   ],
 })
 export class CellStyleToolbarComponent {
-  @Input( )cell: Cell;
   @Input() colorPalettes: string[] | undefined;
+  cell: Cell;
 
   constructor(private pageStateService: PageStateService) {
+    this.pageStateService.cellChange$.pipe(
+    ).subscribe(cell => {
+      if(cell){
+        this.cell = cell;
+      }
+    });
   }
 
 

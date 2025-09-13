@@ -9,16 +9,17 @@ import { Subject } from 'rxjs';
 import { TokenAttribute } from '../../../models/token-attribute';
 import { IconService } from '../../../services/external/icon.service';
 import {  Grid, Row, PageAttrs, Cell,} from '../../../models/page';
-import {CellStyleToolbarComponent,} from './cell-style-toolbar/cell-style-toolbar.component';
+import {CellStyleToolbarComponent,} from '../toolbar/cell-style-toolbar/cell-style-toolbar.component';
 import {CellEditorType} from "../../cell-editor-viewer/cell-editor-viewer.interfaces";
 import {PageStateService} from "../../../services/page-state.service";
 import {createEmptyCell, createEmptyRow} from "../../../presets/default-page.preset";
 import {RowEditorType} from "../../row-editor-viewer/row-editor-viewer.interfaces";
+import {GridEventType} from "./grid-editor.interfaces";
 
 @Component({
   selector: 'app-grid-editor',
   standalone: true,
-  imports: [CommonModule, MatIconButton, MatIcon, MatTooltip, DragDropModule, CellStyleToolbarComponent],
+  imports: [CommonModule, MatIconButton, MatIcon, MatTooltip, DragDropModule],
   templateUrl: './grid-editor.component.html',
   styleUrls: ['./grid-editor.component.scss']
 })
@@ -42,21 +43,60 @@ export class GridEditorComponent implements OnInit, OnDestroy {
   public currentRow: number = 0;
   public currentCol: number = 0;
 
-  public currentCell: Cell;
   private destroy$: Subject<void> = new Subject<void>();
   private resizeEmitRAF?: number;
 
   public constructor(
     private readonly sanitizer: DomSanitizer,
     private readonly iconService: IconService,
-    private  readonly pageStateService : PageStateService
+    private readonly pageStateService: PageStateService
   ) {
     this.iconService.registerIcons();
+
+    this.pageStateService.grid$
+      .pipe()
+      .subscribe(gridEvent => {
+        if(gridEvent && gridEvent.area == this.area){
+          const type: GridEventType = gridEvent.type;
+          switch (type) {
+            case GridEventType.ADD_ROW:
+              this.addRow();
+              break;
+
+            case GridEventType.REMOVE_ROW:
+              this.removeRow();
+              break;
+
+            case GridEventType.DUPLICATE_ROW:
+              this.duplicateCurrentRow();
+              break;
+
+            case GridEventType.ADD_COLUMN:
+              this.addColumn();
+              break;
+
+            case GridEventType.REMOVE_COLUMN:
+              this.removeColumn();
+              break;
+
+            case GridEventType.ADD_PAGE_BREAK:
+              debugger;
+              this.addPageBreakRow();
+
+              break;
+            default:
+              console.warn('Unhandled grid event:', gridEvent);
+              break;
+          }
+        }
+
+      });
   }
 
 
+
   public ngOnInit(): void {
-    this.onCellClick(0, 0);
+
   }
 
 
@@ -76,10 +116,12 @@ export class GridEditorComponent implements OnInit, OnDestroy {
     if (this.grid.rows.length > 0) {
       this.grid.rows.splice(this.currentRow, 1);
       this.currentRow = Math.max(0, this.currentRow - 1);
+      this.currentCol = 0;
     }
     if (this.grid.rows.length === 0) {
       this.grid.rows.push(createEmptyRow());
       this.currentRow = 0;
+      this.currentCol = 0;
     }
     this.updateGrid();
   }
@@ -207,7 +249,6 @@ export class GridEditorComponent implements OnInit, OnDestroy {
     this.currentRow = rowIndex;
     this.currentCol = colIndex;
     this.emitCellLocation();
-    this.currentCell = this.grid.rows[this.currentRow].cells[this.currentCol];
   }
 
   public onCellDoubleClick(rowIndex: number, colIndex: number): void {
@@ -236,16 +277,6 @@ export class GridEditorComponent implements OnInit, OnDestroy {
     this.cellChange.emit(CellEditorType.BARCODE);
   }
 
-  public displayRulesDialog(): void {
-    this.emitCellLocation();
-    this.rowChange.emit(RowEditorType.DISPLAY_RULES);
-  }
-
-  public repeatableDialog(): void {
-    this.emitCellLocation();
-    this.rowChange.emit(RowEditorType.REPEATABLE);
-  }
-
   private openEditorForCell(r: number, c: number): void {
     const selected = this.pageStateService.getCurrentCell();
     if (!selected) { console.warn('No cell selected.'); return; }
@@ -259,10 +290,6 @@ export class GridEditorComponent implements OnInit, OnDestroy {
     }else if (selected.type === 'barcode') {
       this.openAddBarcodeDialog();
     }
-  }
-
-  update(){
-    this.emitCellLocation();
   }
 
   public addPageBreakRow(): void {

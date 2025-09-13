@@ -1,0 +1,107 @@
+/* =========================
+   Editor Toolbar
+========================= */
+.editor-toolbar {
+  width: 100%;
+  background: #fff;
+  padding: 1rem 0 0 0 ;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+  container-type: inline-size;
+
+  /* =========================
+     Toolbar Rows
+  ========================== */
+  .toolbar-row-1,
+  .toolbar-row-2 {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
+  }
+
+  /* Panels */
+  .btn-group {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .history-panel { justify-content: flex-start; padding-left: 10px; }
+  .features-panel { justify-content: center; }
+  .change-view-panel { justify-content: flex-end; padding-right: 10px; }
+
+  .history-panel,
+  .features-panel,
+  .change-view-panel,
+  .grid-change,
+  .row-change,
+  .cell-change,
+  .cell-change app-cell-style-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  /* Buttons */
+  .icon-btn,
+  button.mat-icon-button {
+    width: 36px;
+    height: 36px;
+    transition: transform 0.05s ease, box-shadow 0.15s ease;
+
+    mat-icon { font-size: 20px; }
+
+    &:not([disabled]):hover { transform: translateY(-1px); }
+  }
+
+  button.mat-icon-button { width: 34px; height: 34px; mat-icon { font-size: 18px; } }
+  button[disabled] { opacity: 0.6; }
+
+  /* =========================
+     Second Toolbar Row Styling
+  ========================== */
+  .toolbar-row-2 {
+    margin-top: 0.75rem;
+    padding: 0.5rem 1rem;
+    background: #fffdfd;
+    border-radius: 8px;
+    grid-template-columns: repeat(3, auto);
+    gap: 2rem;
+  }
+
+
+  /* =========================
+     Container Query: adapt layout to toolbar width
+  ========================== */
+  @container (max-width: 600px) {
+    .toolbar-row-1,
+    .toolbar-row-2 {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+      gap: 0.75rem;
+    }
+
+    .history-panel,
+    .features-panel,
+    .change-view-panel,
+    .grid-change,
+    .row-change,
+    .cell-change,
+    .cell-change app-cell-style-toolbar {
+      flex: 1 1 auto;
+      min-width: 100px;
+      justify-content: flex-start;
+      flex-wrap: wrap;
+      margin-bottom: 0.5rem;
+    }
+
+    .icon-btn,
+    button.mat-icon-button {
+      width: 30px;
+      height: 30px;
+
+      mat-icon { font-size: 16px; }
+    }
+  }
+}

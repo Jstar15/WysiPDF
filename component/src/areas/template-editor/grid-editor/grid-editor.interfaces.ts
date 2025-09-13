@@ -1,11 +1,17 @@
-import {CellEditorType} from "../../cell-editor-viewer/cell-editor-viewer.interfaces";
-import {Cell} from "../../../models/page";
 
-export interface OpenCellEditorEvent {
-  cell: Cell;
-  rowIndex: number;
-  columnIndex: number;
-  area?: 'content' | 'footer' | 'header';
-  type: CellEditorType;
-  gridIndex?: number
+export interface GridEvent {
+  type: GridEventType;
+  area: string;
 }
+
+
+
+export enum GridEventType {
+  ADD_ROW              = 'ADD_ROW',
+  REMOVE_ROW           = 'REMOVE_ROW',
+  DUPLICATE_ROW        = 'DUPLICATE_ROW',
+  ADD_COLUMN           = 'ADD_COLUMN',
+  REMOVE_COLUMN        = 'REMOVE_COLUMN',
+  ADD_PAGE_BREAK       = 'ADD_PAGE_BREAK'
+}
+

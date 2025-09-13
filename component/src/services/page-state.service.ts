@@ -3,6 +3,7 @@ import { BehaviorSubject } from 'rxjs';
 import {Cell, CellAttrs, Grid, Page, Row} from '../models/page';
 import {DisplayLogicGroup} from "../models/display-logic.models";
 import {TokenAttribute} from "../models/token-attribute";
+import {GridEvent, GridEventType} from "../areas/template-editor/grid-editor/grid-editor.interfaces";
 
 @Injectable({ providedIn: 'root' })
 export class PageStateService {
@@ -13,6 +14,12 @@ export class PageStateService {
   private readonly _pageSubject = new BehaviorSubject<Page | null>(null);
   public readonly page$ = this._pageSubject.asObservable();
 
+  private readonly _gridSubject = new BehaviorSubject<GridEvent | null>(null);
+  public readonly grid$ = this._gridSubject.asObservable();
+
+  private readonly _cellChangeSubject = new BehaviorSubject<Cell | null>(null);
+  public readonly cellChange$ = this._cellChangeSubject.asObservable();
+
   private currentArea: string = null
   private currentRow: number = null
   private currentCol: number = null
@@ -22,12 +29,23 @@ export class PageStateService {
     this.currentArea = area;
     this.currentRow = row;
     this.currentCol = col;
+
+    const currentCell: Cell  =  this.getCurrentCell();
+    this._cellChangeSubject.next(currentCell);
   }
 
   /** Emit current page (clone so subscribers can’t mutate history) */
   private emitCurrent(): void {
     const page = this.currentIndex >= 0 ? this.history[this.currentIndex] : null;
     this._pageSubject.next(page ? structuredClone(page) : null);
+  }
+
+  public emitGridEvent(gridEventType: GridEventType): void {
+    const gridEvent: GridEvent = {
+      type: gridEventType,
+      area: this.currentArea
+    };
+    this._gridSubject.next(gridEvent);
   }
 
   /** Avoid pushing identical consecutive snapshots */
