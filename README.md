@@ -2,8 +2,7 @@
 
 > ⚠️ **Disclaimer:** WysiPDF is **in active development**. Features and APIs may change without notice. Use at your own risk.
 
-WysiPDF is a visual WYSIWYG editor **and** an embeddable runtime for building **dynamic, data-driven documents**.
-Design once, then generate **PDF** or **standalone HTML** from **dynamic tokens**, **live JSON**, or **looped partials**—all in the browser.
+WysiPDF is a **single-file WYSIWYG PDF editor** and runtime, designed to quickly create **dynamic, data-driven PDF templates**. Build once, then generate **PDF** or **standalone HTML** from **JSON payloads**, **tokens**, or **repeatable content**, all in the browser or on the server.
 
 ![WysiPDF screenshot](readme/images/screenshot-1.png)
 
@@ -17,41 +16,46 @@ Try it in the browser: **[https://jstar15.github.io/WysiPDF/](https://jstar15.gi
 
 ## ✨ Key Features
 
-### Editor & Layout
+### Grid-Based Editor & Layout
 
-* **Grid layout engine** with resizable columns, row re-ordering, and **explicit page breaks**.
-* **Header & Footer** areas that repeat automatically on each page (natural height).
-* **Quick styling** from a compact toolbar: padding, margins, border size/radius/color, background color, alignment.
-* **Color Palettes**: create reusable, named swatch sets per template and use them anywhere.
-* **Fonts**: five lean defaults (**Roboto, Raleway, Nunito, Cormorant, Open Sans**) with customizable fallback stacks.
-* **Presets**: start from curated templates to accelerate common use-cases (invoice, consent form, report, label, etc.).
+* **Flexible Grid Engine**: rows and cells with **resizable widths**, **adjustable heights**, and **relative sizing**. Content flows naturally downward.
+* **Row & Column Management**: drag, reorder, duplicate, add, or remove rows and columns.
+* **Repeatable Rows**: assign a JSON array to dynamically render rows or sections.
+* **Conditional Display**: show or hide rows based on **token-based logic**.
+* **Page Breaks**: insert breaks anywhere; content flows across pages automatically.
+* **Cell Styling**: define padding, background color, borders, alignment, and relative width.
 
-### Content Blocks
+### Rich Content Blocks
 
-* **Rich Text** (Quill formatting) with inline tokens.
-* **Images**: insert from file or base64; auto-embed for export (no external hosting required).
-* **Charts**: Pie / Doughnut / Bar rendered to high-quality PNG; identical in PDF & HTML.
-* **Barcodes & QR**: configurable **barcode block** (QR and common 1D/2D formats) rendered to PNG for reliable output.
-* **Tables**: structured rows & cells that map well to tokens and arrays.
-* **Spacers & Dividers**: fine-tune visual rhythm.
-* **Page Breaks**: deterministic control over pagination.
+* **Rich Text**: QuillJS-powered formatting with bold, italic, underline, font size/color, alignment, and inline tokens.
+* **Tables**: structured rows/cells with support for rich text, bullets, and alignment.
+* **Images**: insert file uploads or base64 directly into cells.
+* **Charts**: Pie, Doughnut, and Bar charts rendered as high-quality PNGs.
+* **Barcodes & QR Codes**: configurable 1D/2D codes, exported as PNG for crisp printing.
+* **Dynamic Tokens**: all content blocks can bind to tokens for live data rendering.
 
-### Tokens, Data & Logic
+### Styling & Theming
 
-* **Token Editor**: add/edit tokens manually or **import from JSON** (arrays supported).
-* **Dynamic token injection** at generation time (supply your payload and go).
-* **Conditional display** via **AND/OR** rules evaluated live in the editor.
-* **Partials** for re-usable sections.
-* **Looping**: repeat partials over array tokens (per-item blocks with local context).
-* **Validation**: Validation on tokens included in the form, will highlight cells in red which contain invalid tokens.
+* **Fonts**: Roboto, Raleway, Nunito, Cormorant.
+* **Color Palettes**: define once, reuse anywhere for consistent styling.
+* **Headers & Footers**: repeat automatically, with page numbering, margins, and background colors.
+* **Template Presets**: 6 built-in templates for quick prototyping and demos.
+
+### Tokens, Data & Validation
+
+* **Token Editor**: add, edit, or import tokens from JSON payloads.
+* **Dynamic JSON Injection**: generate PDFs with **any valid JSON structure**.
+* **Conditional Logic**: AND/OR rules determine visibility of rows or blocks.
+* **Repeatable Content**: iterate over arrays for multiple row rendering.
+* **Validation**: missing or invalid tokens highlighted in red; optional pre-generation validation available.
 
 ### Export & Runtime
 
-* **PDF generation** (base64) via pdfMake.
-* **Standalone HTML export** (self-contained, print-friendly; images, charts, and barcodes are embedded as PNG).
-* **Live preview** pane mirrors the final layout.
-* **Meta/Inspector view**: see **Page JSON**, **Tokens**, and **pdfMake definition** for transparent debugging.
-* **Single-file bundle**: editor + runtime in one JS file. Drop it on any page, no server required.
+* **PDF**: generated as base64 via pdfMake.
+* **Standalone HTML Export**: fully self-contained with embedded images, charts, and barcodes.
+* **Live Preview**: reflects exactly how the final PDF will render.
+* **Inspector / Debug Mode**: view **Page JSON**, **pdfMake definition**, and **token list**.
+* **Undo/Redo**: full forward/backward state management.
 
 ---
 
@@ -59,7 +63,7 @@ Try it in the browser: **[https://jstar15.github.io/WysiPDF/](https://jstar15.gi
 
 ### Option A — Standalone (no build tools)
 
-Include the built script and use the global constructor `WysiPDF` (exposed on `window.WysiPDF`):
+Include the built script and access `WysiPDF` globally:
 
 ```html
 <script src="./wysipdf.bundle.js"></script>
@@ -75,7 +79,6 @@ Include the built script and use the global constructor `WysiPDF` (exposed on `w
   window.addEventListener('DOMContentLoaded', async () => {
     wysi = new WysiPDF({ mount: '#editor-host' });
 
-    // Minimal starter page
     page = {
       header: { rows: [] },
       content: { rows: [] },
@@ -93,7 +96,6 @@ Include the built script and use the global constructor `WysiPDF` (exposed on `w
     await wysi.loadPage(page);
     await wysi.onPageChange(p => (page = p));
 
-    // Export PDF
     document.getElementById('exportPdf').addEventListener('click', async () => {
       const base64 = await wysi.generatePdfBase64(page, page.tokenAttrs || []);
       const a = document.createElement('a');
@@ -107,107 +109,69 @@ Include the built script and use the global constructor `WysiPDF` (exposed on `w
 
 ### Option B — ESM / Angular
 
-Import and use like a normal module; the same generation runtime is available without mounting the editor.
+Import as a module and use runtime APIs directly:
 
 ```ts
-import WysiPDF from 'wysipdf'; // or relative path to your built bundle
+import WysiPDF from 'wysipdf'; // or relative path to your bundle
 
 const wysi = new WysiPDF();
 const html  = await wysi.generateHtml(page, tokens);
 const pdf64 = await wysi.generatePdfBase64(page, tokens);
-
-// Angular services also available (e.g., HtmlGenerateService, PdfGenerateService)
 ```
 
 ---
 
-## 🧭 Runtime API (Editor Optional)
+## 🧭 Runtime API
 
-All methods are **async**.
-
-| Method                                  | Description                                                                 |
-|-----------------------------------------|-----------------------------------------------------------------------------|
-| `loadPage(page)`                        | Load a page model into the editor host                                      |
-| `onPageChange(cb)`                      | Subscribe to live edits of the page model                                   |
-| `generatePdfBase64(page, tokens)`       | Produce a PDF (base64) from a page + dynamic tokens                         |
-| `generatePdfBase64FromJson(page, json)` | Produce a PDF from a raw JSON payload                                       |
-| `generateHtml(page, tokens)`            | Produce standalone HTML (string) for the page                               |
-| `generateHtmlFromJson(page, json)`      | Produce HTML from a raw JSON token payload                                  |
-| `hasErrors(page, tokens)`               | Validate and return a **de-duplicated** list of error messages. By default this **does not mutate** the input `page`. Pass `true` to validate in place. |
-| `isValid(page, tokens)`                 | Convenience boolean. Resolves to `true` when `hasErrors(...).length === 0`. |
-
-> If you only need generation, you can omit the editor host entirely.
-
-### Quick example
-
-```ts
-const wysi = new window.WysiPDF({ mount: '#host' });
-await wysi.loadPage(page);
-
-const errors = await wysi.hasErrors(page, tokens);        // [] when all good
-const ok = await wysi.isValid(page, tokens);              // true when no errors
-
-const pdfBase64 = await wysi.generatePdfBase64(page, tokens);
-const html = await wysi.generateHtml(page, tokens);
-```
-
-> If you only need generation, you can omit the editor host entirely.
+| Method                                  | Description                                                               |
+| --------------------------------------- | ------------------------------------------------------------------------- |
+| `loadPage(page)`                        | Load a page model into the editor host                                    |
+| `onPageChange(cb)`                      | Subscribe to live edits of the page model                                 |
+| `generatePdfBase64(page, tokens)`       | Produce a PDF (base64) from a page + dynamic tokens                       |
+| `generatePdfBase64FromJson(page, json)` | Produce a PDF from a raw JSON payload                                     |
+| `generateHtml(page, tokens)`            | Produce standalone HTML (string) for the page                             |
+| `generateHtmlFromJson(page, json)`      | Produce HTML from a raw JSON token payload                                |
+| `hasErrors(page, tokens)`               | Validate tokens; returns list of errors (red-highlighted cells in editor) |
+| `isValid(page, tokens)`                 | Returns `true` if `hasErrors(...).length === 0`                           |
 
 ---
 
-## 🧱 Blocks Overview
+## 🧱 Content Blocks
 
-* **Text**: Quill-powered rich text; supports inline tokens and inline styles.
-* **Image**: File upload or base64; size, alignment, and alt text.
-* **Chart**: Pie/Doughnut/Bar; legend, labels, value binding; exported as PNG.
-* **Barcode / QR**: Value, format, size, quiet zone; exported as PNG for crisp print.
-* **Table**: Rows/cells, header styling; pairs well with array tokens.
-* **Spacer / Divider**: Visual rhythm control.
-* **Page Break**: Forces a new page at a deterministic point.
-* **Validation (live)**: Any cell using a missing/invalid token is highlighted **red** so issues are obvious before export.
-
----
-
-
-## 🧩 Tokens, Partials & Looping
-
-* **Token types** include text, numbers, booleans, dates, JSON/array, and more.
-* Import tokens directly from a **JSON payload** and map them into the template.
-* **Condition Builder** lets you show/hide any block based on token rules (AND/OR).
-* **Partials** are reusable sections; you can **loop** a partial over an array token to render it once per item.
+* **Text**: rich text with inline tokens and QuillJS styling.
+* **Image**: upload or base64; adjustable alignment, padding, and sizing.
+* **Chart**: Pie, Doughnut, Bar rendered as PNG.
+* **Barcode / QR**: 1D/2D codes, PNG export for print fidelity.
+* **Table**: structured rows/cells with bullets and rich text.
+* **Spacer / Divider**: control layout rhythm.
+* **Page Break**: deterministic pagination control.
+* **Validation**: highlights missing or invalid tokens in red.
 
 ---
 
-## 🧪 Debugging & Inspector
+## 🧩 Tokens & Dynamic Content
 
-* **Live Preview** updates on every change.
-* **Meta/Inspector view** shows:
-
-  * Current **Page JSON**
-  * Current **Token payload**
-  * Generated **pdfMake definition**
+* Supports **text, number, boolean, date, JSON/array tokens**.
+* **Dynamic JSON injection**: automatically maps JSON to template fields.
+* **Conditional Logic**: AND/OR rules for row/block visibility.
+* **Repeatable Rows / Partials**: iterate over arrays for multiple renderings.
 
 ---
 
-## 🖨 Export Details
+## 🔧 Powered By
 
-* **PDF**: generated via pdfMake and returned as base64 (ready to download or post).
-* **HTML**: exported as a **self-contained** document; images, charts, and barcodes are embedded as PNGs for maximum portability and print fidelity.
-* **Definition**: you can also extract the intermediate pdfMake definition for custom pipelines.
+WysiPDF integrates libraries **behind the scenes** to enable its rich functionality:
 
----
+* **QuillJS** for rich text editing.
+* **pdfMake** for PDF generation.
+* **ECharts** for charts.
+* **JsBarcode & QRCode** for barcodes.
+* **Angular** framework for dynamic editing, state management, and UI components.
 
-## 🎛 Theming
-
-* Set a **default font** at the page level and override per cell.
-* Use **Color Palettes** to enforce brand colors across a template.
-* Page background color and margins are configurable; headers/footers have their own margins.
+All bundled into **one single JS file** that can run on **client or server side**.
 
 ---
-
 
 ## 📄 License
 
 MIT
-
----

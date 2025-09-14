@@ -104,6 +104,26 @@ export class ToolbarComponent implements OnInit {
       this.gridStateService.emitGridEvent(gridEvent);
     }
 
+  async saveAsFile() {
+    try {
+      const handle = await (window as any).showSaveFilePicker({
+        suggestedName: 'template.json',
+        types: [
+          {
+            description: 'JSON Files',
+            accept: { 'application/json': ['.json'] },
+          },
+        ],
+      });
+
+      const writable = await handle.createWritable();
+      await writable.write(JSON.stringify(this.page, null, 2));
+      await writable.close();
+    } catch (err) {
+      console.error('Save canceled or failed', err);
+    }
+  }
+
 
 
   protected readonly EditorType = EditorType;

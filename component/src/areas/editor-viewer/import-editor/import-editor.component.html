@@ -1,8 +1,10 @@
 <div mat-dialog-content class="editor-dialog-content simple">
   <mat-tab-group [(selectedIndex)]="tabIndex">
+
     <!-- IMPORT -->
     <mat-tab label="Import">
       <div class="stack">
+        <!-- hidden file input -->
         <input
           #fileInput
           type="file"
@@ -11,16 +13,19 @@
           (change)="onFileSelected($event)"
         />
 
-        <button mat-raised-button color="primary" (click)="fileInput.click()">
+        <!-- visible styled button -->
+        <button mat-stroked-button color="primary" class="choose-file-btn" (click)="fileInput.click()">
           <mat-icon svgIcon="upload_file" aria-hidden="true"></mat-icon>
           Choose JSON file…
         </button>
 
+        <!-- selected filename chip -->
         <span class="file-chip" *ngIf="selectedFilename">
           <mat-icon svgIcon="description" aria-hidden="true"></mat-icon>
           {{ selectedFilename }}
         </span>
 
+        <!-- error display -->
         <div *ngIf="importError" class="error">
           <mat-icon svgIcon="error_outline" aria-hidden="true"></mat-icon>
           {{ importError }}
@@ -31,22 +36,6 @@
     <!-- EXPORT -->
     <mat-tab label="Export">
       <div class="stack">
-        <mat-form-field appearance="outline" class="w-100">
-          <mat-label>Filename</mat-label>
-          <input matInput [(ngModel)]="filename" placeholder="page.json" />
-        </mat-form-field>
-
-        <div class="row-actions">
-          <button
-            mat-stroked-button
-            color="primary"
-            (click)="downloadExport()"
-            [disabled]="!exportText"
-          >
-            <mat-icon svgIcon="download" aria-hidden="true"></mat-icon>
-            Download JSON
-          </button>
-        </div>
         <div class="row-actions">
           <button mat-stroked-button (click)="generateHTMLPreview()">
             <mat-icon svgIcon="open_in_new" aria-hidden="true"></mat-icon>
@@ -60,5 +49,6 @@
         </div>
       </div>
     </mat-tab>
+
   </mat-tab-group>
 </div>

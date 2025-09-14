@@ -89,19 +89,6 @@ export class ImportEditorComponent {
     return base.toLowerCase().endsWith('.json') ? base : `${base}.json`;
   }
 
-  public downloadExport(): void {
-    if (!this.exportText) return;
-    const blob = new Blob([this.exportText], { type: 'application/json;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = this.getDownloadName();
-    a.click();
-
-    URL.revokeObjectURL(url);
-  }
-
   // ----- Utilities -----
   private getTokens(): any[] {
     // Adjust if tokens live elsewhere

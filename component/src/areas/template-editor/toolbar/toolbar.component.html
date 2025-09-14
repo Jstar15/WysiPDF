@@ -37,6 +37,15 @@
       <button
         mat-mini-fab
         color="primary"
+        (click)="saveAsFile()"
+        class="icon-btn"
+        aria-label="Save As"
+        matTooltip="Save As">
+        <mat-icon svgIcon="save_as"></mat-icon>
+      </button>
+      <button
+        mat-mini-fab
+        color="primary"
         (click)="onEditorTypeChange(EditorType.PAGE_LAYOUT)"
         class="icon-btn"
         aria-label="Edit page layout"
