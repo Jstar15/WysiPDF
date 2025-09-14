@@ -1,46 +1,42 @@
-// src/app/presets/invoice.preset.ts
+// src/app/presets/radiology-form.grid.preset.ts
 import { Page } from '../models/page';
+import {TokenAttributeType} from "../models/token-attribute-type";
 
-export const Preset3: Page = {
+export const Preset3: any = {
   "header": {
     "rows": [
       {
-        "height": 50,
-        "widths": [
-          60,
-          40
-        ],
+        "height": 56,
+        "widths": [60, 40],
         "cells": [
           {
             "type": "html",
-            "value": "<p><span style=\"color:#0d9488;font-size:16px;\">Diabetes Care Plan</span></p>",
+            "value": "<p class=\"ql-font-roboto\"><strong style=\"font-size:16px;color: rgb(29, 78, 216);\">NOVA RADIOLOGY</strong></p><p class=\"ql-font-roboto\"><span style=\"font-size: 11px; color: rgb(71, 85, 105);\">www.novaradiology.example · reports@nova.example</span></p>",
             "attrs": {
-              "paddingTop": 8,
-              "paddingRight": 8,
-              "paddingBottom": 8,
-              "paddingLeft": 8,
-              "borderTop": 0,
-              "borderRight": 0,
-              "borderBottom": 2,
-              "borderLeft": 0,
-              "borderColor": "#0d9488",
-              "backgroundColor": "transparent"
+              "paddingTop": 10, "paddingRight": 8, "paddingBottom": 10, "paddingLeft": 10,
+              "borderTop": 0, "borderRight": 0, "borderBottom": 2, "borderLeft": 0,
+              "borderColor": "#1D4ED8", "backgroundColor": "transparent"
+            },
+            "block": {
+              "blocks": [
+                { "elements": [{ "value": "NOVA RADIOLOGY", "attributes": { "bold": "true", "size": 16, "font": "Roboto", "color": "#1d4ed8", "align": "left" }, "type": "text"}], "blockType": "p", "alignment": "left" },
+                { "elements": [{ "value": "www.novaradiology.example · reports@nova.example", "attributes": { "size": 11, "font": "Roboto", "color": "#475569", "align": "left" }, "type": "text"}], "blockType": "p", "alignment": "left" }
+              ]
             }
           },
           {
             "type": "html",
-            "value": "<p class=\"ql-align-right\"><span style=\"font-size:12px;color:#0f766e;\">Seaside Family Clinic</span></p><p class=\"ql-align-right\"><span style=\"font-size:10px;color:#64748b;\">(555) 123-4567 · care@seaside.example</span></p>",
+            "value": "<p class=\"ql-align-right ql-font-roboto\"><strong style=\"font-size:14px;color: rgb(29, 78, 216);\">RADIOLOGY REPORT</strong></p><p class=\"ql-align-right ql-font-roboto\"><span style=\"font-size: 11px; color: rgb(100, 116, 139);\">Report No. —</span></p>",
             "attrs": {
-              "paddingTop": 8,
-              "paddingRight": 8,
-              "paddingBottom": 8,
-              "paddingLeft": 8,
-              "borderTop": 0,
-              "borderRight": 0,
-              "borderBottom": 2,
-              "borderLeft": 0,
-              "borderColor": "#0d9488",
-              "backgroundColor": "transparent"
+              "paddingTop": 10, "paddingRight": 10, "paddingBottom": 10, "paddingLeft": 8,
+              "borderTop": 0, "borderRight": 0, "borderBottom": 2, "borderLeft": 0,
+              "borderColor": "#1D4ED8", "backgroundColor": "transparent"
+            },
+            "block": {
+              "blocks": [
+                { "elements": [{ "value": "RADIOLOGY REPORT", "attributes": { "bold": "true", "size": 14, "font": "Roboto", "align": "right", "color": "#1d4ed8" }, "type": "text"}], "blockType": "p", "alignment": "right" },
+                { "elements": [{ "value": "Report No. —", "attributes": { "size": 11, "font": "Roboto", "align": "right", "color": "#64748b" }, "type": "text"}], "blockType": "p", "alignment": "right" }
+              ]
             }
           }
         ],
@@ -48,786 +44,460 @@ export const Preset3: Page = {
       }
     ]
   },
+
   "content": {
     "rows": [
       {
         "height": 0,
-        "widths": [
-          100
-        ],
+        "widths": [100],
         "cells": [
           {
             "type": "html",
-            "value": "<p><strong class=\"ql-font-roboto\" style=\"font-size:15px;color:#0d9488;\">Patient & Visit</strong></p>",
+            "value": "<p class=\"ql-font-roboto\"><strong style=\"font-size:13px;color: rgb(29, 78, 216);\">Patient & Study</strong></p>",
             "attrs": {
-              "paddingTop": 12,
-              "paddingRight": 8,
-              "paddingBottom": 8,
-              "paddingLeft": 8,
-              "borderTop": 0,
-              "borderRight": 0,
-              "borderBottom": 1,
-              "borderLeft": 0,
-              "borderColor": "#e2e8f0",
-              "backgroundColor": "#f0fdfa"
-            }
+              "paddingTop": 10, "paddingRight": 8, "paddingBottom": 6, "paddingLeft": 10,
+              "borderTop": 0, "borderRight": 0, "borderBottom": 1, "borderLeft": 0,
+              "borderColor": "#E5E7EB", "backgroundColor": "#EFF6FF"
+            },
+            "block": { "blocks": [] }
           }
         ],
-        "backgroundColor": "#f0fdfa"
+        "backgroundColor": "#EFF6FF"
       },
       {
         "height": 0,
-        "widths": [
-          33.33,
-          33.33,
-          33.34
-        ],
+        "widths": [33.3333, 33.3333, 33.3334],
         "cells": [
           {
             "type": "html",
-            "value": "<p style=\"font-size:10px;color:#475569;\"><span style=\"font-size: 10px; color: rgb(68, 68, 68);\">Full Name</span></p><p style=\"font-size:14px;\"><strong>Jordan Ellis</strong></p>",
-            "attrs": {
-              "paddingTop": 10,
-              "paddingRight": 8,
-              "paddingBottom": 10,
-              "paddingLeft": 10,
-              "borderTop": 1,
-              "borderRight": 1,
-              "borderBottom": 1,
-              "borderLeft": 1,
-              "borderColor": "#cbd5e1",
-              "backgroundColor": "transparent"
-            }
+            "value": "<p class=\"ql-font-roboto\" style=\"font-size:11px;color: rgb(100,116,139);\"><strong>Patient</strong></p><p class=\"ql-font-roboto\" style=\"font-size:12px;\">Name: <em style=\"color:#94a3b8;\">Enter full name</em></p><p class=\"ql-font-roboto\" style=\"font-size:12px;\">DOB: <em style=\"color:#94a3b8;\">DD/MM/YYYY</em> &nbsp; Sex: <em style=\"color:#94a3b8;\">M/F</em></p><p class=\"ql-font-roboto\" style=\"font-size:12px;\">Patient ID: <em style=\"color:#94a3b8;\">—</em></p>",
+            "attrs": { "paddingTop": 10, "paddingRight": 8, "paddingBottom": 10, "paddingLeft": 10, "borderTop": 1, "borderRight": 1, "borderBottom": 1, "borderLeft": 1, "borderColor": "#E5E7EB" },
+            "block": { "blocks": [] }
           },
           {
             "type": "html",
-            "value": "<p style=\"font-size:10px;color:#475569;\"><span style=\"font-size: 10px; color: rgb(68, 68, 68);\">Date of Birth</span></p><p style=\"font-size:14px;\">02 May 1974</p>",
-            "attrs": {
-              "paddingTop": 10,
-              "paddingRight": 8,
-              "paddingBottom": 10,
-              "paddingLeft": 8,
-              "borderTop": 1,
-              "borderRight": 1,
-              "borderBottom": 1,
-              "borderLeft": 0,
-              "borderColor": "#cbd5e1",
-              "backgroundColor": "transparent"
-            }
+            "value": "<p class=\"ql-font-roboto\" style=\"font-size:11px;color: rgb(100,116,139);\"><strong>Study</strong></p><p class=\"ql-font-roboto\" style=\"font-size:12px;\">Modality: <em style=\"color:#94a3b8;\">CT/MRI/US/XR</em> &nbsp; Body Part: <em style=\"color:#94a3b8;\">—</em></p><p class=\"ql-font-roboto\" style=\"font-size:12px;\">Laterality: <em style=\"color:#94a3b8;\">Left/Right/Bilateral</em></p><p class=\"ql-font-roboto\" style=\"font-size:12px;\">Study Date/Time: <em style=\"color:#94a3b8;\">—</em></p>",
+            "attrs": { "paddingTop": 10, "paddingRight": 8, "paddingBottom": 10, "paddingLeft": 8, "borderTop": 1, "borderRight": 1, "borderBottom": 1, "borderLeft": 0, "borderColor": "#E5E7EB" },
+            "block": { "blocks": [] }
           },
           {
             "type": "html",
-            "value": "<p style=\"font-size:10px;color:#475569;\"><span style=\"font-size: 10px; color: rgb(68, 68, 68);\">Record No.</span></p><p style=\"font-size:14px;\">MRN-449210</p>",
-            "attrs": {
-              "paddingTop": 10,
-              "paddingRight": 10,
-              "paddingBottom": 10,
-              "paddingLeft": 8,
-              "borderTop": 1,
-              "borderRight": 1,
-              "borderBottom": 1,
-              "borderLeft": 0,
-              "borderColor": "#cbd5e1",
-              "backgroundColor": "transparent"
-            }
+            "value": "<p class=\"ql-font-roboto\" style=\"font-size:11px;color: rgb(100,116,139);\"><strong>Safety</strong></p><p class=\"ql-font-roboto\" style=\"font-size:12px;\">Allergies: <em style=\"color:#94a3b8;\">NKDA or list</em></p><p class=\"ql-font-roboto\" style=\"font-size:12px;\">Pregnancy status (if applicable): <em style=\"color:#94a3b8;\">—</em></p><p class=\"ql-font-roboto\" style=\"font-size:12px;\">Implants/Devices: <em style=\"color:#94a3b8;\">—</em></p>",
+            "attrs": { "paddingTop": 10, "paddingRight": 10, "paddingBottom": 10, "paddingLeft": 8, "borderTop": 1, "borderRight": 1, "borderBottom": 1, "borderLeft": 0, "borderColor": "#E5E7EB" },
+            "block": { "blocks": [] }
           }
         ],
         "backgroundColor": "white"
       },
+
       {
         "height": 0,
-        "widths": [
-          33.33,
-          33.33,
-          33.34
-        ],
+        "widths": [100],
         "cells": [
           {
             "type": "html",
-            "value": "<p style=\"font-size:10px;color:#475569;\"><span style=\"color: rgb(68, 68, 68); font-size: 10px;\">Visit Date</span></p><p style=\"font-size:14px;\">18 Aug 2025</p>",
-            "attrs": {
-              "paddingTop": 10,
-              "paddingRight": 8,
-              "paddingBottom": 10,
-              "paddingLeft": 10,
-              "borderTop": 0,
-              "borderRight": 1,
-              "borderBottom": 1,
-              "borderLeft": 1,
-              "borderColor": "#cbd5e1",
-              "backgroundColor": "transparent"
-            }
+            "value": "<p class=\"ql-font-roboto\"><strong style=\"font-size:13px;color: rgb(29, 78, 216);\">Referrer & Clinical Indication</strong></p>",
+            "attrs": { "paddingTop": 10, "paddingRight": 8, "paddingBottom": 6, "paddingLeft": 10, "borderTop": 0, "borderRight": 0, "borderBottom": 1, "borderLeft": 0, "borderColor": "#E5E7EB", "backgroundColor": "#EFF6FF" },
+            "block": { "blocks": [] }
+          }
+        ],
+        "backgroundColor": "#EFF6FF"
+      },
+      {
+        "height": 0,
+        "widths": [40, 60],
+        "cells": [
+          {
+            "type": "html",
+            "value": "<p class=\"ql-font-roboto\" style=\"font-size:12px;\">Referring Clinician: <em style=\"color:#94a3b8;\">—</em></p><p class=\"ql-font-roboto\" style=\"font-size:12px;\">Contact: <em style=\"color:#94a3b8;\">—</em> &nbsp; Priority: <em style=\"color:#94a3b8;\">Routine/Urgent</em></p>",
+            "attrs": { "paddingTop": 10, "paddingRight": 8, "paddingBottom": 10, "paddingLeft": 10, "borderTop": 1, "borderRight": 1, "borderBottom": 1, "borderLeft": 1, "borderColor": "#E5E7EB" },
+            "block": { "blocks": [] }
           },
           {
             "type": "html",
-            "value": "<p style=\"font-size:10px;color:#475569;\"><span style=\"font-size: 10px; color: rgb(68, 68, 68);\">Clinician</span></p><p style=\"font-size:14px;\">Dr. N. Patel</p>",
-            "attrs": {
-              "paddingTop": 10,
-              "paddingRight": 8,
-              "paddingBottom": 10,
-              "paddingLeft": 8,
-              "borderTop": 0,
-              "borderRight": 1,
-              "borderBottom": 1,
-              "borderLeft": 0,
-              "borderColor": "#cbd5e1",
-              "backgroundColor": "transparent"
-            }
+            "value": "<p class=\"ql-font-roboto\" style=\"font-size:12px;\">Clinical Indication / History:</p><p class=\"ql-font-roboto\" style=\"font-size:12px;color:#94a3b8;\">Provide succinct clinical question, symptoms, duration, and relevant prior interventions.</p>",
+            "attrs": { "paddingTop": 10, "paddingRight": 10, "paddingBottom": 10, "paddingLeft": 10, "borderTop": 1, "borderRight": 1, "borderBottom": 1, "borderLeft": 0, "borderColor": "#E5E7EB" },
+            "block": { "blocks": [] }
+          }
+        ],
+        "backgroundColor": "white"
+      },
+
+      {
+        "height": 0,
+        "widths": [100],
+        "cells": [
+          {
+            "type": "html",
+            "value": "<p class=\"ql-font-roboto\"><strong style=\"font-size:13px;color: rgb(29, 78, 216);\">Technique</strong></p>",
+            "attrs": { "paddingTop": 10, "paddingRight": 8, "paddingBottom": 6, "paddingLeft": 10, "borderTop": 0, "borderRight": 0, "borderBottom": 1, "borderLeft": 0, "borderColor": "#E5E7EB", "backgroundColor": "#EFF6FF" },
+            "block": { "blocks": [] }
+          }
+        ],
+        "backgroundColor": "#EFF6FF"
+      },
+      {
+        "height": 0,
+        "widths": [34, 33, 33],
+        "cells": [
+          {
+            "type": "html",
+            "value": "<p class=\"ql-font-roboto\" style=\"font-size:12px;\"><span style=\"color:rgb(100,116,139);\"><strong>Protocol / Sequences</strong></span></p><p class=\"ql-font-roboto\" style=\"font-size:12px;color:#94a3b8;\">e.g., MRI brain: T1, T2, FLAIR, DWI, SWI; CT chest: helical, 1 mm recon.</p>",
+            "attrs": { "paddingTop": 8, "paddingRight": 8, "paddingBottom": 8, "paddingLeft": 10, "borderTop": 0, "borderRight": 1, "borderBottom": 1, "borderLeft": 1, "borderColor": "#E5E7EB" },
+            "block": { "blocks": [] }
           },
           {
             "type": "html",
-            "value": "<p style=\"font-size:10px;color:#475569;\"><span style=\"color: rgb(68, 68, 68); font-size: 10px;\">Location</span></p><p style=\"font-size:14px;\">Room 3B · Seaside</p>",
-            "attrs": {
-              "paddingTop": 10,
-              "paddingRight": 10,
-              "paddingBottom": 10,
-              "paddingLeft": 8,
-              "borderTop": 0,
-              "borderRight": 1,
-              "borderBottom": 1,
-              "borderLeft": 0,
-              "borderColor": "#cbd5e1",
-              "backgroundColor": "transparent"
-            }
-          }
-        ],
-        "backgroundColor": "white"
-      },
-      {
-        "height": 50,
-        "widths": [
-          100
-        ],
-        "cells": [
-          {
-            "type": "html",
-            "value": "",
-            "attrs": {
-              "paddingTop": 5,
-              "paddingRight": 5,
-              "paddingBottom": 5,
-              "paddingLeft": 5,
-              "borderTop": 0,
-              "borderRight": 0,
-              "borderBottom": 0,
-              "borderLeft": 0,
-              "borderColor": "white",
-              "backgroundColor": "transparent"
-            }
-          }
-        ],
-        "backgroundColor": "white"
-      },
-      {
-        "height": 50,
-        "widths": [
-          100
-        ],
-        "cells": [
-          {
-            "type": "html",
-            "value": "",
-            "attrs": {
-              "paddingTop": 5,
-              "paddingRight": 5,
-              "paddingBottom": 5,
-              "paddingLeft": 5,
-              "borderTop": 0,
-              "borderRight": 0,
-              "borderBottom": 0,
-              "borderLeft": 0,
-              "borderColor": "white",
-              "backgroundColor": "transparent"
-            }
-          }
-        ],
-        "backgroundColor": "white"
-      },
-      {
-        "height": 0,
-        "widths": [
-          100
-        ],
-        "cells": [
-          {
-            "type": "html",
-            "value": "<p><strong class=\"ql-font-roboto\" style=\"font-size:15px;color:#0d9488;\">Clinical Snapshot</strong></p>",
-            "attrs": {
-              "paddingTop": 14,
-              "paddingRight": 8,
-              "paddingBottom": 8,
-              "paddingLeft": 8,
-              "borderTop": 0,
-              "borderRight": 0,
-              "borderBottom": 1,
-              "borderLeft": 0,
-              "borderColor": "#e2e8f0",
-              "backgroundColor": "#f0fdfa"
-            }
-          }
-        ],
-        "backgroundColor": "#f0fdfa"
-      },
-      {
-        "height": 0,
-        "widths": [
-          33.33,
-          33.33,
-          33.34
-        ],
-        "cells": [
-          {
-            "type": "html",
-            "value": "<p class=\"ql-align-center\" style=\"font-size:10px;color:#0f766e;\"><span style=\"font-size: 10px;\">HbA1c</span></p><p class=\"ql-align-center\" style=\"font-size:22px;color:#0d9488;\"><strong style=\"color: rgb(0, 138, 0);\">7.8%</strong></p><p class=\"ql-align-center\" style=\"font-size:11px;color:#64748b;\"><span style=\"font-size: 10px;\">(target &lt; 7.0%)</span></p>",
-            "attrs": {
-              "paddingTop": 10,
-              "paddingRight": 10,
-              "paddingBottom": 10,
-              "paddingLeft": 10,
-              "borderTop": 1,
-              "borderRight": 1,
-              "borderBottom": 1,
-              "borderLeft": 1,
-              "borderColor": "#99f6e4",
-              "backgroundColor": "#ecfeff"
-            }
+            "value": "<p class=\"ql-font-roboto\" style=\"font-size:12px;\"><span style=\"color:rgb(100,116,139);\"><strong>Contrast</strong></span></p><p class=\"ql-font-roboto\" style=\"font-size:12px;\">Use: ☐ None ☐ Yes &nbsp; Type: <em style=\"color:#94a3b8;\">—</em> &nbsp; Volume (mL): <em style=\"color:#94a3b8;\">—</em></p><p class=\"ql-font-roboto\" style=\"font-size:12px;\">Adverse reactions/notes: <em style=\"color:#94a3b8;\">—</em></p>",
+            "attrs": { "paddingTop": 8, "paddingRight": 8, "paddingBottom": 8, "paddingLeft": 8, "borderTop": 0, "borderRight": 1, "borderBottom": 1, "borderLeft": 0, "borderColor": "#E5E7EB" },
+            "block": { "blocks": [] }
           },
           {
             "type": "html",
-            "value": "<p class=\"ql-align-center\" style=\"font-size:10px;color:#0f766e;\"><span style=\"font-size: 10px;\">Blood Pressure</span></p><p class=\"ql-align-center\" style=\"font-size:22px;color:#0d9488;\"><strong style=\"color: rgb(0, 138, 0);\">132/82</strong></p><p class=\"ql-align-center\" style=\"font-size:11px;color:#64748b;\"><span style=\"font-size: 10px;\">(mmHg)</span></p>",
-            "attrs": {
-              "paddingTop": 10,
-              "paddingRight": 10,
-              "paddingBottom": 10,
-              "paddingLeft": 10,
-              "borderTop": 1,
-              "borderRight": 1,
-              "borderBottom": 1,
-              "borderLeft": 0,
-              "borderColor": "#99f6e4",
-              "backgroundColor": "#ecfeff"
-            }
+            "value": "<p class=\"ql-font-roboto\" style=\"font-size:12px;\"><span style=\"color:rgb(100,116,139);\"><strong>Preparation</strong></span></p><p class=\"ql-font-roboto\" style=\"font-size:12px;\">Sedation: ☐ No ☐ Yes &nbsp; Type: <em style=\"color:#94a3b8;\">—</em></p><p class=\"ql-font-roboto\" style=\"font-size:12px;\">Artefacts/Limitations: <em style=\"color:#94a3b8;\">—</em></p>",
+            "attrs": { "paddingTop": 8, "paddingRight": 10, "paddingBottom": 8, "paddingLeft": 8, "borderTop": 0, "borderRight": 1, "borderBottom": 1, "borderLeft": 0, "borderColor": "#E5E7EB" },
+            "block": { "blocks": [] }
+          }
+        ],
+        "backgroundColor": "white"
+      },
+
+      {
+        "height": 0,
+        "widths": [100],
+        "cells": [
+          {
+            "type": "html",
+            "value": "<p class=\"ql-font-roboto\"><strong style=\"font-size:13px;color: rgb(29, 78, 216);\">Radiation Dose (CT)</strong></p>",
+            "attrs": { "paddingTop": 10, "paddingRight": 8, "paddingBottom": 6, "paddingLeft": 10, "borderTop": 0, "borderRight": 0, "borderBottom": 1, "borderLeft": 0, "borderColor": "#E5E7EB", "backgroundColor": "#EFF6FF" },
+            "block": { "blocks": [] }
+          }
+        ],
+        "backgroundColor": "#EFF6FF"
+      },
+      {
+        "height": 0,
+        "widths": [33.3333, 33.3333, 33.3334],
+        "cells": [
+          {
+            "type": "html",
+            "value": "<p class=\"ql-font-roboto\" style=\"font-size:12px;\">CTDIvol (mGy): <em style=\"color:#94a3b8;\">—</em></p><p class=\"ql-font-roboto\" style=\"font-size:12px;\">DLP (mGy·cm): <em style=\"color:#94a3b8;\">—</em></p>",
+            "attrs": { "paddingTop": 8, "paddingRight": 8, "paddingBottom": 8, "paddingLeft": 10, "borderTop": 0, "borderRight": 1, "borderBottom": 1, "borderLeft": 1, "borderColor": "#E5E7EB" },
+            "block": { "blocks": [] }
           },
           {
             "type": "html",
-            "value": "<p class=\"ql-align-center\" style=\"font-size:10px;color:#0f766e;\"><span style=\"font-size: 10px;\">BMI</span></p><p class=\"ql-align-center\" style=\"font-size:22px;color:#0d9488;\"><strong style=\"color: rgb(0, 138, 0);\">28.6</strong></p><p class=\"ql-align-center\" style=\"font-size:11px;color:#64748b;\"><span style=\"font-size: 10px;\">kg/m²</span></p>",
-            "attrs": {
-              "paddingTop": 10,
-              "paddingRight": 10,
-              "paddingBottom": 10,
-              "paddingLeft": 10,
-              "borderTop": 1,
-              "borderRight": 1,
-              "borderBottom": 1,
-              "borderLeft": 0,
-              "borderColor": "#99f6e4",
-              "backgroundColor": "#ecfeff"
-            }
-          }
-        ],
-        "backgroundColor": "white"
-      },
-      {
-        "height": 0,
-        "widths": [
-          60,
-          40
-        ],
-        "cells": [
-          {
-            "type": "html",
-            "value": "<p style=\"font-size:12px;color:#0d9488;\"><strong>Active Problems</strong></p><ol><li data-list=\"bullet\"><span class=\"ql-ui\" contenteditable=\"false\"></span>Type 2 diabetes melltus</li><li data-list=\"bullet\"><span class=\"ql-ui\" contenteditable=\"false\"></span>Hypertension </li><li data-list=\"bullet\"><span class=\"ql-ui\" contenteditable=\"false\"></span>Dyslipidaemia </li></ol>",
-            "attrs": {
-              "paddingTop": 12,
-              "paddingRight": 10,
-              "paddingBottom": 12,
-              "paddingLeft": 12,
-              "borderTop": 1,
-              "borderRight": 1,
-              "borderBottom": 1,
-              "borderLeft": 1,
-              "borderColor": "#cbd5e1",
-              "backgroundColor": "white"
-            }
+            "value": "<p class=\"ql-font-roboto\" style=\"font-size:12px;\">Scan Range: <em style=\"color:#94a3b8;\">—</em></p><p class=\"ql-font-roboto\" style=\"font-size:12px;\">Series Count: <em style=\"color:#94a3b8;\">—</em></p>",
+            "attrs": { "paddingTop": 8, "paddingRight": 8, "paddingBottom": 8, "paddingLeft": 8, "borderTop": 0, "borderRight": 1, "borderBottom": 1, "borderLeft": 0, "borderColor": "#E5E7EB" },
+            "block": { "blocks": [] }
           },
           {
             "type": "html",
-            "value": "<p style=\"font-size:12px;color:#0d9488;\"><strong>Allergies</strong></p><ol><li data-list=\"bullet\"><span class=\"ql-ui\" contenteditable=\"false\"></span>Penicillin — rash </li><li data-list=\"bullet\"><span class=\"ql-ui\" contenteditable=\"false\"></span>Statin-associated myalgia</li></ol>",
-            "attrs": {
-              "paddingTop": 12,
-              "paddingRight": 12,
-              "paddingBottom": 12,
-              "paddingLeft": 10,
-              "borderTop": 1,
-              "borderRight": 1,
-              "borderBottom": 1,
-              "borderLeft": 0,
-              "borderColor": "#cbd5e1",
-              "backgroundColor": "white"
-            }
+            "value": "<p class=\"ql-font-roboto\" style=\"font-size:12px;\">Dose Comments: <em style=\"color:#94a3b8;\">Iterative recon, dose modulation, etc.</em></p>",
+            "attrs": { "paddingTop": 8, "paddingRight": 10, "paddingBottom": 8, "paddingLeft": 8, "borderTop": 0, "borderRight": 1, "borderBottom": 1, "borderLeft": 0, "borderColor": "#E5E7EB" },
+            "block": { "blocks": [] }
           }
         ],
         "backgroundColor": "white"
       },
+
       {
-        "height": 50,
-        "widths": [
-          100
-        ],
+        "height": 0,
+        "widths": [100],
         "cells": [
           {
             "type": "html",
-            "value": "",
-            "attrs": {
-              "paddingTop": 5,
-              "paddingRight": 5,
-              "paddingBottom": 5,
-              "paddingLeft": 5,
-              "borderTop": 0,
-              "borderRight": 0,
-              "borderBottom": 0,
-              "borderLeft": 0,
-              "borderColor": "white",
-              "backgroundColor": "transparent"
-            }
+            "value": "<p class=\"ql-font-roboto\"><strong style=\"font-size:13px;color: rgb(29, 78, 216);\">Comparison</strong></p>",
+            "attrs": { "paddingTop": 10, "paddingRight": 8, "paddingBottom": 6, "paddingLeft": 10, "borderTop": 0, "borderRight": 0, "borderBottom": 1, "borderLeft": 0, "borderColor": "#E5E7EB", "backgroundColor": "#EFF6FF" },
+            "block": { "blocks": [] }
           }
         ],
-        "backgroundColor": "white"
-      },
-      {
-        "height": 50,
-        "widths": [
-          100
-        ],
-        "cells": [
-          {
-            "type": "html",
-            "value": "",
-            "attrs": {
-              "paddingTop": 5,
-              "paddingRight": 5,
-              "paddingBottom": 5,
-              "paddingLeft": 5,
-              "borderTop": 0,
-              "borderRight": 0,
-              "borderBottom": 0,
-              "borderLeft": 0,
-              "borderColor": "white",
-              "backgroundColor": "transparent"
-            }
-          }
-        ],
-        "backgroundColor": "white"
+        "backgroundColor": "#EFF6FF"
       },
       {
         "height": 0,
-        "widths": [
-          100
-        ],
+        "widths": [100],
         "cells": [
           {
             "type": "html",
-            "value": "<p><strong class=\"ql-font-roboto\" style=\"font-size:15px;color:#0d9488;\">Medication Plan</strong></p>",
-            "attrs": {
-              "paddingTop": 14,
-              "paddingRight": 8,
-              "paddingBottom": 8,
-              "paddingLeft": 8,
-              "borderTop": 0,
-              "borderRight": 0,
-              "borderBottom": 1,
-              "borderLeft": 0,
-              "borderColor": "#e2e8f0",
-              "backgroundColor": "#f0fdfa"
-            }
-          }
-        ],
-        "backgroundColor": "#f0fdfa"
-      }, ,
-      {
-        "type": "page-break",
-        "height": 0,
-        "widths": [
-          100
-        ],
-        "cells": [],
-        "backgroundColor": "white"
-      },
-      {
-        "height": 50,
-        "widths": [
-          100
-        ],
-        "cells": [
-          {
-            "type": "html",
-            "value": "",
-            "attrs": {
-              "paddingTop": 5,
-              "paddingRight": 5,
-              "paddingBottom": 5,
-              "paddingLeft": 5,
-              "borderTop": 0,
-              "borderRight": 0,
-              "borderBottom": 0,
-              "borderLeft": 0,
-              "borderColor": "white",
-              "backgroundColor": "transparent"
-            }
+            "value": "<p class=\"ql-font-roboto\" style=\"font-size:12px;\">Compared with: <em style=\"color:#94a3b8;\">Prior study date and modality</em></p><p class=\"ql-font-roboto\" style=\"font-size:12px;\">Summary of changes: <em style=\"color:#94a3b8;\">Stable/improved/worsened; key differences</em></p>",
+            "attrs": { "paddingTop": 8, "paddingRight": 10, "paddingBottom": 8, "paddingLeft": 10, "borderTop": 0, "borderRight": 1, "borderBottom": 1, "borderLeft": 1, "borderColor": "#E5E7EB" },
+            "block": { "blocks": [] }
           }
         ],
         "backgroundColor": "white"
       },
+
       {
-        "height": 50,
-        "widths": [
-          100
-        ],
+        "height": 0,
+        "widths": [100],
         "cells": [
           {
             "type": "html",
-            "value": "",
-            "attrs": {
-              "paddingTop": 5,
-              "paddingRight": 5,
-              "paddingBottom": 5,
-              "paddingLeft": 5,
-              "borderTop": 0,
-              "borderRight": 0,
-              "borderBottom": 0,
-              "borderLeft": 0,
-              "borderColor": "white",
-              "backgroundColor": "transparent"
-            }
+            "value": "<p class=\"ql-font-roboto\"><strong style=\"font-size:13px;color: rgb(29, 78, 216);\">Findings</strong></p>",
+            "attrs": { "paddingTop": 12, "paddingRight": 8, "paddingBottom": 6, "paddingLeft": 10, "borderTop": 0, "borderRight": 0, "borderBottom": 1, "borderLeft": 0, "borderColor": "#E5E7EB", "backgroundColor": "#EFF6FF" },
+            "block": { "blocks": [] }
           }
         ],
-        "backgroundColor": "white"
+        "backgroundColor": "#EFF6FF"
       },
       {
         "height": 0,
-        "widths": [
-          100
-        ],
+        "widths": [28, 52, 20],
         "cells": [
           {
             "type": "html",
-            "value": "<p><strong class=\"ql-font-roboto\" style=\"font-size:15px;color:#0d9488;\">Self-Management Goals</strong></p>",
-            "attrs": {
-              "paddingTop": 14,
-              "paddingRight": 8,
-              "paddingBottom": 8,
-              "paddingLeft": 8,
-              "borderTop": 0,
-              "borderRight": 0,
-              "borderBottom": 1,
-              "borderLeft": 0,
-              "borderColor": "#e2e8f0",
-              "backgroundColor": "#f0fdfa"
-            }
-          }
-        ],
-        "backgroundColor": "#f0fdfa"
-      },
-      {
-        "height": 0,
-        "widths": [
-          50,
-          50
-        ],
-        "cells": [
-          {
-            "type": "html",
-            "value": "<p style=\"font-size:12px;color:#0d9488;\"><strong>Patient Goals (next 3 months)</strong></p><p>• Nutrition: plate method at d inner 5×/w eek </p><p>• Activity : walk 30 minutes 4× / week </p><p>• Foot car e: daily inspection &amp; moisturing </p>",
-            "attrs": {
-              "paddingTop": 10,
-              "paddingRight": 10,
-              "paddingBottom": 12,
-              "paddingLeft": 12,
-              "borderTop": 1,
-              "borderRight": 1,
-              "borderBottom": 1,
-              "borderLeft": 1,
-              "borderColor": "#cbd5e1",
-              "backgroundColor": "white"
-            }
+            "value": "<p class=\"ql-font-roboto\"><strong style=\"font-size: 11px; color: rgb(100, 116, 139);\">Region/System</strong></p>",
+            "attrs": { "paddingTop": 8, "paddingRight": 8, "paddingBottom": 8, "paddingLeft": 10, "borderTop": 1, "borderRight": 1, "borderBottom": 1, "borderLeft": 1, "borderColor": "#CBD5E1", "backgroundColor": "#F8FAFC" },
+            "block": { "blocks": [] }
           },
           {
             "type": "html",
-            "value": "<p style=\"font-size:12px;color:#0d9488;\"><strong>Education Provided</strong></p><ol><li data-list=\"bullet\"><span class=\"ql-ui\" contenteditable=\"false\"></span>None</li></ol>",
-            "attrs": {
-              "paddingTop": 10,
-              "paddingRight": 12,
-              "paddingBottom": 12,
-              "paddingLeft": 10,
-              "borderTop": 1,
-              "borderRight": 1,
-              "borderBottom": 1,
-              "borderLeft": 0,
-              "borderColor": "#cbd5e1",
-              "backgroundColor": "white"
-            }
-          }
-        ],
-        "backgroundColor": "white"
-      },
-      {
-        "height": 50,
-        "widths": [
-          100
-        ],
-        "cells": [
-          {
-            "type": "html",
-            "value": "",
-            "attrs": {
-              "paddingTop": 5,
-              "paddingRight": 5,
-              "paddingBottom": 5,
-              "paddingLeft": 5,
-              "borderTop": 0,
-              "borderRight": 0,
-              "borderBottom": 0,
-              "borderLeft": 0,
-              "borderColor": "white",
-              "backgroundColor": "transparent"
-            }
-          }
-        ],
-        "backgroundColor": "white"
-      },
-      {
-        "height": 50,
-        "widths": [
-          100
-        ],
-        "cells": [
-          {
-            "type": "html",
-            "value": "",
-            "attrs": {
-              "paddingTop": 5,
-              "paddingRight": 5,
-              "paddingBottom": 5,
-              "paddingLeft": 5,
-              "borderTop": 0,
-              "borderRight": 0,
-              "borderBottom": 0,
-              "borderLeft": 0,
-              "borderColor": "white",
-              "backgroundColor": "transparent"
-            }
-          }
-        ],
-        "backgroundColor": "white"
-      },
-      {
-        "height": 0,
-        "widths": [
-          100
-        ],
-        "cells": [
-          {
-            "type": "html",
-            "value": "<p><strong class=\"ql-font-roboto\" style=\"font-size:15px;color:#0d9488;\">Care Team & Contacts</strong></p>",
-            "attrs": {
-              "paddingTop": 14,
-              "paddingRight": 8,
-              "paddingBottom": 8,
-              "paddingLeft": 8,
-              "borderTop": 0,
-              "borderRight": 0,
-              "borderBottom": 1,
-              "borderLeft": 0,
-              "borderColor": "#e2e8f0",
-              "backgroundColor": "#f0fdfa"
-            }
-          }
-        ],
-        "backgroundColor": "#f0fdfa"
-      },
-      {
-        "height": 0,
-        "widths": [
-          50,
-          50
-        ],
-        "cells": [
-          {
-            "type": "html",
-            "value": "<p style=\"font-size:12px;color:#334155;\"><strong>Primary Care</strong></p><p style=\"font-size:12px;color:#334155;\">Dr. N. Patel · (555) 123-4567</p><p style=\"font-size:12px;color:#334155;\">care@seaside.example</p>",
-            "attrs": {
-              "paddingTop": 10,
-              "paddingRight": 8,
-              "paddingBottom": 10,
-              "paddingLeft": 12,
-              "borderTop": 1,
-              "borderRight": 1,
-              "borderBottom": 1,
-              "borderLeft": 1,
-              "borderColor": "#cbd5e1",
-              "backgroundColor": "white"
-            }
+            "value": "<p class=\"ql-font-roboto\"><strong style=\"font-size: 11px; color: rgb(100, 116, 139);\">Observation / Description</strong></p>",
+            "attrs": { "paddingTop": 8, "paddingRight": 8, "paddingBottom": 8, "paddingLeft": 8, "borderTop": 1, "borderRight": 1, "borderBottom": 1, "borderLeft": 0, "borderColor": "#CBD5E1", "backgroundColor": "#F8FAFC" },
+            "block": { "blocks": [] }
           },
           {
             "type": "html",
-            "value": "<p class=\"ql-align-right\" style=\"font-size:12px;color:#334155;\"><strong>Endocrinology</strong></p><p class=\"ql-align-right\" style=\"font-size:12px;color:#334155;\">Dr. A. Romero · (555) 987-6543</p><p class=\"ql-align-right\" style=\"font-size:12px;color:#334155;\">endo@seaside.example</p>",
-            "attrs": {
-              "paddingTop": 10,
-              "paddingRight": 12,
-              "paddingBottom": 10,
-              "paddingLeft": 8,
-              "borderTop": 1,
-              "borderRight": 1,
-              "borderBottom": 1,
-              "borderLeft": 0,
-              "borderColor": "#cbd5e1",
-              "backgroundColor": "white"
-            }
+            "value": "<p class=\"ql-align-right ql-font-roboto\"><strong style=\"font-size: 11px; color: rgb(100, 116, 139);\">Measurement</strong></p>",
+            "attrs": { "paddingTop": 8, "paddingRight": 10, "paddingBottom": 8, "paddingLeft": 8, "borderTop": 1, "borderRight": 1, "borderBottom": 1, "borderLeft": 0, "borderColor": "#CBD5E1", "backgroundColor": "#F8FAFC" },
+            "block": { "blocks": [] }
           }
         ],
         "backgroundColor": "white"
       },
       {
-        "height": 50,
-        "widths": [
-          100
-        ],
+        "height": 44,
+        "widths": [28, 52, 20],
         "cells": [
           {
             "type": "html",
-            "value": "",
-            "attrs": {
-              "paddingTop": 5,
-              "paddingRight": 5,
-              "paddingBottom": 5,
-              "paddingLeft": 5,
-              "borderTop": 0,
-              "borderRight": 0,
-              "borderBottom": 0,
-              "borderLeft": 0,
-              "borderColor": "white",
-              "backgroundColor": "transparent"
-            }
-          }
-        ],
-        "backgroundColor": "white"
-      },
-      {
-        "height": 50,
-        "widths": [
-          100
-        ],
-        "cells": [
-          {
-            "type": "html",
-            "value": "",
-            "attrs": {
-              "paddingTop": 5,
-              "paddingRight": 5,
-              "paddingBottom": 5,
-              "paddingLeft": 5,
-              "borderTop": 0,
-              "borderRight": 0,
-              "borderBottom": 0,
-              "borderLeft": 0,
-              "borderColor": "white",
-              "backgroundColor": "transparent"
-            }
-          }
-        ],
-        "backgroundColor": "white"
-      },
-      {
-        "height": 0,
-        "widths": [
-          100
-        ],
-        "cells": [
-          {
-            "type": "html",
-            "value": "<p><strong class=\"ql-font-roboto\" style=\"font-size:15px;color:#0d9488;\">Consent & Signatures</strong></p>",
-            "attrs": {
-              "paddingTop": 14,
-              "paddingRight": 8,
-              "paddingBottom": 8,
-              "paddingLeft": 8,
-              "borderTop": 0,
-              "borderRight": 0,
-              "borderBottom": 1,
-              "borderLeft": 0,
-              "borderColor": "#e2e8f0",
-              "backgroundColor": "#f0fdfa"
-            }
-          }
-        ],
-        "backgroundColor": "#f0fdfa"
-      },
-      {
-        "height": 0,
-        "widths": [
-          60,
-          40
-        ],
-        "cells": [
-          {
-            "type": "html",
-            "value": "<p style=\"font-size:12px;color:#334155;\"><span style=\"color: rgb(68, 68, 68);\">I agree with the plan above and consent to the recommended monitoring and medication changes. I understand when to seek urgent medical advice.</span></p>",
-            "attrs": {
-              "paddingTop": 12,
-              "paddingRight": 8,
-              "paddingBottom": 12,
-              "paddingLeft": 12,
-              "borderTop": 1,
-              "borderRight": 1,
-              "borderBottom": 1,
-              "borderLeft": 1,
-              "borderColor": "#94a3b8",
-              "backgroundColor": "white"
-            }
+            "value": "<p style=\"font-size:12px;\">Chest / Lungs</p>",
+            "attrs": { "paddingTop": 6, "paddingRight": 6, "paddingBottom": 6, "paddingLeft": 10, "borderTop": 1, "borderRight": 1, "borderBottom": 1, "borderLeft": 1, "borderColor": "#94a3b8" },
+            "block": { "blocks": [] }
           },
           {
             "type": "html",
-            "value": "<p class=\"ql-align-right\" style=\"font-size:12px;color:#334155;\"><span style=\"color: rgb(68, 68, 68);\">Patient Signature: __________________________</span></p><p class=\"ql-align-right\" style=\"font-size:12px;color:#334155;\"><span style=\"color: rgb(68, 68, 68);\">Date: ____/____/______</span></p><p class=\"ql-align-right\" style=\"font-size:12px;color:#334155;\"><span style=\"color: rgb(68, 68, 68);\">Clinician: __________________________</span></p>",
-            "attrs": {
-              "paddingTop": 12,
-              "paddingRight": 12,
-              "paddingBottom": 12,
-              "paddingLeft": 8,
-              "borderTop": 1,
-              "borderRight": 1,
-              "borderBottom": 1,
-              "borderLeft": 0,
-              "borderColor": "#94a3b8",
-              "backgroundColor": "white"
-            }
+            "value": "<p style=\"font-size:12px;color:#94a3b8;\">Clear fields; no consolidation; no pleural effusion. (Edit as needed)</p>",
+            "attrs": { "paddingTop": 6, "paddingRight": 6, "paddingBottom": 6, "paddingLeft": 8, "borderTop": 1, "borderRight": 1, "borderBottom": 1, "borderLeft": 1, "borderColor": "#94a3b8" },
+            "block": { "blocks": [] }
+          },
+          {
+            "type": "html",
+            "value": "<p class=\"ql-align-right\" style=\"font-size:12px;color:#94a3b8;\">—</p>",
+            "attrs": { "paddingTop": 6, "paddingRight": 10, "paddingBottom": 6, "paddingLeft": 6, "borderTop": 1, "borderRight": 1, "borderBottom": 1, "borderLeft": 1, "borderColor": "#94a3b8" },
+            "block": { "blocks": [] }
+          }
+        ],
+        "backgroundColor": "white"
+      },
+      {
+        "height": 44,
+        "widths": [28, 52, 20],
+        "cells": [
+          {
+            "type": "html",
+            "value": "<p style=\"font-size:12px;\">Mediastinum / Heart</p>",
+            "attrs": { "paddingTop": 6, "paddingRight": 6, "paddingBottom": 6, "paddingLeft": 10, "borderTop": 1, "borderRight": 1, "borderBottom": 1, "borderLeft": 1, "borderColor": "#94a3b8" }
+          },
+          {
+            "type": "html",
+            "value": "<p style=\"font-size:12px;color:#94a3b8;\">Cardiomediastinal contours within normal limits.</p>",
+            "attrs": { "paddingTop": 6, "paddingRight": 6, "paddingBottom": 6, "paddingLeft": 8, "borderTop": 1, "borderRight": 1, "borderBottom": 1, "borderLeft": 1, "borderColor": "#94a3b8" }
+          },
+          {
+            "type": "html",
+            "value": "<p class=\"ql-align-right\" style=\"font-size:12px;color:#94a3b8;\">—</p>",
+            "attrs": { "paddingTop": 6, "paddingRight": 10, "paddingBottom": 6, "paddingLeft": 6, "borderTop": 1, "borderRight": 1, "borderBottom": 1, "borderLeft": 1, "borderColor": "#94a3b8" }
+          }
+        ],
+        "backgroundColor": "white"
+      },
+      {
+        "height": 44,
+        "widths": [28, 52, 20],
+        "cells": [
+          {
+            "type": "html",
+            "value": "<p style=\"font-size:12px;\">Abdomen / Solid Organs</p>",
+            "attrs": { "paddingTop": 6, "paddingRight": 6, "paddingBottom": 6, "paddingLeft": 10, "borderTop": 1, "borderRight": 1, "borderBottom": 1, "borderLeft": 1, "borderColor": "#94a3b8" }
+          },
+          {
+            "type": "html",
+            "value": "<p style=\"font-size:12px;color:#94a3b8;\">Liver, spleen, pancreas unremarkable. No biliary dilatation.</p>",
+            "attrs": { "paddingTop": 6, "paddingRight": 6, "paddingBottom": 6, "paddingLeft": 8, "borderTop": 1, "borderRight": 1, "borderBottom": 1, "borderLeft": 1, "borderColor": "#94a3b8" }
+          },
+          {
+            "type": "html",
+            "value": "<p class=\"ql-align-right\" style=\"font-size:12px;color:#94a3b8;\">—</p>",
+            "attrs": { "paddingTop": 6, "paddingRight": 10, "paddingBottom": 6, "paddingLeft": 6, "borderTop": 1, "borderRight": 1, "borderBottom": 1, "borderLeft": 1, "borderColor": "#94a3b8" }
+          }
+        ],
+        "backgroundColor": "white"
+      },
+      {
+        "height": 44,
+        "widths": [28, 52, 20],
+        "cells": [
+          {
+            "type": "html",
+            "value": "<p style=\"font-size:12px;\">Bones / Soft Tissues</p>",
+            "attrs": { "paddingTop": 6, "paddingRight": 6, "paddingBottom": 6, "paddingLeft": 10, "borderTop": 1, "borderRight": 1, "borderBottom": 1, "borderLeft": 1, "borderColor": "#94a3b8" }
+          },
+          {
+            "type": "html",
+            "value": "<p style=\"font-size:12px;color:#94a3b8;\">No acute osseous abnormality identified.</p>",
+            "attrs": { "paddingTop": 6, "paddingRight": 6, "paddingBottom": 6, "paddingLeft": 8, "borderTop": 1, "borderRight": 1, "borderBottom": 1, "borderLeft": 1, "borderColor": "#94a3b8" }
+          },
+          {
+            "type": "html",
+            "value": "<p class=\"ql-align-right\" style=\"font-size:12px;color:#94a3b8;\">—</p>",
+            "attrs": { "paddingTop": 6, "paddingRight": 10, "paddingBottom": 6, "paddingLeft": 6, "borderTop": 1, "borderRight": 1, "borderBottom": 1, "borderLeft": 1, "borderColor": "#94a3b8" }
+          }
+        ],
+        "backgroundColor": "white"
+      },
+
+      {
+        "height": 0,
+        "widths": [100],
+        "cells": [
+          {
+            "type": "html",
+            "value": "<p class=\"ql-font-roboto\"><strong style=\"font-size:13px;color: rgb(29, 78, 216);\">Impression</strong></p>",
+            "attrs": { "paddingTop": 12, "paddingRight": 8, "paddingBottom": 6, "paddingLeft": 10, "borderTop": 0, "borderRight": 0, "borderBottom": 1, "borderLeft": 0, "borderColor": "#E5E7EB", "backgroundColor": "#EFF6FF" },
+            "block": { "blocks": [] }
+          }
+        ],
+        "backgroundColor": "#EFF6FF"
+      },
+      {
+        "height": 0,
+        "widths": [100],
+        "cells": [
+          {
+            "type": "html",
+            "value": "<p>1) <em style=\"color:#94a3b8;\">Primary takeaway / diagnosis.</em></p><p>2) <em style=\"color:#94a3b8;\">Secondary findings of clinical relevance.</em></p><p>3) <em style=\"color:#94a3b8;\">If applicable, rule-out statements.</em></p>",
+            "attrs": { "paddingTop": 10, "paddingRight": 10, "paddingBottom": 10, "paddingLeft": 10, "borderTop": 1, "borderRight": 1, "borderBottom": 1, "borderLeft": 1, "borderColor": "#E5E7EB" },
+            "block": { "blocks": [] }
+          }
+        ],
+        "backgroundColor": "white"
+      },
+
+      {
+        "height": 0,
+        "widths": [100],
+        "cells": [
+          {
+            "type": "html",
+            "value": "<p class=\"ql-font-roboto\"><strong style=\"font-size:13px;color: rgb(29, 78, 216);\">Recommendations</strong></p>",
+            "attrs": { "paddingTop": 12, "paddingRight": 8, "paddingBottom": 6, "paddingLeft": 10, "borderTop": 0, "borderRight": 0, "borderBottom": 1, "borderLeft": 0, "borderColor": "#E5E7EB", "backgroundColor": "#EFF6FF" },
+            "block": { "blocks": [] }
+          }
+        ],
+        "backgroundColor": "#EFF6FF"
+      },
+      {
+        "height": 0,
+        "widths": [100],
+        "cells": [
+          {
+            "type": "html",
+            "value": "<p class=\"ql-font-roboto\" style=\"font-size:12px;\">Follow-up: <em style=\"color:#94a3b8;\">Timeframe / modality / targeted area</em></p><p class=\"ql-font-roboto\" style=\"font-size:12px;\">Additional tests: <em style=\"color:#94a3b8;\">Lab, imaging, or referral</em></p>",
+            "attrs": { "paddingTop": 10, "paddingRight": 10, "paddingBottom": 10, "paddingLeft": 10, "borderTop": 1, "borderRight": 1, "borderBottom": 1, "borderLeft": 1, "borderColor": "#E5E7EB" },
+            "block": { "blocks": [] }
+          }
+        ],
+        "backgroundColor": "white"
+      },
+
+      {
+        "height": 0,
+        "widths": [100],
+        "cells": [
+          {
+            "type": "html",
+            "value": "<p class=\"ql-font-roboto\"><strong style=\"font-size:13px;color: rgb(29, 78, 216);\">Communication</strong></p>",
+            "attrs": { "paddingTop": 12, "paddingRight": 8, "paddingBottom": 6, "paddingLeft": 10, "borderTop": 0, "borderRight": 0, "borderBottom": 1, "borderLeft": 0, "borderColor": "#E5E7EB", "backgroundColor": "#EFF6FF" },
+            "block": { "blocks": [] }
+          }
+        ],
+        "backgroundColor": "#EFF6FF"
+      },
+      {
+        "height": 0,
+        "widths": [50, 50],
+        "cells": [
+          {
+            "type": "html",
+            "value": "<p>Critical Result Notified: ☐ Yes &nbsp; ☐ No</p><p>Recipient: <em style=\"color:#94a3b8;\">Name/role</em> &nbsp; Date/Time: <em style=\"color:#94a3b8;\">—</em></p>",
+            "attrs": { "paddingTop": 10, "paddingRight": 8, "paddingBottom": 10, "paddingLeft": 10, "borderTop": 1, "borderRight": 1, "borderBottom": 1, "borderLeft": 1, "borderColor": "#E5E7EB" },
+            "block": { "blocks": [] }
+          },
+          {
+            "type": "html",
+            "value": "<p>Method: <em style=\"color:#94a3b8;\">Phone / Secure message / In person</em></p><p>Reference ID / Ticket: <em style=\"color:#94a3b8;\">—</em></p>",
+            "attrs": { "paddingTop": 10, "paddingRight": 10, "paddingBottom": 10, "paddingLeft": 10, "borderTop": 1, "borderRight": 1, "borderBottom": 1, "borderLeft": 0, "borderColor": "#E5E7EB" },
+            "block": { "blocks": [] }
+          }
+        ],
+        "backgroundColor": "white"
+      },
+
+      {
+        "height": 0,
+        "widths": [100],
+        "cells": [
+          {
+            "type": "html",
+            "value": "<p class=\"ql-font-roboto\"><strong style=\"font-size:13px;color: rgb(29, 78, 216);\">Radiologist & Verification</strong></p>",
+            "attrs": { "paddingTop": 12, "paddingRight": 8, "paddingBottom": 6, "paddingLeft": 10, "borderTop": 0, "borderRight": 0, "borderBottom": 1, "borderLeft": 0, "borderColor": "#E5E7EB", "backgroundColor": "#EFF6FF" },
+            "block": { "blocks": [] }
+          }
+        ],
+        "backgroundColor": "#EFF6FF"
+      },
+      {
+        "height": 64,
+        "widths": [60, 40],
+        "cells": [
+          {
+            "type": "html",
+            "value": "<p><strong>Reporting Radiologist:</strong> <em style=\"color:#94a3b8;\">Name, credentials</em></p><p><strong>License No.:</strong> <em style=\"color:#94a3b8;\">—</em></p>",
+            "attrs": { "paddingTop": 10, "paddingRight": 8, "paddingBottom": 10, "paddingLeft": 10, "borderTop": 1, "borderRight": 1, "borderBottom": 1, "borderLeft": 1, "borderColor": "#E5E7EB" },
+            "block": { "blocks": [] }
+          },
+          {
+            "type": "html",
+            "value": "<p class=\"ql-align-right\"><strong>Signed:</strong> <em style=\"color:#94a3b8;\">—</em></p><p class=\"ql-align-right\"><strong>Date/Time:</strong> <em style=\"color:#94a3b8;\">—</em></p>",
+            "attrs": { "paddingTop": 10, "paddingRight": 10, "paddingBottom": 10, "paddingLeft": 8, "borderTop": 1, "borderRight": 1, "borderBottom": 1, "borderLeft": 0, "borderColor": "#E5E7EB" },
+            "block": { "blocks": [] }
           }
         ],
         "backgroundColor": "white"
       }
     ]
   },
+
   "footer": {
     "rows": [
       {
         "height": 0,
-        "widths": [
-          100
-        ],
+        "widths": [100],
         "cells": [
           {
             "type": "html",
-            "value": "<p class=\"ql-align-center\"><span style=\"font-size:11px;color:#64748b;\">This plan is for guidance and does not replace clinical judgement. Review next: 3 months.</span></p>",
+            "value": "<p class=\"ql-align-center ql-font-roboto\"><span style=\"font-size: 11px; color: rgb(100, 116, 139);\">NOVA RADIOLOGY · 123 Health Ave, London · (020) 9876 5432</span></p>",
             "attrs": {
-              "paddingTop": 10,
-              "paddingRight": 8,
-              "paddingBottom": 10,
-              "paddingLeft": 8,
-              "borderTop": 1,
-              "borderRight": 0,
-              "borderBottom": 0,
-              "borderLeft": 0,
-              "borderColor": "#e2e8f0",
-              "backgroundColor": "transparent"
+              "paddingTop": 8, "paddingRight": 8, "paddingBottom": 8, "paddingLeft": 8,
+              "borderTop": 1, "borderRight": 0, "borderBottom": 0, "borderLeft": 0,
+              "borderColor": "#E5E7EB", "backgroundColor": "transparent"
+            },
+            "block": {
+              "blocks": [
+                { "elements": [{ "value": "NOVA RADIOLOGY · 123 Health Ave, London · (020) 9876 5432", "attributes": { "size": 11, "font": "Roboto", "align": "center", "color": "#64748b" }, "type": "text"}], "blockType": "p", "alignment": "center" }
+              ]
             }
           }
         ],
@@ -835,33 +505,19 @@ export const Preset3: Page = {
       }
     ]
   },
+
   "pageAttrs": {
-    "marginTop": 24,
-    "marginRight": 24,
-    "marginLeft": 24,
-    "marginBottom": 24,
-    "headerMarginTop": 5,
-    "headerMarginRight": 0,
-    "headerMarginLeft": 0,
-    "headerMarginBottom": 5,
-    "headerHeight": 30,
-    "footerMarginTop": 5,
-    "footerMarginRight": 30,
-    "footerMarginLeft": 30,
-    "footerMarginBottom": 5,
-    "footerHeight": 30,
-    "backgroundColor": "white",
-    "defaultFont": "Roboto"
+    "marginTop": 35, "marginRight": 30, "marginLeft": 30, "marginBottom": 24,
+    "headerMarginTop": 5, "headerMarginRight": 0, "headerMarginLeft": 0, "headerMarginBottom": 5, "headerHeight": 60,
+    "footerMarginTop": 5, "footerMarginRight": 30, "footerMarginLeft": 30, "footerMarginBottom": 5, "footerHeight": 40,
+    "backgroundColor": "white", "defaultFont": "Roboto",
+    "dontBreakRows": true,
+    "pageNumbering": true
   },
-  "tokenAttrs": [],
+  partialContent:[],
   "colorPalettes": [
-    '#000000', '#111827', '#1F2937', '#374151', '#4B5563',
-    '#6B7280', '#9CA3AF', '#D1D5DB', '#E5E7EB', '#FFFFFF',
-    '#1D4ED8', '#2563EB', '#3B82F6', '#6366F1', '#818CF8',
-    '#0E7490', '#06B6D4', '#22D3EE', '#67E8F9',
-    '#065F46', '#10B981', '#34D399', '#86EFAC',
-    '#B45309', '#F59E0B', '#FBBF24', '#FB923C',
-    '#B91C1C', '#EF4444', '#F87171', '#FCA5A5',
-    '#BE185D', '#EC4899', '#F472B6', '#8B5CF6', '#A78BFA', '#DDD6FE'
+    "#000000","#111827","#1F2937","#374151","#4B5563","#6B7280","#9CA3AF","#D1D5DB","#E5E7EB","#FFFFFF",
+    "#1D4ED8","#2563EB","#3B82F6","#6366F1","#818CF8","#065F46","#10B981","#34D399","#86EFAC",
+    "#B45309","#F59E0B","#FBBF24","#FB923C","#B91C1C","#EF4444","#F87171","#FCA5A5","#8B5CF6","#A78BFA","#DDD6FE"
   ]
 };
