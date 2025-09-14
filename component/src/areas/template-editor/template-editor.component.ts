@@ -154,11 +154,6 @@ export class TemplateEditorComponent implements OnInit,AfterViewInit {
         data: page
       },
       {
-        name: 'WYSI Page Model (Expanded Content)',
-        description: 'Expanded page model',
-        data: pdfGenerationResult1.page
-      },
-      {
         name: 'PDFMake Definition',
         description: 'Converted document definition used to render the PDF',
         data: payloadStr

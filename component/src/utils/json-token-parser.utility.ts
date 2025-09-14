@@ -15,76 +15,68 @@ export class JsonTokenParserUtility {
     for (let key of keys) {
       const name: string = key;
       const value = this.resolvePath(obj, key);
-
       const type: TokenAttributeType = this.deferType(value);
+
       let token: TokenAttribute;
-      if ((type == TokenAttributeType.JSON_ARRAY) && value && value.length > 0) {
-        const first: string = JSON.stringify(value[0]);
-        const innerTokenAttributes: TokenAttribute[] = this.parse(first)
-        for(let token of innerTokenAttributes){
-          const tokenName: string = token.name;
-          token.valueArray = this.parseValues(tokenName, value);
-        }
-        debugger;
+
+      // STRING_ARRAY: store JSON string in `value` but keep parsed array in `valueArray`
+      if (type === TokenAttributeType.STRING_ARRAY && Array.isArray(value)) {
         token = {
-          tokenAttributes: innerTokenAttributes,
-          type: type,
-          value: value,
-          name: name
-        }
-      }else if ((type == TokenAttributeType.OBJECT) && value) {
-        token = {
-          tokenAttributes: this.parse(value),
-          type: type,
-          value: value,
-          name: name
-        }
-      } else {
-        token = {
-          type: type,
-          value: value,
-          name: name
-        }
+          name,
+          type,
+          value: JSON.stringify(value),
+          valueArray: value.map(v => (v == null ? '' : String(v)))
+        };
       }
+      // Array of objects
+      else if (type === TokenAttributeType.JSON_ARRAY && Array.isArray(value) && value.length > 0 && typeof value[0] === 'object') {
+        const first = JSON.stringify(value[0]);
+        const innerTokenAttributes: TokenAttribute[] = this.parse(first);
+        for (let t of innerTokenAttributes) {
+          t.valueArray = this.parseValues(t.name, value);
+        }
+        token = {
+          name,
+          type,
+          value: JSON.stringify(value), // <--- store JSON string
+          tokenAttributes: innerTokenAttributes
+        };
+      }
+      // Object
+      else if (type === TokenAttributeType.OBJECT && value) {
+        token = {
+          name,
+          type,
+          value: JSON.stringify(value), // <--- store JSON string
+          tokenAttributes: this.parse(JSON.stringify(value))
+        };
+      }
+      // Primitive value
+      else {
+        token = {
+          name,
+          type,
+          value: value == null ? '' : String(value)
+        };
+      }
+
       newTokens.push(token);
     }
+
     return newTokens;
   }
 
-  /** Resolve nested "a.b.c" path safely */
   private resolvePath(obj: any, path: string): any {
     return path.split('.').reduce((acc, part) => (acc ? acc[part] : undefined), obj);
   }
 
-  /** Decide TokenAttributeType based on JS value */
   private deferType(value: any): TokenAttributeType {
-    if (value === null || value === undefined) {
-      return TokenAttributeType.TEXT;
-    }
-
+    if (value === null || value === undefined) return TokenAttributeType.TEXT;
     if (Array.isArray(value)) {
-      if (value.length === 0) {
-        return TokenAttributeType.JSON_ARRAY;
-      }
-
-      const first = value[0];
-
-      if (typeof first === 'string' && value.every(v => typeof v === 'string')) {
-        return TokenAttributeType.STRING_ARRAY;
-      }
-      if (typeof first === 'number' && value.every(v => typeof v === 'number')) {
-        return TokenAttributeType.JSON_ARRAY;
-      }
-      if (typeof first === 'boolean' && value.every(v => typeof v === 'boolean')) {
-        return TokenAttributeType.JSON_ARRAY;
-      }
-      if (typeof first === 'object' && value.every(v => v !== null && typeof v === 'object')) {
-        return TokenAttributeType.JSON_ARRAY;
-      }
-
+      if (value.length === 0) return TokenAttributeType.JSON_ARRAY;
+      if (value.every(v => typeof v === 'string')) return TokenAttributeType.STRING_ARRAY;
       return TokenAttributeType.JSON_ARRAY;
     }
-
     switch (typeof value) {
       case 'string': return TokenAttributeType.TEXT;
       case 'number': return TokenAttributeType.NUMBER;
@@ -96,15 +88,10 @@ export class JsonTokenParserUtility {
 
   private getAllKeysForObject(obj: any, parentKey: string = ''): string[] {
     let keys: string[] = [];
-
-    if (obj === null || obj === undefined) {
-      return keys;
-    }
+    if (obj === null || obj === undefined) return keys;
 
     if (Array.isArray(obj)) {
-      if (parentKey) {
-        keys.push(parentKey);
-      }
+      if (parentKey) keys.push(parentKey);
       return keys;
     } else if (typeof obj === 'object') {
       for (const k of Object.keys(obj)) {
@@ -118,29 +105,15 @@ export class JsonTokenParserUtility {
     return keys;
   }
 
-
-  private parseValues(
-    tokenName: string,
-    values: any[]
-  ): string[] {
+  private parseValues(tokenName: string, values: any[]): string[] {
     if (!Array.isArray(values)) return [];
 
-    const toStr = (v: any): string =>
-      v == null
-        ? ''
-        : typeof v === 'string'
-          ? v
-          : typeof v === 'number' || typeof v === 'boolean'
-            ? String(v)
-            : JSON.stringify(v);
-
     const out: string[] = [];
-
     const pushFlattened = (v: any) => {
       if (Array.isArray(v)) {
-        for (const item of v) pushFlattened(item); // deep-flatten arrays
+        for (const item of v) pushFlattened(item);
       } else {
-        out.push(toStr(v));
+        out.push(v == null ? '' : String(v));
       }
     };
 
