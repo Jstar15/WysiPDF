@@ -95,5 +95,12 @@
       ></app-color-picker-overlay>
     </div>
   </div>
+
+  <p class="section-title">Rendering Options</p>
+  <mat-slide-toggle
+    [(ngModel)]="pageAttrs.dontBreakRows"
+    color="primary">
+    Prevent rows from splitting across pages
+  </mat-slide-toggle>
 </div>
 

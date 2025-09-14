@@ -8,11 +8,12 @@ import {MatOption} from "@angular/material/core";
 import {MatSelect} from "@angular/material/select";
 import {PageAttrs} from "../../../models/page";
 import {MatDialogContent} from "@angular/material/dialog";
+import {MatSlideToggle} from "@angular/material/slide-toggle";
 
 @Component({
   selector: 'app-page-layout-editor',
   standalone: true,
-  imports: [CommonModule, ColorPickerOverlayComponent, FormsModule, MatFormField, MatInput, MatLabel, MatOption, MatSelect, MatDialogContent],
+  imports: [CommonModule, ColorPickerOverlayComponent, FormsModule, MatFormField, MatInput, MatLabel, MatOption, MatSelect, MatDialogContent, MatSlideToggle],
   templateUrl: './page-layout-editor.component.html',
   styleUrls: ['./page-layout-editor.component.scss']
 })

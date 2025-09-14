@@ -23,24 +23,24 @@ import {Converter} from "./converter";
 @Injectable({ providedIn: 'root' })
 export class StructuredContentToPdfmakeConverter implements Converter<HtmlBlockContainer, Content[]>{
   public convert(c: HtmlBlockContainer, pageAttrs: PageAttrs): Content[] {
-    try { return this.convertToPdfDefinition(c).content as Content[]; }
+    try { return this.convertToPdfDefinition(c, pageAttrs).content as Content[]; }
     catch { return []; }
   }
 
-  private convertToPdfDefinition(container: HtmlBlockContainer): TDocumentDefinitions {
-    const content: Content[] = container.blocks.flatMap(block => this.renderBlock(block));
+  private convertToPdfDefinition(container: HtmlBlockContainer, pageAttrs: PageAttrs): TDocumentDefinitions {
+    const content: Content[] = container.blocks.flatMap(block => this.renderBlock(block, pageAttrs));
     return { content };
   }
 
-  private renderBlock(block: HtmlBlock | HtmlTableBlock | HtmlGridBlock): Content | Content[] {
+  private renderBlock(block: HtmlBlock | HtmlTableBlock | HtmlGridBlock, pageAttrs: PageAttrs): Content | Content[] {
     switch (block.blockType) {
       case 'table': return this.renderTableBlock(block as HtmlTableBlock);
-      case 'grid': return this.renderGridBlock(block as HtmlGridBlock);
+      case 'grid': return this.renderGridBlock(block as HtmlGridBlock, pageAttrs);
       default: return this.renderHtmlBlock(block as HtmlBlock);
     }
   }
 
-  private renderGridBlock(gb: HtmlGridBlock): Content[] {
+  private renderGridBlock(gb: HtmlGridBlock, pageAttrs: PageAttrs): Content[] {
     const contents: Content[] = [];
 
     const renderCell = (cell: Cell, row: Row, c: number) => {
@@ -80,7 +80,7 @@ export class StructuredContentToPdfmakeConverter implements Converter<HtmlBlockC
             alignment: imgAlign
           }]
           : cell.block
-            ? cell.block.blocks.flatMap(i => this.renderBlock(i) as Content[])
+            ? cell.block.blocks.flatMap(i => this.renderBlock(i, pageAttrs) as Content[])
             : [{ text: cell.value || '​', noWrap: false }];
 
       const border: [boolean, boolean, boolean, boolean] = [
@@ -133,7 +133,9 @@ export class StructuredContentToPdfmakeConverter implements Converter<HtmlBlockC
       contents.push({
         table: {
           widths,
-          body: [rowCells]
+          body: [rowCells],
+          dontBreakRows: pageAttrs.dontBreakRows,
+          keepWithHeaderRows: 1
         },
         layout: this.getCustomLayout([rowCells]),
         margin: [0, 0, 0, 0]

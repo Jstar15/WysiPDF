@@ -169,4 +169,6 @@ export interface PageAttrs {
 
     backgroundColor?: string;
     defaultFont?: string;
+
+    dontBreakRows?: boolean;
 }
