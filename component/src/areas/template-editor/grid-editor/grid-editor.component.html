@@ -40,7 +40,7 @@
                   *ngIf="row.repeatableToken"
                   mat-icon-button
                   class="repeatable-badge"
-                  [matTooltip]="'Repeatable Active On This Row'"
+                  [matTooltip]="'Repeatable Active On This Row: ' + row.repeatableToken.name"
                   matTooltipPosition="left"
                   [attr.aria-label]="'Repeatable Active On This Row'"
                   type="button"
