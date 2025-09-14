@@ -19,6 +19,7 @@ import {RowEditorType} from "../../row-editor-viewer/row-editor-viewer.interface
 import {CellEditorType} from "../../cell-editor-viewer/cell-editor-viewer.interfaces";
 import {GridEventType} from "../grid-editor/grid-editor.interfaces";
 import {CellStyleToolbarComponent} from "./cell-style-toolbar/cell-style-toolbar.component";
+import {animate, style, transition, trigger} from "@angular/animations";
 
 
 @Component({
@@ -26,7 +27,18 @@ import {CellStyleToolbarComponent} from "./cell-style-toolbar/cell-style-toolbar
   standalone: true,
   imports: [CommonModule, MatIcon, MatTooltip, DragDropModule, MatMiniFabButton, MatIconButton, CellStyleToolbarComponent],
   templateUrl: './toolbar.component.html',
-  styleUrls: ['./toolbar.component.scss']
+  styleUrls: ['./toolbar.component.scss'],
+  animations: [
+    trigger('fadeSlide', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'translateY(-10px)' }),
+        animate('500ms ease-out', style({ opacity: 1, transform: 'translateY(0)' })),
+      ]),
+      transition(':leave', [
+        animate('500ms ease-in', style({ opacity: 0, transform: 'translateY(-10px)' })),
+      ]),
+    ]),
+  ],
 })
 export class ToolbarComponent implements OnInit {
   @Input('hide-editors') hideEditors: boolean;

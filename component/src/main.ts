@@ -10,6 +10,7 @@ import {HtmlGenerationResult, PageToHtmlOptions, HtmlGenerateService} from './se
 
 // 👇 NEW: import the validator service
 import { PageTokenValidator } from './services/page-token-validator.service';
+import {provideAnimations} from "@angular/platform-browser/animations";
 
 // ---- keep a single Angular app instance (unchanged) ----
 let appPromise: Promise<any>;
@@ -19,6 +20,8 @@ appPromise = (async () => {
       providers: [
         provideHttpClient(),
         importProvidersFrom(MatIconModule),
+        provideAnimations()  // <-- THIS is required
+
       ],
     });
 

@@ -96,7 +96,7 @@
   </div>
 
 
-  <div class="toolbar-row-2" *ngIf="!hideEditors">
+  <div class="toolbar-row-2" *ngIf="!hideEditors" [@fadeSlide]>
 
     <div class="grid-change">
       <button mat-icon-button matTooltip="Add Row" (click)="onGridEvent(GridEventType.ADD_ROW)">
@@ -155,7 +155,7 @@
 
   </div>
 
-  <div class="toolbar-row-3" *ngIf="!hideEditors">
+  <div class="toolbar-row-3" *ngIf="!hideEditors" [@fadeSlide]>
     <app-cell-style-toolbar class="cell-change" [colorPalettes]="page.colorPalettes">
     </app-cell-style-toolbar>
   </div>
