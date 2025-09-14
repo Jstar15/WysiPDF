@@ -105,16 +105,21 @@
                         [base64]="this.pdfGenerationResult.base64">
         </app-pdf-viewer>
 
-        <app-json-viewer *ngIf="currentView == PanelTypes.JSON_VIEW"
-                         class="json-viewer"
-                         [jsonList]="jsonList">
-        </app-json-viewer>
+
+
+        <ace-editor
+          *ngIf="currentView == PanelTypes.JSON_VIEW"
+          [jsonList]="jsonList"
+          theme="monokai"
+          style="height: 100%; width: 100%;"
+        ></ace-editor>
 
         <app-editor-viewer  *ngIf="currentView == PanelTypes.PAGE_EDITOR"
                             [type]="editorType"
                             [page]="page"
                             (editorActionEvent)="closeEditors()">
         </app-editor-viewer>
+
 
         <app-cell-editor-viewer *ngIf="currentView == PanelTypes.CELL_EDITOR"
                                 [type]="cellEditorType"

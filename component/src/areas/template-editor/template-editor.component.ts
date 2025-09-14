@@ -19,7 +19,6 @@ import {PdfViewerComponent} from "../../shared/pdf-viewer/pdf-viewer.component";
 import {MatCard, MatCardActions, MatCardContent, MatCardHeader,} from "@angular/material/card";
 import {MatIcon} from "@angular/material/icon";
 import {PageStateService} from "../../services/page-state.service";
-import {JsonListItem, JsonViewerComponent} from "../../shared/json-viewer/json-viewer.component";
 import {IconService} from "../../services/external/icon.service";
 import {DEFAULT_PAGE} from "../../presets/default-page.preset";
 import {PageTokenValidator} from "../../services/page-token-validator.service";
@@ -32,6 +31,8 @@ import {RowEditorViewerComponent} from "../row-editor-viewer/row-editor-viewer.c
 import {CellEditorType} from "../cell-editor-viewer/cell-editor-viewer.interfaces";
 import {RowEditorType} from "../row-editor-viewer/row-editor-viewer.interfaces";
 import {ToolbarComponent} from "./toolbar/toolbar.component";
+import {AceEditorComponent} from "../../shared/ace-editor/ace-editor.component";
+import {JsonListItem} from "../../shared/ace-editor/ace-editor.interface";
 
 @Component({
   standalone: true,
@@ -51,11 +52,11 @@ import {ToolbarComponent} from "./toolbar/toolbar.component";
     MatCardContent,
     MatCardHeader,
     MatCardActions,
-    JsonViewerComponent,
     EditorViewerComponent,
     CellEditorViewerComponent,
     RowEditorViewerComponent,
     ToolbarComponent,
+    AceEditorComponent,
 
   ]
 })
@@ -149,8 +150,13 @@ export class TemplateEditorComponent implements OnInit,AfterViewInit {
     return [
       {
         name: 'WYSI Page Model',
-        description: 'Raw editable layout page',
+        description: 'Raw page model',
         data: page
+      },
+      {
+        name: 'WYSI Page Model (Expanded Content)',
+        description: 'Expanded page model',
+        data: pdfGenerationResult1.page
       },
       {
         name: 'PDFMake Definition',
@@ -165,7 +171,7 @@ export class TemplateEditorComponent implements OnInit,AfterViewInit {
       {
         name: 'Display Rules',
         description: 'Display Rules used inside the template',
-        data: this.displayLogicUtility.collectDisplayRules(page)
+        data: JSON.stringify(this.displayLogicUtility.collectDisplayRules(page))
       }
     ];
   }

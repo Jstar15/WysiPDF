@@ -1,0 +1,63 @@
+.json-editor-wrapper {
+  position: relative;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  height: 100%;
+  min-height: 400px;
+  background-color: #1e1e1e;
+  color: #ffffff;
+  font-family: 'Fira Code', monospace;
+  border-radius: 4px;
+}
+
+.json-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  background-color: #2a2a2a;
+  border-bottom: 1px solid #444;
+  user-select: none;
+
+  .nav-buttons {
+    display: flex;
+    gap: 4px;
+
+    // default grey
+    mat-icon {
+      color: #777;
+    }
+
+    // white when the button is enabled
+    button:not([disabled]) mat-icon {
+      color: #fff;
+    }
+  }
+
+  .json-meta {
+    flex: 1;
+    text-align: center;
+
+    .json-name {
+      font-weight: bold;
+      font-size: 1rem;
+    }
+
+    .json-description {
+      font-size: 0.875rem;
+      color: #bbb;
+    }
+  }
+
+  .copy-btn mat-icon {
+    color: #fff;
+  }
+}
+
+.editor-container {
+  width: 100%;
+  min-height: 0;
+  border: 1px solid #444;
+  border-radius: 4px;
+  overflow: hidden;
+}

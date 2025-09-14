@@ -1,0 +1,27 @@
+<div class="json-editor-wrapper" *ngIf="jsonList?.length">
+  <!-- Header / navigation + title -->
+  <div class="json-header">
+    <div class="nav-buttons">
+      <button mat-icon-button (click)="prev()" [disabled]="!canGoPrev" matTooltip="Previous">
+        <mat-icon svgIcon="chevron_left"></mat-icon>
+      </button>
+      <button mat-icon-button (click)="next()" [disabled]="!canGoNext" matTooltip="Next">
+        <mat-icon  svgIcon="chevron_right"></mat-icon>
+      </button>
+    </div>
+
+    <div class="json-meta">
+      <div class="json-name">{{ currentJson?.name }}</div>
+      <div class="json-description" *ngIf="currentJson?.description">
+        {{ currentJson.description }}
+      </div>
+    </div>
+
+    <button style="background: white;padding: 5px;}" class="copy-btn" (click)="copy()" mat-icon-button matTooltip="Copy JSON">
+      <mat-icon  svgIcon="content_copy"></mat-icon>
+    </button>
+  </div>
+
+  <!-- Ace Editor host -->
+  <div #editor class="editor-container"></div>
+</div>

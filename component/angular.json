@@ -28,7 +28,8 @@
             "assets": [
               {
                 "glob": "**/*",
-                "input": "public"
+                "input": "node_modules/ace-builds/src-noconflict",
+                "output": "/assets/ace"
               },
               "src/assets",
               "src/assets/fonts"
@@ -89,7 +90,8 @@
             "assets": [
               {
                 "glob": "**/*",
-                "input": "public"
+                "input": "node_modules/ace-builds/src-noconflict",
+                "output": "/assets/ace"
               }
             ],
             "styles": [
