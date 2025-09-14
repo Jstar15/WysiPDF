@@ -4,7 +4,7 @@
 
 WysiPDF is a **single-file WYSIWYG PDF editor** and runtime, designed to quickly create **dynamic, data-driven PDF templates**. Build once, then generate **PDF** or **standalone HTML** from **JSON payloads**, **tokens**, or **repeatable content**, all in the browser or on the server.
 
-![WysiPDF screenshot](readme/images/screenshot-1.png)
+![WysiPDF screenshot](readme/images/screenshot-2.png)
 
 ---
 
@@ -29,7 +29,7 @@ Try it in the browser: **[https://jstar15.github.io/WysiPDF/](https://jstar15.gi
 
 * **Rich Text**: QuillJS-powered formatting with bold, italic, underline, font size/color, alignment, and inline tokens.
 * **Tables**: structured rows/cells with support for rich text, bullets, and alignment.
-* **Images**: insert file uploads or base64 directly into cells.
+* **Images**: insert file uploads or base64 directly into cells, with **automatic compression** for performance.
 * **Charts**: Pie, Doughnut, and Bar charts rendered as high-quality PNGs.
 * **Barcodes & QR Codes**: configurable 1D/2D codes, exported as PNG for crisp printing.
 * **Dynamic Tokens**: all content blocks can bind to tokens for live data rendering.
@@ -139,7 +139,7 @@ const pdf64 = await wysi.generatePdfBase64(page, tokens);
 ## 🧱 Content Blocks
 
 * **Text**: rich text with inline tokens and QuillJS styling.
-* **Image**: upload or base64; adjustable alignment, padding, and sizing.
+* **Image**: upload or base64; automatically compressed for performance; adjustable alignment, padding, and sizing.
 * **Chart**: Pie, Doughnut, Bar rendered as PNG.
 * **Barcode / QR**: 1D/2D codes, PNG export for print fidelity.
 * **Table**: structured rows/cells with bullets and rich text.
@@ -167,6 +167,7 @@ WysiPDF integrates libraries **behind the scenes** to enable its rich functional
 * **ECharts** for charts.
 * **JsBarcode & QRCode** for barcodes.
 * **Angular** framework for dynamic editing, state management, and UI components.
+* **Auto Image Compression** ensures performance and lightweight exports.
 
 All bundled into **one single JS file** that can run on **client or server side**.
 
