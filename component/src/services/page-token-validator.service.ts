@@ -49,23 +49,56 @@ export class PageTokenValidator {
           cell.errorMessage = `Repeatable token "${row.repeatableToken?.name}" not found`;
           cell.hasError = true;
         });
+        continue; // skip further validation for missing token
+      }
+
+      const repeatableType = row.repeatableToken?.type;
+
+      // STRING_ARRAY: parse value as JSON and validate it’s an array
+      let tempStringArrayTokens: TokenAttribute[] = [];
+      if (repeatableType === 'string_array' && row.repeatableToken?.value) {
+        try {
+          const arr = JSON.parse(row.repeatableToken.value);
+          if (!Array.isArray(arr)) {
+            row.cells.forEach(cell => {
+              cell.errorMessage = `Repeatable token "${row.repeatableToken?.name}" is not a valid string array`;
+              cell.hasError = true;
+            });
+            continue;
+          }
+
+          // Convert each string into a temporary token for replacement
+          tempStringArrayTokens = arr.map((v, i) => ({
+            ...row.repeatableToken,
+            value: v,
+            name: `${row.repeatableToken.name}[${i}]`, // optional indexing
+          }));
+
+        } catch (e) {
+          row.cells.forEach(cell => {
+            cell.errorMessage = `Repeatable token "${row.repeatableToken?.name}" is not a valid JSON string array`;
+            cell.hasError = true;
+          });
+          continue;
+        }
       }
 
       // Use latest tokenAttributes if found, otherwise fallback to existing
-      const rowTokens =
-        matchedToken?.tokenAttributes ??
-        row.repeatableToken?.tokenAttributes ??
-        tokens;
+      const rowTokens: TokenAttribute[] = [
+        ...(matchedToken?.tokenAttributes ?? row.repeatableToken?.tokenAttributes ?? tokens),
+        ...tempStringArrayTokens // append string array items for replacement
+      ];
 
       for (let cell of row.cells) {
-        let key: string | null = null;
         const errors: string[] = [];
 
+        // Existing token key checks
+        let key: string | null = null;
         if (cell.type === 'barcode' && cell.barcodeBlock?.HtmlTokenElement?.key) {
           key = cell.barcodeBlock.HtmlTokenElement.key;
-        } else if (cell.type === 'image' && cell.barcodeBlock?.HtmlTokenElement?.key) {
-          key = cell.barcodeBlock.HtmlTokenElement.key;
-        } else if (cell.type === 'chart' && cell.barcodeBlock?.HtmlTokenElement?.key) {
+        } else if (cell.type === 'image' && cell.imageBlock?.HtmlTokenElement?.key) {
+          key = cell.imageBlock.HtmlTokenElement.key;
+        }else if (cell.type === 'chart' && cell.barcodeBlock?.HtmlTokenElement?.key) {
           // key = cell.chartBlock.HtmlTokenElement.key; // Uncomment if needed
         }
 

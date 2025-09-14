@@ -51,7 +51,7 @@ export class RepeatableRowEditorComponent implements OnInit {
 
   ngOnInit(): void {
     this.jsonArrayAttrs = this.tokenAttrs.filter(
-      (t) => t.type == TokenAttributeType.JSON_ARRAY
+      (t) => t.type == TokenAttributeType.JSON_ARRAY || t.type == TokenAttributeType.STRING_ARRAY
     );
   }
 

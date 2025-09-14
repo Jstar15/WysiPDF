@@ -53,10 +53,29 @@ export class TokenReplacerUtility {
     const tokenMap: { [key: string]: string } = {};
     for (const t of tokens ?? []) {
       if (!t?.name) continue;
-      tokenMap[t.name.trim()] = String(t.value ?? '');
+
+      // Handle STRING_ARRAY tokens by parsing JSON and creating indexed keys
+      if (t.type === 'string_array' && typeof t.value === 'string') {
+        try {
+          const arr = JSON.parse(t.value);
+          if (Array.isArray(arr)) {
+            arr.forEach((v, i) => {
+              tokenMap[`${t.name}[${i}]`] = String(v ?? '');
+            });
+          } else {
+            tokenMap[t.name.trim()] = String(t.value ?? '');
+          }
+        } catch {
+          tokenMap[t.name.trim()] = String(t.value ?? '');
+        }
+      } else {
+        tokenMap[t.name.trim()] = String(t.value ?? '');
+      }
     }
+
     return tokenMap;
   }
+
 
   private replaceInElement(el: HtmlBasicElement, tokenMap: { [k: string]: string }) {
     const attrs = (el as any).attributes || {};

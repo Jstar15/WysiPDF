@@ -1,10 +1,11 @@
-import { Injectable } from '@angular/core';
-import { Page, Row } from '../models/page';
-import { HtmlToStructuredContentConverter } from './html-to-structured-content.converter';
-import { TokenAttribute } from '../models/token-attribute';
+import {Injectable} from '@angular/core';
+import {Page, Row} from '../models/page';
+import {HtmlToStructuredContentConverter} from './html-to-structured-content.converter';
+import {TokenAttribute} from '../models/token-attribute';
 import {TokenReplacerUtility} from "../utils/token-replacer.utility";
 import {DisplayLogicUtility} from "../utils/display-logic.utility";
 import {Converter} from "./converter";
+import {TokenAttributeType} from "../models/token-attribute-type";
 
 @Injectable({ providedIn: 'root' })
 export class PageToPageConverter  implements Converter<Page, Page, TokenAttribute[]> {
@@ -106,45 +107,60 @@ export class PageToPageConverter  implements Converter<Page, Page, TokenAttribut
     const expandedRows: Row[] = [];
 
     for (const row of page.content.rows) {
-
       if (row.repeatableToken) {
         const repeatableName = row.repeatableToken.name;
+        const tokenType = row.repeatableToken.type;
 
-        // Find the token that matches the repeatable name
+        // STRING_ARRAY token stored as JSON string
+        if (tokenType === TokenAttributeType.STRING_ARRAY) {
+          let values: string[] = [];
+          try {
+            values = JSON.parse(row.repeatableToken.value || '[]');
+          } catch {
+            values = [];
+          }
+
+          for (let i = 0; i < values.length; i++) {
+            const itemValue = values[i];
+            let clonedRow: Row = JSON.parse(JSON.stringify(row));
+
+            // Only pass the single string value for this row
+            const singleToken: TokenAttribute = {
+              ...row.repeatableToken,
+              value: itemValue, // this ensures each row sees only one string
+              valueArray: undefined // remove array so replacer doesn't see it
+            };
+
+            clonedRow = this.tokenReplacerUtility.replaceTokensInRow(clonedRow, [singleToken]);
+            expandedRows.push(clonedRow);
+          }
+
+          continue; // done with this row
+        }
+
+        // JSON_ARRAY / nested objects
         const sourceToken = tokenAttributeList.find(t => t.name === repeatableName);
-
         if (!sourceToken || !sourceToken.tokenAttributes || sourceToken.tokenAttributes.length === 0) {
-          expandedRows.push(row); // no data → keep original row
+          expandedRows.push(row);
           continue;
         }
 
-        // Determine the max length of any valueArray across the tokenAttributes
         const maxLength = Math.max(
           ...sourceToken.tokenAttributes.map(t => t.valueArray?.length ?? 0)
         );
 
-        // Clone the row for each index
         for (let i = 0; i < maxLength; i++) {
-          // Deep clone the row
           let clonedRow: Row = JSON.parse(JSON.stringify(row));
 
-          // Prepare a shallow array of tokens for this row
-          const attributeList = sourceToken.tokenAttributes.map(t => {
-            const tokenCopy = { ...t };
-            tokenCopy.value = Array.isArray(t.valueArray) && t.valueArray.length > i
-              ? t.valueArray[i]
-              : '';
-            return tokenCopy;
-          });
+          const attributeList = sourceToken.tokenAttributes.map(t => ({
+            ...t,
+            value: Array.isArray(t.valueArray) && t.valueArray.length > i ? t.valueArray[i] : ''
+          }));
 
-          // Replace tokens in this cloned row
           clonedRow = this.tokenReplacerUtility.replaceTokensInRow(clonedRow, attributeList);
-
           expandedRows.push(clonedRow);
         }
-
       } else {
-        // Not repeatable → just push
         expandedRows.push(row);
       }
     }

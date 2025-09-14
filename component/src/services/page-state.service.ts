@@ -1,9 +1,10 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import {Injectable} from '@angular/core';
+import {BehaviorSubject} from 'rxjs';
 import {Cell, CellAttrs, Grid, Page, Row} from '../models/page';
 import {DisplayLogicGroup} from "../models/display-logic.models";
 import {TokenAttribute} from "../models/token-attribute";
 import {GridEvent, GridEventType} from "../areas/template-editor/grid-editor/grid-editor.interfaces";
+import {TokenAttributeType} from "../models/token-attribute-type";
 
 @Injectable({ providedIn: 'root' })
 export class PageStateService {
@@ -140,8 +141,12 @@ export class PageStateService {
     if (!current) return null;
 
     let grid: Grid = current[this.currentArea];
-    let isRepeatable = grid?.rows[this.currentRow].repeatableToken;
+    let isRepeatable: TokenAttribute = grid?.rows[this.currentRow].repeatableToken;
     if(isRepeatable){
+      if(isRepeatable.type == TokenAttributeType.STRING_ARRAY){
+        isRepeatable.type = TokenAttributeType.TEXT
+        return [isRepeatable];
+      }
       return isRepeatable.tokenAttributes;
     }
     return current.tokenAttrs;
