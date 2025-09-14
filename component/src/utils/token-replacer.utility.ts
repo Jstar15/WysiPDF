@@ -4,52 +4,68 @@ import { TokenAttribute } from '../models/token-attribute';
 
 @Injectable({ providedIn: 'root' })
 export class TokenReplacerUtility {
-  public replaceTokensInRow(rows: Row[], tokens: TokenAttribute[]): Row[] {
-    // ── build a richer map: full, last-segment, and normalized keys ──
+
+  /**
+   * Replace tokens in multiple rows
+   */
+  public replaceTokensInRows(rows: Row[], tokens: TokenAttribute[]): Row[] {
+    return rows.map(row => this.replaceTokensInRow(row, tokens));
+  }
+
+  /**
+   * Replace tokens in a single row
+   */
+  public replaceTokensInRow(row: Row, tokens: TokenAttribute[]): Row {
+    const tokenMap: { [key: string]: string } = this.buildTokenMap(tokens);
+
+    for (const cell of row.cells) {
+      if (!cell.block) continue;
+
+      for (const block of cell.block.blocks) {
+
+        if (block.blockType === 'table') {
+          const table = block as HtmlTableBlock;
+          for (const tr of table.rows) {
+            for (const tc of tr.cells) {
+              for (const el of tc.elements) {
+                this.replaceInElement(el, tokenMap);
+              }
+            }
+          }
+
+        } else {
+          const maybeEls = (block as any).elements;
+          if (Array.isArray(maybeEls)) {
+            for (const el of maybeEls as HtmlBasicElement[]) {
+              this.replaceInElement(el, tokenMap);
+            }
+          }
+        }
+      }
+    }
+
+    return row;
+  }
+
+  // ── Internal helpers ──
+
+  private buildTokenMap(tokens: TokenAttribute[]): { [key: string]: string } {
     const tokenMap: { [key: string]: string } = {};
     for (const t of tokens ?? []) {
       if (!t?.name) continue;
       tokenMap[t.name.trim()] = String(t.value ?? '');
     }
-
-    for (const row of rows) {
-      for (const cell of row.cells) {
-        if (!cell.block) continue;
-
-        for (const block of cell.block.blocks) {
-          if (block.blockType === 'table') {
-            const table = block as HtmlTableBlock;
-            for (const tr of table.rows) {
-              for (const tc of tr.cells) {
-                for (const el of tc.elements) {
-                  this.replaceInElement(el, tokenMap);
-                }
-              }
-            }
-          } else {
-            const maybeEls = (block as any).elements;
-            if (Array.isArray(maybeEls)) {
-              for (const el of maybeEls as HtmlBasicElement[]) {
-                this.replaceInElement(el, tokenMap);
-              }
-            }
-          }
-        }
-      }
-
-    }
-
-    return rows;
+    return tokenMap;
   }
 
   private replaceInElement(el: HtmlBasicElement, tokenMap: { [k: string]: string }) {
     const attrs = (el as any).attributes || {};
-    const isTokenish = el.type === 'token' || attrs.isMergeField === true; // ← minimal fix
+    const isTokenish = el.type === 'token' || attrs.isMergeField === true;
     if (!isTokenish) return;
 
     const candidates: string[] = [];
 
-    // from currentColumnName (prefer full, then last segment)
+    // currentColumnName
     const cc: string = (attrs.currentColumnName || '').toString().trim();
     if (cc) {
       candidates.push(cc);
@@ -57,7 +73,7 @@ export class TokenReplacerUtility {
       if (last) candidates.push(last);
     }
 
-    // from placeholder like "<<customer.name>>"
+    // placeholder like <<customer.name>>
     const ph: string = this.extractPlaceholder(el.value);
     if (ph) {
       candidates.push(ph);
@@ -65,7 +81,7 @@ export class TokenReplacerUtility {
       if (last) candidates.push(last);
     }
 
-    // try raw then normalized lookups
+    // lookup replacement
     let replacement: string | undefined;
     for (const k of candidates) {
       if (k in tokenMap) { replacement = tokenMap[k]; break; }
@@ -81,7 +97,6 @@ export class TokenReplacerUtility {
     }
   }
 
-  // ── tiny helpers ──
   private norm(k: string): string {
     return k.replace(/^<<\s*|\s*>>$/g, '').trim().toLowerCase();
   }

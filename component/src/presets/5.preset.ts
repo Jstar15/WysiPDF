@@ -6,7 +6,6 @@ export const Preset5: any = {
   "header": {
     "rows": [
       {
-        "height": 56,
         "widths": [
           60,
           40
@@ -204,7 +203,7 @@ export const Preset5: any = {
             "hasError": false
           }
         ],
-        "backgroundColor": "#EFF6FF"
+        "backgroundColor": "white"
       },
       {
         "height": 0,
@@ -772,14 +771,14 @@ export const Preset5: any = {
             "hasError": false
           }
         ],
-        "backgroundColor": "#EFF6FF"
+        "backgroundColor": "white"
       },
       {
         "height": 0,
         "widths": [
-          50,
+          49.85,
           15,
-          15,
+          15.15,
           20
         ],
         "cells": [
@@ -953,32 +952,293 @@ export const Preset5: any = {
       {
         "height": 50,
         "widths": [
-          100
+          49.78,
+          15.15,
+          15,
+          20.07
         ],
         "cells": [
           {
             "type": "html",
-            "value": "",
+            "value": "<p><span class=\"ql-mathjax custom-token\" data-value=\"&lt;&lt;description&gt;&gt;\" data-type=\"text\" data-name=\"description\" contenteditable=\"false\">﻿<span contenteditable=\"false\">text[description]</span>﻿</span></p>",
             "attrs": {
               "paddingTop": 5,
               "paddingRight": 5,
               "paddingBottom": 5,
               "paddingLeft": 5,
               "borderTop": 0,
-              "borderRight": 0,
-              "borderBottom": 0,
-              "borderLeft": 0,
-              "borderColor": "white",
+              "borderRight": 1,
+              "borderBottom": 1,
+              "borderLeft": 1,
+              "borderColor": "#D1D5DB",
               "backgroundColor": "transparent"
             },
             "block": {
-              "blocks": []
+              "blocks": [
+                {
+                  "elements": [
+                    {
+                      "value": "<<description>>",
+                      "attributes": {
+                        "bold": "false",
+                        "italic": "false",
+                        "underline": "false",
+                        "size": 14,
+                        "font": "Roboto",
+                        "value": "<<description>>",
+                        "type": "text",
+                        "currentColumnName": "description",
+                        "isCustomElement": true,
+                        "isMergeField": true
+                      },
+                      "type": "token"
+                    }
+                  ],
+                  "blockType": "p",
+                  "alignment": "left"
+                }
+              ]
             },
             "errorMessage": "",
-            "hasError": false
+            "hasError": false,
+            "barcodeBlock": null,
+            "chartBlock": null,
+            "imageBlock": null
+          },
+          {
+            "type": "html",
+            "value": "<p><span class=\"ql-mathjax custom-token\" data-value=\"&lt;&lt;qty&gt;&gt;\" data-type=\"number\" data-name=\"qty\" contenteditable=\"false\">﻿<span contenteditable=\"false\">number[qty]</span>﻿</span></p>",
+            "attrs": {
+              "paddingTop": 5,
+              "paddingRight": 5,
+              "paddingBottom": 5,
+              "paddingLeft": 5,
+              "borderTop": 0,
+              "borderRight": 1,
+              "borderBottom": 1,
+              "borderLeft": 1,
+              "borderColor": "#D1D5DB",
+              "backgroundColor": "transparent"
+            },
+            "block": {
+              "blocks": [
+                {
+                  "elements": [
+                    {
+                      "value": "<<qty>>",
+                      "attributes": {
+                        "bold": "false",
+                        "italic": "false",
+                        "underline": "false",
+                        "size": 14,
+                        "font": "Roboto",
+                        "value": "<<qty>>",
+                        "type": "number",
+                        "currentColumnName": "qty",
+                        "isCustomElement": true,
+                        "isMergeField": true
+                      },
+                      "type": "token"
+                    }
+                  ],
+                  "blockType": "p",
+                  "alignment": "left"
+                }
+              ]
+            },
+            "errorMessage": "",
+            "hasError": false,
+            "barcodeBlock": null,
+            "chartBlock": null,
+            "imageBlock": null
+          },
+          {
+            "type": "html",
+            "value": "<p><span class=\"ql-mathjax custom-token\" data-value=\"&lt;&lt;unit&gt;&gt;\" data-type=\"text\" data-name=\"unit\" contenteditable=\"false\">﻿<span contenteditable=\"false\">text[unit]</span>﻿</span></p>",
+            "attrs": {
+              "paddingTop": 5,
+              "paddingRight": 5,
+              "paddingBottom": 5,
+              "paddingLeft": 5,
+              "borderTop": 0,
+              "borderRight": 1,
+              "borderBottom": 1,
+              "borderLeft": 1,
+              "borderColor": "#D1D5DB",
+              "backgroundColor": "transparent"
+            },
+            "block": {
+              "blocks": [
+                {
+                  "elements": [
+                    {
+                      "value": "<<unit>>",
+                      "attributes": {
+                        "bold": "false",
+                        "italic": "false",
+                        "underline": "false",
+                        "size": 14,
+                        "font": "Roboto",
+                        "value": "<<unit>>",
+                        "type": "text",
+                        "currentColumnName": "unit",
+                        "isCustomElement": true,
+                        "isMergeField": true
+                      },
+                      "type": "token"
+                    }
+                  ],
+                  "blockType": "p",
+                  "alignment": "left"
+                }
+              ]
+            },
+            "errorMessage": "",
+            "hasError": false,
+            "barcodeBlock": null,
+            "chartBlock": null,
+            "imageBlock": null
+          },
+          {
+            "type": "html",
+            "value": "<p>£<span class=\"ql-mathjax custom-token\" data-value=\"&lt;&lt;amount&gt;&gt;\" data-type=\"number\" data-name=\"amount\" contenteditable=\"false\">﻿<span contenteditable=\"false\">﻿<span contenteditable=\"false\">number[amount]</span>﻿</span>﻿</span></p>",
+            "attrs": {
+              "paddingTop": 5,
+              "paddingRight": 5,
+              "paddingBottom": 5,
+              "paddingLeft": 5,
+              "borderTop": 0,
+              "borderRight": 1,
+              "borderBottom": 1,
+              "borderLeft": 1,
+              "borderColor": "#D1D5DB",
+              "backgroundColor": "transparent"
+            },
+            "block": {
+              "blocks": [
+                {
+                  "elements": [
+                    {
+                      "value": "£",
+                      "attributes": {
+                        "bold": "false",
+                        "italic": "false",
+                        "underline": "false",
+                        "size": 14,
+                        "font": "Roboto",
+                        "align": "left"
+                      },
+                      "type": "text"
+                    },
+                    {
+                      "value": "<<amount>>",
+                      "attributes": {
+                        "bold": "false",
+                        "italic": "false",
+                        "underline": "false",
+                        "size": 14,
+                        "font": "Roboto",
+                        "value": "<<amount>>",
+                        "type": "number",
+                        "currentColumnName": "amount",
+                        "isCustomElement": true,
+                        "isMergeField": true
+                      },
+                      "type": "token"
+                    }
+                  ],
+                  "blockType": "p",
+                  "alignment": "left"
+                }
+              ]
+            },
+            "errorMessage": "",
+            "hasError": false,
+            "barcodeBlock": null,
+            "chartBlock": null,
+            "imageBlock": null
           }
         ],
-        "backgroundColor": "white"
+        "backgroundColor": "white",
+        "repeatableToken": {
+          "name": "invoice.lineItems",
+          "value": "[object Object],[object Object]",
+          "type": "json_array",
+          "tokenAttributes": [
+            {
+              "name": "description",
+              "value": "[\"Car Model A\",\"Car Model B\"]",
+              "valueArray": [
+                "Car Model A",
+                "Car Model B"
+              ],
+              "type": "text"
+            },
+            {
+              "name": "qty",
+              "value": "[\"2\",\"3\"]",
+              "valueArray": [
+                "2",
+                "3"
+              ],
+              "type": "number"
+            },
+            {
+              "name": "unit",
+              "value": "[\"Type X\",\"Type Y\"]",
+              "valueArray": [
+                "Type X",
+                "Type Y"
+              ],
+              "type": "text"
+            },
+            {
+              "name": "amount",
+              "value": "[\"600\",\"420\"]",
+              "valueArray": [
+                "600",
+                "420"
+              ],
+              "type": "number"
+            },
+            {
+              "name": "text_car",
+              "value": "[\"Car Model A\",\"Car Model B\"]",
+              "valueArray": [
+                "Car Model A",
+                "Car Model B"
+              ],
+              "type": "text"
+            },
+            {
+              "name": "text_type",
+              "value": "[\"Type X\",\"Type Y\"]",
+              "valueArray": [
+                "Type X",
+                "Type Y"
+              ],
+              "type": "text"
+            },
+            {
+              "name": "text_year_start",
+              "value": "[\"2023\",\"2022\"]",
+              "valueArray": [
+                "2023",
+                "2022"
+              ],
+              "type": "text"
+            },
+            {
+              "name": "text_year_end",
+              "value": "[\"2024\",\"2023\"]",
+              "valueArray": [
+                "2024",
+                "2023"
+              ],
+              "type": "text"
+            }
+          ]
+        }
       },
       {
         "height": 50,
@@ -1077,7 +1337,7 @@ export const Preset5: any = {
           },
           {
             "type": "html",
-            "value": "<p class=\"ql-align-right ql-font-roboto\" style=\"font-size:12px;\"><strong>Subtotal</strong> £<span class=\"ql-mathjax custom-token\" data-value=\"1020\" data-type=\"number\" data-name=\"invoice.subtotal\" contenteditable=\"false\">﻿<span contenteditable=\"false\">﻿<span contenteditable=\"false\">﻿<span contenteditable=\"false\">﻿<span contenteditable=\"false\">﻿<span contenteditable=\"false\">﻿<span contenteditable=\"false\">number[invoice.subtotal]</span>﻿</span>﻿</span>﻿</span>﻿</span>﻿</span>﻿</span></p><p class=\"ql-align-right ql-font-roboto\" style=\"font-size:12px;\">VAT (20%) £<span class=\"ql-mathjax custom-token\" data-value=\"204\" data-type=\"number\" data-name=\"invoice.vatAmount\" contenteditable=\"false\">﻿<span contenteditable=\"false\">﻿<span contenteditable=\"false\">﻿<span contenteditable=\"false\">﻿<span contenteditable=\"false\">﻿<span contenteditable=\"false\">number[invoice.vatAmount]</span>﻿</span>﻿</span>﻿</span>﻿</span>﻿</span></p><p class=\"ql-align-right ql-font-roboto\" style=\"font-size:13px;color: rgb(29, 78, 216);\"><strong style=\"color: rgb(29, 78, 216);\">Total £</strong><strong style=\"color: rgb(37, 99, 235);\"><span class=\"ql-mathjax custom-token\" data-value=\"1224\" data-type=\"number\" data-name=\"invoice.total\" contenteditable=\"false\">﻿<span contenteditable=\"false\">﻿<span contenteditable=\"false\">﻿<span contenteditable=\"false\">﻿<span contenteditable=\"false\">﻿<span contenteditable=\"false\">﻿<span contenteditable=\"false\">number[invoice.total]</span>﻿</span>﻿</span>﻿</span>﻿</span>﻿</span>﻿</span></strong></p>",
+            "value": "<p class=\"ql-align-right ql-font-roboto\" style=\"font-size:12px;\"><strong>Subtotal</strong> £<span class=\"ql-mathjax custom-token\" data-value=\"&lt;&lt;invoice.subtotal&gt;&gt;\" data-type=\"number\" data-name=\"invoice.subtotal\" contenteditable=\"false\">﻿<span contenteditable=\"false\">﻿<span contenteditable=\"false\">﻿<span contenteditable=\"false\">number[invoice.subtotal]</span>﻿</span>﻿</span>﻿</span></p><p class=\"ql-align-right ql-font-roboto\" style=\"font-size:12px;\">VAT (20%) £<span class=\"ql-mathjax custom-token\" data-value=\"&lt;&lt;invoice.vat&gt;&gt;\" data-type=\"number\" data-name=\"invoice.vat\" contenteditable=\"false\">﻿<span contenteditable=\"false\">﻿<span contenteditable=\"false\">﻿<span contenteditable=\"false\">number[invoice.vat]</span>﻿</span>﻿</span>﻿</span></p><p class=\"ql-align-right ql-font-roboto\" style=\"font-size:13px;color: rgb(29, 78, 216);\"><strong style=\"color: rgb(29, 78, 216);\">Total £<span class=\"ql-mathjax custom-token\" data-value=\"&lt;&lt;invoice.total&gt;&gt;\" data-type=\"number\" data-name=\"invoice.total\" contenteditable=\"false\">﻿<span contenteditable=\"false\">﻿<span contenteditable=\"false\">﻿<span contenteditable=\"false\">number[invoice.total]</span>﻿</span>﻿</span>﻿</span></strong></p>",
             "attrs": {
               "paddingTop": 10,
               "paddingRight": 10,
@@ -1119,7 +1379,7 @@ export const Preset5: any = {
                       "type": "text"
                     },
                     {
-                      "value": "1020",
+                      "value": "<<invoice.subtotal>>",
                       "attributes": {
                         "bold": "false",
                         "italic": "false",
@@ -1127,7 +1387,7 @@ export const Preset5: any = {
                         "size": 14,
                         "font": "Roboto",
                         "align": "right",
-                        "value": "1020",
+                        "value": "<<invoice.subtotal>>",
                         "type": "number",
                         "currentColumnName": "invoice.subtotal",
                         "isCustomElement": true,
@@ -1154,7 +1414,7 @@ export const Preset5: any = {
                       "type": "text"
                     },
                     {
-                      "value": "204",
+                      "value": "<<invoice.vat>>",
                       "attributes": {
                         "bold": "false",
                         "italic": "false",
@@ -1162,9 +1422,9 @@ export const Preset5: any = {
                         "size": 14,
                         "font": "Roboto",
                         "align": "right",
-                        "value": "204",
+                        "value": "<<invoice.vat>>",
                         "type": "number",
-                        "currentColumnName": "invoice.vatAmount",
+                        "currentColumnName": "invoice.vat",
                         "isCustomElement": true,
                         "isMergeField": true
                       },
@@ -1190,7 +1450,7 @@ export const Preset5: any = {
                       "type": "text"
                     },
                     {
-                      "value": "1224",
+                      "value": "<<invoice.total>>",
                       "attributes": {
                         "bold": "true",
                         "italic": "false",
@@ -1198,8 +1458,8 @@ export const Preset5: any = {
                         "size": 14,
                         "font": "Roboto",
                         "align": "right",
-                        "color": "#2563eb",
-                        "value": "1224",
+                        "color": "#1d4ed8",
+                        "value": "<<invoice.total>>",
                         "type": "number",
                         "currentColumnName": "invoice.total",
                         "isCustomElement": true,
@@ -1214,7 +1474,10 @@ export const Preset5: any = {
               ]
             },
             "errorMessage": "",
-            "hasError": false
+            "hasError": false,
+            "barcodeBlock": null,
+            "chartBlock": null,
+            "imageBlock": null
           }
         ],
         "backgroundColor": "white"
@@ -1222,8 +1485,8 @@ export const Preset5: any = {
       {
         "height": 0,
         "widths": [
-          60,
-          40
+          57.31,
+          42.69
         ],
         "cells": [
           {
@@ -1289,12 +1552,12 @@ export const Preset5: any = {
             "type": "barcode",
             "value": "",
             "barcodeBlock": {
-              "imageBase64": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIYAAABuCAYAAADibmt+AAADaElEQVR4AeySC47kIAxE47n/nXulRNZOW0nEBAj+vJY6FmCMXfV+PvxQ4ESBn40fCpwoABgnorC1bYABBacKAMapLGwCBgycKgAYp7KwCRiDGchSDjCyODl4DsAYLGiWcs1giMgm8v+vAogce7rWKHK+r+caRY48kSPafV3bKHLki3xHzRM539dzjSJHnl2LHPsiR7TnurZR5MgX+Y6aJ/K3fb2nUeT7vsixtud2LfKdp+dXsRmMqwLs51QAMHL62j0VYHRLmLMAYOT0tXsqN2B0T0KBoQoAxlA58xQDjDxeDp0EMIbKmacYYOTxcugkgDFUzjzFACOPl0MnAYyhcjoq1tkKYHQKmPU6YGR1tnMuwOgUMOt1wMjqbOdcgNEpYNbrgJHV2c65AKNTwKzXAcM6y3pXADB2GfhYBQDDKsJ6VwAwdhn4WAUAwyrCelcAMHYZ+FgFAMMqwnpXADB2GfhYBcaBYSuzDq0AYIS2b17zgDFP29CVASO0ffOaB4x52oauDBih7ZvXPGDM0zZ0ZcBwa9/axgBjrf5uXwcMt9asbQww1urv9nXAcGvN2sYAY63+bl8HDLfWrG0MMNbq7/b1hGC41TpUY4ARyq73mgWM97QO9RJghLLrvWYB4z2tQ70EGKHseq9ZwHhP61AvAUYou95r9hcY7z3KS/4VAAz/Hi3pEDCWyO7/UcDw79GSDgFjiez+HwUM/x4t6RAwlsju/1HAmOdR6MqAEdq+ec0DxjxtQ1cGjND2zWseMOZpG7oyYIS2b17zgDFP29CVASO0ffOa9wjGvGmp3KwAYDRLVSsRMGr53TwtYDRLVSsRMGr53TwtYDRLVSsRMGr53TwtYDRLFTfxSeeA8US1AncAo4DJT0YEjCeqFbgDGAVMfjIiYDxRrcAdwChg8pMRAeOJagXuAMaNyZWPAKOy+zezA8aNOJWPAKOy+zezA8aNOJWPAKOy+zezA8aNOJWPAKOy+zezTwHj5j2OgijQDMbn89l+/3U+3dO1xqt9PdeoeRrtvq5t1HwbNe9qX881ap5d675Ge65rGzXfRs37677e02jv69qe27XN0/Or2AzGVQH2cyoAGDl97Z4KMLolzFkAMHL62j0VYHRLmLMAYETwdUGPgLFA9AhPAkYElxb0CBgLRI/w5D8AAAD//2T/CqUAAAAGSURBVAMApAvK43AohtsAAAAASUVORK5CYII=",
-              "filename": "[token:barcode.format]",
+              "imageBase64": "data:image/png;base64,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",
+              "filename": "[token:invoice.website]",
               "width": 70,
               "alignment": "right",
               "HtmlTokenElement": {
-                "key": "barcode.format",
+                "key": "invoice.website",
                 "type": "barcode"
               }
             },
@@ -1314,7 +1577,9 @@ export const Preset5: any = {
               "blocks": []
             },
             "errorMessage": "",
-            "hasError": false
+            "hasError": false,
+            "imageBlock": null,
+            "chartBlock": null
           }
         ],
         "backgroundColor": "white"
@@ -1324,7 +1589,6 @@ export const Preset5: any = {
   "footer": {
     "rows": [
       {
-        "height": 0,
         "widths": [
           100
         ],
@@ -1395,81 +1659,6 @@ export const Preset5: any = {
   },
   "tokenAttrs": [
     {
-      "name": "company.name",
-      "value": "NOVA SUPPLY CO.",
-      "type": "text"
-    },
-    {
-      "name": "company.website",
-      "value": "https://novasupply.example",
-      "type": "text"
-    },
-    {
-      "name": "company.email",
-      "value": "support@nova.example",
-      "type": "text"
-    },
-    {
-      "name": "company.phone",
-      "value": "(020) 1234 5678",
-      "type": "text"
-    },
-    {
-      "name": "company.address",
-      "value": "221B Market Street, London",
-      "type": "text"
-    },
-    {
-      "name": "invoice.number",
-      "value": "INV-2025-0087",
-      "type": "text"
-    },
-    {
-      "name": "invoice.date",
-      "value": "2025-03-14",
-      "type": "text"
-    },
-    {
-      "name": "invoice.dueDate",
-      "value": "2025-03-28",
-      "type": "text"
-    },
-    {
-      "name": "invoice.currency",
-      "value": "GBP",
-      "type": "text"
-    },
-    {
-      "name": "invoice.notes",
-      "value": "Payment due within 14 days. Thank you for your business.",
-      "type": "text"
-    },
-    {
-      "name": "invoice.subtotal",
-      "value": "1020",
-      "type": "number"
-    },
-    {
-      "name": "invoice.vatRate",
-      "value": "0.2",
-      "type": "number"
-    },
-    {
-      "name": "invoice.vatAmount",
-      "value": "204",
-      "type": "number"
-    },
-    {
-      "name": "invoice.total",
-      "value": "1224",
-      "type": "number"
-    },
-    {
-      "name": "invoice.paymentUrl",
-      "value": "https://pay.nova.example/i/INV-2025-0087",
-      "type": "text"
-    },
-    {
       "name": "customer.name",
       "value": "Alexandra Mills",
       "type": "text"
@@ -1487,11 +1676,6 @@ export const Preset5: any = {
     {
       "name": "customer.postcode",
       "value": "SW1A 1AA",
-      "type": "text"
-    },
-    {
-      "name": "customer.country",
-      "value": "United Kingdom",
       "type": "text"
     },
     {
@@ -1515,39 +1699,133 @@ export const Preset5: any = {
       "type": "text"
     },
     {
-      "name": "shipping.country",
-      "value": "United Kingdom",
+      "name": "invoice.company",
+      "value": "NOVA SUPPLY CO.",
       "type": "text"
     },
     {
-      "name": "items",
-      "value": "[{\"description\":\"Consulting services – March\",\"qty\":12,\"unitPrice\":75,\"amount\":900},{\"description\":\"Premium support plan\",\"qty\":1,\"unitPrice\":120,\"amount\":120}]",
-      "type": "json_array"
-    },
-    {
-      "name": "totals.lines",
-      "value": "[{\"label\":\"Subtotal\",\"value\":1020,\"emphasis\":false},{\"label\":\"VAT (20%)\",\"value\":204,\"emphasis\":false},{\"label\":\"Total\",\"value\":1224,\"emphasis\":true}]",
-      "type": "json_array"
-    },
-    {
-      "name": "barcode.format",
-      "value": "QR",
+      "name": "invoice.website",
+      "value": "www.novasupply.example",
       "type": "text"
     },
     {
-      "name": "barcode.value",
-      "value": "https://pay.nova.example/i/INV-2025-0087",
+      "name": "invoice.email",
+      "value": "support@nova.example",
       "type": "text"
     },
     {
-      "name": "barcode.imageBase64",
-      "value": "data:image/png;base64,{{INVOICE_BARCODE_BASE64}}",
+      "name": "invoice.number",
+      "value": "INV-2025-0087",
       "type": "text"
     },
     {
-      "name": "footer.line",
-      "value": "NOVA SUPPLY CO. · 221B Market Street, London · (020) 1234 5678",
+      "name": "invoice.date",
+      "value": "2025-03-14",
       "type": "text"
+    },
+    {
+      "name": "invoice.dueDate",
+      "value": "2025-03-28",
+      "type": "text"
+    },
+    {
+      "name": "invoice.lineItems",
+      "value": "[object Object],[object Object]",
+      "type": "json_array",
+      "tokenAttributes": [
+        {
+          "name": "description",
+          "value": "[\"Car Model A\",\"Car Model B\"]",
+          "valueArray": [
+            "Car Model A",
+            "Car Model B"
+          ],
+          "type": "text"
+        },
+        {
+          "name": "qty",
+          "value": "[\"2\",\"3\"]",
+          "valueArray": [
+            "2",
+            "3"
+          ],
+          "type": "number"
+        },
+        {
+          "name": "unit",
+          "value": "[\"Type X\",\"Type Y\"]",
+          "valueArray": [
+            "Type X",
+            "Type Y"
+          ],
+          "type": "text"
+        },
+        {
+          "name": "amount",
+          "value": "[\"600\",\"420\"]",
+          "valueArray": [
+            "600",
+            "420"
+          ],
+          "type": "number"
+        },
+        {
+          "name": "text_car",
+          "value": "[\"Car Model A\",\"Car Model B\"]",
+          "valueArray": [
+            "Car Model A",
+            "Car Model B"
+          ],
+          "type": "text"
+        },
+        {
+          "name": "text_type",
+          "value": "[\"Type X\",\"Type Y\"]",
+          "valueArray": [
+            "Type X",
+            "Type Y"
+          ],
+          "type": "text"
+        },
+        {
+          "name": "text_year_start",
+          "value": "[\"2023\",\"2022\"]",
+          "valueArray": [
+            "2023",
+            "2022"
+          ],
+          "type": "text"
+        },
+        {
+          "name": "text_year_end",
+          "value": "[\"2024\",\"2023\"]",
+          "valueArray": [
+            "2024",
+            "2023"
+          ],
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "name": "invoice.notes",
+      "value": "Payment due within 14 days. Thank you for your business.",
+      "type": "text"
+    },
+    {
+      "name": "invoice.subtotal",
+      "value": "1020",
+      "type": "number"
+    },
+    {
+      "name": "invoice.vat",
+      "value": "204",
+      "type": "number"
+    },
+    {
+      "name": "invoice.total",
+      "value": "1224",
+      "type": "number"
     }
   ],
   "colorPalettes": [

@@ -1,5 +1,5 @@
 import { Component, Inject } from '@angular/core';
-import { CommonModule, NgForOf, NgIf } from '@angular/common';
+import { CommonModule, NgForOf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
@@ -12,8 +12,9 @@ import {
   MatDialogRef,
   MatDialogTitle,
   MatDialogContent,
-  MatDialogActions,
+  MatDialogActions
 } from '@angular/material/dialog';
+import { MatTab, MatTabGroup } from '@angular/material/tabs';
 
 import { TokenAttributeType } from '../../models/token-attribute-type';
 import { TokenAttribute } from '../../models/token-attribute';
@@ -30,71 +31,108 @@ export interface JsonArrayEditorDialogData {
     CommonModule, FormsModule, NgForOf,
     MatDialogTitle, MatDialogContent, MatDialogActions,
     MatFormField, MatLabel, MatInput, MatSelect, MatOption,
-    MatButton, MatIconButton, MatIcon,
+    MatButton, MatIconButton, MatIcon, MatTabGroup, MatTab
   ],
   templateUrl: './json-array-editor-dialog.component.html',
+  styleUrls: ['./json-array-editor-dialog.component.scss']
 })
 export class JsonArrayEditorDialogComponent {
+  public tabIndex = 0;
   items: TokenAttribute[] = [];
   addName = '';
-  addValue = '';
   addType: TokenAttributeType = TokenAttributeType.TEXT;
   TokenAttributeType = TokenAttributeType;
 
-  // keep the same display list as parent
-  readonly typeSelections: Array<{ value: TokenAttributeType; viewValue: string }> = [
-    { value: TokenAttributeType.TEXT,         viewValue: 'Text' },
-    { value: TokenAttributeType.BOOLEAN,      viewValue: 'Boolean' },
-    { value: TokenAttributeType.NUMBER,       viewValue: 'Number' },
-    { value: TokenAttributeType.STRING_ARRAY, viewValue: 'STRING Array' },
-    { value: TokenAttributeType.IMAGE,        viewValue: 'Image' },
-    { value: TokenAttributeType.BARCODE,      viewValue: 'Barcode' }
-  ];
+  testRows: Array<{ [key: string]: string }> = [];
 
+  readonly typeSelections = [
+    { value: TokenAttributeType.TEXT, viewValue: 'Text' },
+    { value: TokenAttributeType.BOOLEAN, viewValue: 'Boolean' },
+    { value: TokenAttributeType.NUMBER, viewValue: 'Number' },
+    { value: TokenAttributeType.STRING_ARRAY, viewValue: 'STRING Array' },
+    { value: TokenAttributeType.IMAGE, viewValue: 'Image' },
+    { value: TokenAttributeType.BARCODE, viewValue: 'Barcode' }
+  ];
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: JsonArrayEditorDialogData,
     private dialogRef: MatDialogRef<JsonArrayEditorDialogComponent, TokenAttribute[]>
   ) {
-    // Use a defensive clone so cancel won’t mutate caller state
     const incoming = Array.isArray(data?.items) ? data.items : [];
-    this.items = incoming.map(it => new TokenAttribute(it.name, it.value, it.type));
+    this.items = incoming.map(it => {
+      const t = new TokenAttribute(it.name, it.value, it.type);
+      t.valueArray = it.valueArray ? [...it.valueArray] : [];
+      return t;
+    });
+    this.rebuildTestRows();
   }
 
+  trackByIndex = (i: number) => i;
+
+  /* ===== Tokens Tab ===== */
   canAdd(): boolean {
     return !(this.addName?.trim() && this.addType !== undefined);
   }
 
   addItem(): void {
     const name = (this.addName || '').trim();
-    const val  = (this.addValue ?? '').toString();
-    const type = this.addType;
-
     if (!name) return;
 
-    const child = new TokenAttribute(name, val, type);
-    // ensure nested holder exists if you later want deep nesting
-    child.tokenAttributes = child.tokenAttributes ?? undefined;
+    const token = new TokenAttribute(name, '', this.addType);
+    token.valueArray = [];
+    this.items.push(token);
 
-    this.items = [...this.items, child];
-
-    // reset add row
     this.addName = '';
-    this.addValue = '';
     this.addType = TokenAttributeType.TEXT;
+    this.rebuildTestRows();
   }
 
   removeItem(item: TokenAttribute): void {
-    this.items = this.items.filter(a => a !== item);
+    this.items = this.items.filter(t => t !== item);
+    this.rebuildTestRows();
   }
 
+  /* ===== Test Tab ===== */
+  addTestRow(): void {
+    this.items.forEach(t => {
+      t.valueArray = t.valueArray ?? [];
+      t.valueArray.push('');
+    });
+    this.rebuildTestRows();
+  }
+
+  removeTestRow(index: number): void {
+    this.items.forEach(t => t.valueArray?.splice(index, 1));
+    this.rebuildTestRows();
+  }
+
+  updateTestValue(token: TokenAttribute, rowIndex: number, value: string): void {
+    if (!token.valueArray) token.valueArray = [];
+    token.valueArray[rowIndex] = value;
+    // ← removed rebuildTestRows() here to prevent cursor jumping
+  }
+
+  rebuildTestRows(): void {
+    const rowCount = this.items.reduce((max, t) => Math.max(max, t.valueArray?.length ?? 0), 0);
+    this.testRows = [];
+    for (let i = 0; i < rowCount; i++) {
+      const row: { [key: string]: string } = {};
+      this.items.forEach(t => {
+        row[t.name] = t.valueArray?.[i] ?? '';
+      });
+      this.testRows.push(row);
+    }
+  }
+
+  /* ===== Dialog actions ===== */
   onCancel(): void {
-    this.dialogRef.close(null); // caller can treat null as "no change"
+    this.dialogRef.close(null);
   }
 
   onSave(): void {
+    this.items.forEach(t => {
+      t.value = JSON.stringify(t.valueArray ?? []);
+    });
     this.dialogRef.close(this.items);
   }
-
-  trackByIndex = (i: number) => i;
 }

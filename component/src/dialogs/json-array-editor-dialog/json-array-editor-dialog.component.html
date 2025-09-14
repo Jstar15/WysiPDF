@@ -1,91 +1,87 @@
 <h1 mat-dialog-title>{{ data?.title || 'Edit JSON Array Items' }}</h1>
 
 <mat-dialog-content class="editor-dialog-content simple">
-  <p class="section-title">Add New Item</p>
+  <mat-tab-group [(selectedIndex)]="tabIndex">
 
-  <!-- One-line add row (consistent with parent row-grid-3-3-3-auto) -->
-  <div class="row-grid-3-3-3-auto">
-    <!-- Name -->
-    <mat-form-field appearance="fill">
-      <mat-label>Name</mat-label>
-      <input
-        matInput
-        [(ngModel)]="addName"
-        (keydown.enter)="!canAdd() && addItem()" />
-    </mat-form-field>
+    <!-- Tokens Tab -->
+    <mat-tab label="Tokens">
+      <p class="section-title">Add New Item</p>
+      <div class="row-grid-3-3-auto">
+        <mat-form-field appearance="fill">
+          <mat-label>Name</mat-label>
+          <input matInput [(ngModel)]="addName" (keydown.enter)="!canAdd() && addItem()" />
+        </mat-form-field>
 
-    <!-- Type -->
-    <mat-form-field appearance="fill">
-      <mat-label>Type</mat-label>
-      <mat-select [(ngModel)]="addType">
-        <mat-option *ngFor="let type of typeSelections" [value]="type.value">
-          {{ type.viewValue }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Type</mat-label>
+          <mat-select [(ngModel)]="addType">
+            <mat-option *ngFor="let type of typeSelections" [value]="type.value">
+              {{ type.viewValue }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
 
-    <!-- Value -->
-    <mat-form-field appearance="fill">
-      <mat-label>Value</mat-label>
-      <input
-        matInput
-        [(ngModel)]="addValue"
-        (keydown.enter)="!canAdd() && addItem()" />
-    </mat-form-field>
+        <button mat-flat-button color="primary" class="btn-pill" [disabled]="canAdd()" (click)="addItem()">
+          <mat-icon svgIcon="add"></mat-icon>
+        </button>
+      </div>
 
-    <!-- Add button -->
-    <button
-      mat-flat-button
-      color="primary"
-      class="btn-pill"
-      [disabled]="canAdd()"
-      (click)="addItem()">
-      <mat-icon svgIcon="add"></mat-icon>
-    </button>
-  </div>
+      <p class="section-title">Current Tokens</p>
+      <div *ngFor="let element of items; let i = index; trackBy: trackByIndex" class="row-grid-3-3-auto">
+        <mat-form-field appearance="fill">
+          <mat-label>Name</mat-label>
+          <input matInput [(ngModel)]="element.name" placeholder="Name" />
+        </mat-form-field>
 
-  <p class="section-title">Current Items</p>
+        <mat-form-field appearance="fill">
+          <mat-label>Type</mat-label>
+          <mat-select [(ngModel)]="element.type">
+            <mat-option *ngFor="let type of typeSelections" [value]="type.value">
+              {{ type.viewValue }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
 
-  <div>
-    <div class="row-grid-3-3-3-auto" *ngFor="let element of items; let i = index; trackBy: trackByIndex">
-      <!-- Name -->
-      <mat-form-field appearance="fill">
-        <input
-          matInput
-          [(ngModel)]="element.name"
-          placeholder="Name" />
-      </mat-form-field>
+        <button mat-icon-button color="warn" aria-label="Delete token" (click)="removeItem(element)">
+          <mat-icon svgIcon="delete"></mat-icon>
+        </button>
+      </div>
+    </mat-tab>
 
-      <!-- Type -->
-      <mat-form-field appearance="fill">
-        <mat-label>Type</mat-label>
-        <mat-select
-          [(ngModel)]="element.type">
-          <mat-option *ngFor="let type of typeSelections" [value]="type.value">
-            {{ type.viewValue }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
+    <!-- Test Tab -->
+    <mat-tab label="Test">
+      <p class="section-title">Test Rows</p>
+      <div class="test-table-container">
+        <div class="test-table">
+          <!-- Headers -->
+          <div class="test-row test-row-header">
+            <div *ngFor="let t of items" class="test-cell header">{{ t.name }}</div>
+            <div class="test-cell header"></div>
+          </div>
 
-      <!-- Value -->
-      <mat-form-field appearance="fill">
-        <mat-label>Value</mat-label>
-        <input
-          matInput
-          [(ngModel)]="element.value"
-          placeholder="Value" />
-      </mat-form-field>
-
-      <!-- Delete -->
-      <button
-        mat-icon-button
-        color="warn"
-        aria-label="Delete item"
-        (click)="removeItem(element)">
-        <mat-icon svgIcon="delete"></mat-icon>
+          <!-- Rows -->
+          <div class="test-row" *ngFor="let row of testRows; let ri = index">
+            <div class="test-cell" *ngFor="let t of items">
+              <mat-form-field appearance="fill">
+                <input matInput
+                       [ngModel]="row[t.name]"
+                       (ngModelChange)="updateTestValue(t, ri, $event)" />
+              </mat-form-field>
+            </div>
+            <div class="test-cell">
+              <button mat-icon-button color="warn" aria-label="Remove row" (click)="removeTestRow(ri)">
+                <mat-icon svgIcon="delete"></mat-icon>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <button mat-flat-button color="primary" (click)="addTestRow()">
+        <mat-icon svgIcon="add"></mat-icon> Add Row
       </button>
-    </div>
-  </div>
+    </mat-tab>
+
+  </mat-tab-group>
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">

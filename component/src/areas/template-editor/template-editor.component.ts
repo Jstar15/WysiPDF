@@ -150,7 +150,7 @@ export class TemplateEditorComponent implements OnInit,AfterViewInit {
       {
         name: 'WYSI Page Model',
         description: 'Raw editable layout page',
-        data: pdfGenerationResult1.page
+        data: page
       },
       {
         name: 'PDFMake Definition',

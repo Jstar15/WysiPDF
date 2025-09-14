@@ -39,7 +39,11 @@
   .cell-change app-cell-style-toolbar {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+  }
+  .cell-change{
+    display: flex;
+    justify-content: right;
+    align-items: end;
   }
 
   /* Buttons */
@@ -62,7 +66,6 @@
   ========================== */
   .toolbar-row-2 {
     margin-top: 0.75rem;
-    padding: 0.5rem 1rem;
     background: #fffdfd;
     border-radius: 8px;
     grid-template-columns: repeat(3, auto);
@@ -95,6 +98,8 @@
       flex-wrap: wrap;
       margin-bottom: 0.5rem;
     }
+
+
 
     .icon-btn,
     button.mat-icon-button {

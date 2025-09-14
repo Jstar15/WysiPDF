@@ -24,6 +24,11 @@ import {
   JsonArrayEditorDialogData
 } from '../../../dialogs/json-array-editor-dialog/json-array-editor-dialog.component';
 
+import {
+  StringArrayEditorDialogComponent,
+  StringArrayEditorDialogData
+} from '../../../dialogs/string-array-editor-dialog/string-array-editor-dialog.component';
+
 @Component({
   selector: 'app-token-editor',
   standalone: true,
@@ -43,20 +48,16 @@ export class TokenEditorComponent implements OnInit, OnChanges {
   @Output() public attributesChange = new EventEmitter<TokenAttribute[]>();
 
   public tabIndex = 0;
-
-  // add form fields
   public name = '';
   public value = '';
   public selectedType: TokenAttributeType = TokenAttributeType.TEXT;
 
-  // strictly map to your enum values
-  public readonly typeSelections: Array<{ value: TokenAttributeType; viewValue: string }> = [
+  public readonly typeSelections = [
     { value: TokenAttributeType.TEXT,         viewValue: 'Text' },
     { value: TokenAttributeType.BOOLEAN,      viewValue: 'Boolean' },
     { value: TokenAttributeType.NUMBER,       viewValue: 'Number' },
     { value: TokenAttributeType.JSON_ARRAY,   viewValue: 'JSON Array' },
     { value: TokenAttributeType.STRING_ARRAY, viewValue: 'STRING Array' },
- //   { value: TokenAttributeType.OBJECT,       viewValue: 'Object' },
     { value: TokenAttributeType.IMAGE,        viewValue: 'Image' },
     { value: TokenAttributeType.BARCODE,      viewValue: 'Barcode' }
   ];
@@ -66,47 +67,38 @@ export class TokenEditorComponent implements OnInit, OnChanges {
   public isJsonValid = true;
   public error: string | null = null;
 
-  TokenAttributeType = TokenAttributeType; // expose enum to template
+  TokenAttributeType = TokenAttributeType;
 
   constructor(
     private readonly tokenParser: JsonTokenParserUtility,
     private readonly dialog: MatDialog
   ) {}
 
-  public ngOnInit(): void {
-    this.syncDataSource();
+  ngOnInit(): void { this.syncDataSource(); }
+  ngOnChanges(changes: SimpleChanges): void {
+    if ('attributes' in changes) this.syncDataSource();
   }
 
-  public ngOnChanges(changes: SimpleChanges): void {
-    if ('attributes' in changes) {
-      this.syncDataSource();
-    }
+  canAdd(): boolean {
+    if (this.name.trim().length == 0) return true;
+    return false;
   }
 
-  public canAdd(): boolean {
-    if (!this.name.trim() || !this.selectedType) return true;
-    if (this.selectedType === TokenAttributeType.JSON_ARRAY) return false;
-    return !this.value.trim();
-  }
-
-  public addAttribute(): void {
+  addAttribute(): void {
     const newAttr: TokenAttribute = {
       name: this.name.trim(),
       value: this.value,
       type: this.selectedType
     };
-
     this.attributes = [...this.attributes, newAttr];
     this.syncDataSource();
     this.emitAttributes();
-
-    // reset inputs
     this.name = '';
     this.value = '';
     this.selectedType = TokenAttributeType.TEXT;
   }
 
-  public removeAttribute(attr: TokenAttribute): void {
+  removeAttribute(attr: TokenAttribute): void {
     this.attributes = this.attributes.filter(
       a => !(a.name === attr.name && a.type === attr.type && a.value === attr.value)
     );
@@ -114,29 +106,22 @@ export class TokenEditorComponent implements OnInit, OnChanges {
     this.emitAttributes();
   }
 
-  /** If a row’s type changes to JSON_ARRAY, ensure value is valid JSON array */
-  public onTypeChange(element: TokenAttribute): void {
-    if (element.type === TokenAttributeType.JSON_ARRAY) {
-      // initialize to [] if empty or invalid
-      if (!this.isParsableJsonArray(element.value)) {
-        element.value = '[]';
-      }
+  onTypeChange(element: TokenAttribute): void {
+    if (element.type === TokenAttributeType.JSON_ARRAY && !this.isParsableJsonArray(element.value)) {
+      element.value = '[]';
+    }
+    if (element.type === TokenAttributeType.STRING_ARRAY && !this.isParsableStringArray(element.value)) {
+      element.value = '[]';
     }
     this.emitAttributes();
   }
 
-  /** Open the dialog to edit the JSON array for this element */
-  public openJsonArrayEditor(element: TokenAttribute): void {
+  openJsonArrayEditor(element: TokenAttribute): void {
     const data: JsonArrayEditorDialogData = {
       items: element.tokenAttributes,
       title: `Edit "${element.name}" JSON Array`
     };
-
-    const ref = this.dialog.open(JsonArrayEditorDialogComponent, {
-      width: '760px',
-      data
-    });
-
+    const ref = this.dialog.open(JsonArrayEditorDialogComponent, { width: '760px', data });
     ref.afterClosed().subscribe((updated?: TokenAttribute[] | null) => {
       if (updated) {
         element.tokenAttributes = updated;
@@ -146,39 +131,50 @@ export class TokenEditorComponent implements OnInit, OnChanges {
     });
   }
 
-  public validateJson(): void {
+  openStringArrayEditor(element: TokenAttribute): void {
+    const data: StringArrayEditorDialogData = {
+      items: element.value ? JSON.parse(element.value) : [],
+      title: `Edit "${element.name}" String Array`
+    };
+    const ref = this.dialog.open(StringArrayEditorDialogComponent, { width: '600px', data });
+    ref.afterClosed().subscribe((updated?: string[] | null) => {
+      if (updated) {
+        element.value = JSON.stringify(updated);
+        this.syncDataSource();
+        this.emitAttributes();
+      }
+    });
+  }
+
+  stringArrayPreview(element: TokenAttribute): string {
     try {
-      JSON.parse(this.jsonText);
-      this.isJsonValid = true;
-      this.error = null;
+      const arr: string[] = element.value ? JSON.parse(element.value) : [];
+      return arr.length === 0 ? '[] (empty)' : `[${arr.length} strings]`;
     } catch {
-      this.isJsonValid = false;
+      return '(invalid string array)';
     }
   }
 
-  public clearJson(): void {
-    this.jsonText = '';
-    this.isJsonValid = true;
-    this.error = null;
+  validateJson(): void {
+    try { JSON.parse(this.jsonText); this.isJsonValid = true; this.error = null; }
+    catch { this.isJsonValid = false; }
   }
 
-  public injectJson(): void {
-    try {
-      const parsedAttrs: TokenAttribute[] = this.tokenParser.parse(this.jsonText);
+  clearJson(): void {
+    this.jsonText = ''; this.isJsonValid = true; this.error = null;
+  }
 
-      console.log(parsedAttrs)
+  injectJson(): void {
+    try {
+      const parsedAttrs = this.tokenParser.parse(this.jsonText);
       this.attributes = parsedAttrs.map(a => ({
         name: a.name?.trim() ?? '',
         value: String(a.value ?? ''),
         type: a.type as TokenAttributeType,
         tokenAttributes: a.tokenAttributes
       }));
-
-      this.syncDataSource();
-      this.emitAttributes();
-
-      this.tabIndex = 0; // back to Tokens tab
-      this.error = null;
+      this.syncDataSource(); this.emitAttributes();
+      this.tabIndex = 0; this.error = null;
     } catch (err: any) {
       this.error = err?.message || 'Failed to parse JSON.';
     }
@@ -188,21 +184,24 @@ export class TokenEditorComponent implements OnInit, OnChanges {
     this.dataSource.data = this.attributes ?? [];
   }
 
-  public emitAttributes(): void {
-    this.attributesChange.emit(this.attributes);
-  }
+  emitAttributes(): void { this.attributesChange.emit(this.attributes); }
 
-  public jsonArrayPreview(element: TokenAttribute): string {
-    const arr: TokenAttribute[] = element.tokenAttributes == null ? [] : element.tokenAttributes;
+  jsonArrayPreview(element: TokenAttribute): string {
+    const arr: TokenAttribute[] = element.tokenAttributes ?? [];
     return arr.length === 0 ? '[] (empty)' : `[${arr.length} items]`;
   }
 
   private isParsableJsonArray(value: string | null | undefined): boolean {
     if (!value?.trim()) return false;
-    try {
-      const v = JSON.parse(value);
-      return Array.isArray(v);
-    } catch { return false; }
+    try { return Array.isArray(JSON.parse(value)); }
+    catch { return false; }
   }
 
+  private isParsableStringArray(value: string | null | undefined): boolean {
+    if (!value?.trim()) return false;
+    try {
+      const parsed = JSON.parse(value);
+      return Array.isArray(parsed) && parsed.every(x => typeof x === 'string');
+    } catch { return false; }
+  }
 }

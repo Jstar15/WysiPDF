@@ -24,9 +24,6 @@
 
 
                 <mat-card-content>
-                    <h3 style="margin: 16px 0 8px; display: flex; align-items: center;">
-                        <mat-icon style="margin-right: 4px;" svgIcon="layers"></mat-icon> Page Content
-                    </h3>
                     <mat-accordion>
                         <!-- HEADER -->
                         <mat-expansion-panel (opened)="onPanelOpened('header')">
@@ -121,7 +118,6 @@
 
         <app-cell-editor-viewer *ngIf="currentView == PanelTypes.CELL_EDITOR"
                                 [type]="cellEditorType"
-                                [tokens]="page.tokenAttrs"
                                 [colorPalettes]="page.colorPalettes"
                                 (editorActionEvent)="closeEditors()">
         </app-cell-editor-viewer>

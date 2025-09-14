@@ -13,7 +13,8 @@ import { HtmlToStructuredContentConverter } from '../converters/html-to-structur
 @Injectable({ providedIn: 'root' })
 export class PageTokenValidator {
   constructor(
-    private htmlToStructuredContentService: HtmlToStructuredContentConverter) {}
+    private htmlToStructuredContentService: HtmlToStructuredContentConverter
+  ) {}
 
   public validatePage(page: Page, tokens: TokenAttribute[]): Page {
     if (!page) return page;
@@ -31,24 +32,45 @@ export class PageTokenValidator {
     return this.processRows(rows, tokens);
   }
 
-  /** 🔄 Central recursive processor for any Row[] */
+  /** Central recursive processor for any Row[] */
   private processRows(rows: Row[], tokens: TokenAttribute[]): Row[] {
-    let errors: string[] = [];
-    let key: string;
     for (let row of rows) {
+      const matchedToken = tokens.find(t => t.name === row.repeatableToken?.name);
+
+      // Reset all cell errors at the start
+      row.cells.forEach(cell => {
+        cell.errorMessage = '';
+        cell.hasError = false;
+      });
+
+      // 🔹 Push error if repeatableToken name does not exist in tokens
+      if (row.repeatableToken?.name && !matchedToken) {
+        row.cells.forEach(cell => {
+          cell.errorMessage = `Repeatable token "${row.repeatableToken?.name}" not found`;
+          cell.hasError = true;
+        });
+      }
+
+      // Use latest tokenAttributes if found, otherwise fallback to existing
+      const rowTokens =
+        matchedToken?.tokenAttributes ??
+        row.repeatableToken?.tokenAttributes ??
+        tokens;
+
       for (let cell of row.cells) {
-        key = null;
-        errors = [];
-        if (cell.type == 'barcode' && cell.barcodeBlock?.HtmlTokenElement?.key) {
+        let key: string | null = null;
+        const errors: string[] = [];
+
+        if (cell.type === 'barcode' && cell.barcodeBlock?.HtmlTokenElement?.key) {
           key = cell.barcodeBlock.HtmlTokenElement.key;
-        } else if (cell.type == 'image' && cell.barcodeBlock?.HtmlTokenElement?.key) {
+        } else if (cell.type === 'image' && cell.barcodeBlock?.HtmlTokenElement?.key) {
           key = cell.barcodeBlock.HtmlTokenElement.key;
-        } else if (cell.type == 'chart' && cell.barcodeBlock?.HtmlTokenElement?.key) {
-          // key = cell.chartBlock.HtmlTokenElement.key;
+        } else if (cell.type === 'chart' && cell.barcodeBlock?.HtmlTokenElement?.key) {
+          // key = cell.chartBlock.HtmlTokenElement.key; // Uncomment if needed
         }
 
         if (key) {
-          const isAvailable = this.isTokenAvailable(key, tokens);
+          const isAvailable = this.isTokenAvailable(key, rowTokens);
           if (!isAvailable) {
             errors.push(`Token "${key}" not found`);
           }
@@ -58,13 +80,10 @@ export class PageTokenValidator {
           switch (block.blockType) {
             case 'table': {
               const tableBlock = block as HtmlTableBlock;
-              // process each table row/cell
               for (let tableRow of tableBlock.rows) {
                 for (let tableCell of tableRow.cells) {
                   for (let element of tableCell.elements) {
-                    errors.push(
-                      ...this.processAttributes(element.attributes, tokens)
-                    );
+                    errors.push(...this.processAttributes(element.attributes, rowTokens));
                   }
                 }
               }
@@ -73,17 +92,14 @@ export class PageTokenValidator {
 
             case 'grid': {
               const gridBlock = block as HtmlGridBlock;
-              // recurse into grid rows
-              this.processRows(gridBlock.rows, tokens);
+              this.processRows(gridBlock.rows, rowTokens);
               break;
             }
 
             default: {
               const htmlBlock = block as HtmlBlock;
               for (let element of htmlBlock.elements) {
-                errors.push(
-                  ...this.processAttributes(element.attributes, tokens)
-                );
+                errors.push(...this.processAttributes(element.attributes, rowTokens));
               }
             }
           }
@@ -93,14 +109,18 @@ export class PageTokenValidator {
         if (errors.length > 0) {
           cell.errorMessage = errors.join(', ');
           cell.hasError = true;
-        } else {
-          cell.errorMessage = '';
+        } else if (!cell.errorMessage) {
+          // Preserve error from missing repeatable token if already set
           cell.hasError = false;
+          cell.errorMessage = '';
         }
       }
     }
+
     return rows;
   }
+
+
 
   /** 🔍 Attribute validator */
   private processAttributes(
@@ -148,7 +168,6 @@ export class PageTokenValidator {
       if (!rows || !Array.isArray(rows)) return;
       for (const row of rows) {
         for (const cell of row?.cells ?? []) {
-          // Defensive: some cells may not have block/blocks depending on type
           if (cell?.hasError && cell?.errorMessage) {
             messages.add(cell.errorMessage);
           }
@@ -170,7 +189,4 @@ export class PageTokenValidator {
     } catch {}
     return JSON.parse(JSON.stringify(obj));
   }
-
-
-
 }

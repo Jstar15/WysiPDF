@@ -1,47 +1,41 @@
-.editor-dialog-content.simple {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  padding-top: 6px; /* a bit more breathing room above first element */
-}
-
-.stack {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  padding: 6px 2px; /* subtle internal spacing */
-}
-
-.w-100 { width: 100%; }
-
-.file-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 10px;
-  border-radius: 999px;
-  border: 1px solid rgba(0,0,0,0.08);
-  background: rgba(0,0,0,0.03);
-  font-size: 12px;
-}
-
-.hint {
-  font-size: 12px;
-  opacity: .75;
-}
-
-.error {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  color: #b00020;
-  font-size: 13px;
-}
-
-
-.json-array-inline{
+/* Row layouts */
+.row-grid-1fr-auto {
   display: grid;
-  grid-auto-columns: 1fr auto;
-  grid-auto-flow: column;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
   align-items: center;
 }
+
+.row-grid-2-3-auto {
+  display: grid;
+  grid-template-columns: 2fr 3fr auto;
+  gap: 8px;
+  align-items: center;
+}
+
+.row-grid-3-3-3-auto {
+  display: grid;
+  grid-template-columns: 3fr 3fr 3fr auto;
+  gap: 8px;
+  align-items: center;
+}
+
+.row-actions {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+/* JSON array inline editor */
+.json-array-inline {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  mat-form-field {
+    flex: 1;
+    margin: 0;
+  }
+}
+
+/* Other utility classes remain the same */

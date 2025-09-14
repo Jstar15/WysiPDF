@@ -135,6 +135,18 @@ export class PageStateService {
     return grid?.rows[this.currentRow]?.cells[this.currentCol];
   }
 
+  getTokenAttributes(): TokenAttribute[]{
+    const current = this.getCurrentPage();
+    if (!current) return null;
+
+    let grid: Grid = current[this.currentArea];
+    let isRepeatable = grid?.rows[this.currentRow].repeatableToken;
+    if(isRepeatable){
+      return isRepeatable.tokenAttributes;
+    }
+    return current.tokenAttrs;
+  }
+
   getCurrentRow(): Row{
     const current = this.getCurrentPage();
     if (!current) return null;

@@ -8,7 +8,7 @@ export class TokenAttribute {
   }
   name:string;
   value:string;
-  valueArray?:string[];
+  valueArray?: string[]; // <-- allow object array
   type:TokenAttributeType;
   tokenAttributes?:TokenAttribute[]; //this is what i want to show
 }

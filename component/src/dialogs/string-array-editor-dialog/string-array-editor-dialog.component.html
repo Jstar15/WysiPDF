@@ -1,0 +1,34 @@
+<h1 mat-dialog-title>{{ data?.title || 'Edit String List' }}</h1>
+
+<mat-dialog-content class="editor-dialog-content simple">
+  <p class="section-title">Add New String</p>
+
+  <div class="row-grid-1-auto">
+    <mat-form-field appearance="fill">
+      <mat-label>Value</mat-label>
+      <input matInput [(ngModel)]="newValue" (keydown.enter)="addItem()" />
+    </mat-form-field>
+
+    <button mat-flat-button color="primary" class="btn-pill"
+            [disabled]="!newValue.trim()" (click)="addItem()">
+      <mat-icon svgIcon="add"></mat-icon>
+    </button>
+  </div>
+
+  <p class="section-title">Current Strings</p>
+
+  <div *ngFor="let value of items; let i = index" class="row-grid-1-auto">
+    <mat-form-field appearance="fill">
+      <input matInput [(ngModel)]="items[i]" />
+    </mat-form-field>
+
+    <button mat-icon-button color="warn" aria-label="Delete string" (click)="removeItem(i)">
+      <mat-icon svgIcon="delete"></mat-icon>
+    </button>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">Cancel</button>
+  <button mat-flat-button color="primary" (click)="onSave()">Save</button>
+</mat-dialog-actions>

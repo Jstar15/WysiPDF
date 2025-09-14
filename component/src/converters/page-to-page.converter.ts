@@ -5,13 +5,15 @@ import { TokenAttribute } from '../models/token-attribute';
 import {TokenReplacerUtility} from "../utils/token-replacer.utility";
 import {DisplayLogicUtility} from "../utils/display-logic.utility";
 import {Converter} from "./converter";
+import {RepeatableContentExpanderService} from "../services/RepeatableContentExpanderService";
 
 @Injectable({ providedIn: 'root' })
 export class PageToPageConverter  implements Converter<Page, Page, TokenAttribute[]> {
   constructor(
     private htmlToStructuredContentService: HtmlToStructuredContentConverter,
     private tokenReplacerUtility: TokenReplacerUtility,
-    private displayLogicUtility : DisplayLogicUtility
+    private displayLogicUtility : DisplayLogicUtility,
+    private repeatableContentExpanderService : RepeatableContentExpanderService
   ) {}
 
   /**
@@ -25,7 +27,7 @@ export class PageToPageConverter  implements Converter<Page, Page, TokenAttribut
     page = this.htmlToStructuredContentService.convert(page);
 
     // 2) expand tokenized/partial sections
-  //  page = this.partialContentExpander.insertPartialContent(page, tokenAttributeList);
+    page = this.repeatableContentExpanderService.expandRepeatables(page, tokenAttributeList);
 
     // 3) normalize row background colors to match page background
     page = this.updateRowColorToMatchPageBackgroundColor(page);
@@ -34,9 +36,9 @@ export class PageToPageConverter  implements Converter<Page, Page, TokenAttribut
     page = this.cleanHeaderFooter(page);
 
     // 5) Replace tokens
-    page.header.rows = this.tokenReplacerUtility.replaceTokensInRow(page.header.rows, tokenAttributeList);
-    page.footer.rows = this.tokenReplacerUtility.replaceTokensInRow(page.footer.rows, tokenAttributeList);
-    page.content.rows = this.tokenReplacerUtility.replaceTokensInRow(page.content.rows, tokenAttributeList);
+    page.header.rows = this.tokenReplacerUtility.replaceTokensInRows(page.header.rows, tokenAttributeList);
+    page.footer.rows = this.tokenReplacerUtility.replaceTokensInRows(page.footer.rows, tokenAttributeList);
+    page.content.rows = this.tokenReplacerUtility.replaceTokensInRows(page.content.rows, tokenAttributeList);
 
     // 6) Evaluate display logic show / hide
     page.header.rows = this.displayLogicUtility.evaluateAllRows(page.header.rows, tokenAttributeList);

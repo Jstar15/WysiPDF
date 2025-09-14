@@ -20,12 +20,12 @@ import {ChartEditorComponent} from "./chart-editor/chart-editor.component";
 })
 export class CellEditorViewerComponent implements OnInit{
   @Input() type: CellEditorType = CellEditorType.IMAGE;
-  @Input() tokens!: TokenAttribute[];
   @Input() colorPalettes: string[] = [];
 
   @Output() editorActionEvent = new EventEmitter<CellEditorAction>();
 
-  cell: Cell
+  cell: Cell;
+  tokens: TokenAttribute[] = [];
   okLabel = 'OK';
   cancelLabel = 'Cancel';
 
@@ -34,6 +34,7 @@ export class CellEditorViewerComponent implements OnInit{
 
   ngOnInit(): void {
     this.loadCurrentCell();
+    this.loadTokenAttributes();
   }
 
   onCancel(): void {
@@ -46,6 +47,10 @@ export class CellEditorViewerComponent implements OnInit{
 
   loadCurrentCell(): void{
     this.cell = this.gridStateService.getCurrentCell();
+  }
+
+  loadTokenAttributes(): void{
+    this.tokens = this.gridStateService.getTokenAttributes();
   }
 
   protected readonly CellEditorType = CellEditorType;
