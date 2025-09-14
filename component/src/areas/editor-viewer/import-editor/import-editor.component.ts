@@ -14,7 +14,7 @@ import {MatFormField} from "@angular/material/form-field";
 @Component({
   selector: 'app-import-editor',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatButton, MatDialogContent, MatFormField, MatIcon, MatInput, MatLabel, MatTab, MatTabGroup],
+  imports: [CommonModule, FormsModule, MatButton, MatDialogContent, MatIcon, MatTab, MatTabGroup],
   templateUrl: './import-editor.component.html',
   styleUrls: ['./import-editor.component.scss']
 })

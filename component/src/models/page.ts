@@ -171,4 +171,6 @@ export interface PageAttrs {
     defaultFont?: string;
 
     dontBreakRows?: boolean;
+    pageNumbering?: boolean;
+
 }

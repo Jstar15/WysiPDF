@@ -97,10 +97,20 @@
   </div>
 
   <p class="section-title">Rendering Options</p>
+  <div>
+    <mat-slide-toggle
+      [(ngModel)]="pageAttrs.dontBreakRows"
+      color="primary">
+      Prevent rows from splitting across pages
+    </mat-slide-toggle>
+  </div>
+<div>
   <mat-slide-toggle
-    [(ngModel)]="pageAttrs.dontBreakRows"
+    [(ngModel)]="pageAttrs.pageNumbering"
     color="primary">
-    Prevent rows from splitting across pages
+    Page Numbering
   </mat-slide-toggle>
+</div>
+
 </div>
 

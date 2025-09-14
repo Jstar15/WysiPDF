@@ -601,7 +601,9 @@ export const Preset1: Page = {
     "footerMarginBottom": 5,
     "footerHeight": 50,
     "backgroundColor": "white",
-    "defaultFont": "Roboto"
+    "defaultFont": "Roboto",
+    "dontBreakRows": true,
+    "pageNumbering": true
   },
   "tokenAttrs": [],
   "colorPalettes": [

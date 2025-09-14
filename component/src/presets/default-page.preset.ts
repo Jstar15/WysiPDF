@@ -20,7 +20,9 @@ export const DEFAULT_PAGE: Page = {
     footerMarginLeft: 25,
     footerMarginBottom: 5,
     footerHeight: 40,
-    defaultFont: 'Roboto'
+    defaultFont: 'Roboto',
+    dontBreakRows: true,
+    pageNumbering: true
   },
   tokenAttrs: [],
   colorPalettes: [

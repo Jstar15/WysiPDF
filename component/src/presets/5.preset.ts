@@ -1655,7 +1655,9 @@ export const Preset5: any = {
     "footerMarginBottom": 5,
     "footerHeight": 40,
     "backgroundColor": "white",
-    "defaultFont": "Roboto"
+    "defaultFont": "Roboto",
+    "dontBreakRows": true,
+    "pageNumbering": true
   },
   "tokenAttrs": [
     {

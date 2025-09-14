@@ -6,15 +6,14 @@ import { Injectable } from '@angular/core';
 import type { Content, ContentColumns, TDocumentDefinitions } from 'pdfmake/interfaces';
 import { StructuredContentToPdfmakeConverter } from './structured-content-to-pdfmake.converter';
 import { GridToStructuredContentConverter } from './grid-to-structured-content.converter';
-import {Converter} from "./converter";
+import { Converter } from "./converter";
+
 @Injectable({ providedIn: 'root' })
 export class PageToStructuredContentConverter implements Converter<Page, TDocumentDefinitions> {
   constructor(
     private structuredContentToPdfmakeService: StructuredContentToPdfmakeConverter,
     private gridToPdfmakeConverter: GridToStructuredContentConverter
   ) {}
-
-
 
   public convert(page: Page): TDocumentDefinitions {
     const contentContainer = this.gridToPdfmakeConverter.convert(page.content.rows, page.pageAttrs);
@@ -43,8 +42,8 @@ export class PageToStructuredContentConverter implements Converter<Page, TDocume
       header: () => this.buildHeaderPayload(headerContent, p),
       footer: (currentPage, pageCount) => {
         const payload = this.buildFooterPayload(footerContent, p);
-        // inject real values
-        (payload.columns[1] as any).text = `Page ${currentPage} of ${pageCount}`;
+        // only show page numbers if enabled
+        (payload.columns[1] as any).text = p.pageNumbering ? `Page ${currentPage} of ${pageCount}` : '';
         return payload;
       },
       background: p.backgroundColor ? () => this.buildBackgroundPayload(p)! : undefined,
@@ -54,9 +53,6 @@ export class PageToStructuredContentConverter implements Converter<Page, TDocume
     };
   }
 
-  /**
-   * Export version: builds a JS string payload with inline functions.
-   */
   public convertToStringPayload(page: Page): string {
     const contentContainer = this.gridToPdfmakeConverter.convert(page.content.rows, page.pageAttrs);
     const headerContainer  = this.gridToPdfmakeConverter.convert(page.header.rows, page.pageAttrs);
@@ -78,10 +74,8 @@ export class PageToStructuredContentConverter implements Converter<Page, TDocume
     const footerPayload = this.buildFooterPayload(footerContent, p);
     const backgroundPayload = this.buildBackgroundPayload(p);
 
-    // JSON-safe stringify
     const stringify = (obj: any) => JSON.stringify(obj, null, 2);
 
-    // Build string
     const js = `
   {
   "content": [
@@ -95,20 +89,17 @@ export class PageToStructuredContentConverter implements Converter<Page, TDocume
   },
   "footer": function(currentPage, pageCount) {
     var payload = ${stringify(footerPayload)};
-    payload.columns[1].text = "Page " + currentPage + " of " + pageCount;
+    payload.columns[1].text = ${p.pageNumbering ? `"Page " + currentPage + " of " + pageCount` : `""`};
     return payload;
   },
   "background": ${backgroundPayload ? `function() { return ${stringify(backgroundPayload)}; }` : "undefined"},
   "defaultStyle": ${stringify({ font: p.defaultFont })},
   "pageSize": "A4",
   "pageMargins": [${p.marginLeft}, ${headerBand}, ${p.marginRight}, ${footerBand}]
-
 }`;
 
-    //console.log(js);
     return js;
   }
-
 
   private formatBody(v: unknown, indent = 0): string {
     return JSON.stringify(v, null, 2)
@@ -145,7 +136,7 @@ export class PageToStructuredContentConverter implements Converter<Page, TDocume
         { width: '80%', stack: footerContent, margin: [0, 0, 0, 0] },
         {
           width: '20%',
-          text: `Page {{currentPage}} of {{pageCount}}`, // placeholder for string payload
+          text: `Page {{currentPage}} of {{pageCount}}`, // placeholder
           alignment: 'right',
           fontSize: 9,
           margin: [0, 10, 0, 0]
@@ -166,4 +157,3 @@ export class PageToStructuredContentConverter implements Converter<Page, TDocume
   }
 
 }
-

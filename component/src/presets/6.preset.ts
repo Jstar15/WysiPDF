@@ -510,7 +510,9 @@ export const Preset6: any = {
     "marginTop": 35, "marginRight": 30, "marginLeft": 30, "marginBottom": 24,
     "headerMarginTop": 5, "headerMarginRight": 0, "headerMarginLeft": 0, "headerMarginBottom": 5, "headerHeight": 60,
     "footerMarginTop": 5, "footerMarginRight": 30, "footerMarginLeft": 30, "footerMarginBottom": 5, "footerHeight": 40,
-    "backgroundColor": "white", "defaultFont": "Roboto"
+    "backgroundColor": "white", "defaultFont": "Roboto",
+    "dontBreakRows": true,
+    "pageNumbering": true
   },
   partialContent:[],
   "colorPalettes": [
