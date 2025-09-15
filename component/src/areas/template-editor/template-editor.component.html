@@ -6,7 +6,7 @@
             class="split-container"
     >
         <!-- LEFT PANE -->
-        <as-split-area [size]="50" [minSize]="30" class="left-pane" [class.disabled]="this.currentView != PanelTypes.PDF_VIEW">
+        <as-split-area [size]="50" [minSize]="30" class="left-pane" [class.disabled]="isEditorOpen()">
             <mat-card class="editor-card mat-elevation-z4">
               <mat-card-header  class="toolbar-wrapper">
                 <app-toolbar

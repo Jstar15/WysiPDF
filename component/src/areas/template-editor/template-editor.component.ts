@@ -171,6 +171,11 @@ export class TemplateEditorComponent implements OnInit,AfterViewInit {
     ];
   }
 
-
+  isEditorOpen(){
+    if(this.currentView != PanelTypes.PDF_VIEW && this.currentView != PanelTypes.JSON_VIEW){
+      return true;
+    }
+    return false;
+  }
   protected readonly PanelTypes = PanelTypes;
 }
