@@ -179,10 +179,8 @@ MIT
 
 
 //todo
-allow hyperlink from a token include validation
 fix html support
 add docx export support
-/stop ability to change cells while an editor is open
 //add types on packing .d.ts
 //shakedown tree if possbile so save space
 //add validation to chart

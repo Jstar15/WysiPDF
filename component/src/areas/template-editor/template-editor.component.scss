@@ -24,6 +24,11 @@ as-split-area {
   overflow: auto;
 }
 
+.left-pane.disabled {
+  pointer-events: none; /* Disable all mouse interactions */
+  opacity: 0.55;         /* Optional: visually indicate disabled */
+}
+
 /* Splitter */
 as-split-gutter {
   background-color: hotpink;
