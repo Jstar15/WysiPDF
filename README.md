@@ -176,13 +176,3 @@ All bundled into **one single JS file** that can run on **client or server side*
 ## 📄 License
 
 MIT
-
-
-//todo
-fix html support
-add docx export support
-//add types on packing .d.ts
-//shakedown tree if possbile so save space
-//add validation to chart
-//add better error messaing when oerror on barcode during test
-//fianl readme
