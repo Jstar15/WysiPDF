@@ -5,7 +5,7 @@ import {
   HtmlBlock,
   HtmlBlockContainer,
   HtmlGridBlock,
-  HtmlTableBlock, Page, PageAttrs,
+  HtmlTableBlock, PageAttrs,
   Row
 } from '../models/page';
 
@@ -188,13 +188,24 @@ export class StructuredContentToPdfmakeConverter implements Converter<HtmlBlockC
     const a = el.attributes;
 
     if (el.type === 'hyperlink' && el.hyperlink) {
-      return {
+      // Start with the text and link
+      const result: any = {
         text: el.hyperlink.name ?? el.value,
         link: el.hyperlink.link,
-        color: a.color || 'blue',
-        decoration: 'underline',
         noWrap: false
       };
+
+      // Apply all text styles
+      if (a.bold === 'true') result.bold = true;
+      if (a.italic === 'true') result.italics = true;
+      if (a.underline === 'true') result.decoration = 'underline';
+      if (a.size) result.fontSize = a.size;
+      if (a.font) result.font = a.font;
+      if (a.color) result.color = a.color;
+      else result.color = 'blue'; // default for links
+      if (a.background) result.background = a.background;
+
+      return result;
     }
 
     let finalValue = el.value;

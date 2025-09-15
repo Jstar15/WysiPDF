@@ -179,7 +179,6 @@ MIT
 
 
 //todo
-//fx hyperlink,
 allow hyperlink from a token include validation
 fix html support
 add docx export support

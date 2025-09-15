@@ -380,9 +380,11 @@ export class HtmlToStructuredContentConverter implements Converter<Page, Page> {
     const href = el.getAttribute('href') ?? '';
     const text = el.textContent ?? '';
 
+    const mergedAttrs = this.extractAttributes(el, el.className, inheritedAttrs);
+    mergedAttrs.underline = 'true';
     return {
       value: text,
-      attributes: { ...inheritedAttrs },
+      attributes: mergedAttrs,
       type: 'hyperlink',
       hyperlink: {
         name: text,
