@@ -23,6 +23,7 @@ export class TokenReplacerUtility {
 
       for (const block of cell.block.blocks) {
 
+
         if (block.blockType === 'table') {
           const table = block as HtmlTableBlock;
           for (const tr of table.rows) {
@@ -40,6 +41,12 @@ export class TokenReplacerUtility {
               this.replaceInElement(el, tokenMap);
             }
           }
+        }
+
+        const repeatable: TokenAttribute = row.repeatableToken;
+        if(repeatable){
+          const repeatbaleTokenMap = this.buildTokenMap(tokens);
+          cell.value = this.replaceInHtml(cell.value, repeatbaleTokenMap); //udpate fucniton here
         }
       }
     }
@@ -116,6 +123,50 @@ export class TokenReplacerUtility {
     }
   }
 
+  /**
+   * Replace tokens in an HTML string using the token map.
+   * Returns a new string with replacements applied.
+   */
+  /**
+   * Replace tokens in an HTML string using the token map.
+   * Returns the updated string.
+   */
+  /**
+   * Replace tokens in an HTML string using the token map.
+   * Updates <span data-name="key"> content with replacement values.
+   * Returns the updated HTML string.
+   */
+  public replaceInHtml(html: string, tokenMap: { [key: string]: string }): string {
+    if (!html) return html;
+
+    // Create a DOM parser
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, 'text/html');
+
+    // Find all spans with data-name
+    const spans = doc.querySelectorAll('span[data-name]');
+    spans.forEach(span => {
+      const key = span.getAttribute('data-name')?.trim();
+      if (!key) return;
+
+      // Lookup replacement only if key exists in map
+      const replacement =
+        tokenMap[key] ?? tokenMap[key.toLowerCase()] ?? null;
+
+      if (replacement != null) {
+        span.textContent = replacement;
+      }
+      // else: no replacement, leave as-is
+    });
+
+    // Return the updated HTML as string
+    return doc.body.innerHTML;
+  }
+
+
+
+
+  // ── tiny helpers ──
   private norm(k: string): string {
     return k.replace(/^<<\s*|\s*>>$/g, '').trim().toLowerCase();
   }

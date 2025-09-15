@@ -31,6 +31,7 @@ export class HtmlGenerateService {
     page = this.pageService.convert(page, tokenAttributeList);
     page = this.tokenHtmlCellReplacerService.replaceTokensInPageHtml(page, page.tokenAttrs);
 
+    debugger;
     const html = opts?.fullDocument
       ? this.toHtmlDocument(page, opts)
       : this.toHtmlString(page, opts);
@@ -213,7 +214,6 @@ ${body}
         width: cb?.width ? `${Math.max(1, Math.min(100, Number(cb.width) || 0))}%` : '100%',
       };
 
-      // Alignment via margins
       if (cb?.alignment === 'center') {
         styleObj['margin-left'] = 'auto';
         styleObj['margin-right'] = 'auto';
@@ -223,9 +223,8 @@ ${body}
 
       const style = this.inlineStyle(styleObj);
 
-      // Figure + optional caption for title
       return `<figure class="p2h-chart">
-  <img src="${src}"  style="${style}">
+  <img src="${src}" style="${style}">
 </figure>`;
     }
 
@@ -237,7 +236,6 @@ ${body}
         width: cell.imageBlock?.width ? `${Math.max(1, Math.min(100, Number(cell.imageBlock.width) || 0))}%` : '100%',
       };
 
-      // Alignment via margins
       const a = cell.imageBlock.alignment;
       if (a === 'center') {
         styleObj['margin-left'] = 'auto';
@@ -251,7 +249,7 @@ ${body}
       return `<img src="${src}" alt="${alt}" style="${style}">`;
     }
 
-    // Existing image support
+    // Existing barcode support
     if (cell.type === 'barcode' && cell.barcodeBlock?.imageBase64) {
       const src = this.imageSrcFromBlock(cell.barcodeBlock);
       const styleObj: Record<string, string | number | undefined> = {
@@ -273,10 +271,28 @@ ${body}
       return `<img src="${src}" alt="${alt}" style="${style}">`;
     }
 
+    // Default: use editor HTML but fix Quill alignment classes
+    if (cell.value) {
+      try {
+        const doc = new DOMParser().parseFromString(cell.value, 'text/html');
 
-    // Use the editor HTML as-is (tables, headings, fonts, etc.)
-    debugger;
-    return cell.value ?? '';
+        doc.querySelectorAll('[class*="ql-align-"]').forEach(el => {
+          const cls = Array.from(el.classList).find(c => c.startsWith('ql-align-'));
+          if (cls) {
+            const align = cls.replace('ql-align-', '');
+            const existing = el.getAttribute('style') || '';
+            el.setAttribute('style', `${existing}; text-align: ${align};`);
+          }
+        });
+
+        return doc.body.innerHTML;
+      } catch (e) {
+        console.warn('Failed to parse HTML for alignment', e);
+        return cell.value;
+      }
+    }
+
+    return '';
   }
 
   // -----------------------
@@ -290,8 +306,11 @@ ${body}
   padding: 32px 16px;                 /* space around the page */
   box-sizing: border-box;
   background: #f6f7f9;                /* soft app/canvas bg */
+  font-size: 110%;                     /* increase all fonts by 10% */
+  line-height: 1.35;                   /* tighter default line spacing */
 }
 
+/* Page wrapper */
 .${scopeClass}--page-view .${scopeClass}__page {
   max-width: 900px;                   /* page width */
   margin: 0 auto;
@@ -302,6 +321,16 @@ ${body}
   border-radius: 10px;
   box-shadow: 0 10px 25px rgba(0,0,0,0.08),
               0  2px  8px rgba(0,0,0,0.06);
+  font-size: 110%;                     /* ensure page-level font increase */
+  line-height: 1.35;                   /* consistent tighter spacing */
+}
+
+/* Reset paragraph spacing inside cells to prevent huge gaps */
+.${scopeClass}--page-view .p2h-cell p {
+  margin: 0 0 8px 0;                   /* small bottom margin between paragraphs */
+  padding: 0;
+  line-height: 1.35;                   /* consistent line spacing */
+  font-size: 12px;                      /* default if not specified */
 }
 
 /* Section rhythm when in page view */
@@ -332,9 +361,9 @@ ${body}
 
 /* Optional: page margins for print output */
 @page { margin: 15mm; }
-
 `.trim();
   }
+
 
   /** Make padding CSS from CellAttrs. */
   private paddingCss(a: CellAttrs): string {
