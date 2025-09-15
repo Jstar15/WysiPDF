@@ -151,6 +151,13 @@ export class HtmlToStructuredContentConverter implements Converter<Page, Page> {
           return;
         }
 
+        // handle <a> hyperlink
+        if (el.tagName.toLowerCase() === 'a') {
+          const hyperlinkElement = this.parseHyperlink(el, inheritedAttrs);
+          elements.push(hyperlinkElement);
+          return;
+        }
+
         const combinedClass = [inheritedClass, el.className].filter(Boolean).join(' ');
         const mergedAttrs = this.extractAttributes(el, combinedClass, inheritedAttrs);
 
@@ -367,5 +374,20 @@ export class HtmlToStructuredContentConverter implements Converter<Page, Page> {
       return fontMap[fontName.toLowerCase()] || undefined;
     }
     return undefined;
+  }
+
+  private parseHyperlink(el: HTMLElement, inheritedAttrs: HtmlAttributes): HtmlBasicElement {
+    const href = el.getAttribute('href') ?? '';
+    const text = el.textContent ?? '';
+
+    return {
+      value: text,
+      attributes: { ...inheritedAttrs },
+      type: 'hyperlink',
+      hyperlink: {
+        name: text,
+        link: href
+      }
+    };
   }
 }

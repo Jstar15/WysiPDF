@@ -187,9 +187,19 @@ export class StructuredContentToPdfmakeConverter implements Converter<HtmlBlockC
   private convertElement(el: HtmlBasicElement): ContentText {
     const a = el.attributes;
 
+    if (el.type === 'hyperlink' && el.hyperlink) {
+      return {
+        text: el.hyperlink.name ?? el.value,
+        link: el.hyperlink.link,
+        color: a.color || 'blue',
+        decoration: 'underline',
+        noWrap: false
+      };
+    }
+
     let finalValue = el.value;
     if (!finalValue && el.token?.key) {
-      finalValue = `{{${el.token.key}}}`;  // e.g., {{batters.batter.id}}
+      finalValue = `{{${el.token.key}}}`;
     }
 
     const style: any = {
@@ -207,6 +217,7 @@ export class StructuredContentToPdfmakeConverter implements Converter<HtmlBlockC
 
     return style;
   }
+
 
   private getDefaultLayout(): TableLayout {
     return {

@@ -22,12 +22,19 @@ export interface HtmlAttributes {
 }
 
 export interface HtmlBasicElement {
-    type: 'text' | 'image' | 'token'; // add 'image'
+    type: 'text' | 'image' | 'token' | 'hyperlink';
     value: string;
     attributes: HtmlAttributes;
     token?: HtmlTokenElement;
+    hyperlink?: HtmlHyperlinkElement;
     index?: number;
 }
+
+export interface HtmlHyperlinkElement {
+  name?: string;
+  link?: string;
+}
+
 
 export interface HtmlTokenElement {
     key?: string;
