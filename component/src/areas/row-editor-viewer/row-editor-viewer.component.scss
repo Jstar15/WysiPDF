@@ -54,10 +54,14 @@
   flex: 1 1 auto; /* pushes buttons to the right */
 }
 
-/* Optional: compact screens */
+/* Compact screens */
 @media (max-width: 480px) {
   .editor-header, .editor-content, .editor-footer {
     padding-left: 12px;
     padding-right: 12px;
+  }
+
+  .editor-footer {
+    padding-bottom: calc(12px + env(safe-area-inset-bottom)); /* for iOS/Pixel bottom nav bar */
   }
 }

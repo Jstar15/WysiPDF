@@ -19,7 +19,7 @@ import {PdfViewerComponent} from "../../shared/pdf-viewer/pdf-viewer.component";
 import {MatCard, MatCardActions, MatCardContent, MatCardHeader,} from "@angular/material/card";
 import {MatIcon} from "@angular/material/icon";
 import {PageStateService} from "../../services/page-state.service";
-import {IconService} from "../../services/external/icon.service";
+import {IconService} from "../../services/icon.service";
 import {DEFAULT_PAGE} from "../../presets/default-page.preset";
 import {PageTokenValidator} from "../../services/page-token-validator.service";
 import {EditorViewerComponent} from "../editor-viewer/editor-viewer.component";
@@ -149,14 +149,14 @@ export class TemplateEditorComponent implements OnInit,AfterViewInit {
 
     return [
       {
-        name: 'WYSI Page Model',
-        description: 'Raw page model',
-        data: page
-      },
-      {
         name: 'PDFMake Definition',
         description: 'Converted document definition used to render the PDF',
         data: payloadStr
+      },
+      {
+        name: 'WYSI Page Model',
+        description: 'Raw page model',
+        data: page
       },
       {
         name: 'Tokens',

@@ -7,7 +7,7 @@ import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { Subject } from 'rxjs';
 import { TokenAttribute } from '../../../models/token-attribute';
-import { IconService } from '../../../services/external/icon.service';
+import { IconService } from '../../../services/icon.service';
 import {  Grid, Row, PageAttrs, Cell,} from '../../../models/page';
 import {CellStyleToolbarComponent,} from '../toolbar/cell-style-toolbar/cell-style-toolbar.component';
 import {CellEditorType} from "../../cell-editor-viewer/cell-editor-viewer.interfaces";

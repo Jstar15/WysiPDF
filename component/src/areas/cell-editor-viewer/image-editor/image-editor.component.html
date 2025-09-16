@@ -8,14 +8,58 @@
     </button>
 
 
-
     <div class="file-info" *ngIf="filename">{{ filename }}</div>
 
   </div>
+  <p class="section-title">Or select an icon</p>
+  <div class="flex">
+
+
+    <div class="tool group split">
+      <!-- Current color button -->
+      <button mat-button class="btn-tight main"
+              aria-label="Change color"
+              (click)="openColorPicker()">
+        <span class="swatch" [style.background]="color"></span>
+      </button>
+
+      <!-- Dropdown for palette -->
+      <button mat-icon-button class="btn-tight caret-btn"
+              [matMenuTriggerFor]="fillMenu"
+              aria-label="Open fill menu">
+        <mat-icon svgIcon="arrow_drop_down"></mat-icon>
+      </button>
+
+      <mat-menu #fillMenu="matMenu" class="palette-menu" xPosition="after" yPosition="below">
+        <app-color-swatch-picker
+          [color]="color"
+          [customPalette]="colorAttrs"
+          (colorSelect)="onColorSelected($event)">
+        </app-color-swatch-picker>
+      </mat-menu>
+    </div>
+
+    <div>
+      <button mat-stroked-button type="button" (click)="openIconPicker()">
+        <mat-icon svgIcon="upload"></mat-icon>
+        <span>Choose Icon</span>
+      </button>
+
+      <app-icon-picker
+        *ngIf="showIconPicker"
+        [title]="'Bullet Icon'"
+        [color]="color"
+        (confirm)="handleIconOk($event)"
+        (cancel)="handleIconCancel()">
+      </app-icon-picker>
+    </div>
+  </div>
+
+
 
   <!-- Token-based image selection (IMAGE tokens only) -->
-  <p class="section-title" *ngIf="imageTokens.length">Or select image token</p>
-  <div *ngIf="imageTokens.length" class="token-picker">
+  <p class="section-title">Or select image token</p>
+  <div  class="token-picker">
     <mat-form-field appearance="fill">
       <mat-label>Image Token</mat-label>
       <mat-select [(ngModel)]="selectedTokenKey" (selectionChange)="onTokenChanged()">

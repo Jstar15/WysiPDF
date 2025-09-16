@@ -1,0 +1,54 @@
+.picker-surface {
+  --ps-pad: 8px;
+  --ps-gap: 8px;
+  --radius: 8px;
+  --shadow: 0 6px 18px rgba(0,0,0,.12);
+
+  padding: var(--ps-pad);
+  border: 1px solid rgba(0,0,0,.12);
+  border-radius: var(--radius);
+  background: #fff;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: var(--ps-gap);
+  max-height: 300px;
+}
+
+.picker-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  .title { font-weight: 600; color: #374151; font-size: 13px; }
+  .actions { display: inline-flex; gap: 4px; }
+}
+
+/* Icon grid layout */
+.icon-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(48px, 1fr));
+  gap: 8px;
+  padding: 4px;
+  overflow-y: auto;
+}
+
+.icon-cell {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s, border 0.2s;
+  border: 2px solid transparent;
+
+  &:hover { background: rgba(0,0,0,0.04); }
+  &.selected { border-color: #3f51b5; background: rgba(63,81,181,0.08); }
+
+  svg {
+    width: 24px;
+    height: 24px;
+    fill: currentColor;
+  }
+}

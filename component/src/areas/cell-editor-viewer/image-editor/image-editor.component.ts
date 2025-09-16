@@ -11,20 +11,22 @@ import {
 } from '@angular/core';
 import { CommonModule, NgFor, NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-
 import { MatFormField } from '@angular/material/form-field';
 import { MatInput, MatLabel } from '@angular/material/input';
 import { MatIcon } from '@angular/material/icon';
-import { MatButton } from '@angular/material/button';
+import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatButtonToggleGroup, MatButtonToggle } from '@angular/material/button-toggle';
 import { MatSelect } from '@angular/material/select';
 import { MatOption } from '@angular/material/core';
-
+import { MatMenu, MatMenuTrigger } from '@angular/material/menu';
 import { Cell, ImageBlock } from '../../../models/page';
 import { TokenAttribute } from '../../../models/token-attribute';
 import { TokenAttributeType } from '../../../models/token-attribute-type';
-import {ImageCompressionService} from "../../../services/external/image-compression.service";
-import {NgxImageCompressService, UploadResponse} from "ngx-image-compress";
+import { NgxImageCompressService } from "ngx-image-compress";
+import { IconPickerComponent } from "../../../shared/icon-picker/icon-picker.component";
+import { ICON_SVGS } from "../../../assets/icon-contents";
+import { SvgToPngService } from "../../../services/svg-to-png.service";
+import { ColorSwatchPickerComponent } from "../../../shared/color-swatch-picker/color-swatch-picker.component";
 
 type Align = 'left' | 'center' | 'right';
 
@@ -36,101 +38,59 @@ type Align = 'left' | 'center' | 'right';
   imports: [
     CommonModule, FormsModule, NgIf, NgFor,
     MatFormField, MatInput, MatLabel,
-    MatIcon, MatButton,
-    MatButtonToggleGroup, MatButtonToggle,
-    MatSelect, MatOption
+    MatIcon, MatButton, MatButtonToggleGroup, MatButtonToggle,
+    MatSelect, MatOption, IconPickerComponent, ColorSwatchPickerComponent,
+    MatIconButton, MatMenu, MatMenuTrigger
   ]
 })
 export class AddImageEditorComponent implements OnInit, OnChanges {
   @Input() public cell!: Cell;
   @Input() public tokenAttrs: TokenAttribute[] = [];
+  @Input() public colorAttrs: string[] = [];
   @Output() public change = new EventEmitter<Cell>();
 
-  /** hidden file input ref */
   @ViewChild('fileInput', { static: false }) fileInput!: ElementRef<HTMLInputElement>;
 
-  // Local state (kept independent so preview stays stable)
   public imageBase64 = '';
   public filename = '';
   public width = 100;
   public alignment: Align = 'left';
-
   public imageTokens: TokenAttribute[] = [];
   public selectedTokenKey: string | null = null;
 
-  constructor(private imageCompressService: NgxImageCompressService) {
-  }
+  /** Icon picker state */
+  public showIconPicker = false;
+  public color: string = 'black';
 
-  async pickAndCompress(maxMb = 0.5): Promise<string> {
-    try {
-      // Lets user pick a file, then compress to <= maxMb
-      const selected: UploadResponse = await this.imageCompressService.uploadFileOrReject();
-      const result: UploadResponse = await this.imageCompressService.getImageWithMaxSizeAndMetas(
-        { image: selected.image, orientation: selected.orientation, fileName: selected.fileName },
-        maxMb,
-        true
-      );
+  constructor(private imageCompressService: NgxImageCompressService,
+              private svgToPngService: SvgToPngService,
+              ) {}
 
-      // Log before returning
-      console.log('final bytes:', this.imageCompressService.byteCount(result.image));
-      return result.image; // base64 data URL
-    } catch (err: any) {
-      // User canceled picker or compression failed
-      console.warn('Image pick/compress aborted:', err?.message ?? err);
-      throw err; // or `return ''` if you prefer a soft failure
-    }
-  }
-  ngOnInit(): void {
-    this.hydrateFromInputs();
-  }
+  ngOnInit(): void { this.hydrateFromInputs(); }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['cell'] || changes['tokenAttrs']) {
-      this.hydrateFromInputs();
-    }
+    if (changes['cell'] || changes['tokenAttrs']) this.hydrateFromInputs();
   }
 
-  // ── UI Actions ──────────────────────────────────────────────────
+  // ── File Picker ─────────────────────────────
   async openFilePicker(maxMb = 0.5): Promise<void> {
     try {
-      // 1) Let user pick a file via the library (no hidden <input> needed)
-      const selected: UploadResponse = await this.imageCompressService.uploadFileOrReject();
-
-      // 2) Compress until <= maxMb
-      const result: UploadResponse = await this.imageCompressService.getImageWithMaxSizeAndMetas(
+      const selected = await this.imageCompressService.uploadFileOrReject();
+      const result = await this.imageCompressService.getImageWithMaxSizeAndMetas(
         { image: selected.image, orientation: selected.orientation, fileName: selected.fileName },
         maxMb,
         true
       );
-
-      // 3) Update your component state
-      this.imageBase64 = result.image;                         // base64 data URL
+      this.imageBase64 = result.image;
       this.filename = result.fileName ?? selected.fileName ?? '';
-      this.selectedTokenKey = null;                            // file overrides token
-
-      console.log('final bytes:', this.imageCompressService.byteCount(result.image));
+      this.selectedTokenKey = null;
       this.emitPayload();
     } catch (err: any) {
-      // User canceled or compression failed
       console.warn('Image pick/compress aborted:', err?.message ?? err);
     }
   }
 
-  onFileChange(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    const file = input.files?.[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = () => {
-      this.imageBase64 = String(reader.result ?? '');
-      this.filename = file.name;
-      this.selectedTokenKey = null; // file overrides token
-      this.emitPayload();
-    };
-    reader.readAsDataURL(file);
-  }
-
+  // ── Token Picker ───────────────────────────
   onTokenChanged(): void {
     if (this.selectedTokenKey) {
       this.filename = `[token:${this.selectedTokenKey}]`;
@@ -139,61 +99,104 @@ export class AddImageEditorComponent implements OnInit, OnChanges {
     this.emitPayload();
   }
 
+  // ── Width & Alignment ──────────────────────
   onWidthChanged(v: number | string): void {
     const n = Number(v);
     if (Number.isFinite(n)) this.width = this.clampWidth(n);
     this.emitPayload();
   }
+  onAlignmentChanged(): void { this.emitPayload(); }
 
-  onAlignmentChanged(): void {
-    this.emitPayload();
+  // ── Icon Picker ───────────────────────────
+  openIconPicker(): void { this.showIconPicker = true; }
+
+  handleIconOk(selectedIcon: string): void {
+    this.showIconPicker = false;
+    this.filename = `[icon:${selectedIcon}]`;
+    this.selectedTokenKey = null;
+
+    const svg = ICON_SVGS[selectedIcon];
+    if (svg) {
+      // Make a copy and apply the selected color
+      const coloredSvg = svg.replace(/\sfill="[^"]*"/g, '').replace(
+        /<svg([^>]*)>/,
+        `<svg$1 fill="${this.color}">`
+      );
+
+      this.svgToPngService.svgToPng(coloredSvg, 128, 128)
+        .then(pngBase64 => {
+          this.imageBase64 = pngBase64;
+          this.emitPayload();
+        })
+        .catch(err => console.error('Failed to convert SVG to PNG', err));
+    } else {
+      this.imageBase64 = '';
+      this.emitPayload();
+    }
   }
 
-  // ── Internal ────────────────────────────────────────────────────
+  handleIconCancel(): void { this.showIconPicker = false; }
+
+  // ── Color Picker ──────────────────────────
+  openColorPicker(): void {
+    // This can trigger the menu or any other UI logic if needed
+    // In your HTML, the mat-menu is already bound to the button
+  }
+
+  onColorSelected(newColor: string): void {
+    this.color = newColor;
+
+    // Reapply color if an icon is selected
+    if (this.filename.startsWith('[icon:')) {
+      const iconName = this.filename.replace(/\[icon:(.*)\]/, '$1');
+      const svg = ICON_SVGS[iconName];
+      if (svg) {
+        const coloredSvg = svg.replace(/\sfill="[^"]*"/g, '').replace(
+          /<svg([^>]*)>/,
+          `<svg$1 fill="${this.color}">`
+        );
+        this.svgToPngService.svgToPng(coloredSvg, 128, 128)
+          .then(pngBase64 => {
+            this.imageBase64 = pngBase64;
+            this.emitPayload();
+          })
+          .catch(err => console.error('Failed to convert SVG to PNG', err));
+      }
+    }
+  }
+
+  // ── Internal Helpers ──────────────────────
   private hydrateFromInputs(): void {
-    // Refresh selectable tokens (IMAGE only)
-    this.imageTokens = (this.tokenAttrs ?? []).filter(
-      t => t.type === TokenAttributeType.IMAGE
-    );
+    this.imageTokens = (this.tokenAttrs ?? []).filter(t => t.type === TokenAttributeType.IMAGE);
 
     const ib: ImageBlock | undefined = this.cell?.imageBlock;
-
     if (ib?.imageBase64) this.imageBase64 = ib.imageBase64;
-    if (ib?.filename)    this.filename    = ib.filename;
+    if (ib?.filename) this.filename = ib.filename;
 
-    this.width     = this.clampWidth(ib?.width ?? this.width ?? 100);
+    this.width = this.clampWidth(ib?.width ?? this.width ?? 100);
     this.alignment = (ib?.alignment as Align) ?? this.alignment;
 
     const tokenKey = (ib as any)?.HtmlTokenElement?.key as string | undefined;
     if (tokenKey) this.selectedTokenKey = tokenKey;
 
     if (this.selectedTokenKey) this.previewFromTokenIfPossible();
-
     this.emitPayload();
   }
 
   private previewFromTokenIfPossible(): void {
     const token = this.imageTokens.find(t => t.name === this.selectedTokenKey);
     if (!token) return;
-
     const value = String(token.value ?? '').trim();
-    if (this.isDataUrl(value) || this.isHttpUrl(value)) {
-      this.imageBase64 = value; // show preview if token is URL/data URL
-    }
-    // If not previewable, leave current preview as-is
+    if (this.isDataUrl(value) || this.isHttpUrl(value)) this.imageBase64 = value;
   }
 
   private emitPayload(): void {
     const imageBlock: ImageBlock = {
       imageBase64: this.imageBase64 || '',
-      filename:
-        this.filename ||
-        (this.selectedTokenKey ? `[token:${this.selectedTokenKey}]` : ''),
+      filename: this.filename || (this.selectedTokenKey ? `[token:${this.selectedTokenKey}]` : ''),
       width: this.width,
       alignment: this.alignment,
-      ...(this.selectedTokenKey
-        ? { HtmlTokenElement: { key: this.selectedTokenKey, type: 'image' } }
-        : {})
+      ...(this.selectedTokenKey ? { HtmlTokenElement: { key: this.selectedTokenKey, type: 'image' } } : {})
     } as ImageBlock;
 
     const updated: Cell = { ...this.cell, imageBlock };
@@ -201,15 +204,7 @@ export class AddImageEditorComponent implements OnInit, OnChanges {
     this.change.emit(updated);
   }
 
-  private clampWidth(n: number): number {
-    return Math.min(100, Math.max(1, Math.round(n)));
-  }
-
-  private isDataUrl(v: string): boolean {
-    return /^data:image\/[a-zA-Z]+;base64,/.test(v);
-  }
-
-  private isHttpUrl(v: string): boolean {
-    return /^https?:\/\//i.test(v);
-  }
+  private clampWidth(n: number): number { return Math.min(100, Math.max(1, Math.round(n))); }
+  private isDataUrl(v: string): boolean { return /^data:image\/[a-zA-Z]+;base64,/.test(v); }
+  private isHttpUrl(v: string): boolean { return /^https?:\/\//i.test(v); }
 }

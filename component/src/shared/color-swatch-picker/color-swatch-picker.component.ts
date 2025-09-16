@@ -5,6 +5,7 @@ import { MatButtonModule } from '@angular/material/button';
 
 /** ⬇️ Adjust this import path/class name to your project if needed */
 import { ColorPickerComponent } from '../color-picker/color-picker.component';
+import {PageStateService} from "../../services/page-state.service";
 
 @Component({
   selector: 'app-color-swatch-picker',
@@ -14,6 +15,8 @@ import { ColorPickerComponent } from '../color-picker/color-picker.component';
   styleUrls: ['./color-swatch-picker.component.scss'],
 })
 export class ColorSwatchPickerComponent {
+  constructor(private pageStateService: PageStateService) {
+  }
   /** Currently selected color (for highlighting) */
   @Input() public color: string = '#000000';
 
