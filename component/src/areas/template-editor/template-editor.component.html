@@ -34,14 +34,11 @@
                                 </mat-panel-title>
                             </mat-expansion-panel-header>
                             <app-grid-editor
-                                    *ngIf="this.area == 'header'"
                                     [area]="'header'"
+                                    [isAreaActive]="this.area == 'header'"
                                     [grid]="page.header"
                                     [tokenAttrs]="page.tokenAttrs"
                                     [pageAttrs]="page.pageAttrs"
-                                    [hidePageBreak]="true"
-                                    [hideChart]="true"
-                                    [hideBarcode]="true"
                                     [colorPalettes]="page.colorPalettes"
                                     (cellChange)="onCellChange($event)"
                                     (rowChange)="onRowChange($event)"
@@ -57,7 +54,7 @@
                                 </mat-panel-title>
                             </mat-expansion-panel-header>
                             <app-grid-editor
-                                    *ngIf="this.area == 'content'"
+                                    [isAreaActive]="this.area == 'content'"
                                     [area]="'content'"
                                     [grid]="page.content"
                                     [tokenAttrs]="page.tokenAttrs"
@@ -77,14 +74,11 @@
                                 </mat-panel-title>
                             </mat-expansion-panel-header>
                             <app-grid-editor
-                                    *ngIf="this.area == 'footer'"
                                     [area]="'footer'"
+                                    [isAreaActive]="this.area == 'footer'"
                                     [grid]="page.footer"
                                     [tokenAttrs]="page.tokenAttrs"
                                     [pageAttrs]="page.pageAttrs"
-                                    [hidePageBreak]="true"
-                                    [hideChart]="true"
-                                    [hideBarcode]="true"
                                     [colorPalettes]="page.colorPalettes"
                                     (cellChange)="onCellChange($event)"
                                     (rowChange)="onRowChange($event)"

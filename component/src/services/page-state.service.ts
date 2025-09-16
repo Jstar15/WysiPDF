@@ -44,7 +44,8 @@ export class PageStateService {
   public emitGridEvent(gridEventType: GridEventType): void {
     const gridEvent: GridEvent = {
       type: gridEventType,
-      area: this.currentArea
+      area: this.currentArea,
+      uuid: crypto.randomUUID()
     };
     this._gridSubject.next(gridEvent);
   }

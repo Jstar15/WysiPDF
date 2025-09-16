@@ -27,13 +27,12 @@ export class GridEditorComponent implements OnInit, OnDestroy {
   @ViewChild('gridContainer', { static: true }) public gridContainer!: ElementRef<HTMLDivElement>;
 
   @Input() public tokenAttrs: TokenAttribute[] = [];
-  @Input() public hidePageBreak: boolean = false;
-  @Input() public hideChart: boolean = false;
-  @Input() public hideBarcode: boolean = false;
   @Input() public pageAttrs: PageAttrs = {};
   @Input() public colorPalettes: string[] | undefined = [];
   @Input() public grid!: Grid;
   @Input() public area!: string;
+  @Input() public isAreaActive: boolean;
+
 
   @Output() public cellChange: EventEmitter<CellEditorType> = new EventEmitter<CellEditorType>();
   @Output() public rowChange: EventEmitter<RowEditorType> = new EventEmitter<RowEditorType>();
@@ -56,7 +55,8 @@ export class GridEditorComponent implements OnInit, OnDestroy {
     this.pageStateService.grid$
       .pipe()
       .subscribe(gridEvent => {
-        if(gridEvent && gridEvent.area == this.area){
+        debugger;
+        if(this.isAreaActive && gridEvent && gridEvent.area != null && gridEvent.area == this.area){
           const type: GridEventType = gridEvent.type;
           switch (type) {
             case GridEventType.ADD_ROW:

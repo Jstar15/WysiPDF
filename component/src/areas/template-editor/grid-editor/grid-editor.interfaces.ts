@@ -2,6 +2,7 @@
 export interface GridEvent {
   type: GridEventType;
   area: string;
+  uuid: string;
 }
 
 

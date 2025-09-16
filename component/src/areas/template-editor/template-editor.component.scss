@@ -80,3 +80,12 @@ as-split-gutter {
   border: none;
   min-height: 0;    /* allow flexbox to shrink properly */
 }
+
+
+
+/* On mobile: reduce height so bottom buttons are visible */
+@media (max-width: 768px) {
+  .mainContainer {
+    height: 90vh;
+  }
+}
