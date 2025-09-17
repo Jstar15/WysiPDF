@@ -83,6 +83,7 @@ export interface BarcodeBlock {
   HtmlTokenElement?: HtmlTokenElement;
   filename: string;
   width: number;
+  heightPx?: number;
   alignment: 'left' | 'center' | 'right';
 }
 

@@ -73,6 +73,7 @@ export class BarCodeEditorComponent implements OnInit, OnChanges {
   public barcodeTokens: TokenAttribute[] = [];
   public errorMsg: string | null = null;
   public isGenerating = false;
+  barcodeHeight: number = 40;  // default
 
   constructor(private readonly barcodeSvc: BarcodeService) {}
 
@@ -124,6 +125,7 @@ export class BarCodeEditorComponent implements OnInit, OnChanges {
 
     if (bb?.imageBase64) this.imageBase64 = bb.imageBase64;
     if (bb?.filename)    this.filename    = bb.filename;
+    if (bb?.heightPx)    this.barcodeHeight    = bb.heightPx;
 
     this.width     = this.clampWidth(bb?.width ?? this.width ?? 100);
     this.alignment = (bb?.alignment as Align) ?? this.alignment;
@@ -162,7 +164,7 @@ export class BarCodeEditorComponent implements OnInit, OnChanges {
         format: this.selectedFormat,
         // 1D defaults (ignored by QR)
         width: 2,
-        height: 90,
+        height: this.barcodeHeight,
         displayValue: false,
         margin: 3,
         // QR defaults (ignored by 1D)
@@ -194,6 +196,7 @@ export class BarCodeEditorComponent implements OnInit, OnChanges {
         this.filename ||
         (this.selectedTokenKey ? `[token:${this.selectedTokenKey}]` : ''),
       width: this.width,
+      heightPx: this.barcodeHeight,
       alignment: this.alignment,
       ...(this.selectedTokenKey
         ? { HtmlTokenElement: { key: this.selectedTokenKey, type: 'barcode' } }
@@ -217,5 +220,11 @@ export class BarCodeEditorComponent implements OnInit, OnChanges {
 
   onAlignmentChanged(): void {
     this.emitPayload();
+  }
+
+  onHeightChanged(newHeight: number) {
+    this.barcodeHeight = newHeight; // reset to default if invalid
+    this.emitPayload();
+
   }
 }

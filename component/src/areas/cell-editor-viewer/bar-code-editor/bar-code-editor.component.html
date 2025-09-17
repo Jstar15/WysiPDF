@@ -40,6 +40,24 @@
         </mat-option>
       </mat-select>
     </mat-form-field>
+
+    <!-- Display height -->
+    <p class="section-title">Display Height (px)</p>
+    <div class="row-grid-1fr">
+      <mat-form-field appearance="fill" class="w-100">
+        <mat-label>Height (px)</mat-label>
+        <input
+          matInput
+          type="number"
+          [(ngModel)]="barcodeHeight"
+          (ngModelChange)="onHeightChanged($event)"
+          min="20"
+          max="200"
+          placeholder="40"
+        />
+      </mat-form-field>
+    </div>
+
   </div>
 
   <!-- Errors -->
