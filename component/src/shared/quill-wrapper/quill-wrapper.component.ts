@@ -224,23 +224,54 @@ export class QuillWrapperComponent implements OnInit, AfterViewInit, OnDestroy, 
     table.deleteTable();
   }
 
+  private insertEmbedWithCaret(
+    blotName: string,
+    value: any,
+    index?: number
+  ): void {
+    // Fallback to end if index is not provided
+    const safeIndex = index ?? Math.max(0, this.quill.getLength() - 1);
+
+    // Insert the embed
+    this.quill.insertEmbed(safeIndex, blotName, value, Quill.sources.USER);
+
+    // Insert zero-width character immediately after
+    const ZW = '\uFEFF';
+    this.quill.insertText(safeIndex + 1, ZW, Quill.sources.SILENT);
+
+    // Place caret after it
+    this.quill.setSelection(safeIndex + 2, 0, Quill.sources.SILENT);
+
+    // Manually emit updated HTML since ZW is silent
+    this.htmlChange.emit(this.quill.root.innerHTML);
+
+    // Update current range
+    this.currentRange = this.quill.getSelection(true);
+  }
+
+
   openDialog(): void {
     this.currentRange = this.quill.getSelection(true);
+
     const dialogRef = this.dialog.open(AddTokenDialogComponent, {
       width: '300px',
-      data: { data: this.attributeArray.filter(a =>
-          (a.type == TokenAttributeType.TEXT) ||
-          (a.type == TokenAttributeType.NUMBER) ||
-          (a.type == TokenAttributeType.BOOLEAN)
-        ) }
+      data: {
+        data: this.attributeArray.filter(a =>
+          a.type === TokenAttributeType.TEXT ||
+          a.type === TokenAttributeType.NUMBER ||
+          a.type === TokenAttributeType.BOOLEAN
+        )
+      }
     });
 
-    dialogRef.afterClosed().subscribe((result: TokenAttribute) => {
+    dialogRef.afterClosed().subscribe((result: TokenAttribute | null) => {
       if (result != null) {
-        this.quill.insertEmbed(this.currentRange.index, 'mathjax', result);
+        const index = this.currentRange?.index;
+        this.insertEmbedWithCaret('mathjax', result, index);
       }
     });
   }
+
 
 
   openPageNumberingDialog(): void {
@@ -253,10 +284,13 @@ export class QuillWrapperComponent implements OnInit, AfterViewInit, OnDestroy, 
 
     dialogRef.afterClosed().subscribe((result: PageNumberType | null) => {
       if (result != null) {
-        this.quill.insertEmbed(this.currentRange.index, 'page-numbering-element', result);
+        const index = this.currentRange?.index;
+        this.insertEmbedWithCaret('page-numbering-element', result, index);
       }
     });
   }
+
+
 
   addLink(){
     let selection = this.quill.getSelection();
