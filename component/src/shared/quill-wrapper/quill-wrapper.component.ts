@@ -22,6 +22,10 @@ import {
   HyperLinkDialogPayload,
   HyperlinkInputDialogComponent
 } from "../../dialogs/hyperlink-input-dialog/hyperlink-input-dialog.component";
+import {PageNumberingElementBlot, PageNumberType} from "./PageNumberingElementBlot";
+import {
+  PageNumberingSelectDialogComponent
+} from "../../dialogs/add-page-numbering-dialog/add-page-numbering-dialog.component";
 
 @Component({
   standalone: true,
@@ -82,6 +86,14 @@ export class QuillWrapperComponent implements OnInit, AfterViewInit, OnDestroy, 
     CustomElementBlot['blotName'] = 'mathjax';
     CustomElementBlot['className'] = 'ql-mathjax';
     CustomElementBlot['tagName'] = 'SPAN';
+    Quill.register(CustomElementBlot);
+
+
+    PageNumberingElementBlot['blotName'] = 'page-numbering-element';
+    PageNumberingElementBlot['className'] = 'page-numbering-element';
+    PageNumberingElementBlot['tagName'] = 'SPAN';
+    Quill.register(PageNumberingElementBlot);
+
 
     const Font: any = Quill.import('formats/font');
     Font.whitelist = [
@@ -95,6 +107,9 @@ export class QuillWrapperComponent implements OnInit, AfterViewInit, OnDestroy, 
       'opensans'
     ];
     Quill.register(CustomElementBlot);
+
+
+
 
     const SizeStyle: any = Quill.import('attributors/style/size');
     SizeStyle.whitelist = ['9px','10px','11px','12px','14px', '16px', '18px', '24px', '32px', '48px', '72px', '90px'];
@@ -223,6 +238,22 @@ export class QuillWrapperComponent implements OnInit, AfterViewInit, OnDestroy, 
     dialogRef.afterClosed().subscribe((result: TokenAttribute) => {
       if (result != null) {
         this.quill.insertEmbed(this.currentRange.index, 'mathjax', result);
+      }
+    });
+  }
+
+
+  openPageNumberingDialog(): void {
+    this.currentRange = this.quill.getSelection(true);
+
+    const dialogRef = this.dialog.open(PageNumberingSelectDialogComponent, {
+      width: '300px',
+      data: { selected: null }
+    });
+
+    dialogRef.afterClosed().subscribe((result: PageNumberType | null) => {
+      if (result != null) {
+        this.quill.insertEmbed(this.currentRange.index, 'page-numbering-element', result);
       }
     });
   }

@@ -41,9 +41,8 @@ export class PageToStructuredContentConverter implements Converter<Page, TDocume
       ],
       header: () => this.buildHeaderPayload(headerContent, p),
       footer: (currentPage, pageCount) => {
-        const payload = this.buildFooterPayload(footerContent, p);
-        // only show page numbers if enabled
-        (payload.columns[1] as any).text = p.pageNumbering ? `Page ${currentPage} of ${pageCount}` : '';
+        let payload = this.buildFooterPayload(footerContent, p);
+        payload = this.injectPageTokens(payload, currentPage, pageCount);
         return payload;
       },
       background: p.backgroundColor ? () => this.buildBackgroundPayload(p)! : undefined,
@@ -89,7 +88,31 @@ export class PageToStructuredContentConverter implements Converter<Page, TDocume
   },
   "footer": function(currentPage, pageCount) {
     var payload = ${stringify(footerPayload)};
-    payload.columns[1].text = ${p.pageNumbering ? `"Page " + currentPage + " of " + pageCount` : `""`};
+    payload = (function inject(content) {
+      if (Array.isArray(content)) {
+        return content.map(c => inject(c));
+      } else if (typeof content === 'object' && content !== null) {
+        var cloned = Object.assign({}, content);
+        if (typeof cloned.text === 'string') {
+          cloned.text = cloned.text
+            .replace(/\\{\\{currentPage\\}\\}/g, String(currentPage))
+            .replace(/\\{\\{totalPages\\}\\}/g, String(pageCount));
+        }
+        if (Array.isArray(cloned.text)) {
+          cloned.text = cloned.text.map(function (t) {
+            return (typeof t === 'string')
+              ? t.replace(/\\{\\{currentPage\\}\\}/g, String(currentPage))
+                   .replace(/\\{\\{totalPages\\}\\}/g, String(pageCount))
+              : inject(t);
+          });
+        }
+        Object.keys(cloned).forEach(function (k) {
+          cloned[k] = inject(cloned[k]);
+        });
+        return cloned;
+      }
+      return content;
+    })(payload);
     return payload;
   },
   "background": ${backgroundPayload ? `function() { return ${stringify(backgroundPayload)}; }` : "undefined"},
@@ -133,10 +156,10 @@ export class PageToStructuredContentConverter implements Converter<Page, TDocume
     return {
       margin: [footerMarginLeft, footerMarginTop, footerMarginRight, footerMarginBottom],
       columns: [
-        { width: '80%', stack: footerContent, margin: [0, 0, 0, 0] },
+        { width: '100%', stack: footerContent, margin: [0, 0, 0, 0] },
         {
-          width: '20%',
-          text: `Page {{currentPage}} of {{pageCount}}`, // placeholder
+          width: '0%',
+          text: ``,
           alignment: 'right',
           fontSize: 9,
           margin: [0, 10, 0, 0]
@@ -154,6 +177,37 @@ export class PageToStructuredContentConverter implements Converter<Page, TDocume
         ]
       }
       : undefined;
+  }
+
+  private injectPageTokens(content: any, currentPage: number, pageCount: number): any {
+    if (Array.isArray(content)) {
+      return content.map(c => this.injectPageTokens(c, currentPage, pageCount));
+    } else if (typeof content === 'object' && content !== null) {
+      const cloned: any = { ...content };
+
+      if (typeof cloned.text === 'string') {
+        cloned.text = cloned.text
+          .replace(/\{\{currentPage\}\}/g, String(currentPage))
+          .replace(/\{\{totalPages\}\}/g, String(pageCount));
+      }
+
+      // pdfmake also allows text arrays
+      if (Array.isArray(cloned.text)) {
+        cloned.text = cloned.text.map((t: any) =>
+          typeof t === 'string'
+            ? t.replace(/\{\{currentPage\}\}/g, String(currentPage))
+              .replace(/\{\{totalPages\}\}/g, String(pageCount))
+            : this.injectPageTokens(t, currentPage, pageCount)
+        );
+      }
+
+      for (const key of Object.keys(cloned)) {
+        cloned[key] = this.injectPageTokens(cloned[key], currentPage, pageCount);
+      }
+
+      return cloned;
+    }
+    return content;
   }
 
 }
