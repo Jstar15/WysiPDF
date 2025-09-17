@@ -1,8 +1,10 @@
 // src/app/presets/radiology-form.grid.preset.ts
 import { Page } from '../models/page';
 import {TokenAttributeType} from "../models/token-attribute-type";
+import {createEmptyRow} from "./default-page.preset";
 
 export const Preset3: any = {
+  "header2": { rows: [createEmptyRow()] },
   "header": {
     "rows": [
       {

@@ -45,6 +45,28 @@
                             ></app-grid-editor>
                         </mat-expansion-panel>
 
+                      <!-- HEADER 2+ -->
+                      <mat-expansion-panel (opened)="onPanelOpened('header2')" *ngIf="page.pageAttrs.headerForPage2Up">
+                        <mat-expansion-panel-header>
+                          <mat-panel-title>
+                            <mat-icon class="panel-icon" svgIcon="view_headline"></mat-icon>
+                            Header (Page 2+)
+                          </mat-panel-title>
+                        </mat-expansion-panel-header>
+                        <app-grid-editor
+                          [area]="'header2'"
+                          [isAreaActive]="this.area == 'header2'"
+                          [grid]="page.header2"
+                          [tokenAttrs]="page.tokenAttrs"
+                          [pageAttrs]="page.pageAttrs"
+                          [colorPalettes]="page.colorPalettes"
+                          (cellChange)="onCellChange($event)"
+                          (rowChange)="onRowChange($event)"
+                        ></app-grid-editor>
+                      </mat-expansion-panel>
+
+
+
                         <!-- CONTENT -->
                         <mat-expansion-panel (opened)="onPanelOpened('content')">
                             <mat-expansion-panel-header>

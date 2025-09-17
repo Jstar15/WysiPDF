@@ -3,7 +3,7 @@ import {
   ChangeDetectorRef,
   Component,
   EventEmitter,
-  Input,
+  Input, NgZone,
   OnInit,
   Output,
   ViewEncapsulation
@@ -86,8 +86,7 @@ export class TemplateEditorComponent implements OnInit,AfterViewInit {
       private iconService: IconService,
       private pageTokenValidator : PageTokenValidator,
       private gridStateService : PageStateService,
-      private displayLogicUtility : DisplayLogicUtility
-  ) {
+      private displayLogicUtility : DisplayLogicUtility) {
     this.iconService.registerIcons();
 
     this.gridStateService.page$.pipe(
@@ -107,11 +106,37 @@ export class TemplateEditorComponent implements OnInit,AfterViewInit {
   }
 
   private async _onPageChange(): Promise<void> {
+    const leftPane = document.querySelector('.left-pane') as HTMLElement;
+    const rightPane = document.querySelector('.right-pane') as HTMLElement;
+    const leftScroll = leftPane?.scrollTop || 0;
+    const rightScroll = rightPane?.scrollTop || 0;
+
     this.gridStateService.pushSnapshot(this.page);
-    this.pdfGenerationResult = await this.pdfService.generatePdfBase64(this.page, this.page.tokenAttrs);
-    this.page = this.pageTokenValidator.validatePage(this.page, this.page.tokenAttrs);
+
+    // Update page in place
+    const validatedPage = this.pageTokenValidator.validatePage(this.page, this.page.tokenAttrs);
+    Object.assign(this.page, validatedPage);
+    if (validatedPage.header) Object.assign(this.page.header, validatedPage.header);
+    if (validatedPage.header2) Object.assign(this.page.header2, validatedPage.header2);
+    if (validatedPage.content) Object.assign(this.page.content, validatedPage.content);
+    if (validatedPage.footer) Object.assign(this.page.footer, validatedPage.footer);
+
     this.jsonList = this.buildJsonViewerList(this.page, this.pdfGenerationResult);
+
     this.cdr.detectChanges();
+
+    // Generate PDF async
+    const pdfResult = await this.pdfService.generatePdfBase64(this.page, this.page.tokenAttrs);
+
+    // Assign PDF result without replacing page
+    this.pdfGenerationResult.base64 = pdfResult.base64;
+    this.pdfGenerationResult.docDefinition = pdfResult.docDefinition;
+
+    // Wait for next frame after PDF view has rendered
+    requestAnimationFrame(() => {
+      if (leftPane) leftPane.scrollTop = leftScroll;
+      if (rightPane) rightPane.scrollTop = rightScroll;
+    });
   }
 
   openEditorViewer(editorType: EditorType){
@@ -131,7 +156,7 @@ export class TemplateEditorComponent implements OnInit,AfterViewInit {
 
   onPanelOpened(area: string){
     this.area = area;
-    this.gridStateService.updateArea(area)
+    this.gridStateService.updateArea(area);
   }
 
   closeEditors(){

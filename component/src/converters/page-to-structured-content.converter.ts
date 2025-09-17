@@ -18,9 +18,11 @@ export class PageToStructuredContentConverter implements Converter<Page, TDocume
   public convert(page: Page): TDocumentDefinitions {
     const contentContainer = this.gridToPdfmakeConverter.convert(page.content.rows, page.pageAttrs);
     const headerContainer  = this.gridToPdfmakeConverter.convert(page.header.rows, page.pageAttrs);
+    const header2Container = this.gridToPdfmakeConverter.convert(page.header2.rows, page.pageAttrs);
     const footerContainer  = this.gridToPdfmakeConverter.convert(page.footer.rows, page.pageAttrs);
 
     const headerContent = this.structuredContentToPdfmakeService.convert(headerContainer, page.pageAttrs);
+    const header2Content = this.structuredContentToPdfmakeService.convert(header2Container, page.pageAttrs);
     const bodyContent   = this.structuredContentToPdfmakeService.convert(contentContainer, page.pageAttrs);
     const footerContent = this.structuredContentToPdfmakeService.convert(footerContainer, page.pageAttrs);
 
@@ -39,7 +41,12 @@ export class PageToStructuredContentConverter implements Converter<Page, TDocume
           margin: [0, 0, 0, 0]
         }
       ],
-      header: () => this.buildHeaderPayload(headerContent, p),
+      header: (currentPage: number) => {
+        const headerToUse = page.pageAttrs.headerForPage2Up && currentPage >= 2 && header2Content?.length
+          ? header2Content
+          : headerContent;
+        return this.buildHeaderPayload(headerToUse, p);
+      },
       footer: (currentPage, pageCount) => {
         let payload = this.buildFooterPayload(footerContent, p);
         payload = this.injectPageTokens(payload, currentPage, pageCount);
@@ -55,11 +62,13 @@ export class PageToStructuredContentConverter implements Converter<Page, TDocume
   public convertToStringPayload(page: Page): string {
     const contentContainer = this.gridToPdfmakeConverter.convert(page.content.rows, page.pageAttrs);
     const headerContainer  = this.gridToPdfmakeConverter.convert(page.header.rows, page.pageAttrs);
+    const header2Container = this.gridToPdfmakeConverter.convert(page.header2?.rows || [], page.pageAttrs); // <<< NEW
     const footerContainer  = this.gridToPdfmakeConverter.convert(page.footer.rows, page.pageAttrs);
 
-    const headerContent = this.structuredContentToPdfmakeService.convert(headerContainer, page.pageAttrs);
-    const bodyContent   = this.structuredContentToPdfmakeService.convert(contentContainer, page.pageAttrs);
-    const footerContent = this.structuredContentToPdfmakeService.convert(footerContainer, page.pageAttrs);
+    const headerContent  = this.structuredContentToPdfmakeService.convert(headerContainer, page.pageAttrs);
+    const header2Content = this.structuredContentToPdfmakeService.convert(header2Container, page.pageAttrs); // <<< NEW
+    const bodyContent    = this.structuredContentToPdfmakeService.convert(contentContainer, page.pageAttrs);
+    const footerContent  = this.structuredContentToPdfmakeService.convert(footerContainer, page.pageAttrs);
 
     const p: PageAttrs = page.pageAttrs || {};
 
@@ -70,13 +79,14 @@ export class PageToStructuredContentConverter implements Converter<Page, TDocume
     const footerBand = footerBase + (p.footerMarginTop ?? 0) + (p.footerMarginBottom ?? 0);
 
     const headerPayload = this.buildHeaderPayload(headerContent, p);
+    const header2Payload = this.buildHeaderPayload(header2Content, p); // <<< NEW
     const footerPayload = this.buildFooterPayload(footerContent, p);
     const backgroundPayload = this.buildBackgroundPayload(p);
 
     const stringify = (obj: any) => JSON.stringify(obj, null, 2);
 
     const js = `
-  {
+{
   "content": [
     {
       "stack": ${this.formatBody(bodyContent)},
@@ -84,7 +94,10 @@ export class PageToStructuredContentConverter implements Converter<Page, TDocume
     }
   ],
   "header": function(currentPage, pageCount) {
-    return ${stringify(headerPayload)};
+    var headerToUse = (${p.headerForPage2Up} && currentPage >= 2 && ${header2Content?.length ? 'true' : 'false'})
+      ? ${stringify(header2Payload)}
+      : ${stringify(headerPayload)};
+    return headerToUse;
   },
   "footer": function(currentPage, pageCount) {
     var payload = ${stringify(footerPayload)};
@@ -102,7 +115,7 @@ export class PageToStructuredContentConverter implements Converter<Page, TDocume
           cloned.text = cloned.text.map(function (t) {
             return (typeof t === 'string')
               ? t.replace(/\\{\\{currentPage\\}\\}/g, String(currentPage))
-                   .replace(/\\{\\{totalPages\\}\\}/g, String(pageCount))
+                     .replace(/\\{\\{totalPages\\}\\}/g, String(pageCount))
               : inject(t);
           });
         }
@@ -123,6 +136,7 @@ export class PageToStructuredContentConverter implements Converter<Page, TDocume
 
     return js;
   }
+
 
   private formatBody(v: unknown, indent = 0): string {
     return JSON.stringify(v, null, 2)

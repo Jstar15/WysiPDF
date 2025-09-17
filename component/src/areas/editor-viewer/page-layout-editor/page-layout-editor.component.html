@@ -1,4 +1,24 @@
 <div  mat-dialog-content class="editor-dialog-content" >
+
+  <p class="section-title">Rendering Options</p>
+  <div class="rendering-options-wrapper">
+    <div>
+      <mat-slide-toggle
+        [(ngModel)]="pageAttrs.dontBreakRows"
+        color="primary">
+        Prevent rows from splitting across pages
+      </mat-slide-toggle>
+    </div>
+    <div>
+      <mat-slide-toggle
+        [(ngModel)]="pageAttrs.headerForPage2Up"
+        color="primary">
+        Have a different header for page 2+
+      </mat-slide-toggle>
+    </div>
+  </div>
+
+
   <p class="section-title">Default Font</p>
   <mat-form-field appearance="fill" class="w-100">
     <mat-label>Font</mat-label>
@@ -8,6 +28,7 @@
       </mat-option>
     </mat-select>
   </mat-form-field>
+
 
 
   <p class="section-title">Page Margin</p>
@@ -80,6 +101,7 @@
     </mat-form-field>
   </div>
 
+
   <p class="section-title">Background Color</p>
   <div class="row-grid-3-3-3-auto">
     <div class="color-picker w-100">
@@ -95,22 +117,6 @@
       ></app-color-picker-overlay>
     </div>
   </div>
-
-  <p class="section-title">Rendering Options</p>
-  <div>
-    <mat-slide-toggle
-      [(ngModel)]="pageAttrs.dontBreakRows"
-      color="primary">
-      Prevent rows from splitting across pages
-    </mat-slide-toggle>
-  </div>
-<div>
-  <mat-slide-toggle
-    [(ngModel)]="pageAttrs.pageNumbering"
-    color="primary">
-    Page Numbering
-  </mat-slide-toggle>
-</div>
 
 </div>
 

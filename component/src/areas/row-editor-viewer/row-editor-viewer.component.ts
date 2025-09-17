@@ -55,7 +55,7 @@ export class RowEditorViewerComponent implements OnInit{
 
   loadRepeatableToken(): void{
     this.repeatableToken = this.gridStateService.getRepeatableTokenForRow();
-    debugger;
+
   }
 
 

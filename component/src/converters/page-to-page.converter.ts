@@ -35,16 +35,19 @@ export class PageToPageConverter  implements Converter<Page, Page, TokenAttribut
 
     // 5) Replace tokens
     page.header.rows = this.tokenReplacerUtility.replaceTokensInRows(page.header.rows, tokenAttributeList);
+    page.header2.rows = this.tokenReplacerUtility.replaceTokensInRows(page.header2.rows, tokenAttributeList);
     page.footer.rows = this.tokenReplacerUtility.replaceTokensInRows(page.footer.rows, tokenAttributeList);
     page.content.rows = this.tokenReplacerUtility.replaceTokensInRows(page.content.rows, tokenAttributeList);
 
     // 6) Evaluate display logic show / hide
     page.header.rows = this.displayLogicUtility.evaluateAllRows(page.header.rows, tokenAttributeList);
+    page.header2.rows = this.displayLogicUtility.evaluateAllRows(page.header2.rows, tokenAttributeList);
     page.footer.rows = this.displayLogicUtility.evaluateAllRows(page.footer.rows, tokenAttributeList);
     page.content.rows = this.displayLogicUtility.evaluateAllRows(page.content.rows, tokenAttributeList);
 
     return page;
   }
+
 
   private deepCopy<T>(obj: T): T {
     return JSON.parse(JSON.stringify(obj));
@@ -55,6 +58,15 @@ export class PageToPageConverter  implements Converter<Page, Page, TokenAttribut
     if (page.header?.rows) {
       for (let i = 0; i < page.header.rows.length; i++) {
         const row = page.header.rows[i] as Row & { height?: number };
+        if (row && 'height' in row) {
+          delete (row as any).height;
+        }
+      }
+    }
+
+    if (page.header2?.rows) {
+      for (let i = 0; i < page.header2.rows.length; i++) {
+        const row = page.header2.rows[i] as Row & { height?: number };
         if (row && 'height' in row) {
           delete (row as any).height;
         }
@@ -80,6 +92,12 @@ export class PageToPageConverter  implements Converter<Page, Page, TokenAttribut
     if (page.header?.rows) {
       for (let i = 0; i < page.header.rows.length; i++) {
         page.header.rows[i].backgroundColor = bg;
+      }
+    }
+
+    if (page.header2?.rows) {
+      for (let i = 0; i < page.header2.rows.length; i++) {
+        page.header2.rows[i].backgroundColor = bg;
       }
     }
 

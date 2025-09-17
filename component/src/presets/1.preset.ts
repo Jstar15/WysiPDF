@@ -1,7 +1,9 @@
 // src/app/presets/invoice.preset.ts
 import { Page } from '../models/page';
+import {createEmptyRow} from "./default-page.preset";
 
 export const Preset1: Page = {
+  "header2": { rows: [createEmptyRow()] },
   "header": {
     "rows": [
       {

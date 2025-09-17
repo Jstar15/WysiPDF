@@ -1,8 +1,10 @@
 // src/app/presets/invoice.preset.ts
 import { Page } from '../models/page';
 import {TokenAttributeType} from "../models/token-attribute-type";
+import {createEmptyRow} from "./default-page.preset";
 
 export const Preset5: any = {
+  "header2": { rows: [createEmptyRow()] },
   "header": {
     "rows": [
       {

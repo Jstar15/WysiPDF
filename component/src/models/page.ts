@@ -149,6 +149,7 @@ export interface Grid {
 
 export interface Page {
     header: Grid;
+    header2: Grid;
     footer?: Grid;
     content?: Grid;
     pageAttrs?: PageAttrs;
@@ -179,5 +180,6 @@ export interface PageAttrs {
 
     dontBreakRows?: boolean;
     pageNumbering?: boolean;
+    headerForPage2Up?: boolean;
 
 }

@@ -55,7 +55,7 @@ export class GridEditorComponent implements OnInit, OnDestroy {
     this.pageStateService.grid$
       .pipe()
       .subscribe(gridEvent => {
-        debugger;
+
         if(this.isAreaActive && gridEvent && gridEvent.area != null && gridEvent.area == this.area){
           const type: GridEventType = gridEvent.type;
           switch (type) {
@@ -80,9 +80,7 @@ export class GridEditorComponent implements OnInit, OnDestroy {
               break;
 
             case GridEventType.ADD_PAGE_BREAK:
-              debugger;
               this.addPageBreakRow();
-
               break;
             default:
               console.warn('Unhandled grid event:', gridEvent);

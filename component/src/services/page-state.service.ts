@@ -216,7 +216,7 @@ export class PageStateService {
 
     if (!grid?.rows?.[this.currentRow]?.cells?.[this.currentCol]) return;
 
-    debugger;
+
     grid.rows[this.currentRow].displayLogic = row.displayLogic;
     grid.rows[this.currentRow].repeatableToken = row.repeatableToken;
 
@@ -227,6 +227,7 @@ export class PageStateService {
     this.currentArea = area;
     this.currentRow = 0;
     this.currentCol = 0;
+    this.updateCurrentCell(this.currentArea, this.currentRow, this.currentCol);
   }
 
 

@@ -31,7 +31,7 @@ export class HtmlGenerateService {
     page = this.pageService.convert(page, tokenAttributeList);
     page = this.tokenHtmlCellReplacerService.replaceTokensInPageHtml(page, page.tokenAttrs);
 
-    debugger;
+
     const html = opts?.fullDocument
       ? this.toHtmlDocument(page, opts)
       : this.toHtmlString(page, opts);

@@ -22,9 +22,11 @@ export class PdfGenerateService {
     ) {}
 
     public async generatePdfBase64(page: Page, tokenAttributeList: TokenAttribute[]): Promise<PdfGenerationResult> {
-        page = this.pageService.convert(page, tokenAttributeList);
 
-        const docDefinition: TDocumentDefinitions = this.structuredContentToPdfmakeService.convert(page);
+        let convertedPage = this.deepCopy(page);
+        convertedPage = this.pageService.convert(convertedPage, tokenAttributeList);
+
+        const docDefinition: TDocumentDefinitions = this.structuredContentToPdfmakeService.convert(convertedPage);
 
         // Correct usage: get base64 via service
         const base64: string = await this.pdfMakeService.getBase64(docDefinition);
@@ -44,8 +46,9 @@ export class PdfGenerateService {
   public convertToStringPayload(page: Page):string{
       return this.structuredContentToPdfmakeService.convertToStringPayload(page);
   }
-
-
+  private deepCopy<T>(obj: T): T {
+    return JSON.parse(JSON.stringify(obj));
+  }
 }
 
 export interface PdfGenerationResult {

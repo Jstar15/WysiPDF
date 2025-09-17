@@ -2,6 +2,7 @@ import { Cell, Page, Row } from '../models/page';
 
 export const DEFAULT_PAGE: Page = {
   header: { rows: [createEmptyRow()] },
+  header2: { rows: [createEmptyRow()] },
   content: { rows: [createEmptyRow()] },
   footer: { rows: [createEmptyRow()] },
   pageAttrs: {
@@ -22,7 +23,8 @@ export const DEFAULT_PAGE: Page = {
     footerHeight: 40,
     defaultFont: 'Roboto',
     dontBreakRows: true,
-    pageNumbering: true
+    pageNumbering: true,
+    headerForPage2Up: false
   },
   tokenAttrs: [],
   colorPalettes: [
