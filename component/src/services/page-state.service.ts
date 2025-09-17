@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {BehaviorSubject} from 'rxjs';
-import {Cell, CellAttrs, Grid, Page, Row} from '../models/page';
+import {Cell, CellAttrs, Grid, Page, PageAttrs, Row} from '../models/page';
 import {DisplayLogicGroup} from "../models/display-logic.models";
 import {TokenAttribute} from "../models/token-attribute";
 import {GridEvent, GridEventType} from "../areas/template-editor/grid-editor/grid-editor.interfaces";
@@ -151,6 +151,12 @@ export class PageStateService {
       return isRepeatable.tokenAttributes;
     }
     return current.tokenAttrs;
+  }
+
+  getPageAttributes(): PageAttrs{
+    const current = this.getCurrentPage();
+    if (!current) return null;
+    return current.pageAttrs;
   }
 
   getCurrentRow(): Row{

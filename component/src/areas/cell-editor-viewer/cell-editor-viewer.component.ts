@@ -1,7 +1,7 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButton } from '@angular/material/button';
-import {Cell} from '../../models/page';
+import {Cell, PageAttrs} from '../../models/page';
 import {MatIcon} from "@angular/material/icon";
 import {CellEditorAction, CellEditorType} from "./cell-editor-viewer.interfaces";
 import {AddImageEditorComponent} from "./image-editor/image-editor.component";
@@ -26,6 +26,8 @@ export class CellEditorViewerComponent implements OnInit{
 
   cell: Cell;
   tokens: TokenAttribute[] = [];
+  pageAttrs: PageAttrs = {};
+
   okLabel = 'OK';
   cancelLabel = 'Cancel';
 
@@ -35,6 +37,7 @@ export class CellEditorViewerComponent implements OnInit{
   ngOnInit(): void {
     this.loadCurrentCell();
     this.loadTokenAttributes();
+    this.loadPageAttributes();
   }
 
   onCancel(): void {
@@ -51,6 +54,10 @@ export class CellEditorViewerComponent implements OnInit{
 
   loadTokenAttributes(): void{
     this.tokens = this.gridStateService.getTokenAttributes();
+  }
+
+  loadPageAttributes(): void{
+    this.pageAttrs = this.gridStateService.getPageAttributes();
   }
 
   protected readonly CellEditorType = CellEditorType;

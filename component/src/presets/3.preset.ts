@@ -514,7 +514,9 @@ export const Preset3: any = {
     "footerMarginTop": 5, "footerMarginRight": 30, "footerMarginLeft": 30, "footerMarginBottom": 5, "footerHeight": 40,
     "backgroundColor": "white", "defaultFont": "Roboto",
     "dontBreakRows": true,
-    "pageNumbering": true
+    "pageNumbering": true,
+    "autoCompressImages": true,
+    "maxImageSize": 0.5
   },
   partialContent:[],
   "colorPalettes": [

@@ -711,7 +711,9 @@ export const Preset2: Page = {
     "backgroundColor": "white",
     "defaultFont": "Roboto",
     "dontBreakRows": true,
-    "pageNumbering": true
+    "pageNumbering": true,
+    "autoCompressImages": true,
+    "maxImageSize": 0.5
   },
   "tokenAttrs": [],
   "colorPalettes": [

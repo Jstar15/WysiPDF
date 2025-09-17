@@ -18,7 +18,7 @@
   <section class="editor-content">
     <!-- Project your editor UI here -->
     <ng-content *ngIf="type == CellEditorType.IMAGE && cell">
-      <app-image-editor [cell]="cell" [tokenAttrs]="tokens" [colorAttrs]="colorPalettes" (change)="cell = $event"></app-image-editor>
+      <app-image-editor [cell]="cell" [tokenAttrs]="tokens" [colorAttrs]="colorPalettes" [pageAttrs]="pageAttrs" (change)="cell = $event"></app-image-editor>
     </ng-content>
 
     <ng-content *ngIf="type == CellEditorType.BARCODE && cell">

@@ -24,7 +24,9 @@ export const DEFAULT_PAGE: Page = {
     defaultFont: 'Roboto',
     dontBreakRows: true,
     pageNumbering: true,
-    headerForPage2Up: false
+    headerForPage2Up: false,
+    autoCompressImages: true,
+    maxImageSize: 0.5
   },
   tokenAttrs: [],
   colorPalettes: [

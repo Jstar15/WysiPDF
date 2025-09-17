@@ -479,7 +479,9 @@ export const Preset4: Page = {
     "backgroundColor": "white",
     "defaultFont": "Roboto",
     "dontBreakRows": true,
-    "pageNumbering": true
+    "pageNumbering": true,
+    "autoCompressImages": true,
+    "maxImageSize": 0.5
   },
   "tokenAttrs": [],
   "colorPalettes": [

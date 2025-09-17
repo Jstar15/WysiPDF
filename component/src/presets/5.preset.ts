@@ -1659,7 +1659,9 @@ export const Preset5: any = {
     "backgroundColor": "white",
     "defaultFont": "Roboto",
     "dontBreakRows": true,
-    "pageNumbering": true
+    "pageNumbering": true,
+    "autoCompressImages": true,
+    "maxImageSize": 0.5
   },
   "tokenAttrs": [
     {

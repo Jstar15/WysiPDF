@@ -101,6 +101,23 @@
     </mat-form-field>
   </div>
 
+  <p class="section-title">Image Compression</p>
+  <div class="rendering-options-wrapper">
+    <div>
+      <mat-slide-toggle
+        [(ngModel)]="pageAttrs.autoCompressImages"
+        color="primary">
+        Automatically compress images on upload
+      </mat-slide-toggle>
+    </div>
+    <div>
+      <mat-form-field appearance="fill">
+        <mat-label>Max image size</mat-label>
+        <input matInput type="number" [(ngModel)]="pageAttrs.maxImageSize" />
+      </mat-form-field>
+    </div>
+  </div>
+
 
   <p class="section-title">Background Color</p>
   <div class="row-grid-3-3-3-auto">
@@ -117,6 +134,5 @@
       ></app-color-picker-overlay>
     </div>
   </div>
-
 </div>
 

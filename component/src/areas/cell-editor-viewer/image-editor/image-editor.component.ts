@@ -19,7 +19,7 @@ import { MatButtonToggleGroup, MatButtonToggle } from '@angular/material/button-
 import { MatSelect } from '@angular/material/select';
 import { MatOption } from '@angular/material/core';
 import { MatMenu, MatMenuTrigger } from '@angular/material/menu';
-import { Cell, ImageBlock } from '../../../models/page';
+import {Cell, ImageBlock, PageAttrs} from '../../../models/page';
 import { TokenAttribute } from '../../../models/token-attribute';
 import { TokenAttributeType } from '../../../models/token-attribute-type';
 import { NgxImageCompressService } from "ngx-image-compress";
@@ -46,6 +46,7 @@ type Align = 'left' | 'center' | 'right';
 export class AddImageEditorComponent implements OnInit, OnChanges {
   @Input() public cell!: Cell;
   @Input() public tokenAttrs: TokenAttribute[] = [];
+  @Input() public pageAttrs: PageAttrs = {};
   @Input() public colorAttrs: string[] = [];
   @Output() public change = new EventEmitter<Cell>();
 
@@ -73,7 +74,12 @@ export class AddImageEditorComponent implements OnInit, OnChanges {
   }
 
   // ── File Picker ─────────────────────────────
-  async openFilePicker(maxMb = 0.5): Promise<void> {
+  async openFilePicker(): Promise<void> {
+    let maxMb: number = 5;
+    if(this.pageAttrs.autoCompressImages){
+      maxMb = this.pageAttrs.maxImageSize;
+    }
+
     try {
       const selected = await this.imageCompressService.uploadFileOrReject();
       const result = await this.imageCompressService.getImageWithMaxSizeAndMetas(

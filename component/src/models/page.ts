@@ -182,4 +182,7 @@ export interface PageAttrs {
     pageNumbering?: boolean;
     headerForPage2Up?: boolean;
 
+    autoCompressImages?: boolean;
+    maxImageSize?: number;
+
 }
