@@ -15,6 +15,8 @@ export enum GridEventType {
   REMOVE_COLUMN        = 'REMOVE_COLUMN',
   ADD_PAGE_BREAK       = 'ADD_PAGE_BREAK',
   MOVE_CELL_LEFT       = 'MOVE_CELL_LEFT',
-  MOVE_CELL_RIGHT      = 'MOVE_CELL_RIGHT'
+  MOVE_CELL_RIGHT      = 'MOVE_CELL_RIGHT',
+  MOVE_ROW_UP          = 'MOVE_ROW_UP',
+  MOVE_ROW_DOWN        = 'MOVE_ROW_DOWN'
 }
 

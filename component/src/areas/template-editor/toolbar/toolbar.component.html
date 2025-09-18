@@ -132,6 +132,14 @@
       <button mat-icon-button matTooltip="Shift Cell Right" (click)="onGridEvent(GridEventType.MOVE_CELL_RIGHT)">
         <mat-icon svgIcon="add_column_right"></mat-icon>
       </button>
+
+      <button mat-icon-button matTooltip="Move Row Up" (click)="onGridEvent(GridEventType.MOVE_ROW_UP)">
+        <mat-icon svgIcon="add_column_left" class="rotate-up"></mat-icon>
+      </button>
+
+      <button mat-icon-button matTooltip="Move Row Down" (click)="onGridEvent(GridEventType.MOVE_ROW_DOWN)">
+        <mat-icon svgIcon="add_column_left" class="rotate-down"></mat-icon>
+      </button>
     </div>
 
 

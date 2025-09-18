@@ -88,6 +88,12 @@ export class GridEditorComponent implements OnInit, OnDestroy {
             case GridEventType.MOVE_CELL_RIGHT:
               this.shiftCellRight();
               break;
+            case GridEventType.MOVE_ROW_UP:
+              this.moveRowUp();
+              break;
+            case GridEventType.MOVE_ROW_DOWN:
+              this.moveRowDown();
+              break;
             default:
               console.warn('Unhandled grid event:', gridEvent);
               break;
@@ -372,6 +378,26 @@ export class GridEditorComponent implements OnInit, OnDestroy {
     // Update grid + notify
     this.updateGrid();
     this.emitCellLocation();
+  }
+
+  private moveRowUp(): void {
+    if (this.currentRow <= 0) return; // already at top
+    // Swap current row with the previous row
+    const rows = this.grid.rows;
+    [rows[this.currentRow - 1], rows[this.currentRow]] = [rows[this.currentRow], rows[this.currentRow - 1]];
+
+    this.currentRow--; // move pointer up
+    this.updateGrid();
+  }
+
+  private moveRowDown(): void {
+    if (this.currentRow < 0 || this.currentRow >= this.grid.rows.length - 1) return; // already at bottom
+    // Swap current row with the next row
+    const rows = this.grid.rows;
+    [rows[this.currentRow], rows[this.currentRow + 1]] = [rows[this.currentRow + 1], rows[this.currentRow]];
+
+    this.currentRow++; // move pointer down
+    this.updateGrid();
   }
 
 

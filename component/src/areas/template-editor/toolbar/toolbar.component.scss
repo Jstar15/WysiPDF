@@ -46,6 +46,10 @@
     align-items: end;
   }
 
+  .row-change{
+    justify-content: center;
+  }
+
   /* Buttons */
   .icon-btn,
   button.mat-icon-button {
@@ -112,3 +116,12 @@
     }
   }
 }
+
+.rotate-up {
+  transform: rotate(90deg) scale(0.9) !important;
+}
+
+.rotate-down {
+  transform: rotate(-90deg) scale(0.9) !important;
+}
+
