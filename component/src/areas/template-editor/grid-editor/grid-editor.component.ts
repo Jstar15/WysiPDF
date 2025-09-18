@@ -356,6 +356,10 @@ export class GridEditorComponent implements OnInit, OnDestroy {
     const [cell] = row.cells.splice(this.currentCol, 1);
     row.cells.splice(this.currentCol - 1, 0, cell);
 
+    // Move corresponding width
+    const [width] = row.widths.splice(this.currentCol, 1);
+    row.widths.splice(this.currentCol - 1, 0, width);
+
     // Update pointer
     this.currentCol--;
 
@@ -372,6 +376,10 @@ export class GridEditorComponent implements OnInit, OnDestroy {
     const [cell] = row.cells.splice(this.currentCol, 1);
     row.cells.splice(this.currentCol + 1, 0, cell);
 
+    // Move corresponding width
+    const [width] = row.widths.splice(this.currentCol, 1);
+    row.widths.splice(this.currentCol + 1, 0, width);
+
     // Update pointer
     this.currentCol++;
 
@@ -379,6 +387,7 @@ export class GridEditorComponent implements OnInit, OnDestroy {
     this.updateGrid();
     this.emitCellLocation();
   }
+
 
   private moveRowUp(): void {
     if (this.currentRow <= 0) return; // already at top
