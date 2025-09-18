@@ -10,7 +10,6 @@ import {
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
-// Material (use what your template needs)
 import { MatFormField } from '@angular/material/form-field';
 import { MatInput, MatLabel } from '@angular/material/input';
 import { MatIcon } from '@angular/material/icon';
@@ -22,6 +21,7 @@ import { Cell, ChartBlock, ChartSlice } from '../../../models/page';
 import { TokenAttribute } from '../../../models/token-attribute';
 import { TokenAttributeType } from '../../../models/token-attribute-type';
 import { ChartImageRendererComponent } from '../../../shared/chart/chart-image-renderer.component';
+import {ChartGenerationService} from "../../../services/external/chart-generation.service";
 
 type Align = 'left' | 'center' | 'right';
 type ChartKind = 'pie' | 'doughnut' | 'bar';
@@ -40,34 +40,22 @@ type ChartKind = 'pie' | 'doughnut' | 'bar';
   styleUrls: ['./chart-editor.component.scss']
 })
 export class ChartEditorComponent implements OnInit, OnChanges {
-  /** Inputs */
   @Input() public cell!: Cell;
   @Input() public tokenAttrs: TokenAttribute[] = [];
-
-  /** Output */
   @Output() public change = new EventEmitter<Cell>();
 
-  // ──────────────────────────────────────────────────────────────
-  // View-model (local state, independent from persisted cell)
-  // ──────────────────────────────────────────────────────────────
   kind: ChartKind = 'pie';
-  widthPct = 100;                    // 1..100
+  widthPct = 100;
   align: Align = 'left';
-  slices: ChartSlice[] = [];         // { attributeName, label }
-  selectedNames: string[] = [];      // convenience for controls
-
-  // Derived lists
+  slices: ChartSlice[] = [];
+  selectedNames: string[] = [];
   numericTokens: TokenAttribute[] = [];
-
-  // The block we pass to the renderer (augmented with values/nonce)
   rendererBlock!: ChartBlock & { values?: number[]; updatedAt?: number };
 
-  // Guard to avoid emitting during hydration
   private hydrating = false;
 
-  // ──────────────────────────────────────────────────────────────
-  // Lifecycle
-  // ──────────────────────────────────────────────────────────────
+  constructor(private chartGen: ChartGenerationService) {}
+
   ngOnInit(): void {
     this.hydrateFromInputs();
   }
@@ -78,9 +66,6 @@ export class ChartEditorComponent implements OnInit, OnChanges {
     }
   }
 
-  // ──────────────────────────────────────────────────────────────
-  // UI handlers (call these from your template controls)
-  // ──────────────────────────────────────────────────────────────
   onChartTypeChange(next: ChartKind | { value: ChartKind }): void {
     const v = this.coerceKind(next);
     if (v === this.kind) return;
@@ -108,7 +93,7 @@ export class ChartEditorComponent implements OnInit, OnChanges {
   onAttributesChange(next: string[] | { value: string[] }): void {
     const names = this.coerceStringArray(next);
     this.selectedNames = names;
-    this.slices = this.buildSlices(names, this.slices); // preserve labels where possible
+    this.slices = this.buildSlices(names, this.slices);
     this.invalidateAndPush();
   }
 
@@ -117,11 +102,7 @@ export class ChartEditorComponent implements OnInit, OnChanges {
     this.invalidateAndPush();
   }
 
-  // ──────────────────────────────────────────────────────────────
-  // Renderer → back (captures the exported PNG only)
-  // ──────────────────────────────────────────────────────────────
-  onRendererBlockChange(updated: ChartBlock): void {
-    // Only absorb imageBase64 back into the cell; keep our UI state intact
+  async onRendererBlockChange(updated: ChartBlock): Promise<void> {
     const prev = this.cell?.chartBlock?.imageBase64 ?? '';
     if (updated?.imageBase64 && updated.imageBase64 !== prev) {
       const merged: ChartBlock = {
@@ -139,9 +120,6 @@ export class ChartEditorComponent implements OnInit, OnChanges {
     }
   }
 
-  // ──────────────────────────────────────────────────────────────
-  // Hydration
-  // ──────────────────────────────────────────────────────────────
   private hydrateFromInputs(): void {
     this.hydrating = true;
 
@@ -169,31 +147,29 @@ export class ChartEditorComponent implements OnInit, OnChanges {
       this.slices = this.buildSlices(this.selectedNames, kept);
     }
 
-    // 3) push a renderer block (don’t emit to parent during hydrate)
-    this.pushRendererBlock(/*invalidateImage*/ false);
-
+    this.pushRendererBlock(false);
     this.hydrating = false;
   }
 
-  // ──────────────────────────────────────────────────────────────
-  // Build & push to renderer
-  // ──────────────────────────────────────────────────────────────
-  private invalidateAndPush(): void {
-    // Whenever the user changes anything, we clear cached image so the renderer exports a fresh PNG
-    this.pushRendererBlock(/*invalidateImage*/ true);
+  private async invalidateAndPush(): Promise<void> {
+    this.pushRendererBlock(true);
 
-    // Also update the persisted block (without image) and notify parent immediately
-    // so history/undo reflects the structural change even before PNG export completes.
     const nextPersisted: ChartBlock = {
       chartType: this.kind,
       width: this.widthPct,
       alignment: this.align,
       slices: [...this.slices],
-      imageBase64: '' // intentionally blank until renderer re-exports
+      imageBase64: ''
     };
     const nextCell: Cell = { ...this.cell, chartBlock: nextPersisted };
     this.cell = nextCell;
     if (!this.hydrating) this.change.emit(nextCell);
+
+    // Generate image via service
+    const base64 = await this.chartGen.generateChartBase64(nextPersisted);
+    this.rendererBlock.imageBase64 = base64;
+    this.cell.chartBlock.imageBase64 = base64;
+    if (!this.hydrating) this.change.emit({ ...this.cell });
   }
 
   private pushRendererBlock(invalidateImage: boolean): void {
@@ -207,23 +183,16 @@ export class ChartEditorComponent implements OnInit, OnChanges {
       alignment: this.align,
       slices: [...this.slices],
       imageBase64,
-      // extras used by renderer (it already supports legacy `values`)
       values,
       updatedAt: Date.now()
     } as any;
   }
 
-  // ──────────────────────────────────────────────────────────────
-  // Helpers
-  // ──────────────────────────────────────────────────────────────
   private buildSlices(names: string[], preserveFrom: ChartSlice[]): ChartSlice[] {
     const preserve = new Map(preserveFrom.map(s => [s.attributeName, s]));
     return names.map(name => {
       const prev = preserve.get(name);
-      return {
-        attributeName: name,
-        label: this.safeLabel(prev?.label ?? this.pretty(name))
-      } as ChartSlice;
+      return { attributeName: name, label: this.safeLabel(prev?.label ?? this.pretty(name)) } as ChartSlice;
     });
   }
 

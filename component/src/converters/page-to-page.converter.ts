@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {Page, Row} from '../models/page';
+import {ChartBlock, Page, Row} from '../models/page';
 import {HtmlToStructuredContentConverter} from './html-to-structured-content.converter';
 import {TokenAttribute} from '../models/token-attribute';
 import {TokenReplacerUtility} from "../utils/token-replacer.utility";
@@ -7,6 +7,7 @@ import {DisplayLogicUtility} from "../utils/display-logic.utility";
 import {Converter} from "./converter";
 import {TokenAttributeType} from "../models/token-attribute-type";
 import {BarcodeService} from "../services/external/barcode.service";
+import {ChartGenerationService} from "../services/external/chart-generation.service";
 
 @Injectable({ providedIn: 'root' })
 export class PageToPageConverter  implements Converter<Page, Promise<Page>, TokenAttribute[]> {
@@ -14,7 +15,8 @@ export class PageToPageConverter  implements Converter<Page, Promise<Page>, Toke
     private htmlToStructuredContentService: HtmlToStructuredContentConverter,
     private tokenReplacerUtility: TokenReplacerUtility,
     private displayLogicUtility : DisplayLogicUtility,
-    private barcodeService : BarcodeService) {}
+    private barcodeService : BarcodeService,
+    private chartGenerationService : ChartGenerationService) {}
 
   /**
    * Runs all "page" transformations, independent of any PDF engine.
@@ -41,7 +43,7 @@ export class PageToPageConverter  implements Converter<Page, Promise<Page>, Toke
     page.footer.rows = this.tokenReplacerUtility.replaceTokensInRows(page.footer.rows, tokenAttributeList);
     page.content.rows = this.tokenReplacerUtility.replaceTokensInRows(page.content.rows, tokenAttributeList);
 
-    // 6 ) Replace barcodes in row (await all)
+    // 6a ) Replace barcodes in row (await all)
     page.header.rows  = await Promise.all(page.header.rows.map(r  => this.replaceBarcodesInRow(r, tokenAttributeList)));
     page.header2.rows = await Promise.all(page.header2.rows.map(r => this.replaceBarcodesInRow(r, tokenAttributeList)));
     page.footer.rows  = await Promise.all(page.footer.rows.map(r  => this.replaceBarcodesInRow(r, tokenAttributeList)));
@@ -52,6 +54,12 @@ export class PageToPageConverter  implements Converter<Page, Promise<Page>, Toke
     page.header2.rows = page.header2.rows.map(r => this.replaceImagesInRow(r, tokenAttributeList));
     page.footer.rows  = page.footer.rows.map(r => this.replaceImagesInRow(r, tokenAttributeList));
     page.content.rows = page.content.rows.map(r => this.replaceImagesInRow(r, tokenAttributeList));
+
+    // 6c) Replace charts in row
+    page.header.rows  = await Promise.all(page.header.rows.map(r => this.replaceChartsInRow(r, tokenAttributeList)));
+    page.header2.rows = await Promise.all(page.header2.rows.map(r => this.replaceChartsInRow(r, tokenAttributeList)));
+    page.footer.rows  = await Promise.all(page.footer.rows.map(r => this.replaceChartsInRow(r, tokenAttributeList)));
+    page.content.rows = await Promise.all(page.content.rows.map(r => this.replaceChartsInRow(r, tokenAttributeList)));
 
 
     // 7) Evaluate display logic show / hide
@@ -266,6 +274,50 @@ export class PageToPageConverter  implements Converter<Page, Promise<Page>, Toke
 
     return { ...row, cells: newCells };
   }
+
+  /**
+   * Replace all charts in a given row, looking up values from tokenAttributes.
+   * Each chart may have multiple slices, each referencing a different token.
+   * Generates a new imageBase64 for the updated chart.
+   */
+  private async replaceChartsInRow(row: Row, tokenAttributeList: TokenAttribute[]): Promise<Row> {
+    const newCells = await Promise.all(
+      row.cells.map(async cell => {
+        if (cell.type === 'chart' && cell.chartBlock) {
+          const chart = { ...cell.chartBlock };
+
+          // 1) Update slices with numeric values from tokens, keep label unchanged
+          const updatedSlices = chart.slices.map(slice => {
+            const token = tokenAttributeList.find(t => t.name === slice.attributeName);
+            return {
+              ...slice,
+              value: Number(token?.value ?? 0) // only update the numeric value
+            };
+          });
+
+          // 2) Generate new image
+          const imageBase64 = await this.chartGenerationService.generateChartBase64({
+            ...chart,
+            slices: updatedSlices
+          });
+
+          return {
+            ...cell,
+            chartBlock: {
+              ...chart,
+              slices: updatedSlices,
+              imageBase64
+            }
+          };
+        }
+
+        return cell;
+      })
+    );
+
+    return { ...row, cells: newCells };
+  }
+
 
   /**
    * Find a token's value by name from the provided token list.
