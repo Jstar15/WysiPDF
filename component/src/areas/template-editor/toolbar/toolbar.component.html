@@ -125,6 +125,17 @@
     </div>
 
     <div class="row-change">
+      <button mat-icon-button matTooltip="Shift Cell Left" (click)="onGridEvent(GridEventType.MOVE_CELL_LEFT)">
+        <mat-icon svgIcon="add_column_left"></mat-icon>
+      </button>
+
+      <button mat-icon-button matTooltip="Shift Cell Right" (click)="onGridEvent(GridEventType.MOVE_CELL_RIGHT)">
+        <mat-icon svgIcon="add_column_right"></mat-icon>
+      </button>
+    </div>
+
+
+    <div class="cell-change">
       <button mat-icon-button color="accent" matTooltip="Repeatable Row" aria-label="Repeatable Row" (click)="onRowTypeChange(RowEditorType.REPEATABLE)">
         <mat-icon svgIcon="repeat"></mat-icon>
       </button>
@@ -132,10 +143,7 @@
       <button mat-icon-button color="accent" matTooltip="Display Rules" aria-label="Display Rules" (click)="onRowTypeChange(RowEditorType.DISPLAY_RULES)">
         <mat-icon svgIcon="view_list"></mat-icon>
       </button>
-    </div>
 
-
-    <div class="cell-change">
       <button  mat-icon-button matTooltip="Insert Chart" (click)="onCellTypeChange(CellEditorType.CHART)">
         <mat-icon svgIcon="pie_chart"></mat-icon>
       </button>

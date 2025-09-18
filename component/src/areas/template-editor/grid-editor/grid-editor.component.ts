@@ -82,6 +82,12 @@ export class GridEditorComponent implements OnInit, OnDestroy {
             case GridEventType.ADD_PAGE_BREAK:
               this.addPageBreakRow();
               break;
+            case GridEventType.MOVE_CELL_LEFT:
+              this.shiftCellLeft();
+              break;
+            case GridEventType.MOVE_CELL_RIGHT:
+              this.shiftCellRight();
+              break;
             default:
               console.warn('Unhandled grid event:', gridEvent);
               break;
@@ -107,6 +113,7 @@ export class GridEditorComponent implements OnInit, OnDestroy {
   public addRow(): void {
     this.grid.rows.splice(this.currentRow + 1, 0, createEmptyRow());
     this.currentRow++;
+    this.currentCol = 0;
     this.updateGrid();
   }
 
@@ -334,5 +341,39 @@ export class GridEditorComponent implements OnInit, OnDestroy {
     this.currentRow = rowIndex;
     this.currentCol = -1;
   }
+
+  private shiftCellLeft(): void {
+    const row = this.grid.rows[this.currentRow];
+    if (!row || this.currentCol <= 0) return;
+
+    // Move cell left
+    const [cell] = row.cells.splice(this.currentCol, 1);
+    row.cells.splice(this.currentCol - 1, 0, cell);
+
+    // Update pointer
+    this.currentCol--;
+
+    // Update grid + notify
+    this.updateGrid();
+    this.emitCellLocation();
+  }
+
+  private shiftCellRight(): void {
+    const row = this.grid.rows[this.currentRow];
+    if (!row || this.currentCol < 0 || this.currentCol >= row.cells.length - 1) return;
+
+    // Move cell right
+    const [cell] = row.cells.splice(this.currentCol, 1);
+    row.cells.splice(this.currentCol + 1, 0, cell);
+
+    // Update pointer
+    this.currentCol++;
+
+    // Update grid + notify
+    this.updateGrid();
+    this.emitCellLocation();
+  }
+
+
 
 }
