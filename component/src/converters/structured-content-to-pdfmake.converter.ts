@@ -76,7 +76,7 @@ export class StructuredContentToPdfmakeConverter implements Converter<HtmlBlockC
         imageBase64
           ? [{
             image: imageBase64,
-            width: cellWidth * (imgWidthPct / 100) - 8, // same sizing rule you already use
+            width: cellWidth * (imgWidthPct / 100), // same sizing rule you already use
             alignment: imgAlign
           }]
           : cell.block
@@ -286,10 +286,10 @@ export class StructuredContentToPdfmakeConverter implements Converter<HtmlBlockC
           : prevCell?.__attrs?.borderRight > 0 ? prevCell.__attrs.borderColor
             : '#000';
       },
-      paddingTop: () => 1,
-      paddingBottom: () => 1,
-      paddingLeft: () => 4,
-      paddingRight: () => 4
+      paddingTop: () => 0,
+      paddingBottom: () => 0,
+      paddingLeft: () => 0,
+      paddingRight: () => 0
     };
   }
 
