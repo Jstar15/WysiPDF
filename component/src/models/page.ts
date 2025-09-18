@@ -82,10 +82,26 @@ export interface BarcodeBlock {
   imageBase64: string;
   HtmlTokenElement?: HtmlTokenElement;
   filename: string;
+  text: string;
   width: number;
   heightPx?: number;
+  format?: ExtendedBarcodeFormat;
   alignment: 'left' | 'center' | 'right';
 }
+export type BarcodeFormat =
+  | 'CODE128'
+  | 'EAN13'
+  | 'EAN8'
+  | 'UPC'
+  | 'CODE39'
+  | 'ITF'
+  | 'ITF14'
+  | 'MSI'
+  | 'pharmacode'
+  | 'codabar';
+
+export type QRLevel = 'L' | 'M' | 'Q' | 'H';
+export type ExtendedBarcodeFormat = BarcodeFormat | 'QR';
 
 export interface ChartSlice {
   attributeName: string;

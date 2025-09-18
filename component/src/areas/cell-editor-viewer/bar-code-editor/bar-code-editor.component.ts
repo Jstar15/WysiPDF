@@ -17,11 +17,10 @@ import { MatSelect } from '@angular/material/select';
 import { MatOption } from '@angular/material/core';
 import { MatButton } from '@angular/material/button';
 
-import { Cell, BarcodeBlock } from '../../../models/page';
+import {Cell, BarcodeBlock, ExtendedBarcodeFormat} from '../../../models/page';
 import { TokenAttribute } from '../../../models/token-attribute';
 import { TokenAttributeType } from '../../../models/token-attribute-type';
 import {
-  ExtendedBarcodeFormat,
   BarcodeService
 } from '../../../services/external/barcode.service';
 
@@ -126,6 +125,8 @@ export class BarCodeEditorComponent implements OnInit, OnChanges {
     if (bb?.imageBase64) this.imageBase64 = bb.imageBase64;
     if (bb?.filename)    this.filename    = bb.filename;
     if (bb?.heightPx)    this.barcodeHeight    = bb.heightPx;
+    if (bb?.format)      this.selectedFormat    = bb.format;
+    if (bb?.text)      this.textValue    = bb.text;
 
     this.width     = this.clampWidth(bb?.width ?? this.width ?? 100);
     this.alignment = (bb?.alignment as Align) ?? this.alignment;
@@ -196,13 +197,15 @@ export class BarCodeEditorComponent implements OnInit, OnChanges {
         this.filename ||
         (this.selectedTokenKey ? `[token:${this.selectedTokenKey}]` : ''),
       width: this.width,
+      format: this.selectedFormat,
       heightPx: this.barcodeHeight,
+      text: this.textValue,
       alignment: this.alignment,
       ...(this.selectedTokenKey
         ? { HtmlTokenElement: { key: this.selectedTokenKey, type: 'barcode' } }
         : {})
     } as BarcodeBlock;
-
+debugger;
     const updated: Cell = { ...this.cell, barcodeBlock };
     updated.type = 'barcode';
     this.change.emit(updated);
@@ -215,16 +218,25 @@ export class BarCodeEditorComponent implements OnInit, OnChanges {
   onWidthChanged(v: number | string): void {
     const n = Number(v);
     if (Number.isFinite(n)) this.width = this.clampWidth(n);
-    this.emitPayload();
+    this.tryGenerate();
   }
 
   onAlignmentChanged(): void {
-    this.emitPayload();
+    this.tryGenerate();
   }
 
   onHeightChanged(newHeight: number) {
-    this.barcodeHeight = newHeight; // reset to default if invalid
-    this.emitPayload();
+    this.barcodeHeight = newHeight;
+    this.tryGenerate();
+  }
 
+  onFormatChanged(format: ExtendedBarcodeFormat) {
+    this.selectedFormat = format;
+    this.tryGenerate();
+  }
+
+  onTextValueChange(value: string) {
+    this.textValue = value;
+    this.tryGenerate();
   }
 }

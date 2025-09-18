@@ -7,15 +7,18 @@
       <mat-label>Text</mat-label>
       <input
         matInput
-        [(ngModel)]="textValue"
+        [ngModel]="textValue"
+        (ngModelChange)="onTextValueChange($event)"
         (keyup.enter)="tryGenerate()"
+        [disabled]="selectedTokenKey != null"
+        [class.disabled-input]="selectedTokenKey != null"
         placeholder="Enter text for barcode"
       />
     </mat-form-field>
 
     <mat-form-field appearance="fill" class="w-100">
       <mat-label>Type</mat-label>
-      <mat-select [(ngModel)]="selectedFormat">
+      <mat-select [(ngModel)]="selectedFormat" (ngModelChange)="onFormatChanged($event)">
         <mat-option *ngFor="let f of availableFormats" [value]="f.value">
           {{ f.label }}
         </mat-option>

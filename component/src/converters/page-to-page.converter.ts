@@ -6,18 +6,20 @@ import {TokenReplacerUtility} from "../utils/token-replacer.utility";
 import {DisplayLogicUtility} from "../utils/display-logic.utility";
 import {Converter} from "./converter";
 import {TokenAttributeType} from "../models/token-attribute-type";
+import {BarcodeService} from "../services/external/barcode.service";
 
 @Injectable({ providedIn: 'root' })
-export class PageToPageConverter  implements Converter<Page, Page, TokenAttribute[]> {
+export class PageToPageConverter  implements Converter<Page, Promise<Page>, TokenAttribute[]> {
   constructor(
     private htmlToStructuredContentService: HtmlToStructuredContentConverter,
     private tokenReplacerUtility: TokenReplacerUtility,
-    private displayLogicUtility : DisplayLogicUtility) {}
+    private displayLogicUtility : DisplayLogicUtility,
+    private barcodeService : BarcodeService) {}
 
   /**
    * Runs all "page" transformations, independent of any PDF engine.
    */
-  public convert(page: Page, tokenAttributeList: TokenAttribute[]): Page {
+  public async convert(page: Page, tokenAttributeList: TokenAttribute[]): Promise<Page> {
     // deep copy so we never mutate the caller's object
     page = this.deepCopy(page);
 
@@ -39,7 +41,14 @@ export class PageToPageConverter  implements Converter<Page, Page, TokenAttribut
     page.footer.rows = this.tokenReplacerUtility.replaceTokensInRows(page.footer.rows, tokenAttributeList);
     page.content.rows = this.tokenReplacerUtility.replaceTokensInRows(page.content.rows, tokenAttributeList);
 
-    // 6) Evaluate display logic show / hide
+    // 6 ) Replace barcodes in row (await all)
+    page.header.rows  = await Promise.all(page.header.rows.map(r  => this.replaceBarcodesInRow(r, tokenAttributeList)));
+    page.header2.rows = await Promise.all(page.header2.rows.map(r => this.replaceBarcodesInRow(r, tokenAttributeList)));
+    page.footer.rows  = await Promise.all(page.footer.rows.map(r  => this.replaceBarcodesInRow(r, tokenAttributeList)));
+    page.content.rows = await Promise.all(page.content.rows.map(r => this.replaceBarcodesInRow(r, tokenAttributeList)));
+
+
+    // 7) Evaluate display logic show / hide
     page.header.rows = this.displayLogicUtility.evaluateAllRows(page.header.rows, tokenAttributeList);
     page.header2.rows = this.displayLogicUtility.evaluateAllRows(page.header2.rows, tokenAttributeList);
     page.footer.rows = this.displayLogicUtility.evaluateAllRows(page.footer.rows, tokenAttributeList);
@@ -185,5 +194,53 @@ export class PageToPageConverter  implements Converter<Page, Page, TokenAttribut
 
     page.content.rows = expandedRows;
     return page;
+  }
+
+  /**
+   * Replace all barcodes in a given row, looking up values from tokenAttributes.
+   */
+  private async replaceBarcodesInRow(row: Row, tokenAttributeList: TokenAttribute[]): Promise<Row> {
+    const newCells = await Promise.all(row.cells.map(async cell => {
+      if (cell.type === 'barcode' && cell.barcodeBlock?.HtmlTokenElement) {
+        const key = cell.barcodeBlock.HtmlTokenElement.key;
+        const tokenValue = this.getTokenValue(key, tokenAttributeList);
+
+        if (!tokenValue) return cell; // skip if no token found
+
+        const dataUrl: string = await this.barcodeService.generateDataUrl(
+          tokenValue,
+          {
+            format: cell.barcodeBlock.format,
+            width: 2,
+            height: cell.barcodeBlock.heightPx,
+            displayValue: false,
+            margin: 3,
+            size: 256,
+            errorCorrectionLevel: 'M',
+            dark: '#000000',
+            light: '#ffffff'
+          }
+        );
+
+        return {
+          ...cell,
+          barcodeBlock: {
+            ...cell.barcodeBlock,
+            imageBase64: dataUrl
+          }
+        };
+      }
+      return cell;
+    }));
+
+    return { ...row, cells: newCells };
+  }
+
+  /**
+   * Find a token's value by name from the provided token list.
+   */
+  private getTokenValue(key: string, tokenAttributeList: TokenAttribute[]): string | null {
+    const token = tokenAttributeList.find(t => t.name === key);
+    return token?.value ?? null;
   }
 }

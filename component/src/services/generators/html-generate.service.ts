@@ -28,7 +28,7 @@ export class HtmlGenerateService {
     opts?: PageToHtmlOptions & { title?: string; fullDocument?: boolean } // fullDocument=false => fragment
   ): Promise<HtmlGenerationResult> {
     // reuse your shared page pipeline
-    page = this.pageService.convert(page, tokenAttributeList);
+    page = await this.pageService.convert(page, tokenAttributeList);
     page = this.tokenHtmlCellReplacerService.replaceTokensInPageHtml(page, page.tokenAttrs);
 
 

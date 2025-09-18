@@ -1,20 +1,6 @@
 import { Injectable } from '@angular/core';
 import JsBarcode from 'jsbarcode';
-
-export type BarcodeFormat =
-  | 'CODE128'
-  | 'EAN13'
-  | 'EAN8'
-  | 'UPC'
-  | 'CODE39'
-  | 'ITF'
-  | 'ITF14'
-  | 'MSI'
-  | 'pharmacode'
-  | 'codabar';
-
-export type QRLevel = 'L' | 'M' | 'Q' | 'H';
-export type ExtendedBarcodeFormat = BarcodeFormat | 'QR';
+import {BarcodeFormat, ExtendedBarcodeFormat, QRLevel} from "../../models/page";
 
 export interface GenerateBarcodeOptions {
   format: ExtendedBarcodeFormat;

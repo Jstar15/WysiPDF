@@ -24,7 +24,7 @@ export class PdfGenerateService {
     public async generatePdfBase64(page: Page, tokenAttributeList: TokenAttribute[]): Promise<PdfGenerationResult> {
 
         let convertedPage = this.deepCopy(page);
-        convertedPage = this.pageService.convert(convertedPage, tokenAttributeList);
+        convertedPage = await this.pageService.convert(convertedPage, tokenAttributeList);
 
         const docDefinition: TDocumentDefinitions = this.structuredContentToPdfmakeService.convert(convertedPage);
 
