@@ -100,6 +100,7 @@ export class PageTokenValidator {
           key = cell.imageBlock.HtmlTokenElement.key;
         }else if (cell.type === 'chart' && cell.barcodeBlock?.HtmlTokenElement?.key) {
           // key = cell.chartBlock.HtmlTokenElement.key; // Uncomment if needed
+          //so the chart can have multiple keys
         }
 
         if (key) {
@@ -109,34 +110,52 @@ export class PageTokenValidator {
           }
         }
 
-        for (let block of cell.block.blocks) {
-          switch (block.blockType) {
-            case 'table': {
-              const tableBlock = block as HtmlTableBlock;
-              for (let tableRow of tableBlock.rows) {
-                for (let tableCell of tableRow.cells) {
-                  for (let element of tableCell.elements) {
-                    errors.push(...this.processAttributes(element.attributes, rowTokens));
+        for (let cell of row.cells) {
+          const errors: string[] = [];
+
+          // Validate barcode/image/chart tokens
+          errors.push(...this.validateCellTokens(cell, rowTokens));
+
+          // Existing block validation
+          for (let block of cell.block.blocks) {
+            switch (block.blockType) {
+              case 'table': {
+                const tableBlock = block as HtmlTableBlock;
+                for (let tableRow of tableBlock.rows) {
+                  for (let tableCell of tableRow.cells) {
+                    for (let element of tableCell.elements) {
+                      errors.push(...this.processAttributes(element.attributes, rowTokens));
+                    }
                   }
                 }
+                break;
               }
-              break;
-            }
 
-            case 'grid': {
-              const gridBlock = block as HtmlGridBlock;
-              this.processRows(gridBlock.rows, rowTokens);
-              break;
-            }
+              case 'grid': {
+                const gridBlock = block as HtmlGridBlock;
+                this.processRows(gridBlock.rows, rowTokens);
+                break;
+              }
 
-            default: {
-              const htmlBlock = block as HtmlBlock;
-              for (let element of htmlBlock.elements) {
-                errors.push(...this.processAttributes(element.attributes, rowTokens));
+              default: {
+                const htmlBlock = block as HtmlBlock;
+                for (let element of htmlBlock.elements) {
+                  errors.push(...this.processAttributes(element.attributes, rowTokens));
+                }
               }
             }
           }
+
+          // update cell error state
+          if (errors.length > 0) {
+            cell.errorMessage = errors.join(', ');
+            cell.hasError = true;
+          } else if (!cell.errorMessage) {
+            cell.hasError = false;
+            cell.errorMessage = '';
+          }
         }
+
 
         // update cell error state once per cell
         if (errors.length > 0) {
@@ -214,6 +233,36 @@ export class PageTokenValidator {
 
     return Array.from(messages);
   }
+
+  /**  Validate tokens for a cell, including barcode, image, and chart */
+  private validateCellTokens(cell: any, rowTokens: TokenAttribute[]): string[] {
+    const errors: string[] = [];
+    let keys: string[] = [];
+
+    if (cell.type === 'barcode') {
+      const key = cell?.barcodeBlock?.tokenKey ?? cell?.barcodeBlock?.attributeName;
+      if (key) keys = [key];
+    } else if (cell.type === 'image') {
+      const key = cell?.imageBlock?.tokenKey ?? cell?.imageBlock?.attributeName;
+      if (key) keys = [key];
+    } else if (cell.type === 'chart') {
+      // Chart slices reference token attribute names
+      keys = (cell?.chartBlock?.slices ?? [])
+        .map(s => s?.attributeName)
+        .filter((k): k is string => typeof k === 'string' && k.trim() !== '');
+    }
+
+    // Validate all keys against rowTokens
+    for (const key of keys) {
+      if (!rowTokens.some(t => t.name === key)) {
+        errors.push(`Token "${key}" not found`);
+      }
+    }
+
+    return errors;
+  }
+
+
 
   /** Simple deep clone to avoid mutating the caller’s page */
   private clonePage<T>(obj: T): T {
