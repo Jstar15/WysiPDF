@@ -56,17 +56,7 @@
             </mat-select>
           </mat-form-field>
 
-          <!-- Value / Preview -->
-          <ng-container *ngIf="element.type === TokenAttributeType.JSON_ARRAY || element.type === TokenAttributeType.STRING_ARRAY; else normalValue">
-            <mat-form-field appearance="fill">
-              <input matInput [value]="element.type === TokenAttributeType.JSON_ARRAY ? jsonArrayPreview(element) : stringArrayPreview(element)" readonly />
-            </mat-form-field>
-          </ng-container>
-          <ng-template #normalValue>
-            <mat-form-field appearance="fill">
-              <input matInput [(ngModel)]="element.value" (ngModelChange)="emitAttributes()" />
-            </mat-form-field>
-          </ng-template>
+
 
           <!-- Action Buttons -->
           <div class="row-actions">

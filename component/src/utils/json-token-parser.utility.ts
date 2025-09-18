@@ -72,13 +72,24 @@ export class JsonTokenParserUtility {
 
   private deferType(value: any): TokenAttributeType {
     if (value === null || value === undefined) return TokenAttributeType.TEXT;
+
+    // Detect image URLs or base64 images
+    if (typeof value === 'string') {
+      const isBase64Image = /^data:image\/[a-zA-Z]+;base64,/.test(value);
+      const isImageUrl = /\.(png|jpg|jpeg|gif|bmp|svg|webp)$/i.test(value);
+      if (isBase64Image || isImageUrl) {
+        return TokenAttributeType.IMAGE;
+      }
+      return TokenAttributeType.TEXT;
+    }
+
     if (Array.isArray(value)) {
       if (value.length === 0) return TokenAttributeType.JSON_ARRAY;
       if (value.every(v => typeof v === 'string')) return TokenAttributeType.STRING_ARRAY;
       return TokenAttributeType.JSON_ARRAY;
     }
+
     switch (typeof value) {
-      case 'string': return TokenAttributeType.TEXT;
       case 'number': return TokenAttributeType.NUMBER;
       case 'boolean': return TokenAttributeType.BOOLEAN;
       case 'object': return TokenAttributeType.OBJECT;

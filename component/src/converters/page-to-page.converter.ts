@@ -47,6 +47,12 @@ export class PageToPageConverter  implements Converter<Page, Promise<Page>, Toke
     page.footer.rows  = await Promise.all(page.footer.rows.map(r  => this.replaceBarcodesInRow(r, tokenAttributeList)));
     page.content.rows = await Promise.all(page.content.rows.map(r => this.replaceBarcodesInRow(r, tokenAttributeList)));
 
+    // 6b) Replace images in row
+    page.header.rows  = page.header.rows.map(r => this.replaceImagesInRow(r, tokenAttributeList));
+    page.header2.rows = page.header2.rows.map(r => this.replaceImagesInRow(r, tokenAttributeList));
+    page.footer.rows  = page.footer.rows.map(r => this.replaceImagesInRow(r, tokenAttributeList));
+    page.content.rows = page.content.rows.map(r => this.replaceImagesInRow(r, tokenAttributeList));
+
 
     // 7) Evaluate display logic show / hide
     page.header.rows = this.displayLogicUtility.evaluateAllRows(page.header.rows, tokenAttributeList);
@@ -232,6 +238,31 @@ export class PageToPageConverter  implements Converter<Page, Promise<Page>, Toke
       }
       return cell;
     }));
+
+    return { ...row, cells: newCells };
+  }
+
+  /**
+   * Replace all images in a given row, looking up values from tokenAttributes.
+   */
+  private replaceImagesInRow(row: Row, tokenAttributeList: TokenAttribute[]): Row {
+    const newCells = row.cells.map(cell => {
+      if (cell.type === 'image' && cell.imageBlock?.HtmlTokenElement) {
+        const key = cell.imageBlock.HtmlTokenElement.key;
+        const token = tokenAttributeList.find(t => t.name === key);
+
+        if (!token || !token.value) return cell;
+
+        return {
+          ...cell,
+          imageBlock: {
+            ...cell.imageBlock,
+            imageBase64: token.value // assume value contains the base64 string
+          }
+        };
+      }
+      return cell;
+    });
 
     return { ...row, cells: newCells };
   }
