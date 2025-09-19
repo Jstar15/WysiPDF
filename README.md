@@ -1,10 +1,8 @@
 # WysiPDF
 
-> ⚠️ **Disclaimer:** WysiPDF is **in active development**. Features and APIs may change without notice. Use at your own risk.
+WysiPDF is a lightweight PDF design tool with a fully visual, grid-based interface that lets you design rows, columns, and content blocks with ease. Built on pdfMake, it enables the creation of dynamic, data-driven PDF templates, and is bundled into a single JavaScript file for fast deployment — in the browser or on the server.
 
-WysiPDF is a **single-file WYSIWYG PDF editor** and runtime, designed to quickly create **dynamic, data-driven PDF templates**. Build once, then generate **PDF** or **standalone HTML** from **JSON payloads**, **tokens**, or **repeatable content**, all in the browser or on the server.
-
-![WysiPDF screenshot](readme/images/screenshot-2.png)
+![WysiPDF screenshot](readme/images/screenshot-3.png)
 
 ---
 
@@ -24,6 +22,8 @@ Try it in the browser: **[https://jstar15.github.io/WysiPDF/](https://jstar15.gi
 * **Conditional Display**: show or hide rows based on **token-based logic**.
 * **Page Breaks**: insert breaks anywhere; content flows across pages automatically.
 * **Cell Styling**: define padding, background color, borders, alignment, and relative width.
+* **Page Numbering**: Inject page number into the footer of each page
+* **Different Headers**: Can configure a header for page 2+
 
 ### Rich Content Blocks
 
@@ -33,7 +33,8 @@ Try it in the browser: **[https://jstar15.github.io/WysiPDF/](https://jstar15.gi
 * **Charts**: Pie, Doughnut, and Bar charts rendered as high-quality PNGs.
 * **Barcodes & QR Codes**: configurable 1D/2D codes, exported as PNG for crisp printing.
 * **Dynamic Tokens**: all content blocks can bind to tokens for live data rendering.
-
+* **Icons**: Icon can be inserted, icon pack included.
+* 
 ### Styling & Theming
 
 * **Fonts**: Roboto, Raleway, Nunito, Cormorant.
@@ -79,21 +80,7 @@ Include the built script and access `WysiPDF` globally:
   window.addEventListener('DOMContentLoaded', async () => {
     wysi = new WysiPDF({ mount: '#editor-host' });
 
-    page = {
-      header: { rows: [] },
-      content: { rows: [] },
-      footer: { rows: [] },
-      pageAttrs: {
-        backgroundColor: 'white',
-        marginTop: 10, marginRight: 0, marginLeft: 0, marginBottom: 10,
-        footerMargin: 50, headerMargin: 30, defaultFont: 'Roboto'
-      },
-      tokenAttrs: [{ name: 'customerName', value: 'Jane Doe', type: 'TEXT' }],
-      partialContent: [],
-      colorPalettes: ['#111827','#F59E0B','#3B82F6','#10B981','#EF4444']
-    };
-
-    await wysi.loadPage(page);
+    // Subscribe to live changes if needed
     await wysi.onPageChange(p => (page = p));
 
     document.getElementById('exportPdf').addEventListener('click', async () => {
@@ -104,6 +91,26 @@ Include the built script and access `WysiPDF` globally:
       a.click();
     });
   });
+</script>
+```
+
+Existing Pages can be loaded on init
+```html
+
+<script>
+let wysi = new WysiPDF({ mount: '#editor-host' });
+
+    let page = {
+      header: { rows: [] },
+      header2: { rows: [] },
+      content: { rows: [] },
+      footer: { rows: [] },
+      pageAttrs: {},
+      tokenAttrs: [],
+      colorPalettes: ['#111827','#F59E0B','#3B82F6','#10B981','#EF4444']
+    };
+
+    await wysi.loadPage(page);
 </script>
 ```
 
