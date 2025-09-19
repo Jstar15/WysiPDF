@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import JsBarcode from 'jsbarcode';
+import QRCode from 'qrcode';
 import {BarcodeFormat, ExtendedBarcodeFormat, QRLevel} from "../../models/page";
 
 export interface GenerateBarcodeOptions {
@@ -28,8 +29,7 @@ export class BarcodeService {
     this.validateInput(clean, opts.format);
 
     if (opts.format === 'QR') {
-      const { toDataURL } = await import('qrcode');
-      return await toDataURL(clean, {
+      return QRCode.toDataURL(clean, {
         errorCorrectionLevel: opts.errorCorrectionLevel ?? 'M',
         margin: opts.margin ?? 2,
         width: opts.size ?? 256,

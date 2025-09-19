@@ -75,6 +75,7 @@
     "@types/html-to-docx": "^1.8.0",
     "@types/jasmine": "~5.1.0",
     "@types/pdfmake": "^0.2.11",
+    "@types/qrcode": "^1.5.5",
     "@typescript-eslint/eslint-plugin": "^8.29.0",
     "angular-eslint": "19.3.0",
     "esbuild": "^0.25.8",
