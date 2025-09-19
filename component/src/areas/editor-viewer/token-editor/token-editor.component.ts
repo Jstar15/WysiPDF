@@ -28,6 +28,7 @@ import {
   StringArrayEditorDialogComponent,
   StringArrayEditorDialogData
 } from '../../../dialogs/string-array-editor-dialog/string-array-editor-dialog.component';
+import {ConfirmDialogComponent} from "../../../dialogs/confirm-dialog/confirm-dialog.component";
 
 @Component({
   selector: 'app-token-editor',
@@ -166,15 +167,48 @@ export class TokenEditorComponent implements OnInit, OnChanges {
 
   injectJson(): void {
     try {
-      const parsedAttrs = this.tokenParser.parse(this.jsonText);
-      this.attributes = parsedAttrs.map(a => ({
+      const parsedAttrs = this.tokenParser.parse(this.jsonText).map(a => ({
         name: a.name?.trim() ?? '',
         value: String(a.value ?? ''),
         type: a.type as TokenAttributeType,
         tokenAttributes: a.tokenAttributes
       }));
-      this.syncDataSource(); this.emitAttributes();
-      this.tabIndex = 0; this.error = null;
+
+      if (this.attributes.length > 0) {
+        // Ask user whether to remove existing tokens
+        const ref = this.dialog.open(ConfirmDialogComponent, {
+          width: '400px',
+          data: { message: 'Existing tokens detected. Remove them all?' }
+        });
+
+        ref.afterClosed().subscribe(result => {
+          if (result === true) {
+            // Replace all
+            this.attributes = parsedAttrs;
+          } else if (result === false) {
+            // Merge/update
+            parsedAttrs.forEach(newAttr => {
+              const idx = this.attributes.findIndex(a => a.name === newAttr.name);
+              if (idx !== -1) {
+                this.attributes[idx] = newAttr; // update existing
+              } else {
+                this.attributes.push(newAttr); // add new
+              }
+            });
+          }
+          this.syncDataSource();
+          this.emitAttributes();
+          this.tabIndex = 0;
+          this.error = null;
+        });
+      } else {
+        // No existing tokens, just add
+        this.attributes = parsedAttrs;
+        this.syncDataSource();
+        this.emitAttributes();
+        this.tabIndex = 0;
+        this.error = null;
+      }
     } catch (err: any) {
       this.error = err?.message || 'Failed to parse JSON.';
     }
