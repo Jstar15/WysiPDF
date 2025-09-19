@@ -1,0 +1,15 @@
+{
+  "name": "wysipdf",
+  "version": "0.1.0",
+  "description": "Lightweight grid-based PDF template designer built on pdfMake",
+  "author": "Your Name",
+  "license": "MIT",
+  "main": "wysipdf.bundle.js",
+  "module": "wysipdf.bundle.js",
+  "files": [
+    "wysipdf.bundle.js"
+  ],
+  "scripts": {
+    "prepublishOnly": "echo 'Ensure wysipdf.bundle.js exists before publishing'"
+  }
+}

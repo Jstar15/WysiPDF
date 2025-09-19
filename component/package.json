@@ -1,6 +1,26 @@
 {
-  "name": "like-button",
-  "version": "0.0.0",
+  "name": "wysipdf",
+  "version": "0.1.0",
+  "description": "Lightweight grid-based PDF template designer built on pdfMake",
+  "author": "Your Name",
+  "license": "MIT",
+  "keywords": [
+    "pdf",
+    "pdfmake",
+    "editor",
+    "template",
+    "grid",
+    "wysiwyg",
+    "angular",
+    "barcodes",
+    "qrcode"
+  ],
+  "main": "dist/wysipdf.js",
+  "module": "dist/wysipdf.js",
+  "types": "dist/types/index.d.ts",
+  "files": [
+    "dist/"
+  ],
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -8,9 +28,9 @@
     "postbuild": "npx rollup -c",
     "watch": "ng build --watch --configuration development",
     "gen-icons": "node scripts/gen-inline-icons.js",
-    "test": "ng test"
+    "test": "ng test",
+    "prepublishOnly": "npm run build"
   },
-  "private": true,
   "dependencies": {
     "@angular/animations": "^19.2.1",
     "@angular/cdk": "^19.2.2",
