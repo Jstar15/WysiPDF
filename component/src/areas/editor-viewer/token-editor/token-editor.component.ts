@@ -29,6 +29,7 @@ import {
   StringArrayEditorDialogData
 } from '../../../dialogs/string-array-editor-dialog/string-array-editor-dialog.component';
 import {ConfirmDialogComponent} from "../../../dialogs/confirm-dialog/confirm-dialog.component";
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Component({
   selector: 'app-token-editor',
@@ -72,7 +73,8 @@ export class TokenEditorComponent implements OnInit, OnChanges {
 
   constructor(
     private readonly tokenParser: JsonTokenParserUtility,
-    private readonly dialog: MatDialog
+    private readonly dialog: MatDialog,
+    private readonly snackBar: MatSnackBar
   ) {}
 
   ngOnInit(): void { this.syncDataSource(); }
@@ -182,8 +184,12 @@ export class TokenEditorComponent implements OnInit, OnChanges {
         });
 
         ref.afterClosed().subscribe(result => {
+          let added = 0;
+          let updated = 0;
+
           if (result === true) {
             // Replace all
+            added = parsedAttrs.length;
             this.attributes = parsedAttrs;
           } else if (result === false) {
             // Merge/update
@@ -191,15 +197,25 @@ export class TokenEditorComponent implements OnInit, OnChanges {
               const idx = this.attributes.findIndex(a => a.name === newAttr.name);
               if (idx !== -1) {
                 this.attributes[idx] = newAttr; // update existing
+                updated++;
               } else {
                 this.attributes.push(newAttr); // add new
+                added++;
               }
             });
           }
+
           this.syncDataSource();
           this.emitAttributes();
           this.tabIndex = 0;
           this.error = null;
+
+          // Show notification
+          this.snackBar.open(
+            `Tokens added: ${added}, updated: ${updated}`,
+            'Close',
+            { duration: 3000 }
+          );
         });
       } else {
         // No existing tokens, just add
@@ -208,6 +224,12 @@ export class TokenEditorComponent implements OnInit, OnChanges {
         this.emitAttributes();
         this.tabIndex = 0;
         this.error = null;
+
+        this.snackBar.open(
+          `Tokens added: ${parsedAttrs.length}`,
+          'Close',
+          { duration: 3000 }
+        );
       }
     } catch (err: any) {
       this.error = err?.message || 'Failed to parse JSON.';

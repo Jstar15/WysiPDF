@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButton } from '@angular/material/button';
 import { Page } from '../../models/page';
@@ -18,7 +18,7 @@ import {PageStateService} from "../../services/page-state.service";
   templateUrl: './editor-viewer.component.html',
   styleUrls: ['./editor-viewer.component.scss']
 })
-export class EditorViewerComponent {
+export class EditorViewerComponent implements OnInit{
   @Input() type: EditorType = EditorType.PAGE_LAYOUT;
   @Input() page!: Page;
 
@@ -27,11 +27,19 @@ export class EditorViewerComponent {
 
   @Output() editorActionEvent: EventEmitter<EditorAction> = new EventEmitter<EditorAction>();
 
+  pageOutput!: Page;
+
   constructor(private gridStateService: PageStateService) {
   }
 
+  ngOnInit(): void {
+    if(this.page){
+      this.pageOutput = JSON.parse(JSON.stringify(this.page)) ;
+    }
+  }
+
   updatePage(page:Page){
-    this.page = page;
+    this.pageOutput = page;
   }
 
   onCancel(): void {
@@ -39,7 +47,7 @@ export class EditorViewerComponent {
 
   }
   onOk(): void     {
-    this.gridStateService.pushSnapshot(this.page)
+    this.gridStateService.pushSnapshot(this.pageOutput)
     this.editorActionEvent.emit(EditorAction.OK);
   }
 

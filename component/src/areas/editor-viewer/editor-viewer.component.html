@@ -1,49 +1,49 @@
 <div class="editor-shell" role="dialog" aria-labelledby="editorTitle">
   <!-- Header -->
   <header class="editor-header">
-    <mat-icon *ngIf="type == EditorType.IMPORT && page" svgIcon="file_open"></mat-icon>
-    <mat-icon *ngIf="type == EditorType.PAGE_LAYOUT && page" svgIcon="border_color"></mat-icon>
-    <mat-icon *ngIf="type == EditorType.COLOR_PALETTE && page" svgIcon="colors"></mat-icon>
-    <mat-icon *ngIf="type == EditorType.TOKEN && page" svgIcon="download"></mat-icon>
-    <mat-icon *ngIf="type == EditorType.PRESET && page" svgIcon="inventory_2"></mat-icon>
+    <mat-icon *ngIf="type == EditorType.IMPORT && pageOutput" svgIcon="file_open"></mat-icon>
+    <mat-icon *ngIf="type == EditorType.PAGE_LAYOUT && pageOutput" svgIcon="border_color"></mat-icon>
+    <mat-icon *ngIf="type == EditorType.COLOR_PALETTE && pageOutput" svgIcon="colors"></mat-icon>
+    <mat-icon *ngIf="type == EditorType.TOKEN && pageOutput" svgIcon="download"></mat-icon>
+    <mat-icon *ngIf="type == EditorType.PRESET && pageOutput" svgIcon="inventory_2"></mat-icon>
 
 
-    <h2 id="editorTitle" *ngIf="type == EditorType.IMPORT && page">Import / Export</h2>
-    <h2 id="editorTitle" *ngIf="type == EditorType.PAGE_LAYOUT && page">Page Layout Editor</h2>
-    <h2 id="editorTitle" *ngIf="type == EditorType.COLOR_PALETTE && page">Color Palette Editor</h2>
-    <h2 id="editorTitle" *ngIf="type == EditorType.TOKEN && page">Token Editor</h2>
-    <h2 id="editorTitle" *ngIf="type == EditorType.PRESET && page">Page Layout Editor</h2>
+    <h2 id="editorTitle" *ngIf="type == EditorType.IMPORT && pageOutput">Import / Export</h2>
+    <h2 id="editorTitle" *ngIf="type == EditorType.PAGE_LAYOUT && pageOutput">Page Layout Editor</h2>
+    <h2 id="editorTitle" *ngIf="type == EditorType.COLOR_PALETTE && pageOutput">Color Palette Editor</h2>
+    <h2 id="editorTitle" *ngIf="type == EditorType.TOKEN && pageOutput">Token Editor</h2>
+    <h2 id="editorTitle" *ngIf="type == EditorType.PRESET && pageOutput">Page Layout Editor</h2>
 
   </header>
 
   <!-- Content (scrollable) -->
   <section class="editor-content">
     <!-- Project your editor UI here -->
-    <ng-content *ngIf="type == EditorType.PAGE_LAYOUT && page">
-      <app-page-layout-editor [pageAttrs]="page.pageAttrs"></app-page-layout-editor>
+    <ng-content *ngIf="type == EditorType.PAGE_LAYOUT && pageOutput">
+      <app-page-layout-editor [pageAttrs]="pageOutput.pageAttrs"></app-page-layout-editor>
     </ng-content>
 
-    <ng-content *ngIf="type == EditorType.IMPORT && page">
-      <app-import-editor [page]="page" (pageImported)="updatePage($event)"></app-import-editor>
+    <ng-content *ngIf="type == EditorType.IMPORT && pageOutput">
+      <app-import-editor [page]="pageOutput" (pageImported)="updatePage($event)"></app-import-editor>
     </ng-content>
 
-    <ng-content *ngIf="type == EditorType.COLOR_PALETTE && page">
+    <ng-content *ngIf="type == EditorType.COLOR_PALETTE && pageOutput">
       <app-color-palette-editor
-        [colorPalettes]="page.colorPalettes"
-        (colorPalettesChange)="page.colorPalettes = $event">
+        [colorPalettes]="pageOutput.colorPalettes"
+        (colorPalettesChange)="pageOutput.colorPalettes = $event">
       </app-color-palette-editor>
     </ng-content>
 
-    <ng-content *ngIf="type == EditorType.TOKEN && page">
+    <ng-content *ngIf="type == EditorType.TOKEN && pageOutput">
       <app-token-editor
-        [attributes]="page.tokenAttrs"
-        (attributesChange)="page.tokenAttrs = $event">
+        [attributes]="pageOutput.tokenAttrs"
+        (attributesChange)="pageOutput.tokenAttrs = $event">
       </app-token-editor>
     </ng-content>
 
-    <ng-content *ngIf="type == EditorType.PRESET && page">
+    <ng-content *ngIf="type == EditorType.PRESET && pageOutput">
       <app-preset-loader
-        (pageSelected)="page = $event">
+        (pageSelected)="pageOutput = $event">
       </app-preset-loader>
     </ng-content>
 
