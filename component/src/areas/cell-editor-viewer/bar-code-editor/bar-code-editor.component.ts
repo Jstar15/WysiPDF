@@ -36,7 +36,7 @@ type Align = 'left' | 'center' | 'right';
     MatFormField, MatInput, MatLabel,
     MatIcon,
     MatButtonToggleGroup, MatButtonToggle,
-    MatSelect, MatOption, MatButton
+    MatSelect, MatOption
   ]
 })
 export class BarCodeEditorComponent implements OnInit, OnChanges {

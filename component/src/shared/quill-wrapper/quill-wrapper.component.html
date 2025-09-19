@@ -70,12 +70,23 @@
     <button id="custom-button-delete" (click)="deleteTable()">R</button>
   </span>
 
-  <span  class="ql-formats">
-    <button id="custom-button-attribute-adder" (click)="openDialog()">A</button>
-    <button class="hyperlinkButton" (click)="addLink()">H</button>
-    <button id="custom-button-attribute-adder" (click)="openPageNumberingDialog()">P</button>
+<span class="ql-formats">
+  <!-- Tokens -->
+  <button id="custom-button-tokens" (click)="openDialog()">
+    <mat-icon svgIcon="token"></mat-icon>
+  </button>
 
-  </span>
+     <!-- Hyperlink -->
+  <button id="custom-button-hyperlink" (click)="addLink()">
+    <mat-icon svgIcon="link"></mat-icon>
+  </button>
+
+     <!-- Page Numbering -->
+  <button id="custom-button-page-number" *ngIf="showPageNumberingBtn" (click)="openPageNumberingDialog()">
+    <mat-icon svgIcon="looks_one"></mat-icon>
+  </button>
+</span>
+
 
 </div>
 

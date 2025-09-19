@@ -19,17 +19,6 @@
   </div>
 
 
-  <p class="section-title">Default Font</p>
-  <mat-form-field appearance="fill" class="w-100">
-    <mat-label>Font</mat-label>
-    <mat-select [(ngModel)]="pageAttrs.defaultFont">
-      <mat-option *ngFor="let font of availableFonts" [value]="font">
-        {{ font }}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
-
-
 
   <p class="section-title">Page Margin</p>
   <div class="row-grid-3-3-3-auto">

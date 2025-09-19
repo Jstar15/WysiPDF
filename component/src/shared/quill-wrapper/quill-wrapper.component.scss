@@ -2,3 +2,24 @@
   margin-top:10px;
 }
 
+#custom-button-tokens,
+#custom-button-hyperlink,
+#custom-button-page-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 15px; // space between buttons
+  padding: 4px;        // adjust as needed
+  min-width: auto;
+
+  mat-icon {
+    width: 18px;      // smaller icon width
+    height: 18px;     // smaller icon height
+    font-size: 18px;  // ensures icon scales correctly
+  }
+}
+
+// Optional: remove margin from the last button
+#custom-button-page-number {
+  margin-right: 0;
+}

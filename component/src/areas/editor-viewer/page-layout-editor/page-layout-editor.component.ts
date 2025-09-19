@@ -13,7 +13,7 @@ import {MatSlideToggle} from "@angular/material/slide-toggle";
 @Component({
   selector: 'app-page-layout-editor',
   standalone: true,
-  imports: [CommonModule, ColorPickerOverlayComponent, FormsModule, MatFormField, MatInput, MatLabel, MatOption, MatSelect, MatDialogContent, MatSlideToggle],
+  imports: [CommonModule, ColorPickerOverlayComponent, FormsModule, MatFormField, MatInput, MatLabel, MatDialogContent, MatSlideToggle],
   templateUrl: './page-layout-editor.component.html',
   styleUrls: ['./page-layout-editor.component.scss']
 })
@@ -22,13 +22,6 @@ export class PageLayoutEditorComponent {
   @Input() pageAttrs : PageAttrs = {}
 
   showBgPicker = false;
-
-  availableFonts: string[] = [
-    'Raleway',
-    'Roboto',
-    'Nunito',
-    'Cormorant'
-  ];
 
   constructor() {}
 

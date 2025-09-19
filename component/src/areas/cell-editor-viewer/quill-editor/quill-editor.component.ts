@@ -14,6 +14,7 @@ import { FormsModule } from '@angular/forms';
 import { Cell } from '../../../models/page';
 import { TokenAttribute } from '../../../models/token-attribute';
 import { QuillWrapperComponent } from '../../../shared/quill-wrapper/quill-wrapper.component';
+import {PageStateService} from "../../../services/page-state.service";
 
 @Component({
   selector: 'app-quill-editor',
@@ -28,6 +29,8 @@ import { QuillWrapperComponent } from '../../../shared/quill-wrapper/quill-wrapp
 export class QuillEditorComponent implements OnInit, OnChanges, OnDestroy {
   @ViewChild('wrapper') wrapper!: QuillWrapperComponent;
 
+  constructor(private pageStateService: PageStateService) {
+  }
   /** Inputs (mirror your other editors) */
   @Input() public cell!: Cell;
   @Input() public tokenAttrs: TokenAttribute[] = [];
@@ -42,6 +45,7 @@ export class QuillEditorComponent implements OnInit, OnChanges, OnDestroy {
 
   ngOnInit(): void {
     this.hydrateFromInputs();
+    this.pageStateService.getCurrentPage()
   }
 
   ngOnChanges(changes: SimpleChanges): void {

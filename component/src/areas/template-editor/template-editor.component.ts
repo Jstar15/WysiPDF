@@ -1,8 +1,8 @@
 import {
   AfterViewInit,
   ChangeDetectorRef,
-  Component,
-  EventEmitter,
+  Component, ElementRef,
+  EventEmitter, Inject,
   Input, NgZone,
   OnInit,
   Output,
@@ -86,7 +86,9 @@ export class TemplateEditorComponent implements OnInit,AfterViewInit {
       private iconService: IconService,
       private pageTokenValidator : PageTokenValidator,
       private gridStateService : PageStateService,
-      private displayLogicUtility : DisplayLogicUtility) {
+      private displayLogicUtility : DisplayLogicUtility,
+      @Inject(ElementRef) private host: ElementRef<HTMLElement> // 🔹 use @Inject here
+  ) {
     this.iconService.registerIcons();
 
     this.gridStateService.page$.pipe(
@@ -100,6 +102,11 @@ export class TemplateEditorComponent implements OnInit,AfterViewInit {
 
   ngAfterViewInit(): void {
     this._onPageChange()
+  }
+
+  dispatchPageEvent(){
+    const event = new CustomEvent('page-change', { detail: this.page });
+    this.host.nativeElement.dispatchEvent(event);
   }
 
   ngOnInit(): void {
@@ -137,6 +144,8 @@ export class TemplateEditorComponent implements OnInit,AfterViewInit {
       if (leftPane) leftPane.scrollTop = leftScroll;
       if (rightPane) rightPane.scrollTop = rightScroll;
     });
+
+    this.dispatchPageEvent();
   }
 
   openEditorViewer(editorType: EditorType){

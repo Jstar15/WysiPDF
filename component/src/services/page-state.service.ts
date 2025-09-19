@@ -137,6 +137,10 @@ export class PageStateService {
     return grid?.rows[this.currentRow]?.cells[this.currentCol];
   }
 
+  getCurrentArea(){
+    return this.currentArea;
+  }
+
   getTokenAttributes(): TokenAttribute[]{
     const current = this.getCurrentPage();
     if (!current) return null;

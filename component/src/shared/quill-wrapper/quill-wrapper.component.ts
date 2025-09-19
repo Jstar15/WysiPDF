@@ -16,7 +16,7 @@ import {TokenAttribute} from "../../models/token-attribute";
 import {AddTokenDialogComponent} from "../../dialogs/add-token-dialog/add-token-dialog.component";
 import {CustomElementBlot} from "./CustomElementBlot";
 import Quill from 'quill';
-import {NgForOf} from "@angular/common";
+import {NgForOf, NgIf} from "@angular/common";
 import {TokenAttributeType} from "../../models/token-attribute-type";
 import {
   HyperLinkDialogPayload,
@@ -26,12 +26,14 @@ import {PageNumberingElementBlot, PageNumberType} from "./PageNumberingElementBl
 import {
   PageNumberingSelectDialogComponent
 } from "../../dialogs/add-page-numbering-dialog/add-page-numbering-dialog.component";
+import {MatIcon} from "@angular/material/icon";
+import {PageStateService} from "../../services/page-state.service";
 
 @Component({
   standalone: true,
   selector: 'app-quill-wrapper',
   templateUrl: './quill-wrapper.component.html',
-  imports: [NgForOf],
+  imports: [NgForOf, MatIcon, NgIf],
   styleUrls: ['./quill-wrapper.component.scss']
 })
 export class QuillWrapperComponent implements OnInit, AfterViewInit, OnDestroy, OnChanges {
@@ -39,6 +41,8 @@ export class QuillWrapperComponent implements OnInit, AfterViewInit, OnDestroy, 
   @Input() attributeArray: TokenAttribute[];
   @Input() colorPalettes: string[] = [];
 
+
+  showPageNumberingBtn: boolean = false;
   /** NEW: when true, disables undo/redo (keyboard shortcuts + clears stack) */
   @Input() disableUndoRedo: boolean = false;
 
@@ -79,10 +83,15 @@ export class QuillWrapperComponent implements OnInit, AfterViewInit, OnDestroy, 
   ];
 
   constructor(
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private pageStateService: PageStateService
   ) {}
 
   ngOnInit(): void {
+
+    const currentArea: string = this.pageStateService.getCurrentArea();
+    this.showPageNumberingBtn = currentArea == 'footer';
+
     CustomElementBlot['blotName'] = 'mathjax';
     CustomElementBlot['className'] = 'ql-mathjax';
     CustomElementBlot['tagName'] = 'SPAN';
