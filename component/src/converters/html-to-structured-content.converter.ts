@@ -1,354 +1,24 @@
 import { Injectable } from '@angular/core';
-import {
-  HtmlAttributes,
-  HtmlBasicElement,
-  HtmlBlock,
-  HtmlBlockContainer,
-  HtmlTableBlock,
-  HtmlTableRow,
-  HtmlTableCell,
-  HtmlTokenElement,
-  Page, Row
-} from "../models/page";
-import {Converter} from "./converter";
+import { HtmlBlock, HtmlBasicElement, HtmlAttributes, HtmlTokenElement, Page } from "../models/page";
+import { Converter } from "./converter";
+import * as cheerio from "cheerio";
 
-/**
- * HtmlToStructuredContentConverter
- *
- * This service parses HTML content—typically generated from QuillJS editor output—
- * into a structured intermediate object format (`HtmlBlockContainer`) used by the app.
- *
- * It supports rich text formatting, custom elements (like custom tokens), and basic table structures.
- * The resulting object is used as a normalized content model for rendering, editing, or converting to PDF.
- */
 @Injectable({ providedIn: 'root' })
 export class HtmlToStructuredContentConverter implements Converter<Page, Page> {
-  public convert(page: Page): Page {
-    for (let row of page.header.rows) {
-      for (let cell of row.cells) {
-        cell.block = this.convertHTmlToObject(cell.value);
-      }
-    }
 
-    for (let row of page.header2.rows) {
-      for (let cell of row.cells) {
-        cell.block = this.convertHTmlToObject(cell.value);
-      }
-    }
-
-    for (let row of page.content.rows) {
-      for (let cell of row.cells) {
-        cell.block = this.convertHTmlToObject(cell.value);
-      }
-    }
-    for (let row of page.footer.rows) {
-      for (let cell of row.cells) {
-        cell.block = this.convertHTmlToObject(cell.value);
-      }
-    }
-
+  convert(page: Page): Page {
+    ['header', 'header2', 'content', 'footer'].forEach(sectionName => {
+      const section = page[sectionName];
+      section.rows.forEach(row => {
+        row.cells.forEach(cell => {
+          cell.block = this.convertHtmlToObject(cell.value);
+        });
+      });
+    });
     return page;
   }
 
-  private parseHtmlToStructuredObject(html: string): HtmlBlockContainer {
-    const container: HtmlBlockContainer = { blocks: [] };
-    const root = document.createElement('div');
-    root.innerHTML = html;
-
-    root.childNodes.forEach(node => {
-      const tag = (node as HTMLElement)?.tagName?.toLowerCase();
-
-      switch (tag) {
-        case 'table':
-          if (node.nodeType === Node.ELEMENT_NODE) {
-            const table = this.parseTable(node as HTMLElement);
-            container.blocks.push(table);
-          }
-          break;
-        case 'ul':
-        case 'ol':
-          if (node.nodeType === Node.ELEMENT_NODE) {
-            const listBlocks = this.parseListBlock(node as HTMLElement, tag);
-            container.blocks.push(...listBlocks);
-          }
-          break;
-
-        case 'p':
-        case 'br':
-        case 'h1':
-        case 'h2':
-        case 'h3':
-        case 'h4':
-        case 'h5':
-        case 'h6':
-        case 'li':
-        case 'div':
-          if (node.nodeType === Node.ELEMENT_NODE) {
-            const block = this.parseBlock(node as HTMLElement);
-            container.blocks.push(block);
-          }
-          break;
-
-        default:
-          if (node.nodeType === Node.ELEMENT_NODE && (node as HTMLElement).classList.contains('ql-mathjax')) {
-            const el = node as HTMLElement;
-            const dataValue = el.dataset['value'] ?? '';
-            const childAttrs: HtmlAttributes = this.extractAttributes(el, el.className);
-            childAttrs.value = dataValue;
-            childAttrs.type = 'token';
-            childAttrs.currentColumnName = el.dataset['name'] ?? undefined;
-            childAttrs.isCustomElement = true;
-
-            container.blocks.push({
-              blockType: 'span',
-              alignment: 'left',
-              elements: [{ value: 'test', attributes: childAttrs, type: 'token' }]
-            });
-          }
-      }
-    });
-
-    return container;
-  }
-
-  private parseBlock(blockEl: HTMLElement): HtmlBlock {
-    const elements: HtmlBasicElement[] = [];
-    const blockType = blockEl.tagName.toLowerCase();
-
-    const classAlign = this.getAlignmentFromClass(blockEl.className);
-    const inlineAlign = blockEl.style.textAlign;
-    const alignment = inlineAlign || classAlign || 'left';
-
-    // ✨ if the block itself is <br>, return a paragraph with a newline
-    if (blockType === 'br') {
-      elements.push({
-        value: '\n',
-        attributes: { ...this.getDefaultAttributes(), align: alignment },
-        type: 'text'
-      });
-      return { elements, blockType: 'p', alignment };
-    }
-
-    const parseNodeRecursively = (
-      node: Node,
-      inheritedAttrs: HtmlAttributes,
-      inheritedClass: string
-    ) => {
-      if (node.nodeType === Node.TEXT_NODE) {
-        const text = node.textContent;
-        if (text) {
-          elements.push({
-            value: text,
-            attributes: {
-              ...inheritedAttrs,
-              align: inheritedAttrs.align || alignment
-            },
-            type: 'text'
-          });
-        }
-      } else if (node.nodeType === Node.ELEMENT_NODE) {
-        const el = node as HTMLElement;
-
-        if (el.tagName.toLowerCase() === 'br') {
-          elements.push({
-            value: '\n',
-            attributes: { ...inheritedAttrs, align: inheritedAttrs.align || alignment },
-            type: 'text'
-          });
-          return;
-        }
-
-        // handle <a> hyperlink
-        if (el.tagName.toLowerCase() === 'a') {
-          const hyperlinkElement = this.parseHyperlink(el, inheritedAttrs);
-          elements.push(hyperlinkElement);
-          return;
-        }
-
-        const combinedClass = [inheritedClass, el.className].filter(Boolean).join(' ');
-        const mergedAttrs = this.extractAttributes(el, combinedClass, inheritedAttrs);
-
-        if (el.classList.contains('ql-mathjax')) {
-          const dsVal = el.dataset['value']?.trim();
-          mergedAttrs.value = dsVal && dsVal.length
-            ? dsVal
-            : (el.textContent ?? '');
-          mergedAttrs.type = el.dataset['type'] ?? undefined;
-          mergedAttrs.currentColumnName = el.dataset['name'] ?? undefined;
-          mergedAttrs.isCustomElement = true;
-          mergedAttrs.isMergeField = true;
-
-          elements.push({
-            value: mergedAttrs.value!,
-            attributes: mergedAttrs,
-            type: 'token'
-          });
-          return;
-        }
-
-        el.childNodes.forEach(child => parseNodeRecursively(child, mergedAttrs, combinedClass));
-      }
-    };
-
-    blockEl.childNodes.forEach(child =>
-      parseNodeRecursively(child, this.getDefaultAttributes(), blockEl.className)
-    );
-
-    return { elements, blockType, alignment };
-  }
-
-  private parseTable(tableEl: HTMLElement): HtmlTableBlock {
-    const rows: HtmlTableRow[] = [];
-    const rowEls = Array.from(tableEl.querySelectorAll('tr'));
-
-    for (const rowEl of rowEls) {
-      const cells: HtmlTableCell[] = [];
-      const cellEls = Array.from(rowEl.querySelectorAll('td,th'));
-
-      for (const cellEl of cellEls) {
-        const elements: HtmlBasicElement[] = [];
-        this.parseTableCellContent(cellEl, elements, this.getDefaultAttributes(), cellEl.className);
-        cells.push({ elements });
-      }
-
-      rows.push({ cells });
-    }
-
-    return {
-      blockType: 'table',
-      rows
-    };
-  }
-
-  private parseTableCellContent(
-    node: Node,
-    elements: HtmlBasicElement[],
-    inheritedAttrs: HtmlAttributes,
-    inheritedClass: string
-  ): void {
-    if (node.nodeType === Node.TEXT_NODE) {
-      const text = node.textContent;
-      elements.push({
-        value: text,
-        attributes: { ...inheritedAttrs },
-        type: 'text'
-      });
-    } else if (node.nodeType === Node.ELEMENT_NODE) {
-      const el = node as HTMLElement;
-      const combinedClass = [inheritedClass, el.className].filter(Boolean).join(' ');
-      // 🔧 Use extractAttributes with inheritance
-      const mergedAttrs = this.extractAttributes(el, combinedClass, inheritedAttrs);
-
-      if (el.classList.contains('ql-mathjax')) {
-        const dsVal = el.dataset['value'];
-        mergedAttrs.value = dsVal && dsVal.length
-          ? dsVal
-          : (el.textContent ?? '');
-        mergedAttrs.type = el.dataset['type'] ?? undefined;
-        mergedAttrs.currentColumnName = el.dataset['name'] ?? undefined;
-        mergedAttrs.isCustomElement = true;
-        mergedAttrs.isMergeField = true;
-
-        const htmlTokenElement: HtmlTokenElement = {
-          key: el.dataset['name'] ?? undefined,
-          type: el.dataset['type'] ?? undefined
-        };
-        elements.push({
-          value: mergedAttrs.value!,
-          attributes: mergedAttrs,
-          type: 'token',
-          token: htmlTokenElement
-        });
-        return;
-      }
-
-      el.childNodes.forEach(child => {
-        this.parseTableCellContent(child, elements, mergedAttrs, combinedClass);
-      });
-    }
-  }
-
-  private extractAttributes(
-    el: HTMLElement,
-    fullClassName: string = '',
-    inheritedAttrs: HtmlAttributes = {}
-  ): HtmlAttributes {
-    const tag = el.tagName.toLowerCase();
-    const rgbColor = el.style.color;
-    const bgColor = el.style.backgroundColor;
-
-    // Start with inherited attributes
-    const result: HtmlAttributes = { ...inheritedAttrs };
-
-    if (tag === 'strong' || el.style.fontWeight === 'bold' || el.style.fontWeight === '700') {
-      result.bold = 'true';
-    }
-
-    if (tag === 'em' || el.style.fontStyle === 'italic') {
-      result.italic = 'true';
-    }
-
-    if (tag === 'u' || el.style.textDecoration?.includes('underline')) {
-      result.underline = 'true';
-    }
-
-    // Only override size if explicitly defined
-    if (el.style.fontSize) {
-      const sizeMatch = el.style.fontSize.match(/(\d+)px/);
-      if (sizeMatch) {
-        result.size = parseInt(sizeMatch[1], 10);
-      }
-    }
-
-    const align = el.style.textAlign || this.getAlignmentFromClass(fullClassName);
-    if (align) {
-      result.align = align;
-    }
-
-    if (rgbColor) {
-      result.color = this.rgbToHex(rgbColor);
-    }
-
-    if (bgColor) {
-      result.background = this.rgbToHex(bgColor);
-    }
-
-    const font = this.getFontFromClass(fullClassName) || el.style.fontFamily;
-    if (font) {
-      result.font = font;
-    }
-
-    return result;
-  }
-
-  private getDefaultAttributes(): HtmlAttributes {
-    return {
-      bold: 'false',
-      italic: 'false',
-      underline: 'false',
-      size: 14,
-      font: 'Roboto'
-    };
-  }
-
-  private getAlignmentFromClass(className: string): string | undefined {
-    if (className.includes('ql-align-center')) return 'center';
-    if (className.includes('ql-align-right')) return 'right';
-    if (className.includes('ql-align-justify')) return 'justify';
-    return undefined;
-  }
-
-  private rgbToHex(rgb: string): string {
-    const match = rgb.match(/^rgb\s*\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*\)$/);
-    if (!match) return rgb;
-
-    const r = parseInt(match[1]).toString(16).padStart(2, '0');
-    const g = parseInt(match[2]).toString(16).padStart(2, '0');
-    const b = parseInt(match[3]).toString(16).padStart(2, '0');
-    return `#${r}${g}${b}`;
-  }
-
-  public convertHTmlToObject(html: string) {
+  convertHtmlToObject(html: string) {
     try {
       const parsed = this.parseHtmlToStructuredObject(html);
       return parsed && Array.isArray(parsed.blocks) ? parsed : { blocks: [] };
@@ -358,45 +28,193 @@ export class HtmlToStructuredContentConverter implements Converter<Page, Page> {
     }
   }
 
-  private parseListBlock(listEl: HTMLElement, listType: 'ul' | 'ol'): HtmlBlock[] {
-    const blocks: HtmlBlock[] = [];
-    listEl.querySelectorAll('li').forEach(li => {
-      const block = this.parseBlock(li);
+  private parseHtmlToStructuredObject(html: string) {
+    const container = { blocks: [] };
+    const $ = cheerio.load(`<div>${html}</div>`);
+
+    $('div').contents().each((_, node) => {
+      const el = $(node);
+
+      if (el.is('table')) {
+        container.blocks.push(this.parseTable(el, $));
+      } else if (el.is('ul, ol')) {
+        container.blocks.push(...this.parseListBlock(el, $));
+      } else {
+        container.blocks.push(this.parseBlock(el, $));
+      }
+    });
+
+    return container;
+  }
+
+  private parseBlock(el: any, $: any) {
+    const elements: HtmlBasicElement[] = [];
+    const blockType = el[0]?.tagName?.toLowerCase() || 'div';
+    const alignment = el.css('text-align') || this.getAlignmentFromClass(el.attr('class')) || 'left';
+
+    const parseNodeRecursively = (node: any, inheritedAttrs: HtmlAttributes = {}) => {
+      if (node.type === 'text') {
+        if (node.data.trim()) {
+          elements.push({ value: node.data, attributes: inheritedAttrs, type: 'text' });
+        }
+      } else if (node.type === 'tag') {
+        const $node = $(node);
+        const attrs = this.extractAttributes($node, inheritedAttrs);
+
+        // ✅ Token detection anywhere in the element's ancestors
+        const tokenEl = $node.closest('.ql-mathjax');
+        if (tokenEl && tokenEl.length) {
+          elements.push(this.createTokenElement(tokenEl.first()));
+          return;
+        }
+
+        if ($node.is('br')) {
+          elements.push({ value: '\n', attributes: attrs, type: 'text' });
+          return;
+        }
+
+        if ($node.is('a')) {
+          const href = $node.attr('href') || '';
+          elements.push({
+            value: $node.text(),
+            attributes: attrs,
+            type: 'hyperlink',
+            hyperlink: { name: $node.text(), link: href }
+          });
+          return;
+        }
+
+        $node.contents().each((_, child) => parseNodeRecursively(child, attrs));
+      }
+    };
+
+    el.contents().each((_, child) => parseNodeRecursively(child));
+    return { elements, blockType, alignment };
+  }
+
+  private parseTable(el: any, $: any) {
+    const rows = [];
+    el.find('tr').each((_, rowEl) => {
+      const $row = $(rowEl);
+      const cells = [];
+      $row.find('td, th').each((_, cellEl) => {
+        const elements: HtmlBasicElement[] = [];
+        this.parseTableCellContent($(cellEl), elements, $);
+        cells.push({ elements });
+      });
+      rows.push({ blockType: 'table-row', elements: [], alignment: 'left', cells });
+    });
+    return { blockType: 'table', elements: [], alignment: 'left', rows };
+  }
+
+  private parseTableCellContent(el: any, elements: HtmlBasicElement[], $: any, inheritedAttrs: HtmlAttributes = {}) {
+    el.contents().each((_, child) => {
+      if (child.type === 'text') {
+        if (child.data.trim()) elements.push({ value: child.data, attributes: inheritedAttrs, type: 'text' });
+      } else if (child.type === 'tag') {
+        const $child = $(child);
+        const attrs = this.extractAttributes($child, inheritedAttrs);
+
+        const tokenEl = $child.closest('.ql-mathjax');
+        if (tokenEl && tokenEl.length) {
+          elements.push(this.createTokenElement(tokenEl.first()));
+        } else {
+          this.parseTableCellContent($child, elements, $, attrs);
+        }
+      }
+    });
+  }
+
+  private parseListBlock(el: any, $: any) {
+    const blocks = [];
+    const listType = el[0]?.tagName?.toLowerCase() || 'ul';
+    el.find('li').each((_, li) => {
+      const block: any = this.parseBlock($(li), $);
       block.listType = listType;
       blocks.push(block);
     });
     return blocks;
   }
 
-  private getFontFromClass(className: string): string | undefined {
-    const match = className.match(/ql-font-([a-zA-Z0-9_-]+)/);
-    if (match) {
-      const fontName = match[1];
+  private createTokenElement(el: any): HtmlBasicElement {
+    const attrs: HtmlAttributes = this.extractAttributes(el, {});
+    attrs.isCustomElement = true;
+
+    const dataValue = el.attr('data-value') || '';
+    const decodedValue = this.decodeHtmlEntities(dataValue) || el.text();
+    const type = el.attr('data-type') || undefined;
+    const currentColumnName = el.attr('data-name') || undefined;
+
+    const tokenElement: HtmlTokenElement = { key: currentColumnName, type: type };
+
+    return { value: decodedValue, attributes: attrs, type: 'token', token: tokenElement };
+  }
+
+  private decodeHtmlEntities(str: string): string {
+    return str.replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>')
+      .replace(/&amp;/g, '&')
+      .replace(/&quot;/g, '"')
+      .replace(/&#39;/g, "'");
+  }
+
+  private extractAttributes(el: any, inheritedAttrs: HtmlAttributes = {}): HtmlAttributes {
+    const result: HtmlAttributes = { ...inheritedAttrs };
+    const tagName = el[0]?.tagName?.toLowerCase();
+    const color = el.css('color');
+    const bg = el.css('background-color');
+    const fontWeight = el.css('font-weight');
+    const fontStyle = el.css('font-style');
+    const textDecoration = el.css('text-decoration');
+    const fontSize = el.css('font-size');
+    const textAlign = el.css('text-align');
+    const className = el.attr('class') || '';
+
+    if (color) result.color = this.rgbToHex(color);
+    if (bg) result.background = this.rgbToHex(bg);
+    if (fontWeight && fontWeight !== 'normal') result.bold = 'true';
+    if (fontStyle && fontStyle !== 'normal') result.italic = 'true';
+    if (textDecoration?.includes('underline')) result.underline = 'true';
+    if (fontSize) {
+      const match = fontSize.match(/(\d+)px/);
+      if (match) result.size = parseInt(match[1], 10);
+    }
+    if (textAlign) result.align = textAlign;
+    else result.align = this.getAlignmentFromClass(className) || 'left';
+
+    if (tagName === 'strong' || tagName === 'b') result.bold = 'true';
+    if (tagName === 'em' || tagName === 'i') result.italic = 'true';
+    if (tagName === 'u') result.underline = 'true';
+
+    const fontMatch = className.match(/ql-font-([a-zA-Z0-9_-]+)/);
+    if (fontMatch) {
       const fontMap: Record<string, string> = {
         raleway: 'Raleway',
         roboto: 'Roboto',
         nunito: 'Nunito',
         cormorant: 'Cormorant'
       };
-      return fontMap[fontName.toLowerCase()] || undefined;
+      result.font = fontMap[fontMatch[1].toLowerCase()] || undefined;
     }
+
+    return result;
+  }
+
+  private getAlignmentFromClass(className: string | null | undefined): string | undefined {
+    const cls = className || ''; // ✅ ensure it's always a string
+    if (cls.includes('ql-align-center')) return 'center';
+    if (cls.includes('ql-align-right')) return 'right';
+    if (cls.includes('ql-align-justify')) return 'justify';
     return undefined;
   }
 
-  private parseHyperlink(el: HTMLElement, inheritedAttrs: HtmlAttributes): HtmlBasicElement {
-    const href = el.getAttribute('href') ?? '';
-    const text = el.textContent ?? '';
 
-    const mergedAttrs = this.extractAttributes(el, el.className, inheritedAttrs);
-    mergedAttrs.underline = 'true';
-    return {
-      value: text,
-      attributes: mergedAttrs,
-      type: 'hyperlink',
-      hyperlink: {
-        name: text,
-        link: href
-      }
-    };
+  private rgbToHex(rgb: string): string {
+    const match = rgb.match(/^rgb\s*\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*\)$/);
+    if (!match) return rgb;
+    const r = parseInt(match[1]).toString(16).padStart(2, '0');
+    const g = parseInt(match[2]).toString(16).padStart(2, '0');
+    const b = parseInt(match[3]).toString(16).padStart(2, '0');
+    return `#${r}${g}${b}`;
   }
 }
