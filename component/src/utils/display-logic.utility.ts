@@ -8,7 +8,7 @@ import {
 } from '../models/display-logic.models';
 import {Row, Cell, Page, Grid} from '../models/page';
 
-@Injectable({ providedIn: 'root' })
+@Injectable()
 export class DisplayLogicUtility {
   /**
    * Returns true if the logic group says the row should be visible.

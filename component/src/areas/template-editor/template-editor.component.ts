@@ -87,7 +87,7 @@ export class TemplateEditorComponent implements OnInit,AfterViewInit {
       private pageTokenValidator : PageTokenValidator,
       private gridStateService : PageStateService,
       private displayLogicUtility : DisplayLogicUtility,
-      @Inject(ElementRef) private host: ElementRef<HTMLElement> // 🔹 use @Inject here
+      @Inject(ElementRef) private host: ElementRef<any> // 🔹 use @Inject here
   ) {
     this.iconService.registerIcons();
 
@@ -113,8 +113,8 @@ export class TemplateEditorComponent implements OnInit,AfterViewInit {
   }
 
   private async _onPageChange(): Promise<void> {
-    const leftPane = document.querySelector('.left-pane') as HTMLElement;
-    const rightPane = document.querySelector('.right-pane') as HTMLElement;
+    const leftPane = document.querySelector('.left-pane') as any;
+    const rightPane = document.querySelector('.right-pane') as any;
     const leftScroll = leftPane?.scrollTop || 0;
     const rightScroll = rightPane?.scrollTop || 0;
 

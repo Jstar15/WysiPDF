@@ -11,8 +11,8 @@ export class PageNumberingElementBlot extends EmbedBlot {
   static override blotName = 'page-numbering-element';
   static override tagName = 'span';
 
-  static override create(type: PageNumberType): HTMLElement {
-    const node = super.create() as HTMLElement;
+  static override create(type: PageNumberType): any {
+    const node = super.create() as any;
 
     node.classList.add('page-numbering-element'); // styling hook
     node.setAttribute('data-type', type);
@@ -28,7 +28,7 @@ export class PageNumberingElementBlot extends EmbedBlot {
     return node;
   }
 
-  static override value(node: HTMLElement): PageNumberType {
+  static override value(node: any): PageNumberType {
     return node.getAttribute('data-type') as PageNumberType;
   }
 }

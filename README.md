@@ -114,19 +114,33 @@ let wysi = new WysiPDF({ mount: '#editor-host' });
 </script>
 ```
 
-### Option B — ESM / Angular
+### Option B — ESM / Node.js (Server)
 
-Import as a module and use runtime APIs directly:
-
+You can run WysiPDF directly on the server using Node.js. This allows you to generate PDFs from JSON templates without a browser.
+Just pass in a page object and list of tokens if required. 
 ```ts
-import WysiPDF from 'wysipdf'; // or relative path to your bundle
+// Import a JSON template (mock example)
+import page from './page.json' with { type: 'json' };
 
-const wysi = new WysiPDF();
-const html  = await wysi.generateHtml(page, tokens);
-const pdf64 = await wysi.generatePdfBase64(page, tokens);
+// Node built-ins
+import fs from 'fs';
+
+// Import the Node ESM bundle
+import WysiPDFNodeModule from '../component/dist/components/wysipdf.node.esm.mjs';
+const WysiPDFNode = WysiPDFNodeModule.default || WysiPDFNodeModule;
+
+(async () => {
+  // Initialize WysiPDF
+  const wysi = new WysiPDFNode();
+
+  // Generate PDF as Base64
+  const pdfBase64 = await wysi.generatePdfBase64(page, page.tokenAttrs || []);
+
+  // Save the PDF to a file
+  fs.writeFileSync('output.pdf', Buffer.from(pdfBase64, 'base64'));
+
+})();
 ```
-
----
 
 ## 🧭 Runtime API
 

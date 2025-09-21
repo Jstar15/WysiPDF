@@ -8,7 +8,7 @@ import { StructuredContentToPdfmakeConverter } from './structured-content-to-pdf
 import { GridToStructuredContentConverter } from './grid-to-structured-content.converter';
 import { Converter } from "./converter";
 
-@Injectable({ providedIn: 'root' })
+@Injectable()
 export class PageToStructuredContentConverter implements Converter<Page, TDocumentDefinitions> {
   constructor(
     private structuredContentToPdfmakeService: StructuredContentToPdfmakeConverter,

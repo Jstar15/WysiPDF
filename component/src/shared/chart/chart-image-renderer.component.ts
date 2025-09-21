@@ -111,7 +111,7 @@ export class ChartImageRendererComponent implements AfterViewInit, OnDestroy, On
 
   private applyLayoutFromBlock(): void {
     if (!this.chartBlock) return;
-    const el = this.hostRef?.nativeElement?.parentElement as HTMLElement | undefined;
+    const el = this.hostRef?.nativeElement?.parentElement as any | undefined;
     if (!el) return;
 
     // width is a percentage from the block (fallback 100)
@@ -120,7 +120,7 @@ export class ChartImageRendererComponent implements AfterViewInit, OnDestroy, On
 
     // alignment controls the container’s text alignment
     const align = this.chartBlock.alignment ?? 'left';
-    (el as HTMLElement).style.textAlign =
+    (el as any).style.textAlign =
       align === 'center' ? 'center' : align === 'right' ? 'right' : 'left';
 
     // ensure the canvas container itself stays auto-sized inside its wrapper

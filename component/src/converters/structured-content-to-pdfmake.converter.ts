@@ -20,7 +20,7 @@ import type {
 } from 'pdfmake/interfaces';
 import {Converter} from "./converter";
 
-@Injectable({ providedIn: 'root' })
+@Injectable()
 export class StructuredContentToPdfmakeConverter implements Converter<HtmlBlockContainer, Content[]>{
   public convert(c: HtmlBlockContainer, pageAttrs: PageAttrs): Content[] {
     try { return this.convertToPdfDefinition(c, pageAttrs).content as Content[]; }

@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Row, HtmlBasicElement, HtmlTableBlock } from '../models/page';
 import { TokenAttribute } from '../models/token-attribute';
+import * as cheerio from 'cheerio';
 
-@Injectable({ providedIn: 'root' })
+@Injectable()
 export class TokenReplacerUtility {
 
   /**
@@ -22,8 +23,6 @@ export class TokenReplacerUtility {
       if (!cell.block) continue;
 
       for (const block of cell.block.blocks) {
-
-
         if (block.blockType === 'table') {
           const table = block as HtmlTableBlock;
           for (const tr of table.rows) {
@@ -33,7 +32,6 @@ export class TokenReplacerUtility {
               }
             }
           }
-
         } else {
           const maybeEls = (block as any).elements;
           if (Array.isArray(maybeEls)) {
@@ -44,9 +42,9 @@ export class TokenReplacerUtility {
         }
 
         const repeatable: TokenAttribute = row.repeatableToken;
-        if(repeatable){
-          const repeatbaleTokenMap = this.buildTokenMap(tokens);
-          cell.value = this.replaceInHtml(cell.value, repeatbaleTokenMap); //udpate fucniton here
+        if (repeatable) {
+          const repeatableTokenMap = this.buildTokenMap(tokens);
+          cell.value = this.replaceInHtml(cell.value, repeatableTokenMap); // updated to use Cheerio
         }
       }
     }
@@ -54,14 +52,11 @@ export class TokenReplacerUtility {
     return row;
   }
 
-  // ── Internal helpers ──
-
   private buildTokenMap(tokens: TokenAttribute[]): { [key: string]: string } {
     const tokenMap: { [key: string]: string } = {};
     for (const t of tokens ?? []) {
       if (!t?.name) continue;
 
-      // Handle STRING_ARRAY tokens by parsing JSON and creating indexed keys
       if (t.type === 'string_array' && typeof t.value === 'string') {
         try {
           const arr = JSON.parse(t.value);
@@ -79,10 +74,8 @@ export class TokenReplacerUtility {
         tokenMap[t.name.trim()] = String(t.value ?? '');
       }
     }
-
     return tokenMap;
   }
-
 
   private replaceInElement(el: HtmlBasicElement, tokenMap: { [k: string]: string }) {
     const attrs = (el as any).attributes || {};
@@ -91,7 +84,6 @@ export class TokenReplacerUtility {
 
     const candidates: string[] = [];
 
-    // currentColumnName
     const cc: string = (attrs.currentColumnName || '').toString().trim();
     if (cc) {
       candidates.push(cc);
@@ -99,7 +91,6 @@ export class TokenReplacerUtility {
       if (last) candidates.push(last);
     }
 
-    // placeholder like <<customer.name>>
     const ph: string = this.extractPlaceholder(el.value);
     if (ph) {
       candidates.push(ph);
@@ -107,7 +98,6 @@ export class TokenReplacerUtility {
       if (last) candidates.push(last);
     }
 
-    // lookup replacement
     let replacement: string | undefined;
     for (const k of candidates) {
       if (k in tokenMap) { replacement = tokenMap[k]; break; }
@@ -124,49 +114,29 @@ export class TokenReplacerUtility {
   }
 
   /**
-   * Replace tokens in an HTML string using the token map.
-   * Returns a new string with replacements applied.
-   */
-  /**
-   * Replace tokens in an HTML string using the token map.
-   * Returns the updated string.
-   */
-  /**
-   * Replace tokens in an HTML string using the token map.
-   * Updates <span data-name="key"> content with replacement values.
-   * Returns the updated HTML string.
+   * Replace tokens in HTML using Cheerio instead of DOMParser.
    */
   public replaceInHtml(html: string, tokenMap: { [key: string]: string }): string {
     if (!html) return html;
 
-    // Create a DOM parser
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(html, 'text/html');
+    const $ = cheerio.load(html);
 
-    // Find all spans with data-name
-    const spans = doc.querySelectorAll('span[data-name]');
-    spans.forEach(span => {
-      const key = span.getAttribute('data-name')?.trim();
+    $('span[data-name]').each((_, span) => {
+      const $span = $(span);
+      const key = $span.attr('data-name')?.trim();
       if (!key) return;
 
-      // Lookup replacement only if key exists in map
       const replacement =
         tokenMap[key] ?? tokenMap[key.toLowerCase()] ?? null;
 
       if (replacement != null) {
-        span.textContent = replacement;
+        $span.text(replacement);
       }
-      // else: no replacement, leave as-is
     });
 
-    // Return the updated HTML as string
-    return doc.body.innerHTML;
+    return $.html();
   }
 
-
-
-
-  // ── tiny helpers ──
   private norm(k: string): string {
     return k.replace(/^<<\s*|\s*>>$/g, '').trim().toLowerCase();
   }

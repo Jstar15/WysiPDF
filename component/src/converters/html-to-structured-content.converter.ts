@@ -1,9 +1,9 @@
-import { Injectable } from '@angular/core';
 import { HtmlBlock, HtmlBasicElement, HtmlAttributes, HtmlTokenElement, Page } from "../models/page";
+import { Injectable } from "@angular/core";
 import { Converter } from "./converter";
 import * as cheerio from "cheerio";
 
-@Injectable({ providedIn: 'root' })
+@Injectable()
 export class HtmlToStructuredContentConverter implements Converter<Page, Page> {
 
   convert(page: Page): Page {

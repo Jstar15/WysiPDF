@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { TokenAttribute } from '../models/token-attribute';
 import { TokenAttributeType } from '../models/token-attribute-type';
 
-@Injectable({ providedIn: 'root' })
+@Injectable()
 export class JsonTokenParserUtility {
 
   /** Back-compat: return a flat list with dot paths */

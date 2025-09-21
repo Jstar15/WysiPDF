@@ -6,7 +6,6 @@ import {
   Cell,
   CellAttrs, PageAttrs
 } from '../models/page';
-import {Injectable} from "@angular/core";
 import {Converter} from "./converter";
 
 /**
@@ -21,7 +20,7 @@ import {Converter} from "./converter";
  *
  * This is an intermediate step and does not return pdfMake-ready output directly.
  */
-@Injectable({ providedIn: 'root' })
+
 export class GridToStructuredContentConverter implements Converter<Row[], HtmlBlockContainer>{
   constructor() {}
 

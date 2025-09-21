@@ -15,7 +15,7 @@ export interface HtmlGenerationResult {
   page: Page;
   html?: string; // full doc or fragment, depending on opts
 }
-@Injectable({ providedIn: 'root' })
+@Injectable()
 export class HtmlGenerateService {
   constructor(
     private pageService: PageToPageConverter,

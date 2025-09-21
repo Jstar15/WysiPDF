@@ -10,7 +10,7 @@ import {
 import { TokenAttribute } from '../models/token-attribute';
 import { HtmlToStructuredContentConverter } from '../converters/html-to-structured-content.converter';
 
-@Injectable({ providedIn: 'root' })
+@Injectable()
 export class PageTokenValidator {
   constructor(
     private htmlToStructuredContentService: HtmlToStructuredContentConverter

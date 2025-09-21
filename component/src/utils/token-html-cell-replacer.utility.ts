@@ -1,17 +1,18 @@
 import { Injectable } from '@angular/core';
 import { Grid, Page, Row } from '../models/page';
 import { TokenAttribute } from '../models/token-attribute';
+import * as cheerio from 'cheerio';
 
-@Injectable({ providedIn: 'root' })
+@Injectable()
 export class TokenHtmlReplacerService {
   constructor() {}
 
   public replaceTokensInPageHtml(page: Page, tokens: TokenAttribute[] = []): Page {
     if (!page) return page;
 
-    if (page.header)  this.replaceInGridHtml(page.header,  tokens);
+    if (page.header) this.replaceInGridHtml(page.header, tokens);
     if (page.content) this.replaceInGridHtml(page.content, tokens);
-    if (page.footer)  this.replaceInGridHtml(page.footer,  tokens);
+    if (page.footer) this.replaceInGridHtml(page.footer, tokens);
 
     return page;
   }
@@ -53,26 +54,16 @@ export class TokenHtmlReplacerService {
   private replaceInHtml(html: string, tokenMap: Record<string, string>): string {
     if (!html) return html;
 
-    // Minimal SSR behavior: no DOM operations.
-    if (typeof document === 'undefined') return html;
+    // Use Cheerio instead of DOM
+    const $ = cheerio.load(html, { xmlMode: false, decodeEntities: false } as any);
 
-    const container: HTMLDivElement = document.createElement('div');
-    container.innerHTML = html;
+    $('.custom-token').each((_, elem) => {
+      const el = $(elem);
 
-    const nodes: HTMLElement[] = Array.from(
-      container.querySelectorAll<HTMLElement>('.custom-token')
-    );
+      const nameRaw: string = (el.attr('data-name') ?? '').trim();
+      const typeRaw: string = (el.attr('data-type') ?? '').trim().toLowerCase();
+      const valRaw: string = (el.attr('data-value') ?? '').trim();
 
-    for (const node of nodes) {
-      const nameRaw: string = (node.dataset?.['name'] ?? '').trim();
-      const typeRaw: string = (node.dataset?.['type'] ?? '').trim().toLowerCase();
-      const valRaw: string  = (node.dataset?.['value'] ?? '').trim(); // e.g. "<<customer.name>>"
-
-      // Candidates in priority order:
-      // 1) exact data-name
-      // 2) exact placeholder from data-value (e.g. "<<items.amount>>" -> "items.amount")
-      // 3) tail of data-name (e.g. "items.amount" -> "amount")
-      // 4) tail of placeholder (e.g. "items.amount" -> "amount")
       const placeholder = this.extractPlaceholder(valRaw);
       const tailFromName = this.extractTailKey(nameRaw);
       const tailFromPlaceholder = this.extractTailKey(placeholder ?? '');
@@ -93,15 +84,15 @@ export class TokenHtmlReplacerService {
 
       if (replacement !== undefined) {
         if (typeRaw === 'html') {
-          node.innerHTML = replacement;
+          el.html(replacement);
         } else {
-          node.textContent = replacement;
+          el.text(replacement);
         }
-        node.setAttribute('data-resolved', 'true');
+        el.attr('data-resolved', 'true');
       }
-    }
+    });
 
-    return container.innerHTML;
+    return $.html();
   }
 
 
@@ -132,8 +123,6 @@ export class TokenHtmlReplacerService {
    */
   private extractTailKey(source: string): string | null {
     if (!source) return null;
-    // Grab last run of [A-Za-z0-9_-] chars at the end of the string.
-    // This ignores preceding object paths / indices.
     const m = source.match(/([A-Za-z0-9_-]+)$/);
     return m ? m[1] : null;
   }

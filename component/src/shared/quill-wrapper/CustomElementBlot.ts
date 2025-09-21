@@ -8,7 +8,7 @@ export class CustomElementBlot extends EmbedBlot {
   static override tagName = 'span';
 
   static override create(value: TokenAttribute): HTMLElement {
-    const node = super.create() as HTMLElement;
+    const node = super.create() as any;
 
     node.classList.add('custom-token'); // optional styling hook
     node.setAttribute('data-value', '<<' + value.name + '>>');

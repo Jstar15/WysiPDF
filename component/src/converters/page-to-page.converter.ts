@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {Inject, Injectable} from '@angular/core';
 import {ChartBlock, Page, Row} from '../models/page';
 import {HtmlToStructuredContentConverter} from './html-to-structured-content.converter';
 import {TokenAttribute} from '../models/token-attribute';
@@ -6,17 +6,21 @@ import {TokenReplacerUtility} from "../utils/token-replacer.utility";
 import {DisplayLogicUtility} from "../utils/display-logic.utility";
 import {Converter} from "./converter";
 import {TokenAttributeType} from "../models/token-attribute-type";
-import {BarcodeService} from "../services/external/barcode.service";
 import {ChartGenerationService} from "../services/external/chart-generation.service";
+import {BarcodeService, GenerateBarcodeOptions} from "../services/external/barcode.service";
+import {BarcodeServiceNode} from "../services/external/barcode.node.service";
+import {IBarcodeService} from "../services/external/barcode-service.interface";
 
-@Injectable({ providedIn: 'root' })
+@Injectable()
 export class PageToPageConverter  implements Converter<Page, Promise<Page>, TokenAttribute[]> {
   constructor(
     private htmlToStructuredContentService: HtmlToStructuredContentConverter,
     private tokenReplacerUtility: TokenReplacerUtility,
     private displayLogicUtility : DisplayLogicUtility,
-    private barcodeService : BarcodeService,
-    private chartGenerationService : ChartGenerationService) {}
+    private barcodeService: BarcodeService,
+    private chartGenerationService : ChartGenerationService,
+    private barcodeServiceNode: BarcodeServiceNode) {}
+
 
   /**
    * Runs all "page" transformations, independent of any PDF engine.
@@ -221,20 +225,35 @@ export class PageToPageConverter  implements Converter<Page, Promise<Page>, Toke
 
         if (!tokenValue) return cell; // skip if no token found
 
-        const dataUrl: string = await this.barcodeService.generateDataUrl(
-          tokenValue,
-          {
-            format: cell.barcodeBlock.format,
-            width: 2,
-            height: cell.barcodeBlock.heightPx,
-            displayValue: false,
-            margin: 3,
-            size: 256,
-            errorCorrectionLevel: 'M',
-            dark: '#000000',
-            light: '#ffffff'
-          }
-        );
+
+
+        let opts: GenerateBarcodeOptions =          {
+          format: cell.barcodeBlock.format,
+          width: 2,
+          height: cell.barcodeBlock.heightPx,
+          displayValue: false,
+          margin: 3,
+          size: 256,
+          errorCorrectionLevel: 'M',
+          dark: '#000000',
+          light: '#ffffff'
+        }
+
+        let dataUrl: string = "";
+        if(this.barcodeService != null){
+          console.log("Generating barcode for browser")
+          dataUrl = await this.barcodeService.generateDataUrl(
+            tokenValue,
+            opts
+          );
+        }else{
+          console.log("Generating barcode for node")
+           dataUrl = await this.barcodeServiceNode.generateDataUrl(
+            tokenValue,
+            opts
+          );
+        }
+
 
         return {
           ...cell,

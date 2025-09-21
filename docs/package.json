@@ -11,5 +11,8 @@
   ],
   "scripts": {
     "prepublishOnly": "echo 'Ensure wysipdf.bundle.js exists before publishing'"
+  },
+  "dependencies": {
+    "@resvg/resvg-js": "^2.6.2"
   }
 }

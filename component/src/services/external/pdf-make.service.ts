@@ -4,7 +4,7 @@ import { vfsFonts } from '../../assets/vfs-fonts';
 
 type PdfMakeType = any;
 
-@Injectable({ providedIn: 'root' })
+@Injectable()
 export class PdfMakeService {
   private loadPromise: Promise<void> | null = null;
   private pdfMake: PdfMakeType | null = null;

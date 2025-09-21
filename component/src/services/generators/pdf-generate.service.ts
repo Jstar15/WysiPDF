@@ -11,7 +11,7 @@ import {PdfMakeService} from "../external/pdf-make.service";
 import {JsonTokenParserUtility} from "../../utils/json-token-parser.utility";
 import {PageToPageConverter} from "../../converters/page-to-page.converter";
 
-@Injectable({ providedIn: 'root' })
+@Injectable()
 export class PdfGenerateService {
     constructor(
         private structuredContentToPdfmakeService: PageToStructuredContentConverter,

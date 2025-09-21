@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import JsBarcode from 'jsbarcode';
 import QRCode from 'qrcode';
 import {BarcodeFormat, ExtendedBarcodeFormat, QRLevel} from "../../models/page";
+import {IBarcodeService} from "./barcode-service.interface";
 
 export interface GenerateBarcodeOptions {
   format: ExtendedBarcodeFormat;
@@ -19,8 +20,8 @@ export interface GenerateBarcodeOptions {
   light?: string;
 }
 
-@Injectable({ providedIn: 'root' })
-export class BarcodeService {
+@Injectable()
+export class BarcodeService  implements IBarcodeService{
   async generateDataUrl(text: string, opts: GenerateBarcodeOptions): Promise<string> {
     const clean = (text ?? '').trim();
     if (!clean) throw new Error('No text provided for barcode generation.');

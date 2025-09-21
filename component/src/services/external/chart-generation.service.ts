@@ -1,70 +1,68 @@
-import { Injectable } from '@angular/core';
 import * as echarts from 'echarts/core';
 import { PieChart, PieSeriesOption, BarChart, BarSeriesOption } from 'echarts/charts';
-import { TitleComponent, TitleComponentOption, TooltipComponent, TooltipComponentOption, LegendComponent, LegendComponentOption, GridComponent, GridComponentOption } from 'echarts/components';
+import { TitleComponent, TooltipComponent, LegendComponent, GridComponent } from 'echarts/components';
 import { CanvasRenderer } from 'echarts/renderers';
 import type { ComposeOption } from 'echarts/core';
-import {ChartBlock} from "../../models/page";
+import { ChartBlock } from '../../models/page';
 
-type ECOption = ComposeOption<PieSeriesOption | BarSeriesOption | TitleComponentOption | TooltipComponentOption | LegendComponentOption | GridComponentOption>;
+type ECOption = ComposeOption<PieSeriesOption | BarSeriesOption | any>;
 type SupportedChartType = 'pie' | 'doughnut' | 'bar';
 
 echarts.use([TitleComponent, TooltipComponent, LegendComponent, GridComponent, PieChart, BarChart, CanvasRenderer]);
 
-@Injectable({ providedIn: 'root' })
 export class ChartGenerationService {
-  constructor() {}
+  private createCanvas: any;
 
-  /**
-   * Generate a PNG (base64) from a ChartBlock object
-   */
-  public async generateChartBase64(chartBlock: ChartBlock): Promise<string> {
-    // Labels & numeric values
-    const labels: string[] = Array.isArray(chartBlock.slices)
-      ? chartBlock.slices.map(s => s.label ?? '')
-      : [];
-
-    const values: number[] = Array.isArray(chartBlock.slices)
-      ? chartBlock.slices.map(s => {
-        const n = Number((s as any).value ?? (s as any).attributeName ?? 0);
-        return Number.isFinite(n) ? n : 0;
-      })
-      : [];
-
-    const data = labels.map((name, i) => ({ name, value: values[i] }));
-
-    // Build option
-    const option = this.buildOption(chartBlock.chartType, data, labels);
-
-    // Create off-screen div
-    const div = document.createElement('div');
-    div.style.width = '800px';
-    div.style.height = '600px';
-    div.style.position = 'absolute';
-    div.style.top = '-10000px';
-    document.body.appendChild(div);
-
-    const chart = echarts.init(div, undefined, { renderer: 'canvas' });
-    chart.setOption(option as ECOption, { notMerge: true, lazyUpdate: true });
-
-    // Wait for chart to finish rendering
-    await new Promise<void>((resolve) => {
-      chart.on('finished', () => resolve());
-      // In case 'finished' never fires, fallback after a short timeout
-      setTimeout(() => resolve(), 50);
-    });
-
-    // Export PNG
-    const dataUrl = chart.getDataURL({ type: 'png', pixelRatio: 2, backgroundColor: 'transparent' });
-
-    chart.dispose();
-    div.remove();
-
-    return dataUrl;
+  constructor() {
+    if (typeof window === 'undefined') {
+      // Node-only dynamic import
+      import('canvas').then((canvasModule) => {
+        this.createCanvas = canvasModule.createCanvas;
+        echarts.setPlatformAPI({ createCanvas: this.createCanvas });
+      });
+    }
   }
 
+  public async generateChartBase64(chartBlock: ChartBlock): Promise<string> {
+    const labels = chartBlock.slices?.map(s => s.label ?? '') ?? [];
+    const values = chartBlock.slices?.map(s => Number((s as any).value ?? 0)) ?? [];
+    const data = labels.map((name, i) => ({ name, value: values[i] }));
+    const option = this.buildOption(chartBlock.chartType, data, labels);
 
-  private buildOption(chartType: SupportedChartType, data: Array<{ name: string; value: number }>, labels: string[]): ECOption {
+    if (typeof window === 'undefined') {
+      if (!this.createCanvas) {
+        // Ensure canvas is loaded
+        const canvasModule = await import('canvas');
+        this.createCanvas = canvasModule.createCanvas;
+        echarts.setPlatformAPI({ createCanvas: this.createCanvas });
+      }
+
+      const canvas = this.createCanvas(800, 600);
+      const chart = echarts.init(canvas as any, undefined, { renderer: 'canvas', width: 800, height: 600 });
+      chart.setOption(option);
+      const dataUrl = chart.getDataURL({ type: 'png', pixelRatio: 2 });
+      chart.dispose();
+      return dataUrl;
+    } else {
+      const div = document.createElement('div');
+      div.style.cssText = 'width:800px;height:600px;position:absolute;top:-10000px';
+      document.body.appendChild(div);
+      const chart = echarts.init(div, undefined, { renderer: 'canvas' });
+      chart.setOption(option);
+
+      await new Promise<void>((resolve) => {
+        chart.on('finished', () => resolve());
+        setTimeout(() => resolve(), 50);
+      });
+
+      const dataUrl = chart.getDataURL({ type: 'png', pixelRatio: 2 });
+      chart.dispose();
+      div.remove();
+      return dataUrl;
+    }
+  }
+
+  private buildOption(chartType: SupportedChartType, data: Array<{ name: string; value: number }>, labels: string[]) {
     const palette = [
       '#ef4444','#f97316','#f59e0b','#22c55e','#06b6d4','#3b82f6',
       '#8b5cf6','#a855f7','#ec4899','#14b8a6','#84cc16','#eab308'

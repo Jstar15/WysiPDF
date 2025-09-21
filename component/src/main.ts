@@ -6,13 +6,24 @@ import 'zone.js';
 import { TemplateEditorComponent } from './areas/template-editor/template-editor.component';
 import { MatIconModule } from '@angular/material/icon';
 import { PdfGenerateService } from './services/generators/pdf-generate.service';
-import {HtmlGenerationResult, PageToHtmlOptions, HtmlGenerateService} from './services/generators/html-generate.service';
-
-// 👇 NEW: import the validator service
+import {  PageToHtmlOptions, HtmlGenerateService } from './services/generators/html-generate.service';
 import { PageTokenValidator } from './services/page-token-validator.service';
-import {provideAnimations} from "@angular/platform-browser/animations";
+import { provideAnimations } from '@angular/platform-browser/animations';
+import {PageToStructuredContentConverter} from "./converters/page-to-structured-content.converter";
+import {PageToPageConverter} from "./converters/page-to-page.converter";
+import {JsonTokenParserUtility} from "./utils/json-token-parser.utility";
+import {TokenHtmlReplacerService} from "./utils/token-html-cell-replacer.utility";
+import {HtmlToStructuredContentConverter} from "./converters/html-to-structured-content.converter";
+import {PdfMakeService} from "./services/external/pdf-make.service";
+import {StructuredContentToPdfmakeConverter} from "./converters/structured-content-to-pdfmake.converter";
+import {GridToStructuredContentConverter} from "./converters/grid-to-structured-content.converter";
+import {TokenReplacerUtility} from "./utils/token-replacer.utility";
+import {DisplayLogicUtility} from "./utils/display-logic.utility";
+import {BarcodeService} from "./services/external/barcode.service";
+import {ChartGenerationService} from "./services/external/chart-generation.service";
+import {BarcodeServiceNode} from "./services/external/barcode.node.service";
 
-// ---- keep a single Angular app instance (unchanged) ----
+// ---- keep a single Angular app instance ----
 let appPromise: Promise<any>;
 appPromise = (async () => {
   try {
@@ -20,16 +31,35 @@ appPromise = (async () => {
       providers: [
         provideHttpClient(),
         importProvidersFrom(MatIconModule),
-        provideAnimations()  // <-- THIS is required
+        provideAnimations(),
 
+        // ← Add all your custom services here
+        PdfGenerateService,
+        HtmlGenerateService,
+        PageTokenValidator,
+        PageToStructuredContentConverter,
+        PageToPageConverter,
+        JsonTokenParserUtility,
+        PdfMakeService,
+        TokenHtmlReplacerService,
+        HtmlToStructuredContentConverter,
+        StructuredContentToPdfmakeConverter,
+        GridToStructuredContentConverter,
+        TokenReplacerUtility,
+        DisplayLogicUtility,
+        BarcodeService,
+        ChartGenerationService,
+        BarcodeServiceNode
       ],
     });
 
-    const templateEditor = createCustomElement(TemplateEditorComponent, {
-      injector: app.injector,
-    });
-    if (!customElements.get('app-template-editor')) {
-      customElements.define('app-template-editor', templateEditor);
+    if (typeof window !== 'undefined') {
+      const templateEditor = createCustomElement(TemplateEditorComponent, {
+        injector: app.injector,
+      });
+      if (!customElements.get('app-template-editor')) {
+        customElements.define('app-template-editor', templateEditor);
+      }
     }
 
     return app;
@@ -39,120 +69,112 @@ appPromise = (async () => {
   }
 })();
 
-// ---- shared service singletons (unchanged logic) ----
+// ---- shared service singletons ----
 let pdfServiceInstance: PdfGenerateService | null = null;
 async function getPdfService(): Promise<PdfGenerateService> {
   const app = await appPromise;
-  if (!pdfServiceInstance) {
-    pdfServiceInstance = app.injector.get(PdfGenerateService);
-  }
+  if (!pdfServiceInstance) pdfServiceInstance = app.injector.get(PdfGenerateService);
   return pdfServiceInstance!;
 }
 
 let pageToHtmlServiceInstance: HtmlGenerateService | null = null;
 async function getHtmlService(): Promise<HtmlGenerateService> {
   const app = await appPromise;
-  if (!pageToHtmlServiceInstance) {
-    pageToHtmlServiceInstance = app.injector.get(HtmlGenerateService);
-  }
+  if (!pageToHtmlServiceInstance) pageToHtmlServiceInstance = app.injector.get(HtmlGenerateService);
   return pageToHtmlServiceInstance!;
 }
 
-// 👇 NEW: singleton getter for PageTokenValidator
 let pageTokenValidatorInstance: PageTokenValidator | null = null;
 async function getValidatorService(): Promise<PageTokenValidator> {
   const app = await appPromise;
-  if (!pageTokenValidatorInstance) {
-    pageTokenValidatorInstance = app.injector.get(PageTokenValidator);
-  }
+  if (!pageTokenValidatorInstance) pageTokenValidatorInstance = app.injector.get(PageTokenValidator);
   return pageTokenValidatorInstance!;
 }
 
-// ---- lightweight instance wrapper (no globals) ----
+// ---- lightweight instance wrapper ----
 export interface WysiPDFOptions {
-  /** Element or selector to host the editor (default: document.body) */
   mount?: HTMLElement | string;
 }
 
 export class WysiPDF {
-  private container: HTMLElement;
+  private container: HTMLElement | null = null;
 
   constructor(options: WysiPDFOptions = {}) {
+    if (typeof window === 'undefined') return; // skip all front-end code in Node/SSR
+
     this.container =
       typeof options.mount === 'string'
         ? (document.querySelector(options.mount) as HTMLElement) || document.body
         : options.mount || document.body;
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', () => this.ensureEditor());
+    } else {
+      this.ensureEditor();
+    }
   }
 
-  private async ensureEditor(): Promise<HTMLElement & { page?: any }> {
+  private async ensureEditor(): Promise<HTMLElement & { page?: any } | null> {
+    if (typeof window === 'undefined' || !this.container) return null;
+
     await appPromise;
 
-    // Prefer editor within the container; fall back to first on page
     let el = (this.container.querySelector('app-template-editor') ||
       document.querySelector('app-template-editor')) as (HTMLElement & { page?: any }) | null;
 
     if (!el) {
       el = document.createElement('app-template-editor') as HTMLElement & { page?: any };
+      el.style.display = 'block';
+      el.style.width = '100%';
+      el.style.height = '100%';
       this.container.appendChild(el);
     }
     return el;
   }
 
-  /** Inject a Page object into the editor component. */
   async loadPage(page: any): Promise<void> {
     const el = await this.ensureEditor();
-    el.page = page;
+    if (el) el.page = page;
   }
 
-  /** Subscribe to page changes from the editor component. */
   async onPageChange(callback: (updatedPage: any) => void): Promise<void> {
     const el = await this.ensureEditor();
+    if (!el) return;
     el.addEventListener('page-change', (e: Event) => {
       const ce = e as CustomEvent;
       callback(ce.detail);
     });
   }
 
-  /** Generate base64 PDF from a page and token list. */
   async generatePdfBase64(page: any, tokens: any[]): Promise<string> {
-    const service = await getPdfService();
-    const result = await service.generatePdfBase64(page, tokens);
+    const svc = await getPdfService();
+    const result = await svc.generatePdfBase64(page, tokens);
     return result.base64;
   }
 
-  /** Generate base64 PDF from a page and JSON token string. */
   async generatePdfBase64FromJson(page: any, json: string): Promise<string> {
-    const service = await getPdfService();
-    const result = await service.generatePdfBase64FromJson(page, json);
+    const svc = await getPdfService();
+    const result = await svc.generatePdfBase64FromJson(page, json);
     return result.base64;
   }
 
-  /** Generate HTML from a page and token list. */
   async generateHtml(page: any, tokens: any[], opts?: PageToHtmlOptions): Promise<string> {
-    const service = await getHtmlService();
-    const result: HtmlGenerationResult = await service.generateHtml(page, tokens, opts);
-    return result.html;
+    const svc = await getHtmlService();
+    return (await svc.generateHtml(page, tokens, opts)).html;
   }
 
-  /** Generate HTML from a page and JSON token string. */
   async generateHtmlFromJson(page: any, json: string, opts?: PageToHtmlOptions): Promise<string> {
-    const service = await getHtmlService();
-    const result: HtmlGenerationResult = await service.generateHtmlFromJson(page, json, opts);
-    return result.html;
+    const svc = await getHtmlService();
+    return (await svc.generateHtmlFromJson(page, json, opts)).html;
   }
 
-  // 👇 NEW: expose validation
-
-  /** Validate and return a de-duplicated list of error messages (does not mutate by default). */
   async hasErrors(page: any, tokens: any[], mutateOriginal: boolean = false): Promise<string[]> {
     const svc = await getValidatorService();
     return svc.hasErrors(page, tokens, mutateOriginal);
   }
 
-  /** Convenience boolean check using hasErrors. */
   async isValid(page: any, tokens: any[]): Promise<boolean> {
-    const svc = await getValidatorService();
-    return (await svc.hasErrors(page, tokens)).length === 0;
+    return (await this.hasErrors(page, tokens)).length === 0;
   }
 }
 
