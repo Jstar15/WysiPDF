@@ -24,6 +24,8 @@ describe('WysiPDF Node PDF Generation', function() {
   let pdfBase64;
   let pdfBase642;
   let pdfBase643;
+  let pdfBase644;
+
   before(async () => {
     wysi = new WysiPDFNode();
     pdfBase64 = await wysi.generatePdfBase64(Preset1,  []);
@@ -42,9 +44,11 @@ describe('WysiPDF Node PDF Generation', function() {
     const outputPath2 = path.join(pdfOutputFolder, 'test-output-2.pdf');
     fs.writeFileSync(outputPath2, Buffer.from(pdfBase642, 'base64'));
 
-    pdfBase643 = await wysi.generatePdfBase64(Preset2,  tokens);
-    const outputPath3 = path.join(pdfOutputFolder, 'test-output-2.pdf');
-    fs.writeFileSync(outputPath3, Buffer.from(pdfBase643, 'base64'));
+
+    let jsonTokens = '{"test-token": "replaced-token-from-json-success"}';
+    pdfBase643 = await wysi.generatePdfBase64FromJson(Preset2,  jsonTokens);
+    const outputPath4 = path.join(pdfOutputFolder, 'test-output-4.pdf');
+    fs.writeFileSync(outputPath4, Buffer.from(pdfBase643, 'base64'));
   });
 
   it('should generate a PDF containing "Hello World"', async () => {
@@ -80,6 +84,26 @@ describe('WysiPDF Node PDF Generation', function() {
       const textItems = content.items.map(item => item.str).join('');
       console.log(textItems);
       if (textItems.includes('replaced-token-success')) {
+        found = true;
+        break;
+      }
+    }
+
+    expect(found).to.be.true;
+  });
+
+  it('should generate a PDF with Token Replacement from json"', async () => {
+    const pdfData = new Uint8Array(Buffer.from(pdfBase643, 'base64'));
+    const loadingTask = pdfjsLib.getDocument({ data: pdfData });
+    const pdf = await loadingTask.promise;
+
+    let found = false;
+    for (let i = 1; i <= pdf.numPages; i++) {
+      const page = await pdf.getPage(i);
+      const content = await page.getTextContent();
+      const textItems = content.items.map(item => item.str).join('');
+      console.log(textItems);
+      if (textItems.includes('replaced-token-from-json-success')) {
         found = true;
         break;
       }
