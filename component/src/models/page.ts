@@ -154,6 +154,7 @@ export interface Row {
     cells: Cell[];
     displayLogic?: DisplayLogicGroup,
     repeatableToken?: TokenAttribute,
+    repeatableRowCount?: number;
 }
 
 export interface Grid {

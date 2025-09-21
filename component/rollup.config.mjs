@@ -64,12 +64,18 @@ function ignoreNodeModulesPlugin(modules) {
 // --- Node-only ESM bundle ---
 export default [{
   input: 'src/main.node.ts',
-  output: {
+  output: [{
     file: 'dist/components/wysipdf.node.esm.mjs',
     format: 'esm',
     inlineDynamicImports: true,
     sourcemap: false,
   },
+    {
+      file: '../docs/wysipdf.node.esm.mjs',
+      format: 'esm',
+      inlineDynamicImports: true,
+      sourcemap: false,
+    }],
   plugins: [
     json(),
     resolve({

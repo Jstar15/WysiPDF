@@ -1,5 +1,5 @@
-import {Inject, Injectable} from '@angular/core';
-import {ChartBlock, Page, Row} from '../models/page';
+import { Injectable} from '@angular/core';
+import { Page, Row} from '../models/page';
 import {HtmlToStructuredContentConverter} from './html-to-structured-content.converter';
 import {TokenAttribute} from '../models/token-attribute';
 import {TokenReplacerUtility} from "../utils/token-replacer.utility";
@@ -9,7 +9,6 @@ import {TokenAttributeType} from "../models/token-attribute-type";
 import {ChartGenerationService} from "../services/external/chart-generation.service";
 import {BarcodeService, GenerateBarcodeOptions} from "../services/external/barcode.service";
 import {BarcodeServiceNode} from "../services/external/barcode.node.service";
-import {IBarcodeService} from "../services/external/barcode-service.interface";
 
 @Injectable()
 export class PageToPageConverter  implements Converter<Page, Promise<Page>, TokenAttribute[]> {
@@ -177,6 +176,7 @@ export class PageToPageConverter  implements Converter<Page, Promise<Page>, Toke
             };
 
             clonedRow = this.tokenReplacerUtility.replaceTokensInRow(clonedRow, [singleToken]);
+            clonedRow.repeatableRowCount = i;
             expandedRows.push(clonedRow);
           }
 
@@ -203,6 +203,7 @@ export class PageToPageConverter  implements Converter<Page, Promise<Page>, Toke
           }));
 
           clonedRow = this.tokenReplacerUtility.replaceTokensInRow(clonedRow, attributeList);
+          clonedRow.repeatableRowCount = i;
           expandedRows.push(clonedRow);
         }
       } else {
@@ -221,13 +222,26 @@ export class PageToPageConverter  implements Converter<Page, Promise<Page>, Toke
     const newCells = await Promise.all(row.cells.map(async cell => {
       if (cell.type === 'barcode' && cell.barcodeBlock?.HtmlTokenElement) {
         const key = cell.barcodeBlock.HtmlTokenElement.key;
-        const tokenValue = this.getTokenValue(key, tokenAttributeList);
+        let tokenValue = null;
 
-        if (!tokenValue) return cell; // skip if no token found
+        let maybeRepeatable = row.repeatableToken;
+        if(maybeRepeatable != null){
+          const parentToken = tokenAttributeList.find(t => t.name === maybeRepeatable.name);
+          const token = parentToken.tokenAttributes.find(t => t.name === key);
+
+          tokenValue = token.valueArray[row.repeatableRowCount] ?? '';
+
+        }else{
+          // Find token
+          const token = tokenAttributeList.find(t => t.name === key);
+          tokenValue = token.value ?? '';
+        }
 
 
 
-        let opts: GenerateBarcodeOptions =          {
+        if (!tokenValue) return cell; // skip if no value
+
+        const opts: GenerateBarcodeOptions = {
           format: cell.barcodeBlock.format,
           width: 2,
           height: cell.barcodeBlock.heightPx,
@@ -237,23 +251,14 @@ export class PageToPageConverter  implements Converter<Page, Promise<Page>, Toke
           errorCorrectionLevel: 'M',
           dark: '#000000',
           light: '#ffffff'
-        }
+        };
 
         let dataUrl: string = "";
-        if(this.barcodeService != null){
-          console.log("Generating barcode for browser")
-          dataUrl = await this.barcodeService.generateDataUrl(
-            tokenValue,
-            opts
-          );
-        }else{
-          console.log("Generating barcode for node")
-           dataUrl = await this.barcodeServiceNode.generateDataUrl(
-            tokenValue,
-            opts
-          );
+        if (this.barcodeService) {
+          dataUrl = await this.barcodeService.generateDataUrl(tokenValue, opts);
+        } else {
+          dataUrl = await this.barcodeServiceNode.generateDataUrl(tokenValue, opts);
         }
-
 
         return {
           ...cell,
