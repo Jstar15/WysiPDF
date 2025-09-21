@@ -22,17 +22,32 @@ describe('WysiPDF Node PDF Generation', function() {
 
   let wysi;
   let pdfBase64;
-
+  let pdfBase642;
+  let pdfBase643;
   before(async () => {
     wysi = new WysiPDFNode();
-    pdfBase64 = await wysi.generatePdfBase64(Preset2, Preset2.tokenAttrs || []);
-
-    // write PDF for visual inspection
+    pdfBase64 = await wysi.generatePdfBase64(Preset1,  []);
     const outputPath = path.join(pdfOutputFolder, 'test-output.pdf');
     fs.writeFileSync(outputPath, Buffer.from(pdfBase64, 'base64'));
+
+
+    const tokens = [
+      {
+        "name": "test-token",
+        "value": "replaced-token-success",
+        "type": "text"
+      }
+    ];
+    pdfBase642 = await wysi.generatePdfBase64(Preset2,  tokens);
+    const outputPath2 = path.join(pdfOutputFolder, 'test-output-2.pdf');
+    fs.writeFileSync(outputPath2, Buffer.from(pdfBase642, 'base64'));
+
+    pdfBase643 = await wysi.generatePdfBase64(Preset2,  tokens);
+    const outputPath3 = path.join(pdfOutputFolder, 'test-output-2.pdf');
+    fs.writeFileSync(outputPath3, Buffer.from(pdfBase643, 'base64'));
   });
 
-  it('should generate a PDF containing "Alexandra"', async () => {
+  it('should generate a PDF containing "Hello World"', async () => {
     const pdfData = new Uint8Array(Buffer.from(pdfBase64, 'base64'));
     const loadingTask = pdfjsLib.getDocument({ data: pdfData });
     const pdf = await loadingTask.promise;
@@ -41,9 +56,9 @@ describe('WysiPDF Node PDF Generation', function() {
     for (let i = 1; i <= pdf.numPages; i++) {
       const page = await pdf.getPage(i);
       const content = await page.getTextContent();
-      const textItems = content.items.map(item => item.str).join(' ');
+      const textItems = content.items.map(item => item.str).join('');
       console.log(textItems);
-      if (textItems.includes('Alexandra')) {
+      if (textItems.includes('Hello World')) {
         found = true;
         break;
       }
@@ -52,13 +67,46 @@ describe('WysiPDF Node PDF Generation', function() {
     expect(found).to.be.true;
   });
 
+
+  it('should generate a PDF with Token Replacement"', async () => {
+    const pdfData = new Uint8Array(Buffer.from(pdfBase642, 'base64'));
+    const loadingTask = pdfjsLib.getDocument({ data: pdfData });
+    const pdf = await loadingTask.promise;
+
+    let found = false;
+    for (let i = 1; i <= pdf.numPages; i++) {
+      const page = await pdf.getPage(i);
+      const content = await page.getTextContent();
+      const textItems = content.items.map(item => item.str).join('');
+      console.log(textItems);
+      if (textItems.includes('replaced-token-success')) {
+        found = true;
+        break;
+      }
+    }
+
+    expect(found).to.be.true;
+  });
+
+  it('should fail token validation', async () => {
+    const errors = await wysi.hasErrors(Preset2,  []);
+    expect(errors?.length > 0).to.equal(true);
+  });
+
   it('should pass token validation', async () => {
-    const errors = await wysi.hasErrors(Preset1, Preset1.tokenAttrs || []);
-    expect(errors?.length ?? 0).to.equal(0);
+    const tokens = [
+      {
+        "name": "test-token",
+        "value": "replaced-token-success",
+        "type": "text"
+      }
+    ];
+    const errors = await wysi.hasErrors(Preset2,  tokens);
+    expect(errors?.length === 0).to.equal(true);
   });
 
   it('should validate isValid returns true', async () => {
-    const valid = await wysi.isValid(Preset1, Preset1.tokenAttrs || []);
+    const valid = await wysi.isValid(Preset1, []);
     expect(valid).to.equal(true);
   });
 });
