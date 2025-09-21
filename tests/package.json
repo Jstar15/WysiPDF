@@ -1,0 +1,23 @@
+{
+  "name": "wysipdf-tests",
+  "version": "0.1.0",
+  "description": "Unit tests for WysiPDF Node module",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "mocha --experimental-vm-modules *.test.js",
+    "test:watch": "vitest"
+  },
+  "author": "Jstar",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.6.2",
+    "chai": "^6.0.1",
+    "mocha": "^11.7.2",
+    "pdfjs-dist": "^3.11.174",
+    "vitest": "^1.4.2"
+  },
+  "dependencies": {
+    "fs-extra": "^11.1.1"
+  }
+}
