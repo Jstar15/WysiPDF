@@ -50,6 +50,10 @@ Try it in the browser: **[https://jstar15.github.io/WysiPDF/](https://jstar15.gi
 * **Repeatable Content**: iterate over arrays for multiple row rendering.
 * **Validation**: missing or invalid tokens highlighted in red; optional pre-generation validation available.
 
+
+
+![WysiPDF screenshot](readme/images/flow.png)
+
 ### Export & Runtime
 
 * **PDF**: generated as base64 via pdfMake.
@@ -110,8 +114,7 @@ const WysiPDFNode = WysiPDFNodeModule.default || WysiPDFNodeModule;
 })();
 ```
 
-### Option C — Install via npm
-
+### Option C — Install via npm (node 22+)
 Install WysiPDF directly from npm:
 
 ```bash

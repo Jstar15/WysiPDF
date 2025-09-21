@@ -1,6 +1,6 @@
 {
   "name": "wysipdf",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Lightweight grid-based PDF template designer built on pdfMake",
   "author": "Jstar",
   "license": "MIT",
@@ -41,5 +41,11 @@
   },
   "engines": {
     "node": ">=18.0.0"
+  },
+  "peerDependencies": {
+    "pdfmake": "^0.2.20",
+    "echarts": "^6.0.0",
+    "qrcode": "^1.5.4",
+    "jsbarcode": "^3.12.1"
   }
 }
