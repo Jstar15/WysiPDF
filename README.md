@@ -34,7 +34,7 @@ Try it in the browser: **[https://jstar15.github.io/WysiPDF/](https://jstar15.gi
 * **Barcodes & QR Codes**: configurable 1D/2D codes, exported as PNG for crisp printing.
 * **Dynamic Tokens**: all content blocks can bind to tokens for live data rendering.
 * **Icons**: Icon can be inserted, icon pack included.
-* 
+
 ### Styling & Theming
 
 * **Fonts**: Roboto, Raleway, Nunito, Cormorant.
@@ -64,8 +64,8 @@ Try it in the browser: **[https://jstar15.github.io/WysiPDF/](https://jstar15.gi
 
 ### Option A — Standalone (no build tools)
 
-Include the built script and access `WysiPDF` globally:
-
+Include the built script and access `WysiPDF` globally. 
+See full working example in the repo ./docs/index.html
 ```html
 <script src="./wysipdf.bundle.js"></script>
 
@@ -80,7 +80,6 @@ Include the built script and access `WysiPDF` globally:
   window.addEventListener('DOMContentLoaded', async () => {
     wysi = new WysiPDF({ mount: '#editor-host' });
 
-    // Subscribe to live changes if needed
     await wysi.onPageChange(p => (page = p));
 
     document.getElementById('exportPdf').addEventListener('click', async () => {
@@ -94,55 +93,54 @@ Include the built script and access `WysiPDF` globally:
 </script>
 ```
 
-Existing Pages can be loaded on init
-```html
-
-<script>
-let wysi = new WysiPDF({ mount: '#editor-host' });
-
-    let page = {
-      header: { rows: [] },
-      header2: { rows: [] },
-      content: { rows: [] },
-      footer: { rows: [] },
-      pageAttrs: {},
-      tokenAttrs: [],
-      colorPalettes: ['#111827','#F59E0B','#3B82F6','#10B981','#EF4444']
-    };
-
-    await wysi.loadPage(page);
-</script>
-```
-
 ### Option B — ESM / Node.js (Server)
 
-You can run WysiPDF directly on the server using Node.js. This allows you to generate PDFs from JSON templates without a browser.
-Just pass in a page object and list of tokens if required. 
+Run WysiPDF on the server using Node.js:
+
 ```ts
-// Import a JSON template (mock example)
-import page from './page.json' with { type: 'json' };
-
-// Node built-ins
 import fs from 'fs';
-
-// Import the Node ESM bundle
-import WysiPDFNodeModule from '../component/dist/components/wysipdf.node.esm.mjs';
+import WysiPDFNodeModule from './wysipdf.node.esm.mjs';
 const WysiPDFNode = WysiPDFNodeModule.default || WysiPDFNodeModule;
 
 (async () => {
-  // Initialize WysiPDF
   const wysi = new WysiPDFNode();
-
-  // Generate PDF as Base64
   const pdfBase64 = await wysi.generatePdfBase64(page, page.tokenAttrs || []);
-
-  // Save the PDF to a file
   fs.writeFileSync('output.pdf', Buffer.from(pdfBase64, 'base64'));
-
+  console.log('PDF successfully exported to output.pdf');
 })();
 ```
 
-## 🧭 Runtime API
+### Option C — Install via npm
+
+Install WysiPDF directly from npm:
+
+```bash
+npm install wysipdf
+```
+
+Then use in your Node.js project:
+
+```ts
+import WysiPDFNodeModule from 'wysipdf';
+import page from './template-2.json' assert { type: 'json' };
+import fs from 'fs';
+
+const WysiPDFNode = WysiPDFNodeModule.default || WysiPDFNodeModule;
+
+(async () => {
+  const wysi = new WysiPDFNode();
+  const pdfBase64 = await wysi.generatePdfBase64(page, page.tokenAttrs || []);
+  fs.writeFileSync('output.pdf', Buffer.from(pdfBase64, 'base64'));
+  console.log('PDF successfully exported to output.pdf');
+})();
+```
+
+The npm package includes both the Node ESM bundle and the browser bundle.
+
+
+---
+
+## 🔶 Runtime API
 
 | Method                                  | Description                                                               |
 | --------------------------------------- | ------------------------------------------------------------------------- |
@@ -157,7 +155,7 @@ const WysiPDFNode = WysiPDFNodeModule.default || WysiPDFNodeModule;
 
 ---
 
-## 🧱 Content Blocks
+## 🗱 Content Blocks
 
 * **Text**: rich text with inline tokens and QuillJS styling.
 * **Image**: upload or base64; automatically compressed for performance; adjustable alignment, padding, and sizing.
@@ -170,7 +168,7 @@ const WysiPDFNode = WysiPDFNodeModule.default || WysiPDFNodeModule;
 
 ---
 
-## 🧩 Tokens & Dynamic Content
+## 🔶 Tokens & Dynamic Content
 
 * Supports **text, number, boolean, date, JSON/array tokens**.
 * **Dynamic JSON injection**: automatically maps JSON to template fields.

@@ -1,18 +1,45 @@
 {
   "name": "wysipdf",
-  "version": "0.1.0",
+  "version": "0.1.3",
   "description": "Lightweight grid-based PDF template designer built on pdfMake",
-  "author": "Your Name",
+  "author": "Jstar",
   "license": "MIT",
   "main": "wysipdf.bundle.js",
-  "module": "wysipdf.bundle.js",
+  "module": "wysipdf.node.esm.mjs",
+  "browser": "wysipdf.bundle.js",
+  "type": "module",
   "files": [
-    "wysipdf.bundle.js"
+    "wysipdf.bundle.js",
+    "wysipdf.node.esm.mjs",
+    "readme/**",
+    "readme/images/**"
   ],
   "scripts": {
-    "prepublishOnly": "echo 'Ensure wysipdf.bundle.js exists before publishing'"
+    "prepublishOnly": "echo 'Ensure both bundles exist before publishing'"
   },
-  "dependencies": {
-    "@resvg/resvg-js": "^2.6.2"
+  "keywords": [
+    "pdf",
+    "pdfmake",
+    "wysiwyg",
+    "grid",
+    "template",
+    "designer",
+    "node",
+    "browser",
+    "esm"
+  ],
+  "exports": {
+    ".": {
+      "import": "./wysipdf.node.esm.mjs",
+      "require": "./wysipdf.bundle.js",
+      "browser": "./wysipdf.bundle.js"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jstar15/WysiPDF.git"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }
