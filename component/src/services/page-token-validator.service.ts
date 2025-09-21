@@ -140,7 +140,13 @@ export class PageTokenValidator {
               default: {
                 const htmlBlock = block as HtmlBlock;
                 for (let element of htmlBlock.elements) {
-                  errors.push(...this.processAttributes(element.attributes, rowTokens));
+                  if(element.token){
+                    let key = element.token.key;
+                    const isAvailable = this.isTokenAvailable(key, rowTokens);
+                    if (!isAvailable) {
+                      errors.push(`Token "${key}" not found`);
+                    }
+                  }
                 }
               }
             }
