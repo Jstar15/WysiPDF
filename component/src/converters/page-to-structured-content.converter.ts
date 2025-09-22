@@ -70,6 +70,11 @@ export class PageToStructuredContentConverter implements Converter<Page, TDocume
     const bodyContent    = this.structuredContentToPdfmakeService.convert(contentContainer, page.pageAttrs);
     const footerContent  = this.structuredContentToPdfmakeService.convert(footerContainer, page.pageAttrs);
 
+
+
+    //TODO messy here need clean up
+    const body = this.updateLayoutFunctionForAllCells(bodyContent);
+
     const p: PageAttrs = page.pageAttrs || {};
 
     const headerBase = (p.headerHeight ?? (headerContent?.length ? 60 : 0));
@@ -85,11 +90,11 @@ export class PageToStructuredContentConverter implements Converter<Page, TDocume
 
     const stringify = (obj: any) => JSON.stringify(obj, null, 2);
 
-    const js = `
+    let js = `
 {
   "content": [
     {
-      "stack": ${this.formatBody(bodyContent)},
+      "stack": ${this.formatBody(body.contents)},
       "margin": [0, 0, 0, 0]
     }
   ],
@@ -134,15 +139,97 @@ export class PageToStructuredContentConverter implements Converter<Page, TDocume
   "pageMargins": [${p.marginLeft}, ${headerBand}, ${p.marginRight}, ${footerBand}]
 }`;
 
+
+    Object.entries(body.layouts).forEach(([placeholder, layoutStr]) => {
+      js = js.replace(`"${placeholder}"`, layoutStr);
+    });
+
     return js;
   }
 
 
+  //Hacky workaround
+  //This injects the layout fucntion into all content ensuring the pdfmake output doesnt break styling
+  updateLayoutFunctionForAllCells(contents: Content[]): { contents: Content[]; layouts: Record<string, string> } {
+    const layouts: Record<string, string> = {};
+    let layoutCounter = 0;
+
+    for (const content of contents) {
+      const table = (content as any).table;
+      if (!table) continue;
+
+      // Generate a unique placeholder for this table
+      const placeholder = `__LAYOUT_FUNC_${layoutCounter}__`;
+
+      // The layout function as a string
+      const layoutStr = `{
+      hLineWidth: (i, node) => {
+        const rowAbove = node.table.body[i - 1] || [];
+        const row = node.table.body[i] || [];
+        let max = 0;
+        const len = Math.max(row.length, rowAbove.length);
+        for (let c = 0; c < len; c++) {
+          const top = row[c]?.__attrs?.borderTop ?? 0;
+          const bottom = rowAbove[c]?.__attrs?.borderBottom ?? 0;
+          max = Math.max(max, top, bottom);
+        }
+        return max;
+      },
+      vLineWidth: (i, node) => {
+        let max = 0;
+        for (const row of node.table.body) {
+          const left = row[i]?.__attrs?.borderLeft ?? 0;
+          const right = row[i - 1]?.__attrs?.borderRight ?? 0;
+          max = Math.max(max, left, right);
+        }
+        return max;
+      },
+      hLineColor: (i, node) => {
+        const row = node.table.body[i];
+        const rowAbove = node.table.body[i - 1];
+        let color = '#000';
+        for (let c = 0; c < (row?.length ?? 0); c++) {
+          const thisCell = row[c];
+          const aboveCell = rowAbove?.[c];
+          if (thisCell?.__attrs?.borderTop > 0) color = thisCell.__attrs.borderColor;
+          else if (aboveCell?.__attrs?.borderBottom > 0) color = aboveCell.__attrs.borderColor;
+        }
+        return color;
+      },
+      vLineColor: (i, node) => {
+        let color = '#000';
+        for (const row of node.table.body) {
+          const thisCell = row[i];
+          const prevCell = row[i - 1];
+          if (thisCell?.__attrs?.borderLeft > 0) color = thisCell.__attrs.borderColor;
+          else if (prevCell?.__attrs?.borderRight > 0) color = prevCell.__attrs.borderColor;
+        }
+        return color;
+      },
+      paddingLeft: () => 0,
+      paddingRight: () => 0,
+      paddingTop: () => 0,
+      paddingBottom: () => 0
+    }`;
+
+      // Store the layout string keyed by the placeholder
+      layouts[placeholder] = layoutStr;
+
+      // Replace the table layout with the placeholder
+      (content as any).layout = placeholder;
+
+      layoutCounter++;
+    }
+
+    return { contents, layouts };
+  }
+
+
+
   private formatBody(v: unknown, indent = 0): string {
-    return JSON.stringify(v, null, 2)
-      .split('\n')
-      .map((l, i) => (i ? ' '.repeat(indent) + l : l))
-      .join('\n');
+    const a: string = JSON.stringify(v, null, 2);
+    const clean: string = this.cleanPdfMakeJson(a);
+    return clean;
   }
 
   private buildHeaderPayload(headerContent: Content[], p: PageAttrs): Content {
@@ -223,5 +310,44 @@ export class PageToStructuredContentConverter implements Converter<Page, TDocume
     }
     return content;
   }
+
+  private cleanPdfMakeJson(obj: any): any {
+    if (Array.isArray(obj)) {
+      return obj.map(v => this.cleanPdfMakeJson(v));
+    } else if (typeof obj === 'object' && obj !== null) {
+      const cloned: any = {};
+
+      for (const [key, value] of Object.entries(obj)) {
+        // Skip internal / default keys
+        if (
+          value === null ||
+          value === undefined ||
+          (key === 'noWrap' && value === false) ||
+          key === '__attrs' ||
+          (key === 'width' && value === 'auto') ||
+          (key === 'margin' && Array.isArray(value) && value.every(v => v === 0)) // optional
+        ) {
+          continue;
+        }
+
+        // Only copy border if it exists and is meaningful
+        if (key === 'border') {
+          if (!Array.isArray(value) || value.every(v => v === false)) continue;
+        }
+
+        cloned[key] = this.cleanPdfMakeJson(value);
+      }
+
+      // Ensure default margin
+      if (!('margin' in obj)) {
+        cloned.margin = [0, 0, 0, 0];
+      }
+
+      return cloned;
+    }
+    return obj;
+  }
+
+
 
 }

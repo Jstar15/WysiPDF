@@ -192,6 +192,11 @@ export class TemplateEditorComponent implements OnInit,AfterViewInit {
       {
         name: 'WYSI Page Model',
         description: 'Raw page model',
+        data: page
+      },
+      {
+        name: 'WYSI Page Model',
+        description: 'Expanded page model',
         data: pdfGenerationResult1.page
       },
       {
