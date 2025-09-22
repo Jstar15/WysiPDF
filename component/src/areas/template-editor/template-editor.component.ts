@@ -128,7 +128,6 @@ export class TemplateEditorComponent implements OnInit,AfterViewInit {
     if (validatedPage.content) Object.assign(this.page.content, validatedPage.content);
     if (validatedPage.footer) Object.assign(this.page.footer, validatedPage.footer);
 
-    this.jsonList = this.buildJsonViewerList(this.page, this.pdfGenerationResult);
 
     this.cdr.detectChanges();
 
@@ -138,6 +137,9 @@ export class TemplateEditorComponent implements OnInit,AfterViewInit {
     // Assign PDF result without replacing page
     this.pdfGenerationResult.base64 = pdfResult.base64;
     this.pdfGenerationResult.docDefinition = pdfResult.docDefinition;
+    this.pdfGenerationResult.page = pdfResult.page;
+
+    this.jsonList = this.buildJsonViewerList(this.page, this.pdfGenerationResult);
 
     // Wait for next frame after PDF view has rendered
     requestAnimationFrame(() => {
@@ -190,7 +192,7 @@ export class TemplateEditorComponent implements OnInit,AfterViewInit {
       {
         name: 'WYSI Page Model',
         description: 'Raw page model',
-        data: page
+        data: pdfGenerationResult1.page
       },
       {
         name: 'Tokens',

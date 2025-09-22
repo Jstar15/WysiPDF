@@ -106,9 +106,10 @@ export class TokenReplacerUtility {
     }
 
     if (replacement !== undefined) {
-      el.value = replacement;
+      const unescaped: string = replacement.replace(/\\n/g, '\n');
+      el.value = unescaped;
       (el as any).attributes = attrs;
-      (el as any).attributes.value = replacement;
+      (el as any).attributes.value = unescaped;
       el.type = 'token';
     }
   }

@@ -32,9 +32,9 @@ export class PdfGenerateService {
         const base64: string = await this.pdfMakeService.getBase64(docDefinition);
 
         return {
-            base64,
-            page,
-            docDefinition,
+          base64: base64,
+          page: convertedPage,
+          docDefinition:  docDefinition,
         };
     }
 
