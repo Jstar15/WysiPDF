@@ -64,7 +64,8 @@ export class HtmlToStructuredContentConverter implements Converter<Page, Page> {
         // ✅ Token detection anywhere in the element's ancestors
         const tokenEl = $node.closest('.ql-mathjax');
         if (tokenEl && tokenEl.length) {
-          elements.push(this.createTokenElement(tokenEl.first()));
+          elements.push(this.createTokenElement(tokenEl.first(), inheritedAttrs));
+
           return;
         }
 
@@ -117,7 +118,7 @@ export class HtmlToStructuredContentConverter implements Converter<Page, Page> {
 
         const tokenEl = $child.closest('.ql-mathjax');
         if (tokenEl && tokenEl.length) {
-          elements.push(this.createTokenElement(tokenEl.first()));
+          elements.push(this.createTokenElement(tokenEl.first(), inheritedAttrs));
         } else {
           this.parseTableCellContent($child, elements, $, attrs);
         }
@@ -136,19 +137,21 @@ export class HtmlToStructuredContentConverter implements Converter<Page, Page> {
     return blocks;
   }
 
-  private createTokenElement(el: any): HtmlBasicElement {
-    const attrs: HtmlAttributes = this.extractAttributes(el, {});
+  private createTokenElement(el: any, inheritedAttrs: HtmlAttributes = {}): HtmlBasicElement {
+    // Merge inherited styles with element's own styles
+    const attrs: HtmlAttributes = this.extractAttributes(el, inheritedAttrs);
     attrs.isCustomElement = true;
 
     const dataValue = el.attr('data-value') || '';
     const decodedValue = this.decodeHtmlEntities(dataValue) || el.text();
+
     const type = el.attr('data-type') || undefined;
     const currentColumnName = el.attr('data-name') || undefined;
-
     const tokenElement: HtmlTokenElement = { key: currentColumnName, type: type };
 
     return { value: decodedValue, attributes: attrs, type: 'token', token: tokenElement };
   }
+
 
   private decodeHtmlEntities(str: string): string {
     return str.replace(/&lt;/g, '<')
