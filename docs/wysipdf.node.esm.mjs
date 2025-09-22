@@ -35082,9 +35082,9 @@ let PdfGenerateService = class PdfGenerateService {
         // Correct usage: get base64 via service
         const base64 = await this.pdfMakeService.getBase64(docDefinition);
         return {
-            base64,
-            page,
-            docDefinition,
+            base64: base64,
+            page: convertedPage,
+            docDefinition: docDefinition,
         };
     }
     async generatePdfBase64FromJson(page, json) {
@@ -111496,7 +111496,7 @@ let HtmlToStructuredContentConverter = class HtmlToStructuredContentConverter {
                 // ✅ Token detection anywhere in the element's ancestors
                 const tokenEl = $node.closest('.ql-mathjax');
                 if (tokenEl && tokenEl.length) {
-                    elements.push(this.createTokenElement(tokenEl.first()));
+                    elements.push(this.createTokenElement(tokenEl.first(), inheritedAttrs));
                     return;
                 }
                 if ($node.is('br')) {
@@ -111544,7 +111544,7 @@ let HtmlToStructuredContentConverter = class HtmlToStructuredContentConverter {
                 const attrs = this.extractAttributes($child, inheritedAttrs);
                 const tokenEl = $child.closest('.ql-mathjax');
                 if (tokenEl && tokenEl.length) {
-                    elements.push(this.createTokenElement(tokenEl.first()));
+                    elements.push(this.createTokenElement(tokenEl.first(), inheritedAttrs));
                 }
                 else {
                     this.parseTableCellContent($child, elements, $, attrs);
@@ -111562,8 +111562,9 @@ let HtmlToStructuredContentConverter = class HtmlToStructuredContentConverter {
         });
         return blocks;
     }
-    createTokenElement(el) {
-        const attrs = this.extractAttributes(el, {});
+    createTokenElement(el, inheritedAttrs = {}) {
+        // Merge inherited styles with element's own styles
+        const attrs = this.extractAttributes(el, inheritedAttrs);
         attrs.isCustomElement = true;
         const dataValue = el.attr('data-value') || '';
         const decodedValue = this.decodeHtmlEntities(dataValue) || el.text();
@@ -111754,9 +111755,10 @@ let TokenReplacerUtility = class TokenReplacerUtility {
             }
         }
         if (replacement !== undefined) {
-            el.value = replacement;
+            const unescaped = replacement.replace(/\\n/g, '\n');
+            el.value = unescaped;
             el.attributes = attrs;
-            el.attributes.value = replacement;
+            el.attributes.value = unescaped;
             el.type = 'token';
         }
     }
